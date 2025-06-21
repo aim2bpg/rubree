@@ -30,3 +30,5 @@ test:
 production:
   <<: *default
   # database: path/to/persistent/storage/production.sqlite3
+wasm:
+  adapter: <%= ENV.fetch("ACTIVE_RECORD_ADAPTER") { "nulldb" } %>
