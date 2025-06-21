@@ -1,0 +1,82 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions-rust-lang/setup-rust-toolchain@main
+      with:
+        toolchain: 1.74.0
+    - name: Install wasi-vfs
+      env:
+        WASI_VFS_VERSION: 0.5.5
+      run: |
+        curl -LO "https://github.com/kateinoigakukun/wasi-vfs/releases/download/v${WASI_VFS_VERSION}/wasi-vfs-cli-x86_64-unknown-linux-gnu.zip"
+        unzip wasi-vfs-cli-x86_64-unknown-linux-gnu.zip
+        mv wasi-vfs /usr/local/bin/wasi-vfs
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.3
+        bundler-cache: true
+    - name: Setup yarn
+      run: npm install -g yarn
+    - uses: actions/setup-node@v4
+      with:
+        cache-dependency-path: ./pwa/yarn.lock
+        node-version: 20
+        cache: yarn
+    - name: Cache ruby.wasm artefacts
+      id: cache-ruby-wasm
+      uses: actions/cache@v4
+      with:
+        path: |
+          build
+          rubies
+        key: ${{ runner.os }}-v1-ruby-wasm
+    - name: Cache compiled ruby.wasm module
+      id: cache-ruby-wasm-module
+      uses: actions/cache@v4
+      with:
+        path: |
+          tmp/wasmify/ruby.wasm
+        key: ${{ runner.os }}-v1-${{ hashFiles('**/Gemfile.lock') }}-ruby-wasm-module
+    - name: Build ruby.wasm
+      if: steps.cache-ruby-wasm-module.outputs.cache-hit != 'true'
+      run: |
+        bin/rails wasmify:build
+    - name: Pack application into app.wasm
+      run: |
+        bin/rails wasmify:pack
+    - name: Build web app
+      working-directory: pwa
+      run: |
+        yarn install
+        yarn build
+    - name: Push to Github Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './pwa/dist'
+
+  deploy:
+    needs: build
+    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    # Allow one concurrent deployment
+    concurrency:
+      group: "pages"
+      cancel-in-progress: true
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
