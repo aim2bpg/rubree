@@ -9,7 +9,7 @@ class RegularExpression
 
   validate :check_expression
 
-  def initialize(expression: '', test_string: '')
+  def initialize(expression: "", test_string: "")
     @expression = expression
     @test_string = test_string
   end
@@ -29,6 +29,6 @@ class RegularExpression
   def check_expression
     return if regexp.match?(test_string)
 
-    errors.add(:base, :invalid, message: '一致しませんでした...')
+    errors.add(:base, :invalid, message: "一致しませんでした...")
   end
 end
