@@ -1,3 +1,4 @@
+output_dir: pwa/public
 # Specify the list of directories to be included into the final
 # app.wasm file.
 pack_directories:
@@ -16,9 +17,3 @@ exclude_gems:
   - io-console
   - psych
   - date
-
-# Skip building native extensions for the following gems (and keep their Ruby source)
-# ignore_gem_extensions:
-#  - bigdecimal
-#  - date
-#
