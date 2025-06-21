@@ -1,5 +1,7 @@
 require_relative "boot"
 
+require "wasmify/rails/shim"
+
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
