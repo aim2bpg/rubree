@@ -1,3 +1,5 @@
+require "regexp_parser"
+
 module RegexpDiagram
   module_function
 

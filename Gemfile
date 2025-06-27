@@ -35,7 +35,7 @@ group :development, :test do
 end
 
 gem "wasmify-rails", "~> 0.2.3", group: [:default, :wasm]
-gem "regexp_parser"
+gem "regexp_parser", group: [:default, :wasm]
 gem "railroad_diagrams"
 
 group :wasm do
