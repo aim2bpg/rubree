@@ -23,38 +23,20 @@ class RegularExpression
     regexp.names.empty? ? match_data.captures : []
   end
 
-  def highlighted_test_string
-    return CGI.escapeHTML(test_string) if unready?
+  def match_positions
+    return [] if unready?
 
-    matches = []
+    positions = []
     regexp = Regexp.new(expression)
 
     test_string.to_enum(:scan, regexp).each_with_index do |_, i|
       match = Regexp.last_match
-      matches << {
-        start: match.begin(0),
-        end: match.end(0),
-        text: match[0],
-        index: i
-      }
+      positions << { start: match.begin(0), end: match.end(0), index: i }
     end
 
-    return CGI.escapeHTML(test_string) if matches.empty?
-
-    highlighted = ""
-    last_index = 0
-
-    matches.each do |m|
-      highlighted += CGI.escapeHTML(test_string[last_index...m[:start]])
-      color_class = "regex-match-color-#{m[:index] % 5}"
-      highlighted += "<span class='regex-match-highlight #{color_class}' title='Match #{m[:index] + 1}'>"
-      highlighted += CGI.escapeHTML(test_string[m[:start]...m[:end]])
-      highlighted += "</span>"
-      last_index = m[:end]
-    end
-
-    highlighted += CGI.escapeHTML(test_string[last_index..-1]) if last_index < test_string.length
-    highlighted.html_safe
+    positions
+  rescue RegexpError
+    []
   end
 
   private

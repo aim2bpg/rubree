@@ -2,7 +2,7 @@
   <p class="text-gray-400 text-sm">Please enter a regex pattern and a test string.</p>
 
 <% elsif regular_expression.valid? && regular_expression.match_data %>
-  <!-- SVG Diagram -->
+  <%# --- ダイアグラム表示部分（diagramがあれば） --- %>
   <% if diagram.present? %>
     <div class="mb-6 border border-gray-700 bg-gray-900 p-4 rounded">
       <div class="overflow-auto max-h-60">
@@ -11,7 +11,7 @@
     </div>
   <% end %>
 
-  <!-- Match Result -->
+  <%# --- マッチ結果表示 --- %>
   <div class="mb-2 text-left">
     <div class="flex justify-between items-baseline mb-2">
       <h3 class="text-sm font-bold text-white">Match result:</h3>
@@ -23,12 +23,15 @@
     </div>
 
     <div class="bg-gray-900 border border-gray-700 px-0 py-0 whitespace-pre-wrap font-mono text-sm text-white text-left leading-tight">
-      <%# highlighted_test_string はモデルで安全にエスケープ・加工済みなのでそのまま出すが、spanにクラス付与するため gsubで文字列置換 %>
-      <% safe_html = regular_expression.highlighted_test_string.gsub(
-        /<span class='regex-match-highlight'/,
-        "<span class='regex-match-highlight bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline'"
-      ) %>
-      <%= safe_html.html_safe %>
+      <% last_index = 0 %>
+      <% safe_output = ''.html_safe %>
+      <% regular_expression.match_positions.each do |pos| %>
+        <% safe_output += h(regular_expression.test_string[last_index...pos[:start]]) %>
+        <% safe_output += content_tag(:mark, h(regular_expression.test_string[pos[:start]...pos[:end]]), class: "bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline") %>
+        <% last_index = pos[:end] %>
+      <% end %>
+      <% safe_output += h(regular_expression.test_string[last_index..-1]) if last_index < regular_expression.test_string.length %>
+      <%= safe_output %>
     </div>
 
     <% if regular_expression.average_elapsed_time_ms && regular_expression.average_elapsed_time_ms >= 100 %>
@@ -38,7 +41,7 @@
     <% end %>
   </div>
 
-  <!-- Capture Groups -->
+  <%# --- キャプチャグループ表示 --- %>
   <% if regular_expression.captures.present? || regular_expression.named_captures.present? %>
     <div class="mb-8">
       <h3 class="text-sm font-bold mb-2 text-white">Match groups:</h3>
@@ -50,7 +53,7 @@
               <% regular_expression.captures.each_with_index do |cap, i| %>
                 <li class="flex items-center">
                   <span class="inline-block w-20 font-semibold">Group <%= i + 1 %>:</span>
-                  <code class="text-blue-300"><%= cap %></code>
+                  <code class="text-blue-300"><%= h(cap) %></code>
                 </li>
               <% end %>
             </ul>
@@ -63,9 +66,9 @@
               <% regular_expression.named_captures.each do |name, val| %>
                 <li class="flex items-center">
                   <span class="font-semibold bg-yellow-200 text-gray-800 px-1 mr-2 rounded-none whitespace-nowrap inline-block">
-                    <%= name %>
+                    <%= h(name) %>
                   </span>
-                  <code class="text-white"><%= val %></code>
+                  <code class="text-white"><%= h(val) %></code>
                 </li>
               <% end %>
             </ul>
@@ -77,6 +80,6 @@
 
 <% else %>
   <% regular_expression.errors.full_messages.each do |msg| %>
-    <p class="text-red-400">❌ <%= msg %></p>
+    <p class="text-red-400">❌ <%= h(msg) %></p>
   <% end %>
 <% end %>
