@@ -21,24 +21,27 @@
         </div>
       <% end %>
     </div>
-  
+
     <div class="bg-gray-900 border border-gray-700 px-0 py-0 whitespace-pre-wrap font-mono text-sm text-white text-left leading-tight">
       <% 
-        processed_str = regular_expression.highlighted_test_string.gsub(
-          /<mark>/,
-          '<mark class="bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline">'
-        )
+        # sanitizeで<mark>タグのみ許可しクラスはまだ付けていない
+        safe_html = sanitize(regular_expression.highlighted_test_string, tags: ['mark'], attributes: [])
+        # Nokogiriでパースして <mark> にクラス属性を追加
+        doc = Nokogiri::HTML::DocumentFragment.parse(safe_html)
+        doc.css('mark').each do |mark|
+          mark['class'] = 'bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline'
+        end
       %>
-      <%= sanitize(processed_str, tags: %w[mark], attributes: %w[class]).html_safe %>
+      <%= doc.to_html.html_safe %>
     </div>
-  
+
     <% if regular_expression.average_elapsed_time_ms && regular_expression.average_elapsed_time_ms >= 100 %>
       <div class="text-yellow-400 text-xs mt-1">
         ⚠️ Slow match — this regex may cause performance issues.
       </div>
     <% end %>
   </div>
-  
+
   <!-- Capture Groups -->
   <% if regular_expression.captures.present? || regular_expression.named_captures.present? %>
     <div class="mb-8">
