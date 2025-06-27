@@ -23,9 +23,12 @@
     </div>
 
     <div class="bg-gray-900 border border-gray-700 px-0 py-0 whitespace-pre-wrap font-mono text-sm text-white text-left leading-tight">
-      <%# sanitizeで一旦エスケープし、 &lt;mark&gt; を本物のタグに戻す %>
-      <%= sanitize(regular_expression.highlighted_test_string).gsub(
-            /&lt;mark&gt;(.*?)&lt;\/mark&gt;/,
+      <%= sanitize(
+            regular_expression.highlighted_test_string,
+            tags: %w[mark],
+            attributes: %w[class]
+          ).gsub(
+            /<mark>(.*?)<\/mark>/,
             '<mark class="bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline">\1</mark>'
           ).html_safe %>
     </div>
