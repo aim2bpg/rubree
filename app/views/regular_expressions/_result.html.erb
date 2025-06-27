@@ -2,16 +2,6 @@
   <p class="text-gray-400 text-sm">Please enter a regex pattern and a test string.</p>
 
 <% elsif regular_expression.valid? && regular_expression.match_data %>
-  <%# --- ダイアグラム表示部分（diagramがあれば） --- %>
-  <% if diagram.present? %>
-    <div class="mb-6 border border-gray-700 bg-gray-900 p-4 rounded">
-      <div class="overflow-auto max-h-60">
-        <%= diagram.html_safe %>
-      </div>
-    </div>
-  <% end %>
-
-  <%# --- マッチ結果表示 --- %>
   <div class="mb-2 text-left">
     <div class="flex justify-between items-baseline mb-2">
       <h3 class="text-sm font-bold text-white">Match result:</h3>
@@ -41,7 +31,6 @@
     <% end %>
   </div>
 
-  <%# --- キャプチャグループ表示 --- %>
   <% if regular_expression.captures.present? || regular_expression.named_captures.present? %>
     <div class="mb-8">
       <h3 class="text-sm font-bold mb-2 text-white">Match groups:</h3>

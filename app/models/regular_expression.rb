@@ -13,13 +13,11 @@ class RegularExpression
 
   def named_captures
     return {} if unready? || !match_data
-
     regexp.named_captures.transform_values { |indexes| indexes.map { |i| match_data[i] }.first }
   end
 
   def captures
     return [] if unready? || !match_data
-
     regexp.names.empty? ? match_data.captures : []
   end
 
@@ -37,6 +35,13 @@ class RegularExpression
     positions
   rescue RegexpError
     []
+  end
+
+  def diagram_svg
+    return nil if unready?
+    RegexpDiagram.create_svg_from_regex(expression)
+  rescue StandardError => e
+    "<!-- Error generating diagram: #{ERB::Util.html_escape(e.message)} -->"
   end
 
   private

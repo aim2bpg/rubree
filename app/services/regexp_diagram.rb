@@ -1,4 +1,6 @@
 require "regexp_parser"
+require "railroad_diagrams"
+require "stringio"
 
 module RegexpDiagram
   module_function
