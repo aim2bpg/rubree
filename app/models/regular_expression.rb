@@ -46,15 +46,14 @@ class RegularExpression
 
     matches.each do |m|
       highlighted += CGI.escapeHTML(test_string[last_index...m[:start]])
-      color_class = "regex-match-color-#{m[:index] % 5}"
-      highlighted += "<span class='regex-match-highlight #{color_class}' title='Match #{m[:index] + 1}'>"
+      highlighted += "<mark>"
       highlighted += CGI.escapeHTML(test_string[m[:start]...m[:end]])
-      highlighted += "</span>"
+      highlighted += "</mark>"
       last_index = m[:end]
     end
 
     highlighted += CGI.escapeHTML(test_string[last_index..-1]) if last_index < test_string.length
-    highlighted.html_safe
+    highlighted
   end
 
   private
