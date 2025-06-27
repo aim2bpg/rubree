@@ -32,7 +32,7 @@ const initVM = async (progress, opts = {}) => {
 
   let redirectConsole = true;
 
-  vm = await initRailsVM("/app.wasm", {
+  vm = await initRailsVM("./app.wasm", {
     database: { adapter: "sqlite3_wasm" },
     progressCallback: (step) => {
       progress?.updateStep(step);
@@ -77,7 +77,7 @@ self.addEventListener("install", (event) => {
 const rackHandler = new RackHandler(initVM, { assumeSSL: true });
 
 self.addEventListener("fetch", (event) => {
-  const bootResources = ["/boot", "/boot.js", "/boot.html", "/rails.sw.js"];
+  const bootResources = ["./boot", "./boot.js", "./boot.html", "./rails.sw.js"];
 
   if (
     bootResources.find((r) => new URL(event.request.url).pathname.endsWith(r))

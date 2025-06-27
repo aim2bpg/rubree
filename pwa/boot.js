@@ -8,11 +8,11 @@ async function registerServiceWorker() {
 
   const workerUrl =
     import.meta.env.MODE === "production"
-      ? "/rails.sw.js"
-      : "/dev-sw.js?dev-sw";
+      ? "./rails.sw.js"
+      : "./dev-sw.js?dev-sw";
 
   await navigator.serviceWorker.register(workerUrl, {
-    scope: "/",
+    scope: import.meta.env.BASE_URL,
     type: "module",
   });
 }
@@ -70,7 +70,7 @@ async function init() {
   launchButton.disabled = false;
   launchButton.addEventListener("click", async function () {
     // Open in a new window
-    window.open("/", "_blank");
+    window.open("./", "_blank");
   });
 
   const rebootButton = document.getElementById("reboot-button");
