@@ -6,7 +6,7 @@
   <% if diagram.present? %>
     <div class="mb-6 border border-gray-700 bg-gray-900 p-4 rounded">
       <div class="overflow-auto max-h-60">
-        <%= raw(diagram) %>
+        <%= diagram.html_safe %>
       </div>
     </div>
   <% end %>
@@ -21,21 +21,22 @@
         </div>
       <% end %>
     </div>
-  
+
     <div class="bg-gray-900 border border-gray-700 px-0 py-0 whitespace-pre-wrap font-mono text-sm text-white text-left leading-tight">
-      <%= regular_expression.highlighted_test_string.gsub(
-            /<mark>(.*?)<\/mark>/,
-            '<mark class="bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline">$1</mark>'
+      <%# sanitizeで一旦エスケープし、 &lt;mark&gt; を本物のタグに戻す %>
+      <%= sanitize(regular_expression.highlighted_test_string).gsub(
+            /&lt;mark&gt;(.*?)&lt;\/mark&gt;/,
+            '<mark class="bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline">\1</mark>'
           ).html_safe %>
     </div>
-  
+
     <% if regular_expression.average_elapsed_time_ms && regular_expression.average_elapsed_time_ms >= 100 %>
       <div class="text-yellow-400 text-xs mt-1">
         ⚠️ Slow match — this regex may cause performance issues.
       </div>
     <% end %>
   </div>
-  
+
   <!-- Capture Groups -->
   <% if regular_expression.captures.present? || regular_expression.named_captures.present? %>
     <div class="mb-8">
