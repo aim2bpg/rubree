@@ -39,7 +39,15 @@ class RegularExpression
 
   def diagram_svg
     return nil if unready?
-    RegexpDiagram.create_svg_from_regex(expression)
+
+    raw_svg = RegexpDiagram.create_svg_from_regex(expression)
+
+    # 安全にCSSを使うために <style> と class を許可する
+    ActionController::Base.helpers.sanitize(
+      raw_svg,
+      tags: %w(svg g path rect circle line text style),
+      attributes: %w(d fill stroke x y cx cy r width height viewBox xmlns class type)
+    )
   rescue StandardError => e
     "<!-- Error generating diagram: #{ERB::Util.html_escape(e.message)} -->"
   end
