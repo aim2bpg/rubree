@@ -35,6 +35,8 @@ group :development, :test do
 end
 
 gem "wasmify-rails", "~> 0.2.3", group: [:default, :wasm]
+gem "regexp_parser", group: [:default, :wasm]
+gem "railroad_diagrams", group: [:default, :wasm]
 
 group :wasm do
   gem "tzinfo-data"
