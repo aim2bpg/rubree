@@ -9,3 +9,6 @@ application.register("hello", HelloController)
 
 import RegexpController from "./regexp_controller"
 application.register("regexp", RegexpController)
+
+import ExampleLinkController from "./example_link_controller"
+application.register("example-link", ExampleLinkController)

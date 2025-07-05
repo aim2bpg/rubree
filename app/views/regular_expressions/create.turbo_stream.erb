@@ -1,0 +1,3 @@
+<%= turbo_stream.replace 'regexp' do %>
+  <%= render partial: 'result', locals: { regular_expression: @regular_expression, diagram: @svg_output } %>
+<% end %>

@@ -1,0 +1,33 @@
+<div class="mb-2">
+  <h3 class="text-sm font-bold mb-2 text-white">Match groups:</h3>
+  <div class="bg-gray-900 border border-gray-700 p-4 space-y-6 text-left">
+    <% if regular_expression.captures.present? %>
+      <div>
+        <h4 class="text-xs font-semibold mb-2 text-blue-300">Capture Groups</h4>
+        <ul class="list-disc list-inside text-white space-y-1">
+          <% regular_expression.captures.each_with_index do |cap, i| %>
+            <li class="flex items-center">
+              <span class="inline-block w-20 font-semibold">Group <%= i + 1 %>:</span>
+              <code class="text-blue-300"><%= h(cap) %></code>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <% if regular_expression.named_captures.present? %>
+      <div>
+        <ul class="list-disc list-inside text-white space-y-1">
+          <% regular_expression.named_captures.each do |name, val| %>
+            <li class="flex items-center">
+              <span class="font-semibold bg-yellow-200 text-gray-800 px-1 mr-2 rounded-none whitespace-nowrap inline-block">
+                <%= h(name) %>
+              </span>
+              <code class="text-white"><%= h(val) %></code>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+</div>
