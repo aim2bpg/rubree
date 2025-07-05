@@ -1,0 +1,146 @@
+<div class="bg-gray-900 rounded-lg shadow-lg pt-4 pb-4 px-4 text-gray-400 text-sm leading-snug mx-2 md:mx-0">
+  <div class="text-left w-full max-w-6xl mx-auto px-2 md:px-4">
+
+    <!-- Responsive Grid with narrow 3rd column -->
+    <div class="grid grid-cols-1 md:grid-cols-[auto_auto_16rem] gap-4">
+
+      <!-- Column 1 -->
+      <div class="space-y-1">
+        <h4 class="font-semibold mb-1 text-white">Character Classes & Anchors</h4>
+        <div class="space-y-0.5">
+          <div class="grid grid-cols-[80px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">[abc]</code>
+            <span>A single character of: a, b, or c</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">[^abc]</code>
+            <span>Any single character except: a, b, or c</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">[a-z]</code>
+            <span>Any single character in the range a-z</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">[a-zA-Z]</code>
+            <span>Any single character in the range a-z or A-Z</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">^</code>
+            <span>Start of line</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">$</code>
+            <span>End of line</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">\A</code>
+            <span>Start of string</span>
+          </div>
+          <div class="grid grid-cols-[80px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">\z</code>
+            <span>End of string</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2 -->
+      <div class="space-y-1">
+        <h4 class="font-semibold mb-1 text-white">Common Patterns</h4>
+        <div class="space-y-0.5">
+          <div class="grid grid-cols-[30px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">.</code>
+            <span>Any single character</span>
+          </div>
+          <div class="grid grid-cols-[30px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">\s</code>
+            <span>Any whitespace character</span>
+          </div>
+          <div class="grid grid-cols-[30px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">\S</code>
+            <span>Any non-whitespace character</span>
+          </div>
+          <div class="grid grid-cols-[30px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">\d</code>
+            <span>Any digit</span>
+          </div>
+          <div class="grid grid-cols-[30px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">\D</code>
+            <span>Any non-digit</span>
+          </div>
+          <div class="grid grid-cols-[30px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">\w</code>
+            <span>Any word character (letter, number, underscore)</span>
+          </div>
+          <div class="grid grid-cols-[30px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">\W</code>
+            <span>Any non-word character</span>
+          </div>
+          <div class="grid grid-cols-[30px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">\b</code>
+            <span>Any word boundary</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 3 -->
+      <div class="space-y-1">
+        <h4 class="font-semibold mb-1 text-white">Groups & Quantifiers</h4>
+        <div class="space-y-0.5">
+          <div class="grid grid-cols-[60px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">(...)</code>
+            <span>Capture everything enclosed</span>
+          </div>
+          <div class="grid grid-cols-[60px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">(a|b)</code>
+            <span>a or b</span>
+          </div>
+          <div class="grid grid-cols-[60px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">a?</code>
+            <span>Zero or one of a</span>
+          </div>
+          <div class="grid grid-cols-[60px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">a*</code>
+            <span>Zero or more of a</span>
+          </div>
+          <div class="grid grid-cols-[60px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">a+</code>
+            <span>One or more of a</span>
+          </div>
+          <div class="grid grid-cols-[60px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">a{3}</code>
+            <span>Exactly 3 of a</span>
+          </div>
+          <div class="grid grid-cols-[60px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">a{3,}</code>
+            <span>3 or more of a</span>
+          </div>
+          <div class="grid grid-cols-[60px_1fr] items-start">
+            <code class="cursor-pointer hover:text-green-400 transition duration-200" title="クリックでコピー">a{3,6}</code>
+            <span>Between 3 and 6 of a</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Options -->
+    <div class="mt-2 pt-2 border-t border-gray-600 text-gray-400 text-sm text-left md:text-center flex flex-col md:flex-row md:items-center justify-center gap-x-4 gap-y-1">
+      <strong class="text-white mr-2 mb-1 md:mb-0 whitespace-nowrap">options:</strong>
+      <div class="flex flex-col md:flex-row flex-wrap md:flex-nowrap justify-center gap-x-4 gap-y-0.5 md:gap-y-0">
+        <div class="basis-full md:basis-auto text-left md:text-center">
+          <code class="cursor-pointer hover:text-green-400 transition duration-200 mx-2" title="クリックでコピー">i</code> case insensitive
+        </div>
+        <div class="basis-full md:basis-auto text-left md:text-center">
+          <code class="cursor-pointer hover:text-green-400 transition duration-200 mx-2" title="クリックでコピー">m</code> make dot match newlines
+        </div>
+        <div class="basis-full md:basis-auto text-left md:text-center">
+          <code class="cursor-pointer hover:text-green-400 transition duration-200 mx-2" title="クリックでコピー">x</code> ignore whitespace in regex
+        </div>
+        <div class="basis-full md:basis-auto text-left md:text-center">
+          <code class="cursor-pointer hover:text-green-400 transition duration-200 mx-2" title="クリックでコピー">o</code> perform #{...} substitutions only once
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

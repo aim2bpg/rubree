@@ -1,0 +1,28 @@
+<div class="mb-2 text-left">
+  <div class="flex justify-between items-baseline mb-2">
+    <h3 class="text-sm font-bold text-white">Match result:</h3>
+    <% if regular_expression.elapsed_time_ms && regular_expression.average_elapsed_time_ms %>
+      <div class="text-xs text-gray-400">
+        🕒 <%= regular_expression.elapsed_time_ms %> ms (avg of 5 runs)
+      </div>
+    <% end %>
+  </div>
+
+  <div class="bg-gray-900 border border-gray-700 px-0 py-0 whitespace-pre-wrap font-mono text-sm text-white text-left leading-tight">
+    <% last_index = 0 %>
+    <% safe_output = ''.html_safe %>
+    <% regular_expression.match_positions.each do |pos| %>
+      <% safe_output += h(regular_expression.test_string[last_index...pos[:start]]) %>
+      <% safe_output += content_tag(:mark, h(regular_expression.test_string[pos[:start]...pos[:end]]), class: "bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline") %>
+      <% last_index = pos[:end] %>
+    <% end %>
+    <% safe_output += h(regular_expression.test_string[last_index..-1]) if last_index < regular_expression.test_string.length %>
+    <%= safe_output %>
+  </div>
+
+  <% if regular_expression.average_elapsed_time_ms && regular_expression.average_elapsed_time_ms >= 100 %>
+    <div class="text-yellow-400 text-xs mt-1">
+      ⚠️ Slow match — this regex may cause performance issues.
+    </div>
+  <% end %>
+</div>
