@@ -1,16 +1,8 @@
-<div class="max-w-6xl mx-auto px-4">
-  <%= render 'form' %>
+// app/javascript/controllers/example_link_controller.js
+import { Controller } from "@hotwired/stimulus";
 
-  <%= turbo_frame_tag 'regexp' do %>
-    <%= render partial: 'result_frame', locals: { regular_expression: @regular_expression } %>
-  <% end %>
-
-  <h3 class="text-lg md:text-xl font-semibold text-white text-center mb-4 mt-4">Regex quick reference</h3>
-  <%= render 'reference' %>
-</div>
-
-<script>
-  document.addEventListener('turbo:load', () => {
+export default class extends Controller {
+  connect() {
     const exampleLink = document.getElementById('example-link');
     const expressionField = document.getElementById('regular_expression_expression');
     const testStringField = document.getElementById('regular_expression_test_string');
@@ -19,6 +11,7 @@
 
     exampleLink.addEventListener('click', (e) => {
       e.preventDefault();
+
       const today = new Date();
       const examplePattern = '(?<month>\\d{1,2})\\/(?<day>\\d{1,2})\\/(?<year>\\d{4})';
       const exampleTestString = `Today's date is: ${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}.`;
@@ -29,5 +22,5 @@
       expressionField.dispatchEvent(new Event('input', { bubbles: true }));
       testStringField.dispatchEvent(new Event('input', { bubbles: true }));
     });
-  });
-</script>
+  }
+}
