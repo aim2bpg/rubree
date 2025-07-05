@@ -1,88 +1,10 @@
-<%= content_for :title, "Rubree" %>
-
-<div class="max-w-6xl mx-auto mt-2">
-  <h1 class="text-5xl font-extrabold text-white text-center mb-4 bg-transparent">
-    <a href="/" class="hover:underline">Rubree</a>
-  </h1>
-
-  <p class="text-center text-gray-400 text-lg mb-4 bg-transparent">
-    a Ruby regular expression editor.
-    <a href="/#example" id="example-link" class="text-blue-400 hover:underline cursor-pointer">Try an example</a>.
-  </p>
-
-  <%= form_with model: @regular_expression,
-                url: regular_expressions_path,
-                html: { data: { turbo_frame: 'regexp', controller: 'regexp', action: 'input->regexp#submit' } } do |f| %>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-900 rounded-lg shadow-lg p-4 mb-4">
-      <div class="bg-gray-800 p-4 rounded-lg shadow-inner border border-gray-700 flex flex-col">
-        <label class="block text-sm font-bold mb-2 text-white" for="regular_expression_expression">
-          Your regular expression:
-        </label>
-        <%= f.text_area :expression,
-              class: "w-full px-4 py-2 min-h-[120px] bg-gray-900 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 resize-y" %>
-      </div>
-
-      <div class="bg-gray-800 p-4 rounded-lg shadow-inner border border-gray-700 flex flex-col">
-        <label class="block text-sm font-bold mb-2 text-white" for="regular_expression_test_string">
-          Test string:
-        </label>
-        <%= f.text_area :test_string,
-              class: "w-full px-4 py-2 min-h-[120px] bg-gray-900 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 resize-y" %>
-      </div>
-    </div>
-  <% end %>
+<div class="max-w-6xl mx-auto px-4">
+  <%= render 'form' %>
 
   <%= turbo_frame_tag 'regexp' do %>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-900 rounded-lg shadow-lg p-4 mb-4 border border-gray-700">
-      <div class="overflow-hidden rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white flex justify-center items-start">
-        <% if @regular_expression.diagram_svg.present? %>
-          <div class="w-full overflow-auto">
-            <h3 class="text-sm font-bold mb-2 text-white">Railroad diagram:</h3>
-            <%= @regular_expression.diagram_svg %>
-          </div>
-        <% else %>
-          <p class="text-gray-500 m-auto text-center">Railroad diagram will appear here</p>
-        <% end %>
-      </div>
-
-      <div class="flex flex-col space-y-2 overflow-auto rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white text-left">
-        <% if @regular_expression.expression.present? || @regular_expression.test_string.present? %>
-          <%= render partial: 'result', locals: { regular_expression: @regular_expression } %>
-        <% else %>
-          <p class="text-gray-500 m-auto text-center">Regexp test result will appear here</p>
-        <% end %>
-      </div>
-    </div>
+    <%= render partial: 'result_frame', locals: { regular_expression: @regular_expression } %>
   <% end %>
 
   <h3 class="text-lg md:text-xl font-semibold text-white text-center mb-4 mt-4">Regex quick reference</h3>
-  <%= render 'regex_reference' %>
-
-  <div class="text-center text-gray-500 text-xs p-4 mb-6">
-    <p>Inspired by Michael Lovitt’s excellent Rubular.</p>
-    <p>Rubree uses Ruby 3.x.x. Share questions/comments/issues @rubree. Made by xxx yyy @zzz.</p>
-  </div>
+  <%= render 'reference' %>
 </div>
-
-<script>
-  document.addEventListener('turbo:load', () => {
-    const exampleLink = document.getElementById('example-link');
-    const expressionField = document.getElementById('regular_expression_expression');
-    const testStringField = document.getElementById('regular_expression_test_string');
-
-    if (!exampleLink || !expressionField || !testStringField) return;
-
-    exampleLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      const today = new Date();
-      const examplePattern = '(?<month>\\d{1,2})\\/(?<day>\\d{1,2})\\/(?<year>\\d{4})';
-      const exampleTestString = `Today's date is: ${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}.`;
-
-      expressionField.value = examplePattern;
-      testStringField.value = exampleTestString;
-
-      expressionField.dispatchEvent(new Event('input', { bubbles: true }));
-      testStringField.dispatchEvent(new Event('input', { bubbles: true }));
-    });
-  });
-</script>

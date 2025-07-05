@@ -1,9 +1,9 @@
 module RegexpDiagram
   module_function
 
-  def create_svg_from_regex(regex_str)
+  def create_svg_from_regex(regexp_str)
     begin
-      regex = Regexp.new(regex_str)
+      regex = Regexp.new(regexp_str)
       ast = Regexp::Parser.parse(regex.source)
 
       diagram_body = ast_to_railroad(ast)
