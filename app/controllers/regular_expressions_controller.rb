@@ -4,16 +4,13 @@ class RegularExpressionsController < ApplicationController
   end
 
   def create
-    @regular_expression = RegularExpression.new(expression: regexp_params[:expression], test_string: regexp_params[:test_string])
-
+    @regular_expression = RegularExpression.new(regular_expression_params)
     render :index
   end
 
   private
 
-  def regexp_params
-    params
-      .require(:regular_expression)
-      .permit(:expression, :test_string)
+  def regular_expression_params
+    params.require(:regular_expression).permit(:expression, :test_string)
   end
 end
