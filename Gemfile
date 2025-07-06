@@ -62,6 +62,9 @@ group :development, :test do
 
   # RSpec for Rails (https://github.com/rspec/rspec-rails)
   gem "rspec-rails"
+
+  # Fast and powerful Git hooks manager for any type of projects (https://github.com/evilmartians/lefthook/)
+  gem "lefthook"
 end
 
 group :test do

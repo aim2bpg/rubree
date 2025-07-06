@@ -1,0 +1,13 @@
+pre-commit:
+  jobs:
+    - name: Ruby Lint
+      run: bin/rubocop
+
+    - name: ERB Lint
+      run: bin/erb_lint --lint-all
+
+    - name: Biome Lint
+      run: bin/yarn biome check
+
+    - name: Run RSpec
+      run: bin/rspec
