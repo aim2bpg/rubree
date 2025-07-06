@@ -2,10 +2,10 @@
   <p class="text-gray-400 text-sm">Please enter a regex pattern and a test string.</p>
 
 <% elsif regular_expression.valid? && regular_expression.match_data %>
-  <%= render 'result_match', regular_expression: regular_expression %>
+  <%= render "result_match", regular_expression: regular_expression %>
 
   <% if regular_expression.captures.present? || regular_expression.named_captures.present? %>
-    <%= render 'result_captures', regular_expression: regular_expression %>
+    <%= render "result_captures", regular_expression: regular_expression %>
   <% end %>
 
 <% else %>

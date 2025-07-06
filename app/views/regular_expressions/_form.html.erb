@@ -1,6 +1,6 @@
 <%= form_with model: @regular_expression,
               url: regular_expressions_path,
-              html: { data: { turbo_frame: 'regexp', controller: 'regexp', action: 'input->regexp#submit' } } do |f| %>
+              html: { data: { turbo_frame: "regexp", controller: "regexp", action: "input->regexp#submit" } } do |f| %>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-900 rounded-lg shadow-lg p-4 mb-4">
     <div class="bg-gray-800 p-4 rounded-lg shadow-inner border border-gray-700 flex flex-col">
       <label class="block text-sm font-bold mb-2 text-white" for="regular_expression_expression">

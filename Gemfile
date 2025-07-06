@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby file: '.ruby-version'
+ruby file: ".ruby-version"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2", group: [:default, :wasm]
@@ -36,7 +36,7 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   # Lint your ERB or HTML files [https://github.com/Shopify/erb_lint/]
-  gem 'erb_lint'
+  gem "erb_lint"
 end
 
 # Tools and extensions to pack and run Rails apps on Wasm [https://github.com/palkan/wasmify-rails/]

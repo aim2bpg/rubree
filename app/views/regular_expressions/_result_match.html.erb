@@ -10,7 +10,7 @@
 
   <div class="bg-gray-900 border border-gray-700 px-0 py-0 whitespace-pre-wrap font-mono text-sm text-white text-left leading-tight">
     <% last_index = 0 %>
-    <% safe_output = ''.html_safe %>
+    <% safe_output = "".html_safe %>
     <% regular_expression.match_positions.each do |pos| %>
       <% safe_output += h(regular_expression.test_string[last_index...pos[:start]]) %>
       <% safe_output += content_tag(:mark, h(regular_expression.test_string[pos[:start]...pos[:end]]), class: "bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline") %>
