@@ -6,7 +6,14 @@
 		"useIgnoreFile": false
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": false,
+		"includes": [
+			"**",
+			"!**/app/assets/builds/**",
+			"!**/build/**",
+			"!**/rubies/**",
+			"!**/pwa/**"
+		]
 	},
 	"formatter": {
 		"enabled": true,
