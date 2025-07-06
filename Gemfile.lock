@@ -72,6 +72,8 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.3)
     base64 (0.3.0)
     benchmark (0.4.1)
@@ -88,6 +90,19 @@ GEM
     brakeman (7.0.2)
       racc
     builder (3.3.0)
+    capybara (3.40.0)
+      addressable
+      matrix
+      mini_mime (>= 0.1.3)
+      nokogiri (~> 1.11)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (>= 1.5, < 3.0)
+      xpath (~> 3.2)
+    capybara-playwright-driver (0.5.6)
+      addressable
+      capybara
+      playwright-ruby-client (>= 1.16.0)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.3)
     crass (1.0.6)
@@ -97,6 +112,7 @@ GEM
     debug (1.11.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    diff-lcs (1.6.2)
     drb (2.2.3)
     erb (5.0.1)
     erb_lint (0.9.0)
@@ -132,6 +148,11 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
+    matrix (0.4.3)
+    mime-types (3.7.0)
+      logger
+      mime-types-data (~> 3.2025, >= 3.2025.0507)
+    mime-types-data (3.2025.0701)
     mini_mime (1.1.5)
     minitest (5.25.5)
     msgpack (1.8.0)
@@ -165,6 +186,9 @@ GEM
     parser (3.3.8.0)
       ast (~> 2.4.1)
       racc
+    playwright-ruby-client (1.52.0)
+      concurrent-ruby (>= 1.1.6)
+      mime-types (>= 3.0)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -177,6 +201,7 @@ GEM
     psych (5.2.6)
       date
       stringio
+    public_suffix (6.0.2)
     puma (6.6.0)
       nio4r (~> 2.0)
     racc (1.8.1)
@@ -226,6 +251,23 @@ GEM
     regexp_parser (2.10.0)
     reline (0.6.1)
       io-console (~> 0.5)
+    rspec-core (3.13.5)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-rails (8.0.1)
+      actionpack (>= 7.2)
+      activesupport (>= 7.2)
+      railties (>= 7.2)
+      rspec-core (~> 3.13)
+      rspec-expectations (~> 3.13)
+      rspec-mocks (~> 3.13)
+      rspec-support (~> 3.13)
+    rspec-support (3.13.4)
     rubocop (1.77.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -240,6 +282,9 @@ GEM
     rubocop-ast (1.45.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
+    rubocop-capybara (2.22.1)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
     rubocop-performance (1.25.0)
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
@@ -254,6 +299,13 @@ GEM
       rubocop (>= 1.72)
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
+    rubocop-rspec (3.6.0)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
+    rubocop-rspec_rails (2.31.0)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
+      rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
     ruby_wasm (2.7.1)
     ruby_wasm (2.7.1-aarch64-linux)
@@ -297,6 +349,8 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    xpath (3.2.0)
+      nokogiri (~> 1.8)
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -314,16 +368,23 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   brakeman
+  capybara
+  capybara-playwright-driver
   cssbundling-rails
   debug
   erb_lint
   jsbundling-rails
+  playwright-ruby-client
   propshaft
   puma (>= 5.0)
   railroad_diagrams
   rails (~> 8.0.2)
   regexp_parser
+  rspec-rails
+  rubocop-capybara
   rubocop-rails-omakase
+  rubocop-rspec
+  rubocop-rspec_rails
   sqlite3 (>= 2.1)
   stimulus-rails
   turbo-rails
