@@ -34,10 +34,18 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Lint your ERB or HTML files [https://github.com/Shopify/erb_lint/]
+  gem 'erb_lint'
 end
 
+# Tools and extensions to pack and run Rails apps on Wasm [https://github.com/palkan/wasmify-rails/]
 gem "wasmify-rails", "~> 0.2.3", group: [:default, :wasm]
+
+# A regular expression parser library for Ruby [https://github.com/ammar/regexp_parser/]
 gem "regexp_parser", group: [:default, :wasm]
+
+# A tiny Ruby+SVG library for drawing railroad syntax diagrams like JSON.org. [https://github.com/ydah/railroad_diagrams/]
 gem "railroad_diagrams", group: [:default, :wasm]
 
 group :wasm do
