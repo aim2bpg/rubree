@@ -13,6 +13,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.16",
     "@tailwindcss/cli": "^4.1.11",
+    "playwright": "^1.53.2",
     "tailwindcss": "^4.1.10"
   }
 }

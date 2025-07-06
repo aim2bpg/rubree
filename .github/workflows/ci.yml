@@ -34,11 +34,16 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: RuboCop
+      - name: Lint with RuboCop
         run: bin/rubocop -f github
         
-      - name: ERB Lint
+      - name: Lint with ERB
         run: bundle exec erb_lint --lint-all
         
-      - name: Biome Lint (Javascript, CSS)
-        run: yarn exec biome lint --write
+      - name: Run Biome Lint (Javascript, CSS)
+        run: bin/yarn exec biome lint --write
+
+  test:
+    steps:
+      - name: Run Ruby Tests
+        run: bundle exec rspec

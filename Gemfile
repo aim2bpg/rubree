@@ -25,20 +25,6 @@ gem "cssbundling-rails"
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
-group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
-
-  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem "brakeman", require: false
-
-  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
-
-  # Lint your ERB or HTML files [https://github.com/Shopify/erb_lint/]
-  gem "erb_lint"
-end
-
 # Tools and extensions to pack and run Rails apps on Wasm [https://github.com/palkan/wasmify-rails/]
 gem "wasmify-rails", "~> 0.2.3", group: [:default, :wasm]
 
@@ -50,4 +36,37 @@ gem "railroad_diagrams", group: [:default, :wasm]
 
 group :wasm do
   gem "tzinfo-data"
+end
+
+group :development, :test do
+  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+
+  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
+  gem "brakeman", require: false
+
+  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
+  gem "rubocop-rails-omakase", require: false
+
+  # Code style checking for RSpec files (https://github.com/rubocop/rubocop-rspec)
+  gem "rubocop-rspec", require: false
+
+  # Code style checking for RSpec Rails files (https://github.com/rubocop/rubocop-rspec_rails)
+  gem "rubocop-rspec_rails", require: false
+
+  # Code style checking for Capybara test files (https://github.com/rubocop/rubocop-capybara)
+  gem "rubocop-capybara", require: false
+
+  # Lint your ERB or HTML files [https://github.com/Shopify/erb_lint/]
+  gem "erb_lint"
+
+  # RSpec for Rails (https://github.com/rspec/rspec-rails)
+  gem "rspec-rails"
+end
+
+group :test do
+  # Capybara aims to simplify the process of integration testing Rack applications, such as Rails, Sinatra or Merb (https://github.com/teamcapybara/capybara)
+  gem "capybara"
+  gem "capybara-playwright-driver"
+  gem "playwright-ruby-client"
 end

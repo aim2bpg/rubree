@@ -1,7 +1,13 @@
+plugins:
+  - rubocop-rspec
+  - rubocop-rspec_rails
+  - rubocop-capybara
+
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
 AllCops:
+  NewCops: enable
   Exclude:
     - "build/**/*"
     - "rubies/**/*"
