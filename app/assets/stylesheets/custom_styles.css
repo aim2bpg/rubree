@@ -33,10 +33,6 @@ svg.railroad-diagram rect.group-box {
   fill: none;
 }
 
-.blue text {
-  fill: blue;
-}
-
 svg.railroad-diagram .terminal rect {
   fill: hsl(105, 65%, 80%);
 }
@@ -53,6 +49,10 @@ svg.railroad-diagram .terminal text {
 svg.railroad-diagram .non-terminal text {
   font: italic 12px monospace;
   fill: hsl(190, 100%, 1%);
+}
+
+svg.railroad-diagram .blue text {
+  fill: blue;
 }
 
 .result_message__success {
@@ -194,11 +194,25 @@ svg.railroad-diagram .non-terminal text {
   color: #0a2a55;
 }
 
-.regex-match-color-0 { background-color: hsl(200, 100%, 90%); }
-.regex-match-color-1 { background-color: hsl(180, 60%, 88%); }
-.regex-match-color-2 { background-color: hsl(220, 70%, 89%); }
-.regex-match-color-3 { background-color: hsl(190, 55%, 87%); }
-.regex-match-color-4 { background-color: hsl(210, 80%, 88%); }
+.regex-match-color-0 {
+  background-color: hsl(200, 100%, 90%);
+}
+
+.regex-match-color-1 {
+  background-color: hsl(180, 60%, 88%);
+}
+
+.regex-match-color-2 {
+  background-color: hsl(220, 70%, 89%);
+}
+
+.regex-match-color-3 {
+  background-color: hsl(190, 55%, 87%);
+}
+
+.regex-match-color-4 {
+  background-color: hsl(210, 80%, 88%);
+}
 
 svg.railroad-diagram {
   background-color: hsl(60, 1%, 85%);
@@ -235,10 +249,6 @@ svg.railroad-diagram rect.group-box {
   fill: none;
 }
 
-.blue text {
-  fill: blue;
-}
-
 svg.railroad-diagram .terminal rect {
   fill: hsl(105, 65%, 80%);
 }
@@ -376,7 +386,7 @@ svg.railroad-diagram .non-terminal text {
 .svg-wrapper svg {
   display: block;
   width: auto;
-  height: auto; 
+  height: auto;
   max-width: none;
 }
 
@@ -396,11 +406,25 @@ svg.railroad-diagram .non-terminal text {
   color: #0a2a55;
 }
 
-.regex-match-color-0 { background-color: hsl(200, 100%, 90%); }
-.regex-match-color-1 { background-color: hsl(180, 60%, 88%); }
-.regex-match-color-2 { background-color: hsl(220, 70%, 89%); }
-.regex-match-color-3 { background-color: hsl(190, 55%, 87%); }
-.regex-match-color-4 { background-color: hsl(210, 80%, 88%); }
+.regex-match-color-0 {
+  background-color: hsl(200, 100%, 90%);
+}
+
+.regex-match-color-1 {
+  background-color: hsl(180, 60%, 88%);
+}
+
+.regex-match-color-2 {
+  background-color: hsl(220, 70%, 89%);
+}
+
+.regex-match-color-3 {
+  background-color: hsl(190, 55%, 87%);
+}
+
+.regex-match-color-4 {
+  background-color: hsl(210, 80%, 88%);
+}
 
 svg.railroad-diagram {
   background-color: hsl(60, 1%, 85%);
@@ -437,10 +461,6 @@ svg.railroad-diagram rect.group-box {
   fill: none;
 }
 
-.blue text {
-  fill: blue;
-}
-
 svg.railroad-diagram .terminal rect {
   fill: hsl(105, 65%, 80%);
 }
@@ -598,8 +618,22 @@ svg.railroad-diagram .non-terminal text {
   color: #0a2a55;
 }
 
-.regex-match-color-0 { background-color: hsl(200, 100%, 90%); }
-.regex-match-color-1 { background-color: hsl(180, 60%, 88%); }
-.regex-match-color-2 { background-color: hsl(220, 70%, 89%); }
-.regex-match-color-3 { background-color: hsl(190, 55%, 87%); }
-.regex-match-color-4 { background-color: hsl(210, 80%, 88%); }
+.regex-match-color-0 {
+  background-color: hsl(200, 100%, 90%);
+}
+
+.regex-match-color-1 {
+  background-color: hsl(180, 60%, 88%);
+}
+
+.regex-match-color-2 {
+  background-color: hsl(220, 70%, 89%);
+}
+
+.regex-match-color-3 {
+  background-color: hsl(190, 55%, 87%);
+}
+
+.regex-match-color-4 {
+  background-color: hsl(210, 80%, 88%);
+}
