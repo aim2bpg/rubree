@@ -21,12 +21,12 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
-  
+
   <body class="bg-gray-800 text-white">
-    <%= render 'layouts/header' %>
+    <%= render "layouts/header" %>
     <div class="container mx-auto">
       <%= yield %>
-      <%= render 'layouts/footer' %>
+      <%= render "layouts/footer" %>
     </div>
   </body>
 </html>

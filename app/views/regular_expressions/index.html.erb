@@ -1,10 +1,10 @@
 <div class="max-w-6xl mx-auto px-4">
-  <%= render 'form' %>
+  <%= render "form" %>
 
-  <%= turbo_frame_tag 'regexp' do %>
-    <%= render partial: 'result_frame', locals: { regular_expression: @regular_expression } %>
+  <%= turbo_frame_tag "regexp" do %>
+    <%= render partial: "result_frame", locals: { regular_expression: @regular_expression } %>
   <% end %>
 
   <h3 class="text-lg md:text-xl font-semibold text-white text-center mb-4 mt-4">Regex quick reference</h3>
-  <%= render 'reference' %>
+  <%= render "reference" %>
 </div>
