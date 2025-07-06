@@ -23,7 +23,8 @@ Inspired by: https://rubular.com
 
 ### 🛠️ Development
 
-- [Forman](https://github.com/ddollar/foreman) for jsbundling-rails, cssbundling-rails
+- [Forman](https://github.com/ddollar/foreman/) for jsbundling-rails, cssbundling-rails
+- [Lefthook](https://github.com/evilmartians/lefthook/) Fast and powerful Git hooks manager for any type of projects
 
 ### 🧹 Linting and testing
 
