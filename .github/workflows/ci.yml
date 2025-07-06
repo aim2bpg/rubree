@@ -8,7 +8,6 @@ on:
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,16 +33,38 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version-file: ./.node-version
+          cache: yarn
+          cache-dependency-path: ./yarn.lock
+
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+        
       - name: Lint with RuboCop
         run: bin/rubocop -f github
         
       - name: Lint with ERB
-        run: bundle exec erb_lint --lint-all
+        run: bin/erb_lint --lint-all
         
-      - name: Run Biome Lint (Javascript, CSS)
-        run: bin/yarn exec biome lint --write
+      - name: Run Biome
+        run: biome ci app/assets/stylesheets app/javascript app/views
 
   test:
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
       - name: Run Ruby Tests
-        run: bundle exec rspec
+        run: bin/rspec
