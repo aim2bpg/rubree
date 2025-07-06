@@ -7,7 +7,11 @@
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-    "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+    "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "lint": "biome lint ./",
+    "lint:fix": "biome lint --write ./",
+    "format": "biome format --write ./",
+    "check": "biome check --write ./"
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",

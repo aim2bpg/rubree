@@ -28,7 +28,10 @@ Inspired by: https://rubular.com
 ### 🧹 Linting and testing
 
 - [Rubocop](https://rubocop.org/) the Ruby Linter/Formatter that Serves and Protects
-- ..
+- [ERB Lint](https://github.com/Shopify/erb_lint/) Lint your ERB or HTML files
+- [Biome](https://biomejs.dev/) Format, lint, and more in a fraction of a second
+- [RSpec](https://rspec.info/) for Ruby testing
+- [Playwright](https://playwright.dev/) for E2E testing
 
 ### 🚀 Deployment
 
@@ -71,24 +74,38 @@ Rubocop:
 bin/rubocop
 ```
 
-### [WIP] Running tests locally
+ERB Lint:
+
+```
+bin/erb_lint --lint-all
+```
+
+Biome Lint:
+
+```
+bin/yarn biome check
+```
+
+### Running tests locally
 
 Ruby test:
 
-...
+```
+bin/rspec
+```
 
-### [WIP] Test deployment locally
+### Test deployment locally
 
 - References
   - [Wasmify Rails](https://github.com/palkan/wasmify-rails?tab=readme-ov-file#step-2-binrails-wasmifybuildcore)
   - [Ruby on Rails on WebAssembly, the full-stack in-browser journey](https://web.dev/blog/ruby-on-rails-on-webassembly?hl=ja#next_level_a_blog_in_15_minutes_in_wasm)
 
-## [WIP] Roadmap
+## Roadmap
 
 - [ ] Regexp replacement funciton
 - [ ] ..
 
-## [WIP] Contributing
+## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/aim2bpg/rubree
 
