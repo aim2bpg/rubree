@@ -67,6 +67,12 @@ cd rubree
 bin/setup
 ```
 
+3. Install gitleaks for lefthook:
+
+```
+brew install gitleaks
+```
+
 ### Running linters
 
 Rubocop:
