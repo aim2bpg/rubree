@@ -1,19 +1,19 @@
 pre-commit:
   jobs:
-    - name: Gitleaks
-      run: gitleaks detect --source="$(pwd)" --verbose --redact --log-opts="--all --full-history"
-
-    - name: Ruby Lint
+    - name: Lint Ruby (rubocop)
       run: bin/rubocop
 
-    - name: ERB Lint
+    - name: Lint Ruby (erb_lint)
       run: bin/erb_lint --lint-all
 
-    - name: Biome Lint
+    - name: Lint Frontend (biome)
       run: bin/yarn biome check
 
-    - name: Run Brakeman
+    - name: Secret Scan (gitleaks)
+      run: gitleaks detect --source="$(pwd)" --verbose --redact --log-opts="--all --full-history"
+
+    - name: SAST (brakeman)
       run: bin/brakeman --no-pager --skip-files app/assets/builds/,build/,node_modules/,pwa/,rubies/
 
-    - name: Run RSpec
+    - name: Run Tests (rspec)
       run: bin/rspec
