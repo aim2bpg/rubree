@@ -42,9 +42,11 @@ Inspired by: https://rubular.com
 
 - [GitHub Pages](https://docs.github.com/en/pages/) for Ruby on Rails on WebAssembly, the full-stack in-browser
 
-### 🤖 Updating dependencies
+### 🤖 Shift-left security
 
-- [Dependabot](https://github.com/dependabot) automated dependency updates built into GitHub
+- [Dependabot](https://github.com/dependabot/) automated dependency updates built into GitHub
+- [Gitleaks](https://github.com/gitleaks/gitleaks/) Find secrets with Gitleaks
+- [Brakeman](https://github.com/presidentbeef/brakeman/) a static analysis security vulnerability scanner for Ruby on Rails applications
 
 ### ▶️ CI/CD Tool
 
