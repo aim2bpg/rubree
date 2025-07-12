@@ -74,7 +74,7 @@ jobs:
           bundler-cache: true
 
       - name: Run Brakeman
-        run: bin/brakeman --no-pager
+        run: bin/brakeman --no-pager --skip-files app/assets/builds/,build/,node_modules/,pwa/,rubies/
 
   test:
     name: Run Tests

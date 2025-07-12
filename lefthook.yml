@@ -12,5 +12,8 @@ pre-commit:
     - name: Biome Lint
       run: bin/yarn biome check
 
+    - name: Run Brakeman
+      run: bin/brakeman --no-pager --skip-files app/assets/builds/,build/,node_modules/,pwa/,rubies/
+
     - name: Run RSpec
       run: bin/rspec
