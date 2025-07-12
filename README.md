@@ -69,7 +69,9 @@ cd rubree
 bin/setup
 ```
 
-3. Install gitleaks for lefthook:
+3. Then open http://localhost:3000 in your browser.
+
+4. (Optional) Install gitleaks for lefthook:
 
 ```
 brew install gitleaks
