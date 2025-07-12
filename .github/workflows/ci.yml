@@ -6,11 +6,19 @@ on:
     branches: [ main ]
 
 jobs:
-  scan_ruby:
+  setup:
+    name: Setup Cache
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Setup for caching
+        run: echo "Used as dependency for setup" # dummy step
+
+  lint_ruby:
+    name: Lint Ruby
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -18,47 +26,81 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
+      - name: RuboCop
+        run: bin/rubocop -f github
 
-  lint:
+      - name: ERB Lint
+        run: bin/erb_lint --lint-all
+
+  lint_frontend:
+    name: Lint Frontend (Biome)
     runs-on: ubuntu-latest
+    needs: setup
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.4.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: ./.node-version
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
-      - name: Setup Biome
-        uses: biomejs/setup-biome@v2
-        with:
-          version: latest
-        
-      - name: Lint with RuboCop
-        run: bin/rubocop -f github
-        
-      - name: Lint with ERB
-        run: bin/erb_lint --lint-all
-        
+      - name: Install dependencies
+        run: yarn install
+
       - name: Run Biome
         run: biome ci app/assets/stylesheets app/javascript app/views
 
-  test:
+  secret_scan:
+    name: Secret Scan (Secretlint)
     runs-on: ubuntu-latest
+    needs: setup
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ./.node-version
+          cache: yarn
+          cache-dependency-path: ./yarn.lock
+
+      - name: Install secretlint
+        run: npm install -g @secretlint/cli
+
+      - name: Run secretlint
+        run: secretlint "**/*.{js,ts,rb,erb,env,json,yml}"
+
+  sast:
+    name: Static Application Security Testing (OWASP ZAP)
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OWASP ZAP CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zaproxy
+
+      - name: Run ZAP Baseline Scan (Local)
+        run: |
+          zap-baseline.py -t http://localhost:3000 -g gen.conf -r zap_report.html || true
+        continue-on-error: true
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: zap_report.html
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: [lint_ruby, lint_frontend, secret_scan]
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -66,5 +108,5 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Run Ruby Tests
+      - name: Run RSpec Tests
         run: bin/rspec

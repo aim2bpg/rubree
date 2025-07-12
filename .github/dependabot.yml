@@ -1,9 +1,5 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-
 version: 2
+
 updates:
   - package-ecosystem: bundler
     directory: '/'
@@ -13,45 +9,36 @@ updates:
       timezone: Asia/Tokyo
     open-pull-requests-limit: 10
     versioning-strategy: lockfile-only
-    ignore:
-      - dependency-name: 'wasmify-rails'
-        versions: ['~>0.2.3']
     allow:
       - dependency-type: direct
       - dependency-type: indirect
+    ignore:
+      - dependency-name: 'wasmify-rails'
+        versions: ['~>0.2.3']
     labels:
-      - 'dependencies'
-      - 'ruby'
+      - dependencies
+      - ruby
     groups:
       rails:
         patterns:
-          - 'actioncable'
-          - 'actionmailbox'
-          - 'actionmailer'
-          - 'actionpack'
-          - 'actiontext'
-          - 'actionview'
-          - 'activejob'
-          - 'activemodel'
-          - 'activerecord'
-          - 'activestorage'
-          - 'activesupport'
           - 'rails'
           - 'railties'
+          - 'action*'
+          - 'active*'
           - 'globalid'
-          - 'i18n'
           - 'mail'
-          - 'rack'
-          - 'rackup'
-          - 'ruby-wasm'
-          - 'wasmify-rails'
+          - 'rack*'
+          - 'i18n'
       rubocop:
         patterns:
           - 'rubocop*'
-      turbo:
+      rspec:
         patterns:
-          - 'turbo-rails'
-          - 'stimulus-rails'
+          - 'rspec*'
+      wasm:
+        patterns:
+          - 'wasmify-rails'
+          - 'ruby-wasm'
 
   - package-ecosystem: npm
     directory: '/'
@@ -62,20 +49,24 @@ updates:
     open-pull-requests-limit: 10
     versioning-strategy: auto
     labels:
-      - 'dependencies'
-      - 'javascript'
+      - dependencies
+      - javascript
     groups:
       tailwindcss:
         patterns:
-          - '@tailwindcss/*'
           - 'tailwindcss'
+          - '@tailwindcss/*'
+      turbo:
+        patterns:
+          - 'turbo-rails'
+          - 'stimulus-rails'
 
-  - package-ecosystem: 'github-actions'
+  - package-ecosystem: github-actions
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: daily
       time: '12:00'
       timezone: Asia/Tokyo
     labels:
-      - 'dependencies'
-      - 'gh-action'
+      - dependencies
+      - gh-action
