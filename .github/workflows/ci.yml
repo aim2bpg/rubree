@@ -6,7 +6,8 @@ on:
     branches: [ main ]
 
 jobs:
-  scan_ruby:
+  lint_ruby:
+    name: Lint Ruby
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -17,24 +18,25 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: RuboCop
+        run: bin/rubocop -f github
+
+      - name: ERB Lint
+        run: bin/erb_lint --lint-all
 
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bin/brakeman --no-pager
 
-  lint:
+  lint_frontend:
+    name: Lint Frontend (Biome)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.4.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: ./.node-version
           cache: yarn
@@ -45,16 +47,43 @@ jobs:
         with:
           version: latest
         
-      - name: Lint with RuboCop
-        run: bin/rubocop -f github
-        
-      - name: Lint with ERB
-        run: bin/erb_lint --lint-all
-        
       - name: Run Biome
         run: biome ci app/assets/stylesheets app/javascript app/views
 
+  secret_scan:
+    name: Secret Scan (Secretlint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Secretlint
+        run: |
+          docker run --rm -v "$(pwd):$(pwd)" -w "(pwd)" \
+          secretlint/secretlint secretlint --maskSecrets '**/*'
+
+  sast:
+    name: Static Application Security Testing (OWASP ZAP)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull Docker
+        run: docker pull bkimminich/juice-shop
+
+      - name: Start Juice Shop
+        run: docker run -p 3000:3000 -d bkimminich/juice-shop
+
+      - name: ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.8.0
+        with:
+          docker_name: "owasp/zap2docker-stable"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: "http://localhost:3000/"
+
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -66,5 +95,5 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Run Ruby Tests
+      - name: Run RSpec Tests
         run: bin/rspec
