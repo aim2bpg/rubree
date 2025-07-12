@@ -6,7 +6,8 @@ on:
     branches: [ main ]
 
 jobs:
-  scan_ruby:
+  lint_ruby:
+    name: Lint Ruby
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,23 +19,21 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
+      - name: RuboCop
+        run: bin/rubocop -f github
 
-  lint:
+      - name: ERB Lint
+        run: bin/erb_lint --lint-all
+
+  lint_frontend:
+    name: Lint Frontend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.4.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: ./.node-version
           cache: yarn
@@ -45,16 +44,24 @@ jobs:
         with:
           version: latest
         
-      - name: Lint with RuboCop
-        run: bin/rubocop -f github
-        
-      - name: Lint with ERB
-        run: bin/erb_lint --lint-all
-        
       - name: Run Biome
         run: biome ci app/assets/stylesheets app/javascript app/views
 
-  test:
+  secret_scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Gitleaks
+        run: |
+          docker run --rm -v "$(pwd):$(pwd)" -w "$(pwd)" \
+          zricethezav/gitleaks detect --source="$(pwd)" --verbose --redact \
+          --log-opts="--all --full-history"
+
+  sast:
+    name: SAST
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -66,5 +73,21 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Run Ruby Tests
+      - name: Run Brakeman
+        run: bin/brakeman --no-pager
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Run RSpec Tests
         run: bin/rspec

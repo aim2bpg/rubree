@@ -1,5 +1,8 @@
 pre-commit:
   jobs:
+    # - name: Gitleaks
+    #   run: gitleaks detect --source="$(pwd)" --verbose --redact --log-opts="--all --full-history"
+
     - name: Ruby Lint
       run: bin/rubocop
 
