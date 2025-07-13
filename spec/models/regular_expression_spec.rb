@@ -16,11 +16,73 @@ RSpec.describe RegularExpression do
 
       it 'returns captures' do
         regex.valid?
-        expect(regex.captures).to eq(['e'])
+        expect(regex.captures).to eq([['e']])
       end
 
       it 'returns match positions' do
         expect(regex.match_positions).to eq([{ start: 0, end: 5, index: 0 }])
+      end
+    end
+
+    context 'with multiple matches' do
+      let(:regex) { described_class.new(expression: 'h(e)llo', test_string: 'hello hello') }
+
+      it 'is valid' do
+        expect(regex).to be_valid
+      end
+
+      it 'matches multiple times' do
+        regex.valid?
+        expect(regex.match_success).to be true
+      end
+
+      it 'returns multiple capture groups' do
+        regex.valid?
+        expect(regex.captures).to eq([['e'], ['e']])
+      end
+
+      it 'returns multiple match positions' do
+        expect(regex.match_positions).to eq([
+          { start: 0, end: 5, index: 0 },
+          { start: 6, end: 11, index: 1 }
+        ])
+      end
+
+      it 'returns display_captures as unnamed captures' do
+        regex.valid?
+        expect(regex.display_captures).to eq([['e'], ['e']])
+      end
+    end
+
+    context 'with named captures and multiple matches' do
+      let(:regex) { described_class.new(expression: '(?<word>hello)', test_string: 'hello hello') }
+
+      it 'returns named captures for each match' do
+        regex.valid?
+        expect(regex.named_captures).to eq([
+          { 'word' => 'hello' },
+          { 'word' => 'hello' }
+        ])
+      end
+
+      it 'returns display_captures as named captures' do
+        regex.valid?
+        expect(regex.display_captures).to eq([
+          { 'word' => 'hello' },
+          { 'word' => 'hello' }
+        ])
+      end
+    end
+
+    context 'when both named and unnamed captures exist' do
+      let(:regex) { described_class.new(expression: '(?<name>hello)(world)', test_string: 'helloworld helloworld') }
+
+      it 'returns named captures only' do
+        regex.valid?
+        expect(regex.display_captures).to eq([
+          { 'name' => 'hello' },
+          { 'name' => 'hello' }
+        ])
       end
     end
 
@@ -33,7 +95,7 @@ RSpec.describe RegularExpression do
 
       it 'adds error for no match' do
         regex.valid?
-        expect(regex.errors[:base]).to include('No match found...')
+        expect(regex.errors[:base]).to include('No match found for the given expression and test string.')
       end
 
       it 'returns empty captures' do
@@ -59,27 +121,28 @@ RSpec.describe RegularExpression do
       end
 
       it 'returns no match positions' do
+        regex.valid?
         expect(regex.match_positions).to eq([])
       end
     end
   end
 
   describe '#named_captures' do
-    context 'with named capture' do
+    context 'with single named capture' do
       let(:regex) { described_class.new(expression: '(?<word>hello)', test_string: 'hello') }
 
-      it 'returns named captures' do
+      it 'returns single named capture' do
         regex.valid?
-        expect(regex.named_captures).to eq({ 'word' => 'hello' })
+        expect(regex.named_captures).to eq([{ 'word' => 'hello' }])
       end
     end
 
     context 'with no named capture' do
       let(:regex) { described_class.new(expression: '(hello)', test_string: 'hello') }
 
-      it 'returns empty hash' do
+      it 'returns empty array since no named captures' do
         regex.valid?
-        expect(regex.named_captures).to eq({})
+        expect(regex.named_captures).to eq([])
       end
     end
   end

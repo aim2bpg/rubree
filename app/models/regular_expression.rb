@@ -12,21 +12,49 @@ class RegularExpression
   end
 
   def named_captures
-    return {} if unready? || !match_data
-    regexp.named_captures.transform_values { |indexes| indexes.map { |i| match_data[i] }.first }
+    return [] if unready? || regexp.nil? || regexp.named_captures.empty?
+
+    results = []
+    test_string.to_enum(:scan, regexp).each do
+      match = Regexp.last_match
+      captures_hash = {}
+      regexp.named_captures.each do |name, indexes|
+        captures_hash[name] = match[name]
+      end
+      results << captures_hash
+    end
+
+    results
   end
 
   def captures
-    return [] if unready? || !match_data
-    regexp.names.empty? ? match_data.captures : []
+    return [] if unready? || regexp.nil?
+
+    return [] unless regexp.names.empty?
+
+    results = []
+    test_string.to_enum(:scan, regexp).each do
+      match = Regexp.last_match
+      results << match.captures
+    end
+
+    results
+  end
+
+  def display_captures
+    return [] if unready? || regexp.nil?
+
+    if regexp.names.any?
+      named_captures
+    else
+      captures
+    end
   end
 
   def match_positions
-    return [] if unready?
+    return [] if unready? || regexp.nil?
 
     positions = []
-    regexp = Regexp.new(expression)
-
     test_string.to_enum(:scan, regexp).each_with_index do |_, i|
       match = Regexp.last_match
       positions << { start: match.begin(0), end: match.end(0), index: i }
@@ -60,14 +88,16 @@ class RegularExpression
   private
 
   def regexp
-    @regexp ||= Regexp.new(expression)
+    return @regexp if defined?(@regexp)
+
+    @regexp = Regexp.new(expression)
   rescue RegexpError => e
     errors.add(:base, "Invalid regular expression syntax: #{e.message}")
-    Regexp.new("")
+    @regexp = nil
   end
 
   def check_expression
-    return if unready?
+    return if unready? || regexp.nil?
 
     times = []
     result = nil
@@ -84,6 +114,6 @@ class RegularExpression
     @match_data = result
     @match_success = !!@match_data
 
-    errors.add(:base, "No match found...") unless @match_success
+    errors.add(:base, "No match found for the given expression and test string.") unless @match_success
   end
 end

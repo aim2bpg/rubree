@@ -1,33 +1,58 @@
+<% max_label_length = regular_expression.named_captures.flat_map(&:keys).map(&:length).max || 0 %>
+<% label_width_ch = max_label_length + 0.5 %>
+
 <div class="mb-2">
   <h3 class="text-sm font-bold mb-2 text-white">Match groups:</h3>
   <div class="bg-gray-900 border border-gray-700 p-4 space-y-6 text-left">
-    <% if regular_expression.captures.present? %>
-      <div>
-        <h4 class="text-xs font-semibold mb-2 text-blue-300">Capture Groups</h4>
-        <ul class="list-disc list-inside text-white space-y-1">
-          <% regular_expression.captures.each_with_index do |cap, i| %>
-            <li class="flex items-center">
-              <span class="inline-block w-20 font-semibold">Group <%= i + 1 %>:</span>
-              <code class="text-blue-300"><%= h(cap) %></code>
-            </li>
-          <% end %>
-        </ul>
-      </div>
+
+    <% begin %>
+      <% regex = Regexp.new(regular_expression.expression) %>
+      <% has_named = regex.names.any? %>
+    <% rescue RegexpError %>
+      <% has_named = false %>
     <% end %>
 
-    <% if regular_expression.named_captures.present? %>
-      <div>
-        <ul class="list-disc list-inside text-white space-y-1">
-          <% regular_expression.named_captures.each do |name, val| %>
-            <li class="flex items-center">
-              <span class="font-semibold bg-yellow-200 text-gray-800 px-1 mr-2 rounded-none whitespace-nowrap inline-block">
-                <%= h(name) %>
-              </span>
-              <code class="text-white"><%= h(val) %></code>
-            </li>
+    <% if has_named %>
+      <% regular_expression.named_captures.each_with_index do |named_set, idx| %>
+        <% next if named_set.blank? %>
+        <div>
+          <% if regular_expression.named_captures.size > 1 %>
+            <h4 class="text-xs font-semibold mb-2 text-yellow-400">Match <%= idx + 1 %></h4>
           <% end %>
-        </ul>
-      </div>
+          <ul class="text-white text-sm space-y-1">
+            <% named_set.each do |name, val| %>
+              <li class="flex items-center">
+                <span class="text-gray-800 font-semibold bg-yellow-200 px-1 whitespace-nowrap inline-block text-left" style="min-width: <%= label_width_ch %>ch">
+                  <%= h(name) %>
+                </span>
+                <span class="w-[1.4ch]"></span>
+                <code class="text-white break-all"><%= h(val) %></code>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+    <% else %>
+      <% regular_expression.captures.each_with_index do |capture_set, idx| %>
+        <% next if capture_set.blank? || capture_set.all?(&:blank?) %>
+        <div>
+          <% if regular_expression.captures.size > 1 %>
+            <h4 class="text-xs font-semibold mb-2 text-blue-300">Match <%= idx + 1 %></h4>
+          <% end %>
+          <ul class="text-white text-sm space-y-1">
+            <% capture_set.each_with_index do |cap, i| %>
+              <% next if cap.blank? %>
+              <li class="flex items-center">
+                <span class="text-white text-right min-w-[2ch]"><%= "#{i + 1}." %></span>
+                <span class="w-[1.4ch]"></span>
+                <code class="text-white break-all"><%= h(cap) %></code>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
     <% end %>
+
   </div>
 </div>
