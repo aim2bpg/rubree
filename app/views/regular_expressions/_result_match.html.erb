@@ -1,28 +1,39 @@
-<div class="mb-2 text-left">
+<div x-data="{
+  wrap: localStorage.getItem('wrap') === 'false' ? false : true,
+  showInvisibles: localStorage.getItem('showInvisibles') === 'true',
+  init() {
+    this.$watch('wrap', value => localStorage.setItem('wrap', value));
+    this.$watch('showInvisibles', value => localStorage.setItem('showInvisibles', value));
+  }
+}" class="mb-2 text-left">
   <div class="flex justify-between items-baseline mb-2">
-    <h3 class="text-sm font-bold text-white">Match result:</h3>
+    <div class="flex items-center gap-3">
+      <h3 class="text-sm font-bold text-white">Match result:</h3>
+      <label class="flex items-center space-x-1 text-xs text-gray-300"><input type="checkbox" x-model="wrap" class="form-checkbox h-3 w-3 text-blue-500 rounded"><span>Wrap words</span></label>
+      <label class="flex items-center space-x-1 text-xs text-gray-300"><input type="checkbox" x-model="showInvisibles" class="form-checkbox h-3 w-3 text-blue-500 rounded"><span>Show invisibles</span></label>
+    </div>
     <% if regular_expression.elapsed_time_ms && regular_expression.average_elapsed_time_ms %>
-      <div class="text-xs text-gray-400">
-        🕒 <%= regular_expression.elapsed_time_ms %> ms (avg of 5 runs)
-      </div>
+      <div class="text-xs text-gray-400">🕒 <%= regular_expression.elapsed_time_ms %> ms (avg of 5 runs)</div>
     <% end %>
   </div>
 
-  <div class="bg-gray-900 border border-gray-700 px-0 py-0 whitespace-pre-wrap font-mono text-sm text-white text-left leading-tight">
-    <% last_index = 0 %>
-    <% safe_output = "".html_safe %>
-    <% regular_expression.match_positions.each do |pos| %>
-      <% safe_output += h(regular_expression.test_string[last_index...pos[:start]]) %>
-      <% safe_output += content_tag(:mark, h(regular_expression.test_string[pos[:start]...pos[:end]]), class: "bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline") %>
-      <% last_index = pos[:end] %>
-    <% end %>
-    <% safe_output += h(regular_expression.test_string[last_index..-1]) if last_index < regular_expression.test_string.length %>
-    <%= safe_output %>
-  </div>
+  <template x-if="!showInvisibles">
+    <div
+      :class="wrap
+        ? 'whitespace-pre-wrap overflow-x-hidden break-words w-full'
+        : 'whitespace-pre overflow-x-auto w-full'"
+      class="bg-gray-900 border border-gray-700 px-4 py-4 font-mono text-sm text-white text-left leading-tight"><%= begin last_index = 0; safe_output = "".html_safe; regular_expression.match_positions.each do |pos| safe_output += h(regular_expression.test_string[last_index...pos[:start]]); safe_output += content_tag(:mark, h(regular_expression.test_string[pos[:start]...pos[:end]]), class: "bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline"); last_index = pos[:end]; end; safe_output += h(regular_expression.test_string[last_index..-1]) if last_index < regular_expression.test_string.length; safe_output end %></div>
+  </template>
+
+  <template x-if="showInvisibles">
+    <div
+      :class="wrap
+        ? 'whitespace-pre-wrap overflow-x-hidden break-words w-full'
+        : 'whitespace-pre overflow-x-auto w-full'"
+      class="bg-gray-900 border border-gray-700 px-4 py-4 font-mono text-sm text-white text-left leading-tight"><%= begin def escape_invisibles(str); str.gsub("\r\n", "\r␍\n⏎\n").gsub("\r", "␍").gsub("\n", "⏎\n").gsub("\t", "⇥"); end; last_index = 0; safe_output = "".html_safe; regular_expression.match_positions.each do |pos| safe_output += h(escape_invisibles(regular_expression.test_string[last_index...pos[:start]])); safe_output += content_tag(:mark, h(escape_invisibles(regular_expression.test_string[pos[:start]...pos[:end]])), class: "bg-blue-900 text-blue-300 font-semibold px-0 py-0 no-underline rounded-none text-left inline"); last_index = pos[:end]; end; safe_output += h(escape_invisibles(regular_expression.test_string[last_index..-1])) if last_index < regular_expression.test_string.length; safe_output end %></div>
+  </template>
 
   <% if regular_expression.average_elapsed_time_ms && regular_expression.average_elapsed_time_ms >= 100 %>
-    <div class="text-yellow-400 text-xs mt-1">
-      ⚠️ Slow match — this regex may cause performance issues.
-    </div>
+    <div class="text-yellow-400 text-xs mt-1">⚠️ Slow match — this regex may cause performance issues.</div>
   <% end %>
 </div>
