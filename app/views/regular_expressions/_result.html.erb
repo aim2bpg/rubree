@@ -4,7 +4,7 @@
 <% elsif regular_expression.valid? && regular_expression.match_data %>
   <%= render "result_match", regular_expression: regular_expression %>
 
-  <% if regular_expression.captures.present? || regular_expression.named_captures.present? %>
+  <% if regular_expression.display_captures.any? { |group| group.present? && group.any?(&:present?) } %>
     <%= render "result_captures", regular_expression: regular_expression %>
   <% end %>
 
