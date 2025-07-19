@@ -18,10 +18,12 @@ class RegularExpression
     test_string.to_enum(:scan, regexp).each do
       match = Regexp.last_match
       captures_hash = {}
+
       regexp.named_captures.each do |name, _|
-        captures_hash[name] = match[name]
+        captures_hash[name] = match[name] unless match[name].nil?
       end
-      results << captures_hash
+
+      results << captures_hash unless captures_hash.empty?
     end
 
     results
@@ -34,11 +36,9 @@ class RegularExpression
     test_string.to_enum(:scan, regexp).each do
       match = Regexp.last_match
 
-      if match.captures.empty?
-        results << [match[0]]
-      else
-        results << match.captures
-      end
+      next if match.captures.empty?
+
+      results << match.captures
     end
 
     results
@@ -116,7 +116,7 @@ class RegularExpression
 
     times = []
     last_match = nil
-    match_result = nil
+    match_result = false
 
     5.times do
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
@@ -131,6 +131,6 @@ class RegularExpression
     @match_success = match_result
     @match_data = last_match
 
-    errors.add(:base, "No match found for the given expression and test string.") unless @match_success
+    errors.add(:base, "No match found for the given expression and test string.") unless match_result
   end
 end
