@@ -1,8 +1,8 @@
 <div class="overflow-hidden rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white flex flex-col">
-  <% if regular_expression.diagram_svg.present? %>
+  <% if @svg_output.present? %>
     <h3 class="text-sm font-bold mb-2 text-white">Railroad diagram:</h3>
     <div class="w-full overflow-x-auto overflow-y-hidden whitespace-nowrap">
-      <%= regular_expression.diagram_svg %>
+      <%= raw @svg_output %>
     </div>
   <% else %>
     <p class="text-gray-500 m-auto text-center">Railroad diagram will appear here</p>
