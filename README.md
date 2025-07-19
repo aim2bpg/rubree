@@ -71,7 +71,14 @@ bin/setup
 
 3. Then open http://localhost:3000 in your browser.
 
-4. (Optional) Install gitleaks for lefthook:
+4. (Optional) Install lefthook:
+
+```
+brew install lefthook
+lefthook install
+```
+
+5. (Optional) Install gitleaks for lefthook:
 
 ```
 brew install gitleaks
