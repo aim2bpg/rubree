@@ -9,7 +9,7 @@ Alpine.start();
 
 document.addEventListener("alpine:init", () => {
   Alpine.data("matchComponent", () => ({
-    wrap: localStorage.getItem("wrap") === "false" ? false : true,
+    wrap: localStorage.getItem("wrap") !== "false",
     showInvisibles: false,
 
     init() {
