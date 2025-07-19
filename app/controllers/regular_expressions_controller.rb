@@ -11,6 +11,6 @@ class RegularExpressionsController < ApplicationController
   private
 
   def regular_expression_params
-    params.require(:regular_expression).permit(:expression, :test_string)
+    params.require(:regular_expression).permit(:expression, :test_string, :options)
   end
 end

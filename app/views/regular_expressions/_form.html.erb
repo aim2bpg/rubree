@@ -3,9 +3,18 @@
               html: { data: { turbo_frame: "regexp", controller: "regexp", action: "input->regexp#submit" } } do |f| %>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-900 rounded-lg shadow-lg p-4 mb-4">
     <div class="bg-gray-800 p-4 rounded-lg shadow-inner border border-gray-700 flex flex-col">
-      <label class="block text-sm font-bold mb-2 text-white" for="regular_expression_expression">
-        Your regular expression:
-      </label>
+      <div class="flex items-center justify-between mb-2">
+        <label class="block text-sm font-bold text-white" for="regular_expression_expression">
+          Your regular expression:
+        </label>
+        <div class="flex items-center space-x-1 text-xs text-white">
+          <span class="text-gray-400">Options:</span>
+          <%= f.text_field :options,
+                class: "w-8 px-1 py-0.5 bg-gray-900 border border-gray-700 rounded text-white text-xs focus:ring-2 focus:ring-blue-500 text-left",
+                placeholder: "imx",
+                autocomplete: "off" %>
+        </div>
+      </div>
       <%= f.text_area :expression,
             class: "w-full px-4 py-2 min-h-[120px] bg-gray-900 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 resize-y" %>
     </div>

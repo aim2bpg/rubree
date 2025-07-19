@@ -176,4 +176,96 @@ RSpec.describe RegularExpression do
       expect(described_class.new(expression: 'abc', test_string: 'abc')).not_to be_unready
     end
   end
+
+  describe 'regex options' do
+    context 'with i (ignore case) option' do
+      let(:regex) { described_class.new(expression: '^hello', test_string: 'HeLLo', options: 'i') }
+
+      it 'is valid' do
+        expect(regex).to be_valid
+      end
+
+      it 'matches successfully' do
+        regex.valid?
+        expect(regex.match_success).to be true
+      end
+
+      it 'returns captures' do
+        regex.valid?
+        expect(regex.captures).to eq([['HeLLo']])
+      end
+    end
+
+    context 'with m (multiline) option' do
+      let(:regex) { described_class.new(expression: '^HELLO', test_string: "HeLLo\nHELLO", options: 'm') }
+
+      it 'is valid' do
+        expect(regex).to be_valid
+      end
+
+      it 'matches successfully' do
+        regex.valid?
+        expect(regex.match_success).to be true
+      end
+
+      it 'returns captures' do
+        regex.valid?
+        expect(regex.captures).to eq([['HELLO']])
+      end
+    end
+
+    context 'with multiple options im' do
+      let(:regex) { described_class.new(expression: '^hello', test_string: "HeLLo\nHELLO", options: 'im') }
+
+      it 'is valid' do
+        expect(regex).to be_valid
+      end
+
+      it 'matches successfully' do
+        regex.valid?
+        expect(regex.match_success).to be true
+      end
+
+      it 'returns captures' do
+        regex.valid?
+        expect(regex.captures).to eq([['HeLLo'], ['HELLO']])
+      end
+    end
+
+    context 'when option is not set' do
+      let(:regex) { described_class.new(expression: '^hello', test_string: "hello") }
+
+      it 'is valid' do
+        expect(regex).to be_valid
+      end
+
+      it 'matches successfully' do
+        regex.valid?
+        expect(regex.match_success).to be true
+      end
+
+      it 'returns one capture' do
+        regex.valid?
+        expect(regex.captures).to eq([['hello']])
+      end
+    end
+
+    context 'when unsupported options are provided' do
+      let(:regex) { described_class.new(expression: '^hello', test_string: "hello", options: 'o') }
+
+      it 'is valid' do
+        expect(regex).to be_valid
+      end
+
+      it 'matches successfully even with ignored options' do
+        regex.valid?
+        expect(regex.match_success).to be true
+      end
+
+      it 'returns one capture' do
+        regex.valid?
+        expect(regex.captures).to eq([['hello']])
+      end
+    end
+  end
 end

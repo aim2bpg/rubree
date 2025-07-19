@@ -1,7 +1,7 @@
 class RegularExpression
   include ActiveModel::Model
 
-  attr_accessor :expression, :test_string
+  attr_accessor :expression, :test_string, :options
 
   validate :check_expression
 
@@ -18,7 +18,7 @@ class RegularExpression
     test_string.to_enum(:scan, regexp).each do
       match = Regexp.last_match
       captures_hash = {}
-      regexp.named_captures.each do |name, indexes|
+      regexp.named_captures.each do |name, _|
         captures_hash[name] = match[name]
       end
       results << captures_hash
@@ -30,12 +30,15 @@ class RegularExpression
   def captures
     return [] if unready? || regexp.nil?
 
-    return [] unless regexp.names.empty?
-
     results = []
     test_string.to_enum(:scan, regexp).each do
       match = Regexp.last_match
-      results << match.captures
+
+      if match.captures.empty?
+        results << [match[0]]
+      else
+        results << match.captures
+      end
     end
 
     results
@@ -90,29 +93,43 @@ class RegularExpression
   def regexp
     return @regexp if defined?(@regexp)
 
-    @regexp = Regexp.new(expression)
+    @regexp = Regexp.new(expression, parse_options)
   rescue RegexpError => e
     errors.add(:base, "Invalid regular expression syntax: #{e.message}")
     @regexp = nil
+  end
+
+  def parse_options
+    return 0 if options.blank?
+
+    option_map = {
+      "i" => Regexp::IGNORECASE,
+      "m" => Regexp::MULTILINE,
+      "x" => Regexp::EXTENDED
+    }
+
+    options.downcase.chars.map { |opt| option_map[opt] }.compact.inject(0, :|)
   end
 
   def check_expression
     return if unready? || regexp.nil?
 
     times = []
-    result = nil
+    last_match = nil
+    match_result = nil
 
     5.times do
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      result = regexp.match(test_string)
+      last_match = regexp.match(test_string)
+      match_result = !last_match.nil?
       end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       times << (end_time - start_time)
     end
 
     @elapsed_time_ms = (times.last * 1000).round(3)
     @average_elapsed_time_ms = (times.sum / times.size * 1000).round(3)
-    @match_data = result
-    @match_success = !!@match_data
+    @match_success = match_result
+    @match_data = last_match
 
     errors.add(:base, "No match found for the given expression and test string.") unless @match_success
   end
