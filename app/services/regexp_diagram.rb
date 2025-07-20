@@ -31,16 +31,16 @@ module RegexpDiagram
 
     when Regexp::Expression::Group::Capture
       group_content = ast_to_railroad_sequence(ast.expressions)
-      group = RailroadDiagrams::Group.new(group_content, "キャプチャグループ")
+      group = RailroadDiagrams::Group.new(group_content, "capture group")
       wrap_with_quantifier(group, ast.quantifier)
 
     when Regexp::Expression::Group::Passive
       group_content = ast_to_railroad_sequence(ast.expressions)
-      group = RailroadDiagrams::Group.new(group_content, "非キャプチャグループ")
+      group = RailroadDiagrams::Group.new(group_content, "non-capture group")
       wrap_with_quantifier(group, ast.quantifier)
 
     when Regexp::Expression::CharacterSet
-      label = ast.negative? ? "否定文字セット" : "文字セット"
+      label = ast.negative? ? "non-character set" : "character set"
       expressions = []
 
       ast.expressions.each do |e|
@@ -48,7 +48,6 @@ module RegexpDiagram
           range_start = e.expressions.first.text
           range_end = e.expressions.last.text
 
-          # 範囲の処理：`a-z`のような範囲をそのまま表示
           expressions << RailroadDiagrams::Sequence.new(
             RailroadDiagrams::Terminal.new(range_start),
             RailroadDiagrams::NonTerminal.new("-"),
@@ -64,26 +63,62 @@ module RegexpDiagram
     when Regexp::Expression::Literal, Regexp::Expression::Escape
       wrap_with_quantifier(RailroadDiagrams::Terminal.new(ast.text), ast.quantifier)
 
+    when Regexp::Expression::CharacterType::Any
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("any"), ast.quantifier)
+
     when Regexp::Expression::CharacterType::Digit
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("digit"), ast.quantifier)
 
+    when Regexp::Expression::CharacterType::NonDigit
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("non-digit"), ast.quantifier)
+
+    when Regexp::Expression::CharacterType::Hex
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("hex"), ast.quantifier)
+
+    when Regexp::Expression::CharacterType::NonHex
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("non-hex"), ast.quantifier)
+
     when Regexp::Expression::CharacterType::Word
-      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("単語 \\w"), ast.quantifier)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("word"), ast.quantifier)
+
+    when Regexp::Expression::CharacterType::NonWord
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("non-word"), ast.quantifier)
 
     when Regexp::Expression::CharacterType::Space
-      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("空白 \\s"), ast.quantifier)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("white space"), ast.quantifier)
+
+    when Regexp::Expression::CharacterType::NonSpace
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("non-white space"), ast.quantifier)
+
+    when Regexp::Expression::CharacterType::Linebreak
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("line break"), ast.quantifier)
+
+    when Regexp::Expression::CharacterType::ExtendedGrapheme
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("extended grapheme"), ast.quantifier)
 
     when Regexp::Expression::Anchor::BeginningOfLine
-      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("行頭 ^"), ast.quantifier)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("bigining of line"), ast.quantifier)
 
     when Regexp::Expression::Anchor::EndOfLine
-      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("行末 $"), ast.quantifier)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("end of line"), ast.quantifier)
+
+    when Regexp::Expression::Anchor::BeginningOfString
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("begining of string"), ast.quantifier)
+
+    when Regexp::Expression::Anchor::EndOfString
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("end of string"), ast.quantifier)
+
+    when Regexp::Expression::Anchor::EndOfStringOrBeforeEndOfLine
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("end of string or before end of line"), ast.quantifier)
 
     when Regexp::Expression::Anchor::WordBoundary
-      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("単語境界 \\b"), ast.quantifier)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("word boundary"), ast.quantifier)
 
     when Regexp::Expression::Anchor::NonWordBoundary
-      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("非単語境界 \\B"), ast.quantifier)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("non-word boundary"), ast.quantifier)
+
+    when Regexp::Expression::Anchor::MatchStart
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("match start"), ast.quantifier)
 
     when Regexp::Expression::Comment
       wrap_with_quantifier(RailroadDiagrams::Comment.new(ast.text), ast.quantifier)
@@ -104,28 +139,36 @@ module RegexpDiagram
 
     case quant
     when "*"
-      RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("0回以上"))
+      RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("0 time or more"))
     when "+"
-      RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("1回以上"))
+      RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("1 time or more"))
     when "?"
-      RailroadDiagrams::Optional.new(base, RailroadDiagrams::Comment.new("0回または1回"))
+      RailroadDiagrams::Optional.new(base, RailroadDiagrams::Comment.new("0 time or 1 time"))
     when /\A\{(\d+)\}\z/
       n = $1.to_i
-      if n > 0
-        RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{n}回"))
+      if n > 1
+        RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{n} times"))
       else
-        RailroadDiagrams::Optional.new(base, RailroadDiagrams::Comment.new("#{n}回"))
+        RailroadDiagrams::Optional.new(base, RailroadDiagrams::Comment.new("#{n} time"))
       end
     when /\A\{(\d+),(\d*)\}\z/
       min = $1.to_i
       max = $2.empty? ? nil : $2.to_i
       if max
-        RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{min}〜#{max}回"))
+        if max > 1
+          RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{min}-#{max} times"))
+        else
+          RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{min}-#{max} time"))
+        end
       else
-        RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("#{min}回以上"))
+        if min > 1
+          RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("#{min} times or more"))
+        else
+          RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("#{min} time or more"))
+        end
       end
     else
-      RailroadDiagrams::Group.new(base, "量指定子: #{quant}")
+      RailroadDiagrams::Group.new(base, "quantifier: #{quant}")
     end
   end
 end
