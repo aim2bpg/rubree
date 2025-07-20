@@ -15,7 +15,7 @@ RSpec.describe RegularExpression do
       it 'matches successfully' do
         regex.valid?
         expect(regex.match_positions).to eq(
-          [{ start: 0, end: 5, index: 0 }]
+          [{ start: 0, end: 5, index: 0, invisible: true }]
         )
       end
 
@@ -28,7 +28,7 @@ RSpec.describe RegularExpression do
 
       it 'returns match positions' do
         expect(regex.match_positions).to eq(
-          [{ start: 0, end: 5, index: 0 }]
+          [{ start: 0, end: 5, index: 0, invisible: true }]
         )
       end
     end
@@ -46,8 +46,8 @@ RSpec.describe RegularExpression do
       it 'matches multiple times' do
         regex.valid?
         expect(regex.match_positions).to eq(
-          [{ start: 0, end: 5, index: 0 },
-           { start: 6, end: 11, index: 1 }]
+          [{ start: 0, end: 5, index: 0, invisible: true },
+           { start: 6, end: 11, index: 1, invisible: true }]
         )
       end
 
@@ -247,7 +247,7 @@ RSpec.describe RegularExpression do
       it 'matches successfully' do
         regex.valid?
         expect(regex.match_positions).to eq(
-          [{ start: 0, end: 5, index: 0 }]
+          [{ start: 0, end: 5, index: 0, invisible: true }]
         )
       end
 
@@ -273,7 +273,7 @@ RSpec.describe RegularExpression do
       it 'matches across lines with dot' do
         regex.valid?
         expect(regex.match_positions).to eq(
-          [{ start: 0, end: 11, index: 0 }]
+          [{ start: 0, end: 11, index: 0, invisible: true }]
         )
       end
 
@@ -302,7 +302,7 @@ RSpec.describe RegularExpression do
       it 'matches successfully with verbose option' do
         regex.valid?
         expect(regex.match_positions).to eq(
-          [{ start: 0, end: 5, index: 0 }]
+          [{ start: 0, end: 5, index: 0, invisible: true }]
         )
       end
 
@@ -329,8 +329,8 @@ RSpec.describe RegularExpression do
       it 'matches at the start of each line' do
         regex.valid?
         expect(regex.match_positions).to eq(
-          [{ start: 0, end: 5, index: 0 },
-           { start: 6, end: 11, index: 1 }]
+          [{ start: 0, end: 5, index: 0, invisible: true },
+           { start: 6, end: 11, index: 1, invisible: true }]
         )
       end
 
@@ -355,7 +355,7 @@ RSpec.describe RegularExpression do
       it 'matches successfully' do
         regex.valid?
         expect(regex.match_positions).to eq(
-          [{ start: 0, end: 5, index: 0 }]
+          [{ start: 0, end: 5, index: 0, invisible: true }]
         )
       end
 

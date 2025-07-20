@@ -16,6 +16,16 @@ require "action_view/railtie"
 # require "action_cable/engine"
 # require "rails/test_unit/railtie"
 
+# Ref: https://qiita.com/jnchito/items/c12c911fd8172f946032
+if Rails.env.test?
+  module Warning
+    def self.warn(message, category: nil)
+      ignore = ["warning: flags ignored"].any? { |m| message.include?(m) }
+      super(message, category: category) unless ignore
+    end
+  end
+end
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)

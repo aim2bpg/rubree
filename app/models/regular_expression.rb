@@ -60,12 +60,21 @@ class RegularExpression
     positions = []
     test_string.to_enum(:scan, regexp).each_with_index do |_, i|
       match = Regexp.last_match
-      positions << { start: match.begin(0), end: match.end(0), index: i }
+      positions << {
+        start: match.begin(0),
+        end: match.end(0),
+        index: i,
+        invisible: invisible_match?(match)
+      }
     end
 
     positions
   rescue RegexpError
     []
+  end
+
+  def invisible_match?(match)
+    match[0].match?(/\A\s/) || match[0].match?(/\z/) || match[0].match?(/\s/)
   end
 
   def diagram_svg
