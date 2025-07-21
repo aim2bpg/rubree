@@ -2,9 +2,14 @@ name: Deploy
 
 on:
   pull_request:
+    branches: [ main ]
   push:
     branches: [ main ]
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -53,13 +58,14 @@ jobs:
           key: ${{ runner.os }}-v1-ruby-wasm
 
       - name: Cache Compiled ruby.wasm Module
+        id: cache-wasm
         uses: actions/cache@v4
         with:
           path: tmp/wasmify/ruby.wasm
           key: ${{ runner.os }}-v1-${{ hashFiles('**/Gemfile.lock') }}-ruby-wasm-module
 
       - name: Build ruby.wasm (if needed)
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache-wasm.outputs.cache-hit != 'true'
         run: bin/rails wasmify:build
 
       - name: Pack app.wasm
@@ -80,6 +86,8 @@ jobs:
     name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/main'
 
     permissions:
       contents: read
