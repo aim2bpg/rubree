@@ -1,5 +1,4 @@
 <% max_label_length = regular_expression.named_captures.flat_map(&:keys).map(&:length).max || 0 %>
-<% label_width_ch = max_label_length + 0.5 %>
 
 <div class="mb-2">
   <h3 class="text-sm font-bold mb-2 text-white">Match groups:</h3>
@@ -19,17 +18,21 @@
           <% if regular_expression.named_captures.size > 1 %>
             <h4 class="text-xs font-semibold mb-2 text-yellow-400">Match <%= idx + 1 %></h4>
           <% end %>
-          <ul class="text-white text-sm space-y-1">
-            <% named_set.each do |name, val| %>
-              <li class="flex items-center">
-                <span class="text-gray-800 font-semibold bg-yellow-200 px-1 whitespace-nowrap inline-block text-left" style="min-width: <%= label_width_ch %>ch">
-                  <%= h(name) %>
-                </span>
-                <span class="w-[1.4ch]"></span>
-                <code class="text-white break-all"><%= h(val) %></code>
-              </li>
-            <% end %>
-          </ul>
+          <table class="text-sm text-white table-auto border-separate">
+            <tbody>
+              <% named_set.each do |name, val| %>
+                <tr>
+                  <td class="align-top pr-0 whitespace-nowrap">
+                    <span class="bg-yellow-200 text-gray-800 px-1"><%= h(name) %></span>
+                  </td>
+                  <td class="w-[0.5ch]"></td>
+                  <td class="align-top break-all">
+                    <code class="text-white"><%= h(val) %></code>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
       <% end %>
 
@@ -40,16 +43,22 @@
           <% if regular_expression.captures.size > 1 %>
             <h4 class="text-xs font-semibold mb-2 text-blue-300">Match <%= idx + 1 %></h4>
           <% end %>
-          <ul class="text-white text-sm space-y-1">
-            <% capture_set.each_with_index do |cap, i| %>
-              <% next if cap.blank? %>
-              <li class="flex items-center">
-                <span class="text-white text-right min-w-[2ch]"><%= "#{i + 1}." %></span>
-                <span class="w-[1.4ch]"></span>
-                <code class="text-white break-all"><%= h(cap) %></code>
-              </li>
-            <% end %>
-          </ul>
+          <table class="text-sm text-white table-auto border-separate">
+            <tbody>
+              <% capture_set.each_with_index do |cap, i| %>
+                <% next if cap.blank? %>
+                <tr>
+                  <td class="align-top pr-0 whitespace-nowrap">
+                    <span class="text-white"><%= "#{i + 1}." %></span>
+                  </td>
+                  <td class="w-[0.5ch]"></td>
+                  <td class="align-top break-all">
+                    <code class="text-white"><%= h(cap) %></code>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
       <% end %>
     <% end %>
