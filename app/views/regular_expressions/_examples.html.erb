@@ -1,0 +1,335 @@
+<% categories = {
+  "Alternation" => {
+    short: "Alternation",
+    description: "Match alternatives separated by |.",
+    examples: [
+      { pattern: "apple|orange|banana", test: "I love apple pie", result: "match", options: "", description: "Found 'apple' in 'I love apple pie' – sweet!" },
+      { pattern: "apple|orange|banana", test: "I love grapes", result: "no-match", options: "", description: "No match for 'apple', 'orange', or 'banana' – just grapes." },
+      { pattern: "dog|cat|hamster", test: "My dog is cute", result: "match", options: "", description: "'Dog' in 'My dog is cute' – woof!" },
+      { pattern: "dog|cat|hamster", test: "I have a cat", result: "match", options: "", description: "'Cat' in 'I have a cat' – meow!" },
+      { pattern: "dog|cat|hamster", test: "My hamster is running", result: "match", options: "", description: "'Hamster' in 'My hamster is running' – cute!" },
+      { pattern: "dog|cat|hamster", test: "I saw a bird", result: "no-match", options: "", description: "No dog, cat, or hamster here – just a bird." },
+      { pattern: "red|green|blue", test: "The sky is blue", result: "match", options: "", description: "'Blue' in 'The sky is blue' – classic color." },
+      { pattern: "red|green|blue", test: "I like purple", result: "no-match", options: "", description: "No match for red, green, or blue – purple's the one." },
+      { pattern: "car|bus|train", test: "I missed the bus", result: "match", options: "", description: "'Bus' in 'I missed the bus' – whoops!" },
+      { pattern: "quick|brown|lazy", test: "The quick fox jumped", result: "match", options: "", description: "'Quick' in 'The quick fox jumped' – fast!" },
+      { pattern: "cat|dog|fish", test: "My dog is barking", result: "match", options: "", description: "'Dog' in 'My dog is barking' – woof!" },
+      { pattern: "coffee|tea|water", test: "I love tea", result: "match", options: "", description: "'Tea' in 'I love tea' – cheers!" },
+      { pattern: "apple|banana|grape", test: "I ate a banana", result: "match", options: "", description: "'Banana' in 'I ate a banana' – yum!" },
+      { pattern: "cat|dog|mouse", test: "My dog is barking", result: "match", options: "", description: "'Dog' in 'My dog is barking' – loud!" },
+      { pattern: "dog|cat|bird", test: "A bird flew by", result: "match", options: "", description: "'Bird' in 'A bird flew by' – fly high!" },
+      { pattern: "sun|moon|stars", test: "I love the moon", result: "match", options: "", description: "'Moon' in 'I love the moon' – romantic!" },
+      { pattern: "hello|world|earth", test: "Hello there", result: "match", options: "", description: "'Hello' in 'Hello there' – warm greeting!" },
+      { pattern: "apple|orange|mango", test: "I like mango", result: "match", options: "", description: "'Mango' in 'I like mango' – exotic!" }
+    ]
+  },
+
+  "Assertion" => {
+    short: "Assertion",
+    description: "Match a position in the string without consuming characters.",
+    examples: [
+      { pattern: "^start", test: "start here", result: "match", options: "", description: "Matches the start of the string." },
+      { pattern: "^start", test: "begin start", result: "no-match", options: "", description: "No match because 'start' is not at the beginning." },
+      { pattern: "end$", test: "The end", result: "match", options: "", description: "Matches 'end' at the end of the string." },
+      { pattern: "end$", test: "The ending", result: "no-match", options: "", description: "No match because 'end' is not at the end." },
+      { pattern: "(?=a)", test: "apple", result: "match", options: "", description: "Positive lookahead – matches if 'a' is ahead." },
+      { pattern: "(?=a)", test: "orange", result: "no-match", options: "", description: "No match, 'a' isn't ahead." },
+      { pattern: "(?!a)", test: "orange", result: "match", options: "", description: "Negative lookahead – matches if 'a' is NOT ahead." },
+      { pattern: "(?!a)", test: "apple", result: "no-match", options: "", description: "No match, 'a' is ahead." },
+      { pattern: "\\bword", test: "word boundary word", result: "match", options: "", description: "Matches at the word boundary before 'word'." },
+      { pattern: "word\\b", test: "word boundary word", result: "match", options: "", description: "Matches at the word boundary after 'word'." },
+      { pattern: "\\Bend", test: "tend", result: "match", options: "", description: "Matches 'end' not at a word boundary." },
+      { pattern: "\\Bend", test: "the end", result: "no-match", options: "", description: "No match because 'end' is at a word boundary." },
+      { pattern: "(?<=\\d)", test: "The number is 123", result: "match", options: "", description: "Positive lookbehind – matches after a digit." },
+      { pattern: "(?<=\\d)", test: "abc123", result: "no-match", options: "", description: "No match, no digit before the match." },
+      { pattern: "(?<!\\d)", test: "abc123", result: "match", options: "", description: "Negative lookbehind – matches if not preceded by a digit." },
+      { pattern: "(?<!\\d)", test: "123abc", result: "no-match", options: "", description: "No match, preceded by a digit." }
+    ]
+  },
+
+  "Backreference" => {
+    short: "Backreference",
+    description: "Match the same text as previously matched by a capturing group.",
+    examples: [
+      { pattern: "(\\d+)\\1", test: "1212", result: "match", options: "", description: "Matches repeated digits using backreference." },
+      { pattern: "(\\d+)\\1", test: "1234", result: "no-match", options: "", description: "No match because digits are not repeated." },
+      { pattern: "(\\w+)\\s\\1", test: "hello hello", result: "match", options: "", description: "Matches repeated word using backreference." },
+      { pattern: "(\\w+)\\s\\1", test: "hello world", result: "no-match", options: "", description: "No match because words are different." },
+      { pattern: "(\\w{2})\\1", test: "abab", result: "match", options: "", description: "Matches repeated pair of letters." },
+      { pattern: "(\\w{2})\\1", test: "abcabc", result: "no-match", options: "", description: "No match because pairs don't repeat." },
+      { pattern: "(\\d{3})\\-(\\d{3})\\-\\1", test: "123-456-123", result: "match", options: "", description: "Matches phone number pattern with backreference." },
+      { pattern: "(\\d{3})\\-(\\d{3})\\-\\1", test: "123-456-789", result: "no-match", options: "", description: "No match, last part doesn't repeat." },
+      { pattern: "(\\d+)\\-(\\d+)\\-(\\d+)", test: "123-456-123", result: "match", options: "", description: "Matches and groups digits separated by hyphens." },
+      { pattern: "(\\d+)\\-(\\d+)\\-(\\d+)", test: "456-789-012", result: "match", options: "", description: "Another match with different numbers." },
+      { pattern: "(\\w+)(\\s)(\\w+)\\2\\1", test: "hello world hello", result: "match", options: "", description: "Matches word pairs with repeated space using backreferences." }
+    ]
+  },
+
+  "Character" => {
+    short: "Character",
+    description: "Match a specific character or a character set.",
+    examples: [
+      { pattern: "a", test: "apple", result: "match", options: "", description: "Matches the character 'a' in 'apple'." },
+      { pattern: "b", test: "apple", result: "no-match", options: "", description: "No match for 'b' in 'apple'." },
+      { pattern: "c", test: "cat", result: "match", options: "", description: "Matches the character 'c' in 'cat'." },
+      { pattern: "z", test: "buzz", result: "match", options: "", description: "Matches the character 'z' in 'buzz'." },
+      { pattern: "1", test: "1234", result: "match", options: "", description: "Matches the digit '1' in '1234'." },
+      { pattern: "3", test: "1234", result: "match", options: "", description: "Matches the digit '3' in '1234'." },
+      { pattern: "t", test: "cat", result: "no-match", options: "", description: "No match for 't' in 'cat'." },
+      { pattern: "e", test: "apple", result: "match", options: "", description: "Matches the character 'e' in 'apple'." },
+      { pattern: ".", test: "cat", result: "match", options: "", description: "Matches any single character in 'cat'." },
+      { pattern: "[aeiou]", test: "apple", result: "match", options: "", description: "Matches any vowel in 'apple'." },
+      { pattern: "[^aeiou]", test: "apple", result: "match", options: "", description: "Matches any non-vowel in 'apple'." },
+      { pattern: "[a-z]", test: "apple", result: "match", options: "", description: "Matches any lowercase letter in 'apple'." },
+      { pattern: "[A-Z]", test: "apple", result: "no-match", options: "", description: "No match for uppercase letter in 'apple'." },
+      { pattern: "[0-9]", test: "apple123", result: "match", options: "", description: "Matches any digit in 'apple123'." }
+    ]
+  },
+
+  "CharacterClass" => {
+    short: "CharacterClass",
+    description: "Match characters in a specific category (e.g., digits, word characters).",
+    examples: [
+      { pattern: "\\d", test: "123", result: "match", options: "", description: "Matches any digit in '123'." },
+      { pattern: "\\d", test: "apple", result: "no-match", options: "", description: "No match for digit in 'apple'." },
+      { pattern: "\\w", test: "apple", result: "match", options: "", description: "Matches any word character in 'apple'." },
+      { pattern: "\\w", test: "123", result: "match", options: "", description: "Matches any word character in '123'." },
+      { pattern: "\\s", test: "apple pie", result: "match", options: "", description: "Matches any whitespace in 'apple pie'." },
+      { pattern: "\\s", test: "applepie", result: "no-match", options: "", description: "No match for whitespace in 'applepie'." },
+      { pattern: "\\S", test: "apple pie", result: "match", options: "", description: "Matches non-whitespace characters in 'apple pie'." },
+      { pattern: "\\S", test: "applepie", result: "match", options: "", description: "Matches non-whitespace characters in 'applepie'." },
+      { pattern: "\\D", test: "abc123", result: "match", options: "", description: "Matches non-digits (letters) in 'abc123'." },
+      { pattern: "\\D", test: "123", result: "no-match", options: "", description: "No match for non-digit characters in '123'." },
+      { pattern: "\\W", test: "abc123", result: "no-match", options: "", description: "No match for non-word characters in 'abc123'." },
+      { pattern: "\\W", test: "abc_123", result: "match", options: "", description: "Matches non-word character ('_') in 'abc_123'." }
+    ]
+  },
+
+  "Flags" => {
+    short: "Flags",
+    description: "Set various options to alter how the regex works, such as case-insensitive matching.",
+    examples: [
+      { pattern: "abc", test: "ABC", result: "match", options: "i", description: "Matches 'ABC' case-insensitively." },
+      { pattern: "abc", test: "XYZ", result: "no-match", options: "i", description: "No match because 'XYZ' does not match 'abc' even with case-insensitivity." },
+      { pattern: "abc", test: "abc", result: "match", options: "i", description: "Matches 'abc' case-insensitively." },
+      { pattern: "abc", test: "line1\nxyz\nline3", result: "no-match", options: "m", description: "No match because 'xyz' does not match 'abc' even with multiline flag." },
+      { pattern: "abc", test: "line1\nabc\nline3", result: "match", options: "m", description: "Matches 'abc' across multiple lines." },
+      { pattern: "abc", test: "xyz\nabc", result: "no-match", options: "m", description: "No match because 'abc' is not at the start of a line." },
+      { pattern: "abc", test: "abc\nxyz", result: "match", options: "s", description: "Matches 'abc' across lines." },
+      { pattern: "abc", test: "xyz", result: "no-match", options: "s", description: "No match because 'abc' does not exist in 'xyz' even with the dot-all flag." },
+      { pattern: "abc", test: "abcabc", result: "match", options: "g", description: "Matches all occurrences of 'abc'." },
+      { pattern: "abc", test: "ABCD", result: "no-match", options: "i", description: "No match because 'ABCD' does not match 'abc' even with the case-insensitive flag." },
+      { pattern: "abc", test: "abc abc abc", result: "match", options: "g", description: "Matches each occurrence of 'abc'." },
+      { pattern: "abc", test: "123 abc", result: "no-match", options: "g", description: "No match because 'abc' does not appear multiple times." },
+      { pattern: "abc", test: "a b c", result: "match", options: "x", description: "Ignores whitespace for readability in 'a b c'." },
+      { pattern: "abc", test: "abc abc", result: "no-match", options: "g", description: "No match because 'abc' is considered one match with the global flag." },
+      { pattern: "a b c", test: "a b c", result: "match", options: "x", description: "Matches 'a', 'b', and 'c' with space and ignores whitespace." },
+      { pattern: "abc", test: "ABC abc abc", result: "no-match", options: "i", description: "No match because 'ABC' does not match 'abc' in 'ABC abc abc'." },
+      { pattern: "abc", test: "ABC", result: "match", options: "im", description: "Matches 'ABC' with both case-insensitive and multiline flags." },
+      { pattern: "abc", test: "abcabc", result: "no-match", options: "i", description: "No match because the flag was meant for different pattern matching." },
+      { pattern: "abc", test: "a b c\nabc", result: "match", options: "mx", description: "Matches 'abc' with multiline and extended flag for readability." },
+      { pattern: "abc", test: "abc abc abc", result: "match", options: "sg", description: "Matches multiple occurrences of 'abc' across lines." },
+      { pattern: "abc", test: "ABC abc abc", result: "match", options: "ig", description: "Matches all occurrences of 'abc' case-insensitively." },
+      { pattern: "abc", test: "xyz", result: "no-match", options: "g", description: "No match because 'abc' is absent." },
+      { pattern: "abc", test: "ABC abc abc", result: "match", options: "mix", description: "Matches 'abc' with multiline, case-insensitive, and extended flags." },
+      { pattern: "abc", test: "no abc match", result: "no-match", options: "i", description: "No match because 'no abc match' doesn't contain the pattern." }
+    ]
+  },
+
+  "Group" => {
+    short: "Group",
+    description: "Group parts of the regex together for applying quantifiers or capturing subpatterns.",
+    examples: [
+      { pattern: "(abc)", test: "abc", result: "match", options: "", description: "Captures the group 'abc'." },
+      { pattern: "(\\d{2})-(\\d{2})", test: "12-34", result: "match", options: "", description: "Captures two groups '12' and '34'." },
+      { pattern: "(ab)+", test: "abab", result: "match", options: "", description: "Matches one or more repetitions of 'ab'." },
+      { pattern: "(\\w+)@(\\w+).com", test: "user@example.com", result: "match", options: "", description: "Matches an email pattern with two capture groups." },
+      { pattern: "(a|b)c", test: "ac", result: "match", options: "", description: "Matches either 'a' or 'b' followed by 'c'." },
+      { pattern: "(a|b)c", test: "bc", result: "match", options: "", description: "Matches 'b' followed by 'c'." },
+      { pattern: "(\\d{2})(\\d{2})", test: "1212", result: "match", options: "", description: "Captures two 2-digit numbers." },
+      { pattern: "(abc|def)", test: "def", result: "match", options: "", description: "Matches either 'abc' or 'def'." },
+      { pattern: "(\\d+)(\\w+)", test: "123abc", result: "match", options: "", description: "Captures a number and a word." },
+      { pattern: "(\\w+)(\\d+)", test: "apple123", result: "match", options: "", description: "Captures a word and a number." },
+      { pattern: "(ab)+c", test: "abababc", result: "match", options: "", description: "Matches repetitions of 'ab' followed by 'c'." },
+      { pattern: "(\\d{3})-(\\d{4})-(\\d{4})", test: "123-4567-8901", result: "match", options: "", description: "Captures a phone number format." }
+    ]
+  },
+
+  "Lookaround" => {
+    short: "Lookaround",
+    description: "Look ahead or look behind without consuming characters.",
+    examples: [
+      { pattern: "(?=\\d)", test: "123", result: "match", options: "", description: "Positive lookahead – matches if a digit follows." },
+      { pattern: "(?=\\d)", test: "abc", result: "no-match", options: "", description: "No match, no digit ahead." },
+      { pattern: "(?<=\\d)", test: "123", result: "match", options: "", description: "Positive lookbehind – matches if a digit precedes." },
+      { pattern: "(?<=\\d)", test: "abc", result: "no-match", options: "", description: "No match, no digit behind." },
+      { pattern: "(?!\\d)", test: "abc", result: "match", options: "", description: "Negative lookahead – matches if no digit follows." },
+      { pattern: "(?!\\d)", test: "123", result: "no-match", options: "", description: "No match, digit follows." },
+      { pattern: "(?<!\\d)", test: "abc", result: "match", options: "", description: "Negative lookbehind – matches if no digit precedes." },
+      { pattern: "(?<!\\d)", test: "123", result: "no-match", options: "", description: "No match, digit precedes." },
+      { pattern: "(?<=\\w{3})abc", test: "xyzabc", result: "match", options: "", description: "Matches 'abc' if preceded by 3 word characters." },
+      { pattern: "(?<=\\d{3})abc", test: "123abc", result: "match", options: "", description: "Matches 'abc' if preceded by 3 digits." },
+      { pattern: "(?=\\d{4})", test: "1234", result: "match", options: "", description: "Matches if 4 digits are ahead." },
+      { pattern: "(?<=abc)(\\d+)", test: "abc123", result: "match", options: "", description: "Matches digits if preceded by 'abc'." }
+    ]
+  },
+
+  "Quantifier" => {
+    short: "Quantifier",
+    description: "Specify how many times a pattern should occur (e.g., zero or more times, one or more times).",
+    examples: [
+      { pattern: "a*", test: "aaa", result: "match", options: "", description: "Matches zero or more 'a' characters." },
+      { pattern: "a*", test: "bbb", result: "match", options: "", description: "Matches zero 'a' characters in 'bbb'." },
+      { pattern: "a+", test: "aaa", result: "match", options: "", description: "Matches one or more 'a' characters." },
+      { pattern: "a+", test: "bbb", result: "no-match", options: "", description: "No match, there are no 'a' characters." },
+      { pattern: "a{3}", test: "aaa", result: "match", options: "", description: "Matches exactly three 'a' characters." },
+      { pattern: "a{3}", test: "aaaa", result: "no-match", options: "", description: "No match, there are more than 3 'a' characters." },
+      { pattern: "a{2,5}", test: "aa", result: "match", options: "", description: "Matches between 2 and 5 'a' characters." },
+      { pattern: "a{2,5}", test: "aaaaaa", result: "no-match", options: "", description: "No match, there are more than 5 'a' characters." },
+      { pattern: "a{2,}", test: "aaaa", result: "match", options: "", description: "Matches 2 or more 'a' characters." },
+      { pattern: "a{,3}", test: "aaa", result: "match", options: "", description: "Matches up to 3 'a' characters." },
+      { pattern: "a{1,3}", test: "aa", result: "match", options: "", description: "Matches between 1 and 3 'a' characters." },
+      { pattern: "a{3,}", test: "aaaaa", result: "match", options: "", description: "Matches 3 or more 'a' characters." }
+    ]
+  },
+
+  "Special" => {
+    short: "Special",
+    description: "Special characters and patterns with unique meanings.",
+    examples: [
+      { pattern: ".", test: "abc", result: "match", options: "", description: "Matches any single character." },
+      { pattern: "\\b", test: "cat", result: "no-match", options: "", description: "No match at the beginning of 'cat'." },
+      { pattern: "\\B", test: "cat", result: "match", options: "", description: "Matches non-word boundaries in 'cat'." },
+      { pattern: "\\n", test: "hello\nworld", result: "match", options: "", description: "Matches newline character in 'hello\nworld'." },
+      { pattern: "\\t", test: "tab\tspace", result: "match", options: "", description: "Matches tab character in 'tab\tspace'." },
+      { pattern: "\\r", test: "hello\rworld", result: "match", options: "", description: "Matches carriage return in 'hello\rworld'." },
+      { pattern: "\\f", test: "page\fbreak", result: "match", options: "", description: "Matches form feed character in 'page\fbreak'." },
+      { pattern: "\\v", test: "vertical\vspace", result: "match", options: "", description: "Matches vertical tab in 'vertical\vspace'." },
+      { pattern: "\\d", test: "123", result: "match", options: "", description: "Matches a digit in '123'." },
+      { pattern: "\\D", test: "abc", result: "match", options: "", description: "Matches a non-digit in 'abc'." },
+      { pattern: "\\w", test: "apple123", result: "match", options: "", description: "Matches a word character in 'apple123'." },
+      { pattern: "\\W", test: "apple123", result: "match", options: "", description: "Matches a non-word character in 'apple123'." }
+    ]
+  },
+
+  "Unicode" => {
+    short: "Unicode",
+    description: "Match Unicode characters using special character escapes like \\u, \\p, and \\P.",
+    examples: [
+      { pattern: '\\u00A9', test: "©", result: "match", options: "", description: 'Matches the Unicode character for "©"' },
+      { pattern: '\\u{1F600}', test: "😀", result: "match", options: "", description: 'Matches the Unicode character for "grinning face"' },
+      { pattern: '\\p{Letter}', test: "a", result: "match", options: "", description: "Matches any letter (Unicode category Letter)" },
+      { pattern: '\\p{Letter}', test: "1", result: "no-match", options: "", description: 'No match, "1" is not a letter' },
+      { pattern: '\\P{Letter}', test: "1", result: "match", options: "", description: 'Matches any non-letter character (like "1")' },
+      { pattern: '\\p{Digit}', test: "5", result: "match", options: "", description: 'Matches any Unicode digit (like "5")' },
+      { pattern: '\\P{Digit}', test: "a", result: "match", options: "", description: 'Matches any non-digit character (like "a")' },
+      { pattern: '\\p{Emoji}', test: "😊", result: "match", options: "", description: "Matches any emoji character" },
+      { pattern: '\\p{Emoji}', test: "hello", result: "no-match", options: "", description: 'No match, "hello" is not an emoji' },
+      { pattern: '\\p{Emoji}', test: "👨‍👩‍👧‍👦", result: "match", options: "", description: "Matches the family emoji 👨‍👩‍👧‍👦 (family: man, woman, girl, boy)" },
+      { pattern: '\\p{Letter}*', test: "abcABC", result: "match", options: "", description: "Matches zero or more Unicode letters (abcABC)" },
+      { pattern: '\\p{Punctuation}', test: "!", result: "match", options: "", description: 'Matches any punctuation character (like "!")' },
+      { pattern: '[\\p{L}\\p{N}]+', test: "abc123", result: "match", options: "", description: "Matches a combination of Unicode letters and numbers (abc123)" },
+      { pattern: '\\p{Alphabetic}*', test: "abcABC", result: "match", options: "", description: 'Matches alphabetic characters (Unicode category "Alphabetic")' },
+      { pattern: '\\p{Letter}', test: "a", result: "match", options: "", description: 'Matches any letter (Unicode category "Letter")' },
+      { pattern: '\\P{Letter}', test: "1", result: "match", options: "", description: 'Matches any non-letter character (like "1")' },
+      { pattern: '\\p{Digit}', test: "5", result: "match", options: "", description: 'Matches any digit (Unicode category "Digit")' },
+      { pattern: '\\P{Digit}', test: "a", result: "match", options: "", description: 'Matches any non-digit character (like "a")' },
+      { pattern: '\\p{Punctuation}', test: "!", result: "match", options: "", description: 'Matches any punctuation character (Unicode category "Punctuation")' }
+    ]
+  }
+} %>
+
+<div class="bg-gray-900 rounded-lg shadow-lg pt-4 pb-6 px-6 text-gray-300 text-base leading-snug mx-2 md:mx-0">
+  <!-- Tabs -->
+  <div class="mb-4 overflow-x-auto">
+    <div class="flex whitespace-nowrap">
+      <% categories.each_with_index do |(cat, data), i| %>
+        <button type="button"
+                class="category-tab flex-shrink-0 px-4 py-1.5 transition <%= i.zero? ? "bg-gray-700 text-white" : "bg-gray-800 hover:bg-gray-700 text-gray-300" %> text-sm leading-tight"
+                data-category="<%= cat.parameterize %>">
+          <%= data[:short] %>
+        </button>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Categories content -->
+  <% categories.each_with_index do |(cat, data), i| %>
+    <div id="category-<%= cat.parameterize %>" class="examples-category <%= i.zero? ? "" : "hidden" %>">
+      <div class="mb-3 text-sm text-gray-400 italic px-1"><%= data[:description] %></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 leading-tight">
+        <% data[:examples].each do |ex| %>
+          <div class="cursor-pointer hover:text-blue-400 transition duration-150 text-sm"
+               style="line-height:1.2; margin-bottom:0.2rem;"
+               data-pattern="<%= ex[:pattern] %>"
+               data-test="<%= ex[:test].gsub('"', "&quot;") %>"
+               data-result="<%= ex[:result] %>"
+               data-description="<%= ex[:description] %>"
+               data-options="<%= ex[:options] || "" %>"> <!-- optionsをdata-optionsに格納 -->
+            <code><%= ex[:pattern].gsub("\\", "\\\\") %></code><br>
+            <span class="<%= ex[:result] == "match" ? "text-green-400" : "text-red-500" %>">
+              <%= ex[:test] %>
+            </span><br>
+            <span class="text-gray-500 text-xs">
+              <%= ex[:description] %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabs = document.querySelectorAll(".category-tab");
+    const sections = document.querySelectorAll(".examples-category");
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => {
+          t.classList.remove("bg-gray-700", "text-white");
+          t.classList.add("bg-gray-800", "text-gray-300");
+        });
+        tab.classList.add("bg-gray-700", "text-white");
+        tab.classList.remove("bg-gray-800", "text-gray-300");
+
+        const cat = tab.dataset.category;
+        sections.forEach(s => s.classList.add("hidden"));
+        document.getElementById(`category-${cat}`).classList.remove("hidden");
+      });
+    });
+
+    document.querySelectorAll(".examples-category .cursor-pointer").forEach(item => {
+      item.addEventListener("click", () => {
+        const regex = item.dataset.pattern;
+        const testStr = item.dataset.test;
+        const result = item.dataset.result;
+        const description = item.dataset.description;
+        const options = item.dataset.options; // 'flags'から'options'に修正
+
+        // フォームの入力フィールドを取得
+        const pf = document.getElementById("regular_expression_expression");
+        const tf = document.getElementById("regular_expression_test_string");
+        const optionsField = document.getElementById('input[name="regular_expression[options]"]'); // optionsに修正
+
+        if (pf && tf) {
+          // 正規表現とテスト文字列をフォームにセット
+          pf.value = regex;
+          tf.value = testStr;
+
+          // optionsを反映
+          if (optionsField) {
+            optionsField.value = options || ''; // optionsがあればその値、なければ空文字
+          }
+
+          // 入力イベントを発火
+          pf.dispatchEvent(new Event("input", { bubbles: true }));
+          tf.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      });
+    });
+
+    tabs[0]?.click(); // 最初のタブを開く
+  });
+</script>

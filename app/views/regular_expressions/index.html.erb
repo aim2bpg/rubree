@@ -1,10 +1,48 @@
 <div class="max-w-6xl mx-auto px-4">
+
   <%= render "form" %>
 
   <%= turbo_frame_tag "regexp" do %>
     <%= render partial: "result_frame", locals: { regular_expression: @regular_expression } %>
   <% end %>
 
-  <h3 class="text-lg md:text-xl font-semibold text-white text-center mb-4 mt-4">Regex quick reference</h3>
-  <%= render "reference" %>
+  <div class="bg-gray-900 rounded-lg shadow-lg py-2 px-4 text-gray-400 text-sm text-center max-w-md mx-auto mb-4 flex">
+    <button id="tab-reference" class="flex-1 py-2 bg-gray-700 text-white rounded-l focus:outline-none">Regex Quick Reference</button>
+    <button id="tab-examples" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-r focus:outline-none">Regex Examples</button>
+  </div>
+
+  <div id="tab-content">
+    <div id="reference-panel">
+      <%= render "reference" %>
+    </div>
+
+    <div id="examples-panel" class="hidden">
+      <%= render "examples" %>
+    </div>
+  </div>
 </div>
+
+<script>
+  const tabReference = document.getElementById("tab-reference");
+  const tabExamples = document.getElementById("tab-examples");
+  const referencePanel = document.getElementById("reference-panel");
+  const examplesPanel = document.getElementById("examples-panel");
+
+  tabReference.addEventListener("click", () => {
+    referencePanel.classList.remove("hidden");
+    examplesPanel.classList.add("hidden");
+    tabReference.classList.add("bg-gray-700");
+    tabExamples.classList.remove("bg-gray-700");
+  });
+
+  tabExamples.addEventListener("click", () => {
+    referencePanel.classList.add("hidden");
+    examplesPanel.classList.remove("hidden");
+    tabExamples.classList.add("bg-gray-700");
+    tabReference.classList.remove("bg-gray-700");
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    tabReference.click();
+  });
+</script>
