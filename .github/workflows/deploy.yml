@@ -50,6 +50,7 @@ jobs:
         run: npm install -g yarn
 
       - name: Cache Ruby Wasm Artefacts
+        id: cache-ruby-wasm
         uses: actions/cache@v4
         with:
           path: |
@@ -58,13 +59,14 @@ jobs:
           key: ${{ runner.os }}-v1-ruby-wasm
 
       - name: Cache Compiled ruby.wasm Module
+        id: cache-ruby-wasm-module
         uses: actions/cache@v4
         with:
           path: tmp/wasmify/ruby.wasm
           key: ${{ runner.os }}-v1-${{ hashFiles('**/Gemfile.lock') }}-ruby-wasm-module
 
       - name: Build ruby.wasm (if needed)
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache-ruby-wasm-module.outputs.cache-hit != 'true'
         run: bin/rails wasmify:build
 
       - name: Pack app.wasm
@@ -86,7 +88,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/main'
+    if: github.ref_name == 'main'
 
     permissions:
       contents: read
