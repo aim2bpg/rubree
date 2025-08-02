@@ -4,14 +4,17 @@
 
 import { application } from "./application";
 
-import HelloController from "./hello_controller";
+import RegexpContentTabSwitchController from "./regexp_content_tab_switch_controller";
 
-application.register("hello", HelloController);
+application.register(
+  "regexp-content-tab-switch",
+  RegexpContentTabSwitchController,
+);
 
-import RegexpController from "./regexp_controller";
+import RegexpExamplesController from "./regexp_examples_controller";
 
-application.register("regexp", RegexpController);
+application.register("regexp-examples", RegexpExamplesController);
 
-import ExampleLinkController from "./example_link_controller";
+import RegexpFormController from "./regexp_form_controller";
 
-application.register("example-link", ExampleLinkController);
+application.register("regexp-form", RegexpFormController);

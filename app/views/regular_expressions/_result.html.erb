@@ -1,15 +1,25 @@
-<% if regular_expression.unready? %>
-  <p class="text-gray-400 text-sm">Please enter a regex pattern and a test string.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-900 rounded-lg shadow-lg p-4 mb-4 border border-gray-700">
+  <%= render partial: "regular_expressions/results/diagram", locals: { regular_expression: regular_expression } %>
 
-<% elsif regular_expression.valid? && regular_expression.match_data %>
-  <%= render "result_match", regular_expression: regular_expression %>
+  <div class="flex flex-col space-y-2 overflow-auto rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white text-left">
+    <% if regular_expression.expression.present? || regular_expression.test_string.present? %>
+      <% if regular_expression.unready? %>
+        <p class="text-gray-400 text-sm">Please enter a regex pattern and a test string.</p>
 
-  <% if regular_expression.display_captures.any? { |group| group.present? && group.any?(&:present?) } %>
-    <%= render "result_captures", regular_expression: regular_expression %>
-  <% end %>
+      <% elsif regular_expression.valid? && regular_expression.match_data %>
+        <%= render "regular_expressions/results/match", regular_expression: regular_expression %>
 
-<% else %>
-  <% regular_expression.errors.full_messages.each do |msg| %>
-    <p class="text-red-400">❌ <%= h(msg) %></p>
-  <% end %>
-<% end %>
+        <% if regular_expression.display_captures.any? { |group| group.present? && group.any?(&:present?) } %>
+          <%= render "regular_expressions/results/captures", regular_expression: regular_expression %>
+        <% end %>
+
+      <% else %>
+        <% regular_expression.errors.full_messages.each do |msg| %>
+          <p class="text-red-400">❌ <%= h(msg) %></p>
+        <% end %>
+      <% end %>
+    <% else %>
+      <p class="text-gray-500 m-auto text-center">Regexp test result will appear here</p>
+    <% end %>
+  </div>
+</div>

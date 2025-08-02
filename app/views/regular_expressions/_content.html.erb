@@ -1,0 +1,28 @@
+<div data-controller="regexp-content-tab-switch" class="max-w-6xl mx-auto px-4">
+
+  <div class="bg-gray-900 rounded-lg shadow-lg py-2 px-4 text-gray-400 text-sm flex mb-4 max-w-md mx-auto">
+    <button type="button"
+            data-action="click->regexp-content-tab-switch#showReference"
+            data-regexp-content-tab-switch-target="tabReference"
+            class="flex-1 py-2 bg-gray-700 text-white rounded-l focus:outline-none">
+      Regex Quick Reference
+    </button>
+    <button type="button"
+            data-action="click->regexp-content-tab-switch#showExamples"
+            data-regexp-content-tab-switch-target="tabExamples"
+            class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-r focus:outline-none">
+      Regex Examples
+    </button>
+  </div>
+
+  <div id="tab-content" class="max-w-6xl mx-auto">
+    <div data-regexp-content-tab-switch-target="referencePanel" id="reference-panel" class="">
+      <%= render "regular_expressions/contents/reference" %>
+    </div>
+
+    <div data-regexp-content-tab-switch-target="examplesPanel" id="examples-panel" class="hidden">
+      <%= render "regular_expressions/contents/examples" %>
+    </div>
+  </div>
+
+</div>
