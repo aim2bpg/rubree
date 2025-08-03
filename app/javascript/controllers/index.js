@@ -4,6 +4,14 @@
 
 import { application } from "./application";
 
+import CopyCodeController from "./copy_code_controller";
+
+application.register("copy-code", CopyCodeController);
+
+import DragScrollController from "./drag_scroll_controller";
+
+application.register("drag-scroll", DragScrollController);
+
 import RegexpContentTabSwitchController from "./regexp_content_tab_switch_controller";
 
 application.register(

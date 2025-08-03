@@ -1,7 +1,9 @@
 <div class="overflow-hidden rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white flex flex-col">
   <% if @svg_output.present? %>
     <h3 class="text-sm font-bold mb-2 text-white">Railroad diagram:</h3>
-    <div class="w-full overflow-x-auto overflow-y-hidden whitespace-nowrap">
+    <div
+      data-controller="drag-scroll"
+      class="w-full overflow-x-auto overflow-y-hidden whitespace-nowrap cursor-grab">
       <%= raw @svg_output %>
     </div>
   <% else %>

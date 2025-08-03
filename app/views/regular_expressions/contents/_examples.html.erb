@@ -1,14 +1,14 @@
 <div data-controller="regexp-examples" class="bg-gray-900 rounded-lg shadow-lg pt-4 pb-6 px-6 text-gray-300 text-base leading-snug mx-2 md:mx-0">
   <!-- Tabs -->
-  <div class="mb-4 overflow-x-auto">
-    <div class="flex whitespace-nowrap">
+  <div class="mb-4 overflow-x-auto" data-controller="drag-scroll">
+    <div class="flex whitespace-nowrap cursor-grab">
       <% regexp_example_categories.each_with_index do |(cat, data), i| %>
         <button type="button"
                 data-action="click->regexp-examples#showCategory"
                 data-regexp-examples-target="tab"
                 data-category="<%= cat.to_s.parameterize %>"
-                class="category-tab flex-shrink-0 px-1 py-1.5 transition
-                       <%= i.zero? ? "bg-gray-700 text-white" : "bg-gray-800 hover:bg-gray-700 text-gray-300" %>">
+                class="category-tab flex-shrink-0 px-2 py-2 transition
+               <%= i.zero? ? "bg-gray-700 text-white text-xs" : "bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs" %>">
           <%= data[:short] %>
         </button>
       <% end %>
