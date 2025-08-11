@@ -56,22 +56,65 @@ module RegularExpressionsHelper
 
   def regexp_example_categories
     {
-      "Alternation" => {
-        short: "Alt",
-        description: "Match alternatives separated by |.",
+      "Basic operations" => {
+        short: "Basics",
+        description: "Basic operations: Concatenation, Alternation, Repeat (no syntax sugar).",
         examples: [
-          { pattern: "a|b|c", test: "apple", result: "match", options: "", description: "Matches 'a' because 'apple' contains 'a', which is one of the alternatives." },
-          { pattern: "a|b|c", test: "ab", result: "match", options: "", description: "Matches 'ab' because 'a' and 'b' are part of the alternatives." },
-          { pattern: "red|blue|green", test: "blueberry", result: "match", options: "", description: "Matches 'blue' because 'blueberry' contains 'blue'." },
-          { pattern: "red|blue|green", test: "Blueberry", result: "no-match", options: "", description: "No match for 'Blueberry' because 'blue' is case-sensitive." },
-          { pattern: "dog|cat|rat", test: "dog cat", result: "match", options: "", description: "Matches 'dog' and 'cat' because they are part of the alternatives." },
-          { pattern: "dog|cat|rat", test: "cat and rat", result: "match", options: "", description: "Matches 'cat' and 'rat' because both are part of the alternatives." }
+
+          # --- Concatenation ---
+          { pattern: "abc", test: "abc", result: "match", options: "", description: "Concatenation: Matches 'a' + 'b' + 'c'" },
+          { pattern: "ab", test: "cab", result: "match", options: "", description: "Concatenation: Matches 'ab' in the middle" },
+          { pattern: "ab", test: "acb", result: "no match", options: "", description: "Concatenation: 'a' not followed by 'b'" },
+
+          # --- Alternation ---
+          { pattern: "a|b|c", test: "abc", result: "match", options: "", description: "Alternation: Matches one of 'a', 'b', or 'c'" },
+          { pattern: "a|b*", test: "bbb", result: "match", options: "", description: "Alternation: Matches either 'a' or repeated 'b'" },
+          { pattern: "a|b*", test: "aaa", result: "match", options: "", description: "Alternation: Matches either 'a' or repeated 'b'" },
+
+          # --- Repeat ---
+          { pattern: "a*", test: "a", result: "match", options: "", description: "Repeat: Matches one 'a'" },
+          { pattern: "a*", test: "aaa", result: "match", options: "", description: "Repeat: Matches multiple 'a'" },
+          { pattern: "a*", test: "bbb", result: "match", options: "", description: "Repeat: Matches zero 'a'" },
+
+          # --- Combination ---
+          { pattern: "ab|cd", test: "cd", result: "match", options: "", description: "Concatenation + Alternation: Matches 'ab' or 'cd'" },
+          { pattern: "a|b*", test: "a", result: "match", options: "", description: "Alternation + Repeat: Matches 'a'" },
+          { pattern: "a*bc", test: "aaabc", result: "match", options: "", description: "Concatenation + Repeat: 'a*' + 'b' + 'c'" }
+        ]
+      },
+
+      "Syntax sugar" => {
+        short: "Sugar",
+        description: "Common syntax sugar features: quantifiers, dot, character classes, escapes, anchors.",
+        examples: [
+
+          # --- Quantifiers ---
+          { pattern: "a+", test: "aaab", result: "match", options: "", description: "Quantifier '+': one or more 'a'" },
+          { pattern: "a?", test: "apple", result: "match", options: "", description: "Quantifier '?': optional 'a'" },
+          { pattern: "a{2,4}", test: "aaabc", result: "match", options: "", description: "Quantifier '{n,m}': 2 to 4 'a'" },
+
+          # --- Dot ---
+          { pattern: "a.c", test: "abc", result: "match", options: "", description: "Dot '.': matches any one character" },
+
+          # --- Character classes ---
+          { pattern: "[a-z]", test: "g", result: "match", options: "", description: "Character class: lowercase letter" },
+          { pattern: "[a-z-]", test: "-", result: "match", options: "", description: "Character class: hyphen in range" },
+          { pattern: "[^a-z]", test: "A", result: "match", options: "", description: "Negated class: not lowercase letter" },
+
+          # --- Escape sequences ---
+          { pattern: "a\\tb", test: "a\tb", result: "match", options: "", description: "Escape: tab character '\\t'" },
+
+          # --- Anchors ---
+          { pattern: "^a", test: "abc", result: "match", options: "", description: "Anchor '^': start of string" },
+          { pattern: "c$", test: "abc", result: "match", options: "", description: "Anchor '$': end of string" },
+          { pattern: "\\bword\\b", test: " word ", result: "match", options: "", description: "Anchor '\\b': word boundary" },
+          { pattern: "\\Bend", test: "bend", result: "match", options: "", description: "Anchor '\\B': not at word boundary" }
         ]
       },
 
       "Anchors" => {
-        short: "Anc",
-        description: "Match positions in the string using anchors like ^, $, \A, \b.",
+        short: "Anchors",
+        description: "Anchors: Match positions in the string using anchors like ^, $, \A, \b.",
         examples: [
           { pattern: "^start", test: "start here", result: "match", options: "", description: "Matches 'start' at the beginning." },
           { pattern: "^start", test: "this is start", result: "no-match", options: "", description: "No match because 'start' isn't at the start." },
@@ -89,8 +132,8 @@ module RegularExpressionsHelper
       },
 
       "Character Classes" => {
-        short: "CharCls",
-        description: "Match specific sets of characters inside square brackets.",
+        short: "Character Classes",
+        description: "Character Classes: Match specific sets of characters inside square brackets.",
         examples: [
           { pattern: "[abc]", test: "a1bc", result: "match", options: "", description: "Matches 'a', 'b', 'c' because they are in the character class [abc]. '1' doesn't match." },
           { pattern: "[^abc]", test: "a1bc", result: "match", options: "", description: "Matches '1' because it's not in the character class [abc]. 'a', 'b', 'c' don't match." },
@@ -105,8 +148,8 @@ module RegularExpressionsHelper
       },
 
       "Character Types" => {
-        short: "CharType",
-        description: "Match specific character types like digits, whitespaces, etc.",
+        short: "Character Types",
+        description: "Character Types: Match specific character types like digits, whitespaces, etc.",
         examples: [
           { pattern: "\\d", test: "hello123", result: "match", options: "", description: "Matches '1', '2', '3' because they are digits." },
           { pattern: "\\d", test: "helloworld", result: "no-match", options: "", description: "No match because there are no digits in 'helloworld'." },
@@ -121,8 +164,8 @@ module RegularExpressionsHelper
       },
 
       "Cluster Types" => {
-        short: "ClsType",
-        description: "Match grapheme clusters using \R or \X.",
+        short: "Cluster Types",
+        description: "Cluster Types: Match grapheme clusters using \R or \X.",
         examples: [
           { pattern: "\\R", test: "abc\n123", result: "match", options: "", description: "Matches the newline character between 'abc' and '123'." },
           { pattern: "\\R", test: "hello\rworld", result: "match", options: "", description: "Matches the carriage return between 'hello' and 'world'." },
@@ -133,8 +176,8 @@ module RegularExpressionsHelper
       },
 
       "Conditional Expressions" => {
-        short: "Cond",
-        description: "Match conditional patterns using (?(cond)yes-subexp|no-subexp).",
+        short: "Conditional Expressions",
+        description: "Conditional Expressions: Match conditional patterns using (?(cond)yes-subexp|no-subexp).",
         examples: [
           { pattern: "(?<A>a)(?(<A>)T|F)", test: "aT", result: "match", options: "", description: "Matches 'T' because condition (<A>) is true." },
           { pattern: "(?<A>a)(?(<A>)T|)", test: "aT", result: "match", options: "", description: "Matches 'T' because condition (<A>) is true and empty branch is ignored." },
@@ -143,8 +186,8 @@ module RegularExpressionsHelper
       },
 
       "Escape Sequences" => {
-        short: "EscSeq",
-        description: "Match characters using escape sequences like \\t, \\n, \\d, etc.",
+        short: "Escape Sequences",
+        description: "Escape Sequences: Match characters using escape sequences like \\t, \\n, \\d, etc.",
         examples: [
           { pattern: "\\t", test: "a\t", result: "match", options: "", description: "Matches the tab character." },
           { pattern: "\\n", test: "a\n", result: "match", options: "", description: "Matches the newline character." },
@@ -166,8 +209,8 @@ module RegularExpressionsHelper
       },
 
       "Free Space" => {
-        short: "FreeSpc",
-        description: "Match whitespace and comments using the x modifier.",
+        short: "Free Space",
+        description: "Free Space: Match whitespace and comments using the x modifier.",
         examples: [
           { pattern: "a  # comment \nb", test: "ab", result: "match", options: "x", description: "Whitespace and comments are ignored, so 'a' and 'b' match." },
           { pattern: "  a  # word\n  b", test: "ab", result: "match", options: "x", description: "Whitespace and comment are ignored, so it matches 'ab'." },
@@ -176,9 +219,9 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Assertions" => {
-        short: "GAst",
-        description: "Match positions without consuming characters using lookahead and lookbehind.",
+      "Group Assertions" => {
+        short: "Group Assertions",
+        description: "Group assertions: Match positions without consuming characters using lookahead and lookbehind.",
         examples: [
           { pattern: "(?=abc)", test: "abc", result: "match", options: "", description: "Matches the position before 'abc'." },
           { pattern: "(?=\\w+)", test: "hello world", result: "match", options: "", description: "Matches the position before the word 'hello' because it's a word boundary." },
@@ -192,9 +235,9 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Atomic" => {
-        short: "GAtm",
-        description: "Ensure that a subexpression matches atomically without backtracking using (?>...).",
+      "Group Atomic" => {
+        short: "Group Atomic",
+        description: "Group Atomic: Ensure that a subexpression matches atomically without backtracking using (?>...).",
         examples: [
           { pattern: "(?>abc)", test: "abc", result: "match", options: "", description: "Matches 'abc' atomically, no backtracking allowed." },
           { pattern: "(?>a|b)c", test: "ac", result: "match", options: "", description: "Matches 'a' atomically, followed by 'c'. No backtracking to match 'b'." },
@@ -207,9 +250,9 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Absence" => {
-        short: "GAbs",
-        description: "Match the absence of a subexpression using (?~...).",
+      "Group Absence" => {
+        short: "Group Absence",
+        description: "Group Absence: Match the absence of a subexpression using (?~...).",
         examples: [
           { pattern: "(?~abc)", test: "xyz", result: "match", options: "", description: "Matches 'xyz' because 'abc' is absent." },
           { pattern: "(?~123)", test: "456", result: "match", options: "", description: "Matches '456' because '123' is absent." },
@@ -220,9 +263,9 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Back-references" => {
-        short: "GBkrf",
-        description: "Match the same text as previously captured using back-references.",
+      "Group Back-references" => {
+        short: "Group Back-references",
+        description: "Group Back-references: Match the same text as previously captured using back-references.",
         examples: [
           { pattern: "(\\d)\\1", test: "11", result: "match", options: "", description: "Matches '11' because both digits are the same." },
           { pattern: "(?<word>\\w+)\\s\\k<word>", test: "hello hello", result: "match", options: "", description: "Matches 'hello hello' using a named back-reference." },
@@ -236,9 +279,9 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Capturing" => {
-        short: "GCap",
-        description: "Capture matched groups for later reference.",
+      "Group Capturing" => {
+        short: "Group Capturing",
+        description: "Group Capturing: Capture matched groups for later reference.",
         examples: [
           { pattern: "(abc)", test: "abc", result: "match", options: "", description: "Captures 'abc' in the first capturing group." },
           { pattern: "(\\d{2})-(\\d{2})-(\\d{4})", test: "12-34-5678", result: "match", options: "", description: "Captures the date parts into three groups: '12', '34', '5678'." },
@@ -251,9 +294,9 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Comments" => {
-        short: "GCmt",
-        description: "Include comments inside regular expressions using (?# comment ).",
+      "Group Comments" => {
+        short: "Group Comments",
+        description: "Group Comments: Include comments inside regular expressions using (?# comment ).",
         examples: [
           { pattern: "(?# This is a comment)abc", test: "abc", result: "match", options: "", description: "Matches 'abc' while ignoring the comment." },
           { pattern: "a(?# matches 'a')b", test: "ab", result: "match", options: "", description: "Matches 'ab', ignoring the comment inside the parentheses." },
@@ -265,9 +308,9 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Named" => {
-        short: "GName",
-        description: "Capture groups with a specific name for easier reference.",
+      "Group Named" => {
+        short: "Group Named",
+        description: "Group Named: Capture groups with a specific name for easier reference.",
         examples: [
           { pattern: "(?<name>abc)", test: "abc", result: "match", options: "", description: "Captures 'abc' in a group named 'name'." },
           { pattern: "(?'year'\\d{4})-(?'month'\\d{2})-(?'day'\\d{2})", test: "2023-07-25", result: "match", options: "", description: "Captures the year, month, and day into named groups." },
@@ -277,24 +320,23 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Options" => {
-        short: "GOpt",
-        description: "Modify regex behavior using inline options like (?i), (?m), etc.",
+      "Group Options" => {
+        short: "Group Options",
+        description: "Group Options: Modify regex behavior using inline options like (?i), (?m), etc.",
         examples: [
           { pattern: "(?i)abc", test: "ABC", result: "match", options: "", description: "Matches 'ABC' case-insensitively due to the (?i) option." },
           { pattern: "(?m)^abc", test: "abc\nabc", result: "match", options: "", description: "Matches 'abc' at the start of each line due to the (?m) multiline option." },
-          { pattern: "(?s).+", test: "Line 1\nLine 2", result: "match", options: "", description: "Matches the entire string including newlines because of the (?s) dotall option." },
           { pattern: "(?x) a # space is ignored\nb", test: "ab", result: "match", options: "", description: "Matches 'ab' while ignoring the space and comment due to the (?x) extended option." },
-          { pattern: "(?i) hello(?-i)world", test: "HELLOworld", result: "match", options: "", description: "Matches 'HELLO' case-insensitively and 'world' case-sensitively due to inline options." },
+          { pattern: "(?i)hello(?-i)world", test: "HELLOworld", result: "match", options: "", description: "Matches 'HELLO' case-insensitively and 'world' case-sensitively due to inline options." },
           { pattern: "(?i)(abc)(?-i)def", test: "ABCdef", result: "match", options: "", description: "Matches 'ABC' case-insensitively and 'def' case-sensitively." },
           { pattern: "(?m)\\bstart\\b", test: "start\nstart", result: "match", options: "", description: "Matches 'start' at the beginning of each line due to the (?m) option." },
           { pattern: "(?x) a # space is ignored\nc", test: "ac", result: "match", options: "", description: "Matches 'ac' while ignoring the comment and spaces due to the (?x) option." }
         ]
       },
 
-      "Passive" => {
-        short: "GPsv",
-        description: "Create a non-capturing group that doesn't store matches.",
+      "Group Passive" => {
+        short: "Group Passive",
+        description: "Group Passive: Create a non-capturing group that doesn't store matches.",
         examples: [
           { pattern: "(?:abc)", test: "abc", result: "match", options: "", description: "Non-capturing group for 'abc'." },
           { pattern: "(?:\\d{2})-(?:\\d{2})-(?:\\d{4})", test: "12-34-5678", result: "match", options: "", description: "Non-capturing groups for the date pattern." },
@@ -302,9 +344,9 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Subexp. Calls" => {
-        short: "GSub",
-        description: "Call a previously defined subexpression (either by name or index).",
+      "Group Subexpression Calls" => {
+        short: "Group Subexp. Calls",
+        description: "Group Subexp. Calls: Call a previously defined subexpression (either by name or index).",
         examples: [
           { pattern: "\\g<1>", test: "123", result: "match", options: "", description: "Refers to the first captured group." },
           { pattern: "\\g<name>", test: "hello", result: "match", options: "", description: "Refers to the group named 'name'." },
@@ -313,8 +355,8 @@ module RegularExpressionsHelper
       },
 
       "Keep" => {
-        short: "Kp",
-        description: "Keep the current match and resume matching after it using \\K.",
+        short: "Keep",
+        description: "Keep: Keep the current match and resume matching after it using \\K.",
         examples: [
           { pattern: "ab\\Kcd", test: "abcdef", result: "match", options: "", description: "Matches 'cd' after 'ab' is discarded using \\K." },
           { pattern: "a\\Kb", test: "abc", result: "match", options: "", description: "Matches 'b' after 'a' is discarded using \\K." },
@@ -330,8 +372,8 @@ module RegularExpressionsHelper
       },
 
       "Literals" => {
-        short: "Lit",
-        description: "Match specific literal characters including Unicode characters.",
+        short: "Literals",
+        description: "Literals: Match specific literal characters including Unicode characters.",
         examples: [
           { pattern: "Ruby", test: "Ruby", result: "match", options: "", description: "Matches 'Ruby' exactly." },
           { pattern: "apple", test: "apple pie", result: "match", options: "", description: "Matches 'apple' exactly in 'apple pie'." },
@@ -348,25 +390,31 @@ module RegularExpressionsHelper
       },
 
       "POSIX Classes" => {
-        short: "POSIX",
-        description: "Match POSIX character classes like [:alpha:], [:digit:], etc. Can also use negation (e.g., [:^alpha:]) to match non-characters.",
+        short: "POSIX Classes",
+        description: "POSIX Classes: Match POSIX character classes like [:alpha:], [:digit:], etc. Can also use negation (e.g., [:^alpha:]) to match non-characters.",
         examples: [
-          { pattern: "[:alpha:]", test: "abc123!", result: "match", options: "", description: "Matches 'a', 'b', and 'c' because they are alphabetic characters." },
-          { pattern: "[:alpha:]", test: "abc123!xyz", result: "match", options: "", description: "Matches 'a', 'b', 'c', 'x', 'y', 'z' because they are alphabetic characters." },
-          { pattern: "[:alpha:]", test: "123!xyz", result: "no-match", options: "", description: "No match for digits and punctuation, only alphabetic characters match." },
-          { pattern: "[:digit:]", test: "abc123!", result: "match", options: "", description: "Matches '1', '2', and '3' because they are digits." },
-          { pattern: "[:alnum:]", test: "abc123!xyz", result: "match", options: "", description: "Matches 'a', 'b', 'c', '1', '2', '3', 'x', 'y', 'z' because they are alphanumeric characters." },
-          { pattern: "[:space:]", test: "abc 123! xyz", result: "match", options: "", description: "Matches spaces because they are whitespace characters." },
-          { pattern: "[:punct:]", test: "abc123!", result: "match", options: "", description: "Matches '!' because it's a punctuation character." },
-          { pattern: "[:^alpha:]", test: "abc123!", result: "match", options: "", description: "Matches '1', '2', '3', '!' because they are not alphabetic characters." },
-          { pattern: "[:^digit:]", test: "abc123!", result: "match", options: "", description: "Matches 'a', 'b', 'c', '!' because they are not digits." },
-          { pattern: "[:^space:]", test: "abc 123! xyz", result: "match", options: "", description: "Matches 'a', 'b', 'c', '1', '2', '3', '!', 'x', 'y', 'z' because they are not spaces." }
-       ]
+          # --- Alphabetic Characters ---
+          { pattern: "[[:alpha:]]+", test: "abc123XYZ", result: "match", options: "", description: "Matches 'abc' and 'XYZ', skips digits." },
+          { pattern: "[[:^alpha:]]+", test: "abc123XYZ", result: "match", options: "", description: "Matches digits '123', skips alphabetic chars." },
+
+          # --- Digit Characters ---
+          { pattern: "[[:digit:]]+", test: "abc123.45def", result: "match", options: "", description: "Matches digit sequences '123' and '45'." },
+
+          # --- Punctuation Characters ---
+          { pattern: "[[:punct:]]+", test: "hello!?", result: "match", options: "", description: "Matches punctuation '!?'." },
+
+          # --- Whitespace Characters ---
+          { pattern: "[[:space:]]+", test: "a b\tc\n", result: "match", options: "", description: "Matches spaces, tabs, and newlines." },
+
+          # --- Case Sensitivity ---
+          { pattern: "[[:lower:]]+", test: "AbC", result: "match", options: "", description: "Matches lowercase 'b' only." },
+          { pattern: "[[:upper:]]+", test: "AbC", result: "match", options: "", description: "Matches uppercase 'A' and 'C'." }
+        ]
       },
 
       "Quantifiers" => {
-        short: "Qnt",
-        description: "Define how many times a pattern should match using quantifiers like *, +, ?, {n,m}, {n,} etc.",
+        short: "Quantifiers",
+        description: "Quantifiers: Define how many times a pattern should match using quantifiers like *, +, ?, {n,m}, {n,} etc.",
         examples: [
           { pattern: "a*", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'a'. Matches '' (empty string) or 'a' at the start." },
           { pattern: "a*", test: "aaaabc123!", result: "match", options: "", description: "Matches 'aaa' because it's zero or more 'a's." },
@@ -382,8 +430,8 @@ module RegularExpressionsHelper
       },
 
       "String Escapes" => {
-        short: "StrEsc",
-        description: "Match special characters using escape sequences like \d, \w, \s, etc.",
+        short: "String Escapes",
+        description: "String Escapes: Match special characters using escape sequences like \d, \w, \s, etc.",
         examples: [
           { pattern: "\\d", test: "123abc", result: "match", options: "", description: "Matches '1' because \\d matches any digit." },
           { pattern: "\\d", test: "abc123", result: "no-match", options: "", description: "No match because there is no digit at the beginning." },
@@ -399,22 +447,129 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Unicode Properties": {
-        short: "Uni",
-        description: "Match Unicode characters based on properties like script, block, or category.",
+      "Unicode Age" => {
+        short: "Unicode Age",
+        description: "Match characters by Unicode version (Age). Supports \\p{Age}, \\P{Age}, and caret negation.",
         examples: [
-          { pattern: "\\p{Script=Hiragana}", test: "こんにちは", result: "match", options: "", description: "Matches 'こんにちは' because it is written in Hiragana." },
-          { pattern: "\\p{Age=5.2}", test: "U+1F60D", result: "match", options: "", description: "Matches emoji with Unicode age 5.2." },
-          { pattern: "\\p{InGreek}", test: "π", result: "match", options: "", description: "Matches Greek letter 'π'." },
-          { pattern: "\\p{Alpha}", test: "abc123", result: "match", options: "", description: "Matches 'a', 'b', 'c' because they are alphabetic characters." },
-          { pattern: "\\P{Script=Latin}", test: "こんにちは", result: "match", options: "", description: "Matches because 'こんにちは' is not in the Latin script." },
-          { pattern: "\\p{Block=Basic_Latin}", test: "abc", result: "match", options: "", description: "Matches 'abc' because they are in the Basic Latin block." },
-          { pattern: "\\p{General_Category=Letter}", test: "a", result: "match", options: "", description: "Matches letter 'a' because it's categorized as a letter." },
-          { pattern: "\\p{Uppercase_Letter}", test: "A", result: "match", options: "", description: "Matches uppercase 'A'." },
-          { pattern: "\\p{Lowercase_Letter}", test: "z", result: "match", options: "", description: "Matches lowercase 'z'." },
-          { pattern: "\\p{Math}", test: "∑", result: "match", options: "", description: "Matches '∑' (summation symbol), a mathematical symbol." },
-          { pattern: '\\p{Emoji}', test: "👨‍👩‍👧‍👦", result: "match", options: "", description: "Matches the family emoji 👨‍👩‍👧‍👦 (family: man, woman, girl, boy)" }
-         ]
+          { pattern: "\\p{Age=5.2}+", test: "🤩☆あ", result: "match", options: "", description: "Match emoji 🤩 from Age 5.2, stops before star '☆'" },
+          { pattern: "\\P{Age=6.1}+", test: "Aあ🤔", result: "match", options: "", description: "Match chars not in Age 6.1, stops before emoji" },
+          { pattern: "\\p{Age=3.0}+", test: "¡¿D", result: "match", options: "", description: "Match punctuation from Age 3.0, stops before 'D'" },
+          { pattern: "\\P{Age=5.2}+", test: "ABC🤩", result: "match", options: "", description: "Matches 'ABC', stops before Age 5.2 emoji 🤩" },
+          { pattern: "\\p{Age=7.0}+", test: "𝄞C", result: "match", options: "", description: "Matches musical symbol (Age 7.0), stops before 'C'" },
+          { pattern: "\\P{Age=8.0}+", test: "abc🧭", result: "match", options: "", description: "Matches 'abc', stops before Age 8.0 compass emoji 🧭" }
+        ]
+      },
+
+      "Unicode Blocks" => {
+        short: "Unicode Blocks",
+        description: "Match by Unicode block. Use \\p{In…}, \\P{In…}, or caret negation.",
+        examples: [
+          { pattern: "\\p{InKatakana}+", test: "カタカナあA", result: "match", options: "", description: "Match Katakana chars, stops before Hiragana 'あ'" },
+          { pattern: "\\p{InArmenian}+", test: "ԱԲԳՖabc", result: "match", options: "", description: "Match Armenian letters, stops before Latin 'abc'" },
+          { pattern: "\\P{InThai}+", test: "Helloกส", result: "match", options: "", description: "Match non-Thai chars 'Hello', stops before Thai" },
+          { pattern: "\\p{^InKhmer}+", test: "xyzខ", result: "match", options: "", description: "Match chars not in Khmer, stops at Khmer char" },
+          { pattern: "\\p{InCyrillic}+", test: "ПриветX", result: "match", options: "", description: "Match Cyrillic letters, stops before Latin 'X'" },
+          { pattern: "\\P{InHebrew}+", test: "ABCשלום", result: "match", options: "", description: "Match non-Hebrew chars, stops before Hebrew letters" }
+        ]
+      },
+
+      "Unicode Classes" => {
+        short: "Unicode Classes",
+        description: "Binary and negated properties like Alpha, Space, Alnum.",
+        examples: [
+          { pattern: "\\p{Alpha}+", test: "Hi1!", result: "match", options: "", description: "Match alphabetic letters, stops before digit" },
+          { pattern: "\\P{Space}+", test: "Az BC", result: "match", options: "", description: "Match non-space chars 'Az', stops before space" },
+          { pattern: "\\p{^Alnum}+", test: "abc-123?", result: "match", options: "", description: "Match chars not alphanumeric, stops before letters/digits" },
+          { pattern: "\\p{Digit}+", test: "123a", result: "match", options: "", description: "Match digits only, stops before letter" },
+          { pattern: "\\P{Alpha}+", test: "123A", result: "match", options: "", description: "Match non-alphabetic chars, stops before 'A'" },
+          { pattern: "\\p{Space}+", test: "a b", result: "match", options: "", description: "Match spaces only, stops before 'b'" }
+        ]
+      },
+
+      "Unicode Derived" => {
+        short: "Unicode Derived",
+        description: "Derived properties such as Math, Lowercase, Cased.",
+        examples: [
+          { pattern: "\\p{Math}+", test: "+×= x", result: "match", options: "", description: "Match math symbols, stops before space" },
+          { pattern: "\\P{Lowercase}+", test: "ABCdef", result: "match", options: "", description: "Match non-lowercase, stops before 'd'" },
+          { pattern: "\\p{^Cased}+", test: "123_a", result: "match", options: "", description: "Match non-cased chars, stops before 'a'" },
+          { pattern: "\\p{Lowercase}+", test: "abcD", result: "match", options: "", description: "Match lowercase letters, stops before uppercase" },
+          { pattern: "\\P{Math}+", test: "abc+=", result: "match", options: "", description: "Match non-math chars, stops before math symbols" },
+          { pattern: "\\p{Alphabetic}+", test: "ab1", result: "match", options: "", description: "Match alphabetic chars, stops before digit" }
+        ]
+      },
+
+      "Unicode General Categories" => {
+        short: "Unicode General Categories",
+        description: "Categories like Lu, Cs, and negated script (sc).",
+        examples: [
+          { pattern: "\\p{LU}+", test: "ABCd", result: "match", options: "", description: "Uppercase abbreviation 'LU' matches uppercase letters" },
+          { pattern: "\\p{lu}+", test: "ABCd", result: "match", options: "", description: "Lowercase abbreviation 'lu' matches uppercase letters" },
+          { pattern: "\\p{Uppercase Letter}+", test: "ABCd", result: "match", options: "", description: "Full property name with space matches uppercase letters" },
+          { pattern: "\\p{Uppercase_Letter}+", test: "ABCd", result: "match", options: "", description: "Full property name with underscore matches uppercase letters" },
+          { pattern: "\\p{UPPERCASE-LETTER}+", test: "ABCd", result: "match", options: "", description: "Full property name with hyphen and uppercase letters matches uppercase letters" },
+          { pattern: "\\P{Lu}+", test: "ABCd", result: "match", options: "", description: "Match non-uppercase, stops before uppercase" },
+          { pattern: "\\p{^sc}+", test: "123Λ", result: "match", options: "", description: "Match chars without script, stops before Greek" },
+          { pattern: "\\p{Cc}+", test: "\u0001A", result: "match", options: "", description: "Match control characters, stops before 'A'" },
+          { pattern: "\\p{Cf}+", test: "\u200DA", result: "match", options: "", description: "Match format characters, stops before 'A'" }
+        ]
+      },
+
+      "Unicode Scripts" => {
+        short: "Unicode Scripts",
+        description: "Script property match, with negation.",
+        examples: [
+          { pattern: "\\p{Arabic}+", test: "سلامHello", result: "match", options: "", description: "Match Arabic script, stops before Latin text" },
+          { pattern: "\\P{Hiragana}+", test: "ABCあいう", result: "match", options: "", description: "Match non-Hiragana chars, stops before Hiragana" },
+          { pattern: "\\p{^Greek}+", test: "ABCΩΔ", result: "match", options: "", description: "Match non-Greek chars, stops before Greek" },
+          { pattern: "\\p{Katakana}+", test: "カタカナB", result: "match", options: "", description: "Match Katakana script, stops before Latin" },
+          { pattern: "\\p{Cyrillic}+", test: "ПриветX", result: "match", options: "", description: "Match Cyrillic script, stops before Latin" },
+          { pattern: "\\P{Devanagari}+", test: "Helloनमस्ते", result: "match", options: "", description: "Match non-Devanagari chars, stops before Devanagari" }
+        ]
+      },
+
+      "Unicode Simple Props" => {
+        short: "Unicode Simple Props",
+        description: "Simple binary properties like Dash, Extender, and negation.",
+        examples: [
+          { pattern: "\\p{Dash}+", test: "–‑—A", result: "match", options: "", description: "Match dash characters, stops before 'A'" },
+          { pattern: "\\p{Extender}+", test: "ːX", result: "match", options: "", description: "Matches extender letter ː, stops before 'X'" },
+          { pattern: "\\p{^Hyphen}+", test: "word-word", result: "match", options: "", description: "Match chars except hyphen, stops at hyphen" },
+          { pattern: "\\P{Dash}+", test: "ABC–", result: "match", options: "", description: "Match non-dash chars, stops before dash" },
+          { pattern: "\\p{Hyphen}+", test: "-B", result: "match", options: "", description: "Match hyphen char, stops before 'B'" },
+          { pattern: "\\p{Emoji}+", test: "👨‍👩‍👧‍👦abc", result: "match", options: "", description: "Matches emoji family, stops before 'abc'" }
+        ]
+      },
+
+      "POSIX Classes vs Unicode Properties" => {
+        short: "POSIX vs Unicode",
+        description: "Compare POSIX character classes and Unicode property constructs with clear match boundaries.",
+        examples: [
+          # --- Alphabetic Characters ---
+          { pattern: "[[:alpha:]]+", test: "abc123XYZ", result: "match", options: "", description: "POSIX alpha: matches 'abc' and 'XYZ', skips '123'" },
+          { pattern: "\\p{Alpha}+", test: "abc123XYZ", result: "match", options: "", description: "Unicode Alpha: matches 'abc' and 'XYZ', skips '123'" },
+          { pattern: "[[:^alpha:]]+", test: "abc123XYZ", result: "match", options: "", description: "POSIX negated alpha: matches '123', skips letters" },
+          { pattern: "\\P{Alpha}+", test: "abc123XYZ", result: "match", options: "", description: "Unicode non-Alpha: matches '123', skips alphabetic" },
+
+          # --- Digit Characters ---
+          { pattern: "[[:digit:]]+", test: "abc123.45def", result: "match", options: "", description: "POSIX digit: matches '123' and '45'" },
+          { pattern: "\\p{Digit}+", test: "abc123.45def", result: "match", options: "", description: "Unicode Digit: matches '123' and '45'" },
+
+          # --- Punctuation ---
+          { pattern: "[[:punct:]]+", test: "hello!?", result: "match", options: "", description: "POSIX punct: matches '!?'" },
+          { pattern: "\\p{Punct}+", test: "hello!?", result: "match", options: "", description: "Unicode Punct: matches '!?' (punctuation)" },
+
+          # --- Whitespace ---
+          { pattern: "[[:space:]]+", test: "a b\tc\n", result: "match", options: "", description: "POSIX space: matches space, tab, newline" },
+          { pattern: "\\p{Space}+", test: "a b\tc\n", result: "match", options: "", description: "Unicode Space: matches space, tab, newline" },
+
+          # --- Case Sensitivity ---
+          { pattern: "[[:lower:]]+", test: "AbC", result: "match", options: "", description: "POSIX lower: matches 'b'" },
+          { pattern: "\\p{Lower}+", test: "AbC", result: "match", options: "", description: "Unicode Lower: matches 'b'" },
+          { pattern: "[[:upper:]]+", test: "AbC", result: "match", options: "", description: "POSIX upper: matches 'A' and 'C'" },
+          { pattern: "\\p{Upper}+", test: "AbC", result: "match", options: "", description: "Unicode Upper: matches 'A' and 'C'" }
+
+        ]
       }
     }
   end
