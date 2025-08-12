@@ -112,6 +112,18 @@ module RegularExpressionsHelper
         ]
       },
 
+      "Alternations" => {
+        short: "Alternations",
+        description: "Alternations: Match one of several alternatives using the | operator.",
+        examples: [
+          { pattern: "cat|dog", test: "I have a cat", result: "match", options: "", description: "Matches 'cat' or 'dog'." },
+          { pattern: "cat|dog", test: "I have a dog", result: "match", options: "", description: "Matches 'cat' or 'dog'." },
+          { pattern: "cat|dog", test: "I have a bird", result: "no-match", options: "", description: "No match because neither 'cat' nor 'dog' is present." },
+          { pattern: "red|green|blue", test: "green apple", result: "match", options: "", description: "Matches any of the listed colors." },
+          { pattern: "red|green|blue", test: "yellow banana", result: "no-match", options: "", description: "No match since 'yellow' isn't an alternative." }
+        ]
+      },
+
       "Anchors" => {
         short: "Anchors",
         description: "Anchors: Match positions in the string using anchors like ^, $, \A, \b.",
@@ -274,8 +286,7 @@ module RegularExpressionsHelper
           { pattern: "(\\d{3})-(\\d{2})-(\\d{4})\\k<1>", test: "123-45-6789123", result: "match", options: "", description: "Matches '123-45-6789123' using a nested back-reference to the first group." },
           { pattern: "(\\w+)-(\\w+)\\k<2>", test: "apple-orangeorange", result: "match", options: "", description: "Matches 'apple-orangeorange' where the second group repeats using \k<2>." },
           { pattern: "(\\d{3})-(\\d{2})-(\\d{4})\\k<2>", test: "123-45-678945", result: "match", options: "", description: "Matches '123-45-678945' using a numbered back-reference to group 2." },
-          { pattern: "(\\d+)\\1", test: "12345", result: "no-match", options: "", description: "No match for '12345' because the digits don't repeat." },
-          { pattern: "(\\w+)\\s\\k<3>", test: "hello hello", result: "no-match", options: "", description: "No match for 'hello hello' because there is no third capture group." }
+          { pattern: "(\\d+)\\1", test: "12345", result: "no-match", options: "", description: "No match for '12345' because the digits don't repeat." }
         ]
       },
 
@@ -412,20 +423,54 @@ module RegularExpressionsHelper
         ]
       },
 
-      "Quantifiers" => {
-        short: "Quantifiers",
-        description: "Quantifiers: Define how many times a pattern should match using quantifiers like *, +, ?, {n,m}, {n,} etc.",
+      "Quantifiers Greedy" => {
+        short: "Quantifiers Greedy",
+        description: "Greedy quantifiers: Match as many times as possible.",
         examples: [
-          { pattern: "a*", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'a'. Matches '' (empty string) or 'a' at the start." },
-          { pattern: "a*", test: "aaaabc123!", result: "match", options: "", description: "Matches 'aaa' because it's zero or more 'a's." },
-          { pattern: "a+", test: "abc123!", result: "match", options: "", description: "Matches one or more 'a'. Matches the first 'a'." },
-          { pattern: "a{2}", test: "abc123!", result: "no-match", options: "", description: "No match because there is only one 'a', but 'a{2}' requires two occurrences." },
-          { pattern: "(abc)*", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'abc'. Matches 'abc' once at the beginning." },
-          { pattern: "(abc)+", test: "abc123!", result: "match", options: "", description: "Matches one or more 'abc'. Matches 'abc' at the start." },
-          { pattern: "(abc)?", test: "abc123!", result: "match", options: "", description: "Matches zero or one 'abc'. Matches 'abc' at the start." },
-          { pattern: "(abc){2}", test: "abcabc123!", result: "match", options: "", description: "Matches 'abcabc' because there are exactly two occurrences of 'abc'." },
-          { pattern: "(abc){2,3}", test: "abcabc123!", result: "match", options: "", description: "Matches 'abcabc' because there are exactly two occurrences of 'abc'." },
-          { pattern: "(abc){2,3}", test: "abcabcabc123!", result: "match", options: "", description: "Matches 'abcabcabc' because there are exactly three occurrences of 'abc'." }
+          { pattern: "a*", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'a's greedily; matches '' or 'a' at start." },
+          { pattern: "a*", test: "aaaabc123!", result: "match", options: "", description: "Matches all leading 'a's greedily." },
+          { pattern: "a+", test: "abc123!", result: "match", options: "", description: "Matches one or more 'a's greedily; matches first 'a'." },
+          { pattern: "a{2}", test: "abc123!", result: "no-match", options: "", description: "No match; requires exactly two 'a's." },
+          { pattern: "(abc)*", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'abc's greedily; matches one 'abc'." },
+          { pattern: "(abc)+", test: "abc123!", result: "match", options: "", description: "Matches one or more 'abc's greedily." },
+          { pattern: "(abc)?", test: "abc123!", result: "match", options: "", description: "Matches zero or one 'abc' greedily." },
+          { pattern: "(abc){2}", test: "abcabc123!", result: "match", options: "", description: "Matches exactly two 'abc' sequences greedily." },
+          { pattern: "(abc){2,3}", test: "abcabc123!", result: "match", options: "", description: "Matches 2 to 3 'abc's greedily (matches 2)." },
+          { pattern: "(abc){2,3}", test: "abcabcabc123!", result: "match", options: "", description: "Matches 2 to 3 'abc's greedily (matches 3)." }
+        ]
+      },
+
+      "Quantifiers Reluctant (Lazy)" => {
+        short: "Quantifiers Reluctant (Lazy)",
+        description: "Reluctant (Lazy) quantifiers: Match as few times as possible.",
+        examples: [
+          { pattern: "a*?", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'a's lazily; prefers empty match." },
+          { pattern: "a*?", test: "aaaabc123!", result: "match", options: "", description: "Matches zero 'a's lazily at start." },
+          { pattern: "a+?", test: "abc123!", result: "match", options: "", description: "Matches one or more 'a's lazily; matches one 'a'." },
+          { pattern: "a{2}?", test: "abc123!", result: "no-match", options: "", description: "No match; requires exactly two 'a's." },
+          { pattern: "(abc)*?", test: "abc123!", result: "match", options: "", description: "Matches zero 'abc's lazily at start." },
+          { pattern: "(abc)+?", test: "abc123!", result: "match", options: "", description: "Matches one 'abc' lazily." },
+          { pattern: "(abc)?", test: "abc123!", result: "match", options: "", description: "Matches zero or one 'abc' lazily." },
+          { pattern: "(abc){2}?", test: "abcabc123!", result: "match", options: "", description: "Matches exactly two 'abc' sequences lazily." },
+          { pattern: "(abc){2,3}?", test: "abcabc123!", result: "match", options: "", description: "Matches 2 'abc's lazily." },
+          { pattern: "(abc){2,3}?", test: "abcabcabc123!", result: "match", options: "", description: "Matches 2 'abc's lazily; stops early." }
+        ]
+      },
+
+      "Quantifiers Possessive" => {
+        short: "Quantifiers Possessive",
+        description: "Possessive quantifiers: Match as many times as possible without backtracking.",
+        examples: [
+          { pattern: "a*+", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'a's possessively; no backtracking." },
+          { pattern: "a*+", test: "aaaabc123!", result: "match", options: "", description: "Matches all leading 'a's possessively." },
+          { pattern: "a++", test: "abc123!", result: "match", options: "", description: "Matches one or more 'a's possessively." },
+          { pattern: "a{2}+", test: "abc123!", result: "no-match", options: "", description: "No match; requires exactly two 'a's possessively." },
+          { pattern: "(abc)*+", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'abc's possessively." },
+          { pattern: "(abc)++", test: "abc123!", result: "match", options: "", description: "Matches one or more 'abc's possessively." },
+          { pattern: "(abc)?+", test: "abc123!", result: "match", options: "", description: "Matches zero or one 'abc' possessively." },
+          { pattern: "(abc){2}+", test: "abcabc123!", result: "match", options: "", description: "Matches exactly two 'abc' sequences possessively." },
+          { pattern: "(abc){2,3}+", test: "abcabc123!", result: "match", options: "", description: "Matches 2 to 3 'abc's possessively." },
+          { pattern: "(abc){2,3}+", test: "abcabcabc123!", result: "match", options: "", description: "Matches 2 to 3 'abc's possessively." }
         ]
       },
 

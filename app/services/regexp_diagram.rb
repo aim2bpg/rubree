@@ -20,13 +20,15 @@ module RegexpDiagram
   end
 
   def ast_to_railroad(ast)
+    return RailroadDiagrams::Terminal.new("\"#{ast}\"") if ast.is_a?(String)
+
     case ast
     when Regexp::Expression::Quantifier
       base = ast_to_railroad(ast.base)
-      wrap_with_quantifier(base, ast.quantifier)
+      wrap_with_quantifier(base, ast)
 
     when Regexp::Expression::Root, Regexp::Expression::Sequence
-      RailroadDiagrams::Sequence.new(*ast.expressions.map { |e| ast_to_railroad(e) })
+      ast_to_railroad_sequence(ast.expressions)
 
     when Regexp::Expression::Alternative, Regexp::Expression::Alternation
       RailroadDiagrams::Choice.new(0, *ast.expressions.map { |e| ast_to_railroad(e) })
@@ -83,20 +85,35 @@ module RegexpDiagram
 
     when Regexp::Expression::CharacterSet
       label = ast.negative? ? "negated character set" : "character set"
-      expressions = ast.expressions.map do |e|
-        if e.is_a?(Regexp::Expression::CharacterSet::Range)
-          start = e.expressions.first.text
-          ending = e.expressions.last.text
-          RailroadDiagrams::Sequence.new(RailroadDiagrams::NonTerminal.new("\"#{start}\" - \"#{ending}\""))
+
+      build_expr = lambda do |e|
+        case e
+        when Regexp::Expression::CharacterSet::Range
+          a, b = e.expressions
+          start_char = a.respond_to?(:text) ? a.text : a.to_s
+          end_char = b.respond_to?(:text) ? b.text : b.to_s
+          RailroadDiagrams::Terminal.new("\"#{start_char}\" - \"#{end_char}\"")
+
+        when Regexp::Expression::CharacterSet::Intersection
+          choices = e.expressions.map do |ie|
+            inner_items = ie.expressions.map { |sub| build_expr.call(sub) }
+            if inner_items.size > 1 && inner_items.all? { |item| item.is_a?(RailroadDiagrams::Terminal) }
+              RailroadDiagrams::MultipleChoice.new(0, "any", *inner_items, RailroadDiagrams::Comment.new(label))
+            else
+              RailroadDiagrams::Sequence.new(*inner_items)
+            end
+          end
+          RailroadDiagrams::MultipleChoice.new(0, "all", *choices, RailroadDiagrams::Comment.new("intersection of character sets"))
+
         else
           ast_to_railroad(e)
         end
       end
 
-      wrap_with_quantifier(
-        RailroadDiagrams::MultipleChoice.new(0, "any", *expressions, RailroadDiagrams::Comment.new(label)),
-        ast.quantifier
-      )
+      expressions = ast.expressions.map { |e| build_expr.call(e) }
+
+      mc = RailroadDiagrams::MultipleChoice.new(0, "any", *expressions, RailroadDiagrams::Comment.new(label))
+      wrap_with_quantifier(mc, ast.quantifier)
 
     when Regexp::Expression::Anchor::BeginningOfLine
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("beginning of line"), ast.quantifier)
@@ -122,20 +139,20 @@ module RegexpDiagram
     when Regexp::Expression::Anchor::MatchStart
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("match start"), ast.quantifier)
 
-    # when Regexp::Expression::Backreference::NumberRecursionLevel
-    #   label = "backreference number recursion level"
-    #   label += " \\g<#{ast.number}>" if ast.respond_to?(:number)
-    #   wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
+    when Regexp::Expression::Backreference::NumberRecursionLevel
+      label = "backreference number recursion level"
+      label += " \\g<#{ast.number}>" if ast.respond_to?(:number)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
 
-    # when Regexp::Expression::Backreference::NumberCallRelative
-    #   label = "backreference number call relative"
-    #   label += " \\g<#{ast.token.text}>" if ast.respond_to?(:token)
-    #   wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
+    when Regexp::Expression::Backreference::NumberCallRelative
+      label = "backreference number call relative"
+      label += " \\g<#{ast.token.text}>" if ast.respond_to?(:token)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
 
-    # when Regexp::Expression::Backreference::NumberRelative
-    #   label = "backreference number relative"
-    #   label += " \\g<#{ast.token.text}>" if ast.respond_to?(:token)
-    #   wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
+    when Regexp::Expression::Backreference::NumberRelative
+      label = "backreference number relative"
+      label += " \\g<#{ast.token.text}>" if ast.respond_to?(:token)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
 
     when Regexp::Expression::Backreference::NumberCall
       label = "backreference number call"
@@ -147,10 +164,10 @@ module RegexpDiagram
       label += " \\#{ast.number}" if ast.respond_to?(:number)
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
 
-    # when Regexp::Expression::Backreference::NameCallRelative
-    #   label = "backreference name call relative"
-    #   label += " \\g<#{ast.name}>" if ast.respond_to?(:name)
-    #   wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
+    when Regexp::Expression::Backreference::NameRecursionLevel
+      label = "backreference name recursion level"
+      label += " \\k<#{ast.name}>" if ast.respond_to?(:name)
+      wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
 
     when Regexp::Expression::Backreference::NameCall
       label = "backreference name call"
@@ -161,11 +178,6 @@ module RegexpDiagram
       label = "backreference name"
       label += " \\k<#{ast.name}>" if ast.respond_to?(:name)
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
-
-    # when Regexp::Expression::Backreference::NameRecursionLevel
-    #   label = "backreference name recursion level"
-    #   label += " \\k<#{ast.name}>" if ast.respond_to?(:name)
-    #   wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
 
     when Regexp::Expression::CharacterType::Any
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("any character"), ast.quantifier)
@@ -281,47 +293,104 @@ module RegexpDiagram
     end
   end
 
+  def merge_consecutive_literals(expressions)
+    merged = []
+    buffer = []
+
+    expressions.each do |e|
+      if literal_without_quantifier?(e)
+        buffer << e
+      else
+        unless buffer.empty?
+          merged << merge_literal_buffer(buffer)
+          buffer.clear
+        end
+        merged << e
+      end
+    end
+
+    merged << merge_literal_buffer(buffer) unless buffer.empty?
+    merged
+  end
+
+  def literal_without_quantifier?(e)
+    (e.is_a?(Regexp::Expression::Literal) || e.is_a?(Regexp::Expression::EscapeSequence::Literal)) &&
+      e.respond_to?(:quantifier) &&
+      e.quantifier.nil?
+  end
+
+  def merge_literal_buffer(buffer)
+    merged_text = buffer.map { |e| e.text.gsub("\\", "") }.join
+    merged_text
+  end
+
   def ast_to_railroad_sequence(expressions)
-    RailroadDiagrams::Sequence.new(*expressions.map { |e| ast_to_railroad(e) })
+    merged_expressions = merge_consecutive_literals(expressions)
+    RailroadDiagrams::Sequence.new(*merged_expressions.map { |e| ast_to_railroad(e) })
   end
 
   def wrap_with_quantifier(base, quant)
     return base unless quant
 
-    quant = quant.to_s
+    quant_text = quant.text
 
-    case quant
-    when "*"
-      RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("0 time or more"))
-    when "+"
-      RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("1 time or more"))
+    if quant_text == "{0}" || quant_text == "{0,0}" || quant_text == "{,0}"
+      return RailroadDiagrams::Skip.new
+    end
+
+    matched = quant_text.match(/\A(\*|\+|\?|\{\d*(?:,\d*)?\})([?+]?)\z/)
+
+    unless matched
+      return RailroadDiagrams::Group.new(base, "quantifier: #{quant_text}")
+    end
+
+    quant_core = matched[1]
+    suffix = matched[2]
+
+    comment_suffix = case suffix
     when "?"
-      RailroadDiagrams::Optional.new(base, RailroadDiagrams::Comment.new("0 time or 1 time"))
+                       " (lazy)"
+    when "+"
+                       " (possessive)"
+    else
+                       " (greedy)"
+    end
+
+    case quant_core
+    when "*"
+      RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("0 time or more" + comment_suffix))
+    when "+"
+      RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("1 time or more" + comment_suffix))
+    when "?"
+      return base if base.is_a?(RailroadDiagrams::Optional)
+      RailroadDiagrams::Optional.new(base)
     when /\A\{(\d+)\}\z/
       n = $1.to_i
-      if n > 1
-        RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{n} times"))
-      else
-        RailroadDiagrams::Optional.new(base, RailroadDiagrams::Comment.new("#{n} time"))
-      end
-    when /\A\{(\d+),(\d*)\}\z/
+      RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{n} time(s)"))
+    when /\A\{(\d+),(\d+)\}\z/
       min = $1.to_i
-      max = $2.empty? ? nil : $2.to_i
-      if max
-        if max > 1
-          RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{min}-#{max} times"))
-        else
-          RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{min}-#{max} time"))
-        end
+      max = $2.to_i
+      if min == max
+        RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{min} time(s)"))
       else
-        if min > 1
-          RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("#{min} times or more"))
+        if min == 0
+          RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("#{min}-#{max} time(s)"))
         else
-          RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("#{min} time or more"))
+          RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{min}-#{max} time(s)"))
         end
       end
+    when /\A\{(\d+),\}\z/
+      min = $1.to_i
+      if min == 0
+        RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("0 time or more"))
+      else
+        RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{min} time(s) or more"))
+      end
+    when /\A\{,\d+\}\z/
+      max = $&.match(/\d+/)[0].to_i
+      RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("0 - #{max} time(s)"))
     else
-      RailroadDiagrams::Group.new(base, "quantifier: #{quant}")
+      RailroadDiagrams::Group.new(base, "quantifier: #{quant_text}")
     end
   end
 end
