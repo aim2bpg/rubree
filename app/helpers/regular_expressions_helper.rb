@@ -249,29 +249,30 @@ module RegularExpressionsHelper
 
       "Group Atomic" => {
         short: "Group Atomic",
-        description: "Group Atomic: Ensure that a subexpression matches atomically without backtracking using (?>...).",
+        description: "Group Atomic: Atomic groups (?>...) match a subpattern without allowing backtracking within the group. If the overall match fails, the engine will not retry alternative paths inside the atomic group. This can reduce unnecessary backtracking and improve performance.",
         examples: [
-          { pattern: "(?>abc)", test: "abc", result: "match", options: "", description: "Matches 'abc' atomically, no backtracking allowed." },
-          { pattern: "(?>a|b)c", test: "ac", result: "match", options: "", description: "Matches 'a' atomically, followed by 'c'. No backtracking to match 'b'." },
-          { pattern: "(?>a|b)c", test: "bc", result: "match", options: "", description: "Matches 'b' atomically, followed by 'c'. No backtracking to match 'a'." },
-          { pattern: "(?>a|b)c", test: "cc", result: "no-match", options: "", description: "No match for 'cc' because 'a' or 'b' are required before 'c'." },
-          { pattern: "(?>a|b|c)d", test: "cd", result: "match", options: "", description: "Matches 'c' atomically, followed by 'd'. No backtracking to match 'a' or 'b'." },
-          { pattern: "(?>a|b|c)d", test: "ad", result: "match", options: "", description: "Matches 'a' atomically, followed by 'd'. No backtracking to match 'b' or 'c'." },
-          { pattern: "(?>a|b|c)d", test: "bd", result: "match", options: "", description: "Matches 'b' atomically, followed by 'd'. No backtracking to match 'a' or 'c'." },
-          { pattern: "(?>abc|def)ghi", test: "abcghi", result: "match", options: "", description: "Matches 'abc' atomically, followed by 'ghi'. No backtracking to match 'def'." }
+          { pattern: "a(bc|b)c", test: "abc", result: "match", options: "", description: "Non-atomic: tries 'b', fails, backtracks and matches 'bc', then 'c'." },
+          { pattern: "a(?>bc|b)c", test: "abc", result: "no-match", options: "", description: "Atomic: matches 'bc'; 'c' fails; no backtracking to 'b'." },
+          { pattern: "(\\w+)\\d{3}", test: "user123", result: "match", options: "", description: "Matches 'user123'; captures 'user' in group 1; '123' is matched but not captured separately." },
+          { pattern: "(?>\\w+)\\d{3}", test: "user123", result: "no-match", options: "", description: "No match because the atomic group (?>\\w+) greedily consumes 'user123', leaving nothing for \\d{3} to match." },
+          { pattern: "Start(A+|A*B)End", test: "StartABEnd", result: "match", options: "", description: "Non-atomic: tries 'A+', fails; backtracks and tries 'A*B', which matches." },
+          { pattern: "Start(?>A+|A*B)End", test: "StartABEnd", result: "no-match", options: "", description: "Atomic: greedily matches 'A+'; fails at 'B'; cannot try 'A*B'." }
         ]
       },
 
       "Group Absence" => {
         short: "Group Absence",
-        description: "Group Absence: Match the absence of a subexpression using (?~...).",
+        description: "Group Absence: Absence operator (?~pattern) matches substrings that do NOT contain the pattern. When matching the entire string, it fails if the pattern exists anywhere. However, partial matches may occur on substrings excluding the pattern.",
         examples: [
-          { pattern: "(?~abc)", test: "xyz", result: "match", options: "", description: "Matches 'xyz' because 'abc' is absent." },
-          { pattern: "(?~123)", test: "456", result: "match", options: "", description: "Matches '456' because '123' is absent." },
-          { pattern: "(?~abc)", test: "ab", result: "match", options: "", description: "Matches 'ab' because 'abc' is absent." },
-          { pattern: "(?~cat)", test: "dog", result: "match", options: "", description: "Matches 'dog' because 'cat' is absent." },
-          { pattern: "(?~apple)", test: "banana", result: "match", options: "", description: "Matches 'banana' because 'apple' is absent." },
-          { pattern: "(?~hello)", test: "world", result: "match", options: "", description: "Matches 'world' because 'hello' is absent." }
+          { pattern: "(?~abc)", test: "ab", result: "match", options: "", description: "Matches whole string; 'abc' is absent." },
+          { pattern: "(?~abc)", test: "aab", result: "match", options: "", description: "Matches whole string; 'abc' is absent." },
+          { pattern: "(?~abc)", test: "abb", result: "match", options: "", description: "Matches whole string; 'abc' is absent." },
+          { pattern: "(?~abc)", test: "abc", result: "match", options: "", description: "Matches parts of the string that do not include 'abc' (e.g., 'ab', 'bc', or empty positions); full match is not possible." },
+          { pattern: "^(?~abc)$", test: "abc", result: "no-match", options: "", description: "No match because the entire string contains 'abc', which is excluded by the absence group." },
+          { pattern: "(?~abc)", test: "aabc", result: "match", options: "", description: "Partial match found excluding 'abc'; full string contains 'abc' so full match fails." },
+          { pattern: "(?~abc)", test: "ccabcdd", result: "match", options: "", description: "Partial match on substrings excluding 'abc'; full string contains 'abc' so full match fails." },
+          { pattern: "/\\*(?~\\*/)*\\*/", test: "/**/", result: "match", options: "", description: "Matches C-style empty comment." },
+          { pattern: "/\\*(?~\\*/)*\\*/", test: "/* foo bar */", result: "match", options: "", description: "Matches C-style comment with content." }
         ]
       },
 
@@ -286,13 +287,14 @@ module RegularExpressionsHelper
           { pattern: "(\\d{3})-(\\d{2})-(\\d{4})\\k<1>", test: "123-45-6789123", result: "match", options: "", description: "Matches '123-45-6789123' using a nested back-reference to the first group." },
           { pattern: "(\\w+)-(\\w+)\\k<2>", test: "apple-orangeorange", result: "match", options: "", description: "Matches 'apple-orangeorange' where the second group repeats using \k<2>." },
           { pattern: "(\\d{3})-(\\d{2})-(\\d{4})\\k<2>", test: "123-45-678945", result: "match", options: "", description: "Matches '123-45-678945' using a numbered back-reference to group 2." },
-          { pattern: "(\\d+)\\1", test: "12345", result: "no-match", options: "", description: "No match for '12345' because the digits don't repeat." }
+          { pattern: "(\\d+)\\1", test: "12345", result: "no-match", options: "", description: "No match for '12345' because the digits don't repeat." },
+          { pattern: "(.)(.)\\k<-2>\\k<-1>", test: "xyzyz", result: "match", options: "", description: "Matches 'yzyz' where \\k<-2> and \\k<-1> refer to 2nd and 1st previous captures, respectively." }
         ]
       },
 
       "Group Capturing" => {
         short: "Group Capturing",
-        description: "Group Capturing: Capture matched groups for later reference.",
+        description: "Group Capturing: Capture matched groups for later reference, accessible via numbered or named groups, including local variables after matching.",
         examples: [
           { pattern: "(abc)", test: "abc", result: "match", options: "", description: "Captures 'abc' in the first capturing group." },
           { pattern: "(\\d{2})-(\\d{2})-(\\d{4})", test: "12-34-5678", result: "match", options: "", description: "Captures the date parts into three groups: '12', '34', '5678'." },
@@ -323,11 +325,15 @@ module RegularExpressionsHelper
         short: "Group Named",
         description: "Group Named: Capture groups with a specific name for easier reference.",
         examples: [
-          { pattern: "(?<name>abc)", test: "abc", result: "match", options: "", description: "Captures 'abc' in a group named 'name'." },
-          { pattern: "(?'year'\\d{4})-(?'month'\\d{2})-(?'day'\\d{2})", test: "2023-07-25", result: "match", options: "", description: "Captures the year, month, and day into named groups." },
+          { pattern: "(?<name>Alice)", test: "Alice", result: "match", options: "", description: "Captures 'abc' in a group named 'name'." },
+          { pattern: "(?'name'Alice)", test: "Alice", result: "match", options: "", description: "Captures 'abc' in a group named 'name'." },
+          { pattern: "(?P<name>Alice)", test: "Alice", result: "no-match", options: "", description: "Python-style named group syntax '(?P<name>...)' is not supported in Ruby, so no match." },
+          { pattern: "(?<year>\\d{4})-(?'month'\\d{2})-(?'day'\\d{2})", test: "2023-07-25", result: "match", options: "", description: "Captures the year, month, and day into named groups." },
+          { pattern: "(?<hour>\\d{2}):(?'minute'\\d{2})", test: "14:30", result: "match", options: "", description: "Captures hour and minute into named groups." },
           { pattern: "(?<user>\\w+)@(?<domain>\\w+\\.\\w+)", test: "alice@example.com", result: "match", options: "", description: "Captures 'alice' in the named group 'alice' and 'example.com' in the named group 'domain'." },
-          { pattern: "(?'hour'\\d{2}):(?'minute'\\d{2})", test: "14:30", result: "match", options: "", description: "Captures hour and minute into named groups." },
-          { pattern: "(?<phone>\\+\\d{1,2} \\d{3}-\\d{4})", test: "+1 123-4567", result: "match", options: "", description: "Captures a phone number in the named group 'phone'." }
+          { pattern: "\\$(?<dollars>\\d+)\\.(?<cents>\\d+)", test: "$3.67", result: "match", options: "", description: "Captures dollars and cents into named groups 'dollars' and 'cents', accessible via MatchData with symbol keys." },
+          { pattern: "(?<vowel>[aeiou]).\\k<vowel>.\\k<vowel>", test: "ototomy", result: "match", options: "", description: "Uses named capture and back-references to match repeated vowels." },
+          { pattern: "(?<name>\\w+)(\\d{3})", test: "user123", result: "match", options: "", description: "Matches successfully; named capture 'name' and numbered capture both exist, but MatchData mainly exposes named captures." }
         ]
       },
 
@@ -359,9 +365,9 @@ module RegularExpressionsHelper
         short: "Group Subexp. Calls",
         description: "Group Subexp. Calls: Call a previously defined subexpression (either by name or index).",
         examples: [
-          { pattern: "\\g<1>", test: "123", result: "match", options: "", description: "Refers to the first captured group." },
-          { pattern: "\\g<name>", test: "hello", result: "match", options: "", description: "Refers to the group named 'name'." },
-          { pattern: "\\g<1>\\g<2>", test: "123abc", result: "match", options: "", description: "Refers to two captured groups by index." }
+          { pattern: "(abc)\\g<1>", test: "abcabc", result: "match", options: "", description: "Refers to the first captured group." },
+          { pattern: "(?<name>hello)\\g<name>", test: "hellohello", result: "match", options: "", description: "Refers to the group named 'name'." },
+          { pattern: "(abc)(def)\\g<1>\\g<2>", test: "abcdefabcdef", result: "match", options: "", description: "Refers to two captured groups by index." }
         ]
       },
 

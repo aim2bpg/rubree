@@ -73,10 +73,23 @@ module RegexpDiagram
       label = ast.number ? "group ##{ast.number}" : "capture group"
       wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label), ast.quantifier)
 
+    when Regexp::Expression::Group::Comment
+      comment_text = ast.text.gsub(/\A\(\?#|\)\z/, "").strip
+      display_text = comment_text.empty? ? "(empty comment)" : comment_text
+      RailroadDiagrams::Comment.new(display_text)
+
     when Regexp::Expression::Group::Options
-      group_content = ast_to_railroad_sequence(ast.expressions)
-      label = "options group (#{ast.text})"
-      wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label), ast.quantifier)
+      if ast.expressions.empty?
+        option_flags = ast.text.gsub(/[()?:]/, "")
+        label = "options declaration"
+        comment = parse_option_flags(option_flags)
+        RailroadDiagrams::Group.new(RailroadDiagrams::Comment.new(comment), label)
+      else
+        group_content = ast_to_railroad_sequence(ast.expressions)
+        option_flags = ast.text.gsub(/[()?:]/, "")
+        label = "options #{parse_option_flags(option_flags)}"
+        wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label), ast.quantifier)
+      end
 
     when Regexp::Expression::Group::Passive
       group_content = ast_to_railroad_sequence(ast.expressions)
@@ -212,8 +225,12 @@ module RegexpDiagram
     when Regexp::Expression::CharacterType::ExtendedGrapheme
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("extended grapheme"), ast.quantifier)
 
+    when Regexp::Expression::WhiteSpace
+      RailroadDiagrams::NonTerminal.new("whitespace")
+
     when Regexp::Expression::Comment
-      RailroadDiagrams::Comment.new(ast.text)
+      cleaned_comment = ast.text.sub(/^#\s?/, "").strip
+      RailroadDiagrams::Comment.new(cleaned_comment.empty? ? "(comment)" : cleaned_comment)
 
     when Regexp::Expression::FreeSpace
       RailroadDiagrams::Comment.new("whitespace")
@@ -229,9 +246,6 @@ module RegexpDiagram
 
     when Regexp::Expression::UnicodeProperty::Base
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ast.text), ast.quantifier)
-
-    when Regexp::Expression::WhiteSpace
-      RailroadDiagrams::NonTerminal.new("whitespace")
 
     when Regexp::Expression::EscapeSequence::AsciiEscape
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("ASCII escape"), ast.quantifier)
@@ -392,5 +406,16 @@ module RegexpDiagram
     else
       RailroadDiagrams::Group.new(base, "quantifier: #{quant_text}")
     end
+  end
+
+  def parse_option_flags(flag_str)
+    enabled = flag_str[/^[^-]+/] || ""
+    disabled = flag_str[/-(.+)$/, 1] || ""
+
+    parts = []
+    parts << "enabled: #{enabled.chars.join(', ')}" unless enabled.empty?
+    parts << "disabled: #{disabled.chars.join(', ')}" unless disabled.empty?
+
+    parts.join(" / ")
   end
 end
