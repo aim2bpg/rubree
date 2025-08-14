@@ -193,7 +193,10 @@ module RegularExpressionsHelper
         examples: [
           { pattern: "(?<A>a)(?(<A>)T|F)", test: "aT", result: "match", options: "", description: "Matches 'T' because condition (<A>) is true." },
           { pattern: "(?<A>a)(?(<A>)T|)", test: "aT", result: "match", options: "", description: "Matches 'T' because condition (<A>) is true and empty branch is ignored." },
-          { pattern: "(a)(?(001)T)", test: "aT", result: "match", options: "", description: "Matches 'T' because condition (001) is valid." }
+          { pattern: "(a)(?(001)T)", test: "aT", result: "match", options: "", description: "Matches 'T' because condition (001) is valid." },
+          { pattern: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z", test: "set x=32", result: "match", options: "", description: "Matches 'set x=32' with group 1 being 'set', group 3 being 'x', and group 4 being '32' because condition (1) is true." },
+          { pattern: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z", test: "print x", result: "match", options: "", description: "Matches 'print x' with group 2 being 'print' and group 3 being 'x'. The condition (1) is false, so no number is matched." },
+          { pattern: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z", test: "set y", result: "no-match", options: "", description: "No match because 'set y' does not match the condition (1) where a number should follow." }
         ]
       },
 

@@ -9,7 +9,7 @@ class RegularExpressionsController < ApplicationController
 
     if @regular_expression.expression.present?
       begin
-        @svg_output = RegexpDiagram.create_svg_from_regex(@regular_expression.expression)
+        @svg_output = RegexpDiagram.create_svg_from_regex(@regular_expression.expression, options: @regular_expression.options)
       rescue StandardError => e
         @svg_output = generate_error_svg("Invalid pattern")
         Rails.logger.error("SVG generation error: #{e.message}")

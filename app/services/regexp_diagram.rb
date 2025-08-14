@@ -1,10 +1,11 @@
 module RegexpDiagram
   module_function
 
-  def create_svg_from_regex(regexp_str)
+  def create_svg_from_regex(regexp_str, options: nil)
     begin
-      regex = Regexp.new(regexp_str)
-      ast = Regexp::Parser.parse(regex.source)
+      regex_options = parse_options(options)
+      regex = Regexp.new(regexp_str, regex_options)
+      ast = Regexp::Parser.parse(regexp_str, options: regex_options)
 
       diagram_body = ast_to_railroad(ast)
       diagram = RailroadDiagrams::Diagram.new(diagram_body)
@@ -226,14 +227,29 @@ module RegexpDiagram
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("extended grapheme"), ast.quantifier)
 
     when Regexp::Expression::WhiteSpace
-      RailroadDiagrams::NonTerminal.new("whitespace")
+      RailroadDiagrams::Skip.new
 
     when Regexp::Expression::Comment
       cleaned_comment = ast.text.sub(/^#\s?/, "").strip
-      RailroadDiagrams::Comment.new(cleaned_comment.empty? ? "(comment)" : cleaned_comment)
+      RailroadDiagrams::Comment.new(cleaned_comment)
 
-    when Regexp::Expression::FreeSpace
-      RailroadDiagrams::Comment.new("whitespace")
+    when Regexp::Expression::Conditional::Expression
+      true_branch_expr = ast.branches[0] ? ast_to_railroad(ast.branches[0]) : nil
+      false_branch_expr = ast.branches[1] ? ast_to_railroad(ast.branches[1]) : nil
+
+      label_true = true_branch_expr ? RailroadDiagrams::Group.new(true_branch_expr, "True") : RailroadDiagrams::Skip.new
+      label_false = false_branch_expr ? RailroadDiagrams::Group.new(false_branch_expr, "False") : RailroadDiagrams::Skip.new
+      choice_expr = RailroadDiagrams::Choice.new(0, label_true, label_false)
+
+      condition_label = case ast.condition.to_s
+      when /<([^>]+)>/  # 名前付きキャプチャ
+                          $1
+      when /\d+/  # 番号付きキャプチャ（001など）
+                          "group ##{$&.to_i}"
+      else
+                          ast.condition.to_s  # その他
+      end
+      RailroadDiagrams::Group.new(choice_expr, "Condition: #{condition_label}")
 
     when Regexp::Expression::Keep::Mark
       wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ast.text), ast.quantifier)
@@ -339,8 +355,10 @@ module RegexpDiagram
   end
 
   def ast_to_railroad_sequence(expressions)
-    merged_expressions = merge_consecutive_literals(expressions)
-    RailroadDiagrams::Sequence.new(*merged_expressions.map { |e| ast_to_railroad(e) })
+    return if expressions.empty?
+
+    sequence_items = merge_consecutive_literals(expressions).map { |e| ast_to_railroad(e) }
+    RailroadDiagrams::Sequence.new(*sequence_items)
   end
 
   def wrap_with_quantifier(base, quant)
@@ -417,5 +435,17 @@ module RegexpDiagram
     parts << "disabled: #{disabled.chars.join(', ')}" unless disabled.empty?
 
     parts.join(" / ")
+  end
+
+  def parse_options(option_str)
+    return 0 if option_str.blank?
+
+    option_map = {
+      "i" => Regexp::IGNORECASE,
+      "m" => Regexp::MULTILINE,
+      "x" => Regexp::EXTENDED
+    }
+
+    option_str.downcase.chars.map { |opt| option_map[opt] }.compact.inject(0, :|)
   end
 end

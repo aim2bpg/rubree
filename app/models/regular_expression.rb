@@ -80,7 +80,7 @@ class RegularExpression
   def diagram_svg
     return nil if unready?
 
-    raw_svg = RegexpDiagram.create_svg_from_regex(expression)
+    raw_svg = RegexpDiagram.create_svg_from_regex(expression, options: options)
 
     ActionController::Base.helpers.sanitize(
       raw_svg,
