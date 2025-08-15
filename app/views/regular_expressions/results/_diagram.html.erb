@@ -1,11 +1,10 @@
-<div class="overflow-hidden rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white flex flex-col">
-  <% if @svg_output.present? %>
-    <h3 class="text-sm font-bold mb-2 text-white">Railroad diagram:</h3>
-    <div
-      data-controller="drag-scroll"
-      class="w-full overflow-x-auto overflow-y-hidden whitespace-nowrap cursor-grab">
-      <%= raw @svg_output %>
-    </div>
+<div class="flex flex-col space-y-2 overflow-auto rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white text-left">
+  <% if @diagram_error_message.present? %>
+    <h3 class="text-sm font-bold text-white">Railroad diagram:</h3>
+    <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2"><%= h @diagram_error_message %></div>
+  <% elsif @svg_output.present? %>
+    <h3 class="text-sm font-bold text-white">Railroad diagram:</h3>
+    <div data-controller="drag-scroll" class="w-full overflow-x-auto overflow-y-hidden whitespace-nowrap cursor-grab"><%= regular_expression.diagram_svg %></div>
   <% else %>
     <p class="text-gray-500 m-auto text-center">Railroad diagram will appear here</p>
   <% end %>

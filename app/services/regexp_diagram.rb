@@ -2,27 +2,21 @@ module RegexpDiagram
   module_function
 
   def create_svg_from_regex(regexp_str, options: nil)
-    begin
-      if regexp_str.match?(/\{\d*,?\d*\}[?+]/)
-        return generate_error_svg("Skipped: Lazy or possessive quantifier in range (e.g. {1,3}? or {2,}+)")
-      end
+    raise ArgumentError, "Skipped: Lazy or possessive quantifier in range (e.g. {1,3}? or {2,}+)" if regexp_str.match?(/\{\d*,?\d*\}[?+]/)
 
-      regex_options = parse_options(options)
-      regex = Regexp.new(regexp_str, regex_options)
-      ast = Regexp::Parser.parse(regexp_str, options: regex_options)
+    regex_options = parse_options(options)
+    Regexp.new(regexp_str, regex_options)
 
-      diagram_body = ast_to_railroad(ast)
-      puts diagram_body
-      diagram = RailroadDiagrams::Diagram.new(diagram_body)
+    ast = Regexp::Parser.parse(regexp_str, options: regex_options)
+    diagram_body = ast_to_railroad(ast)
+    diagram = RailroadDiagrams::Diagram.new(diagram_body)
 
-      svg_io = StringIO.new
-      diagram.write_svg(svg_io.method(:<<))
-      svg_io.string
-    rescue StandardError => e
-      puts "[ERROR] #{e.class}: #{e.message}"
-      puts e.backtrace
-      generate_error_svg("Error generating diagram: #{e.message}")
-    end
+    svg_io = StringIO.new
+    diagram.write_svg(svg_io.method(:<<))
+    svg_io.string
+
+  rescue RegexpError, ArgumentError, StandardError => e
+    raise e
   end
 
   def ast_to_railroad(ast)

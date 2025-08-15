@@ -5,7 +5,7 @@ class RegularExpression
 
   validate :check_expression
 
-  attr_reader :match_data, :elapsed_time_ms, :average_elapsed_time_ms, :match_success
+  attr_reader :match_data, :elapsed_time_ms, :average_elapsed_time_ms, :match_success, :diagram_error_message
 
   def unready?
     expression.blank? || test_string.blank?
@@ -35,9 +35,7 @@ class RegularExpression
     results = []
     test_string.to_enum(:scan, regexp).each do
       match = Regexp.last_match
-
       next if match.captures.empty?
-
       results << match.captures
     end
 
@@ -47,11 +45,7 @@ class RegularExpression
   def display_captures
     return [] if unready? || regexp.nil?
 
-    if regexp.names.any?
-      named_captures
-    else
-      captures
-    end
+    regexp.names.any? ? named_captures : captures
   end
 
   def match_positions
@@ -78,23 +72,27 @@ class RegularExpression
   end
 
   def diagram_svg
-    return nil if unready?
+    return nil if expression.blank?
 
-    raw_svg = RegexpDiagram.create_svg_from_regex(expression, options: options)
+    begin
+      @diagram_error_message = nil
+      raw_svg = RegexpDiagram.create_svg_from_regex(expression, options: options)
 
-    ActionController::Base.helpers.sanitize(
-      raw_svg,
-      tags: %w[
-        svg g path rect circle line text style defs title desc
-      ],
-      attributes: %w[
-        d fill stroke x y cx cy r width height viewBox xmlns class type
-        transform text-anchor font stroke-width rx ry
-      ],
-      scrubber: nil
-    ).html_safe
-  rescue StandardError => e
-    "<!-- Error generating diagram: #{ERB::Util.html_escape(e.message)} -->".html_safe
+      ActionController::Base.helpers.sanitize(
+        raw_svg,
+        tags: %w[
+          svg g path rect circle line text style defs title desc
+        ],
+        attributes: %w[
+          d fill stroke x y cx cy r width height viewBox xmlns class type
+          transform text-anchor font stroke-width rx ry
+        ],
+        scrubber: nil
+      )
+    rescue => e
+      @diagram_error_message = "Invalid Pattern: #{e.message}"
+      nil
+    end
   end
 
   private
@@ -104,7 +102,7 @@ class RegularExpression
 
     @regexp = Regexp.new(expression, parse_options)
   rescue RegexpError => e
-    errors.add(:base, "Invalid regular expression syntax: #{e.message}")
+    errors.add(:base, "#{e.message}")
     @regexp = nil
   end
 
@@ -139,7 +137,5 @@ class RegularExpression
     @average_elapsed_time_ms = (times.sum / times.size * 1000).round(3)
     @match_success = match_result
     @match_data = last_match
-
-    errors.add(:base, "No match found for the given expression and test string.") unless match_result
   end
 end

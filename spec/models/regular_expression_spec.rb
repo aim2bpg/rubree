@@ -12,7 +12,7 @@ RSpec.describe RegularExpression do
         expect(regex).to be_valid
       end
 
-      it 'matches successfully' do
+      it 'matches successfully and returns match positions' do
         regex.valid?
         expect(regex.match_positions).to eq(
           [{ start: 0, end: 5, index: 0, invisible: true }]
@@ -23,12 +23,6 @@ RSpec.describe RegularExpression do
         regex.valid?
         expect(regex.captures).to eq(
           [['e']]
-        )
-      end
-
-      it 'returns match positions' do
-        expect(regex.match_positions).to eq(
-          [{ start: 0, end: 5, index: 0, invisible: true }]
         )
       end
     end
@@ -107,28 +101,23 @@ RSpec.describe RegularExpression do
         test_string: 'bar'
       ) }
 
-      it 'is invalid' do
-        expect(regex).not_to be_valid
+      it 'is valid' do
+        expect(regex).to be_valid
       end
 
-      it 'adds error for no match' do
+      it 'has no match success' do
         regex.valid?
-        expect(regex.errors[:base]).to include(
-          'No match found for the given expression and test string.'
-        )
+        expect(regex.match_success).to be false
       end
 
       it 'returns empty captures' do
         regex.valid?
-        expect(regex.captures).to eq(
-          []
-        )
+        expect(regex.captures).to eq([])
       end
 
       it 'returns no match positions' do
-        expect(regex.match_positions).to eq(
-          []
-        )
+        regex.valid?
+        expect(regex.match_positions).to eq([])
       end
     end
 
@@ -145,15 +134,13 @@ RSpec.describe RegularExpression do
       it 'adds error for invalid syntax' do
         regex.valid?
         expect(regex.errors[:base].first).to match(
-          /Invalid regular expression syntax/
+          /premature end of char-class/
         )
       end
 
       it 'returns no match positions' do
         regex.valid?
-        expect(regex.match_positions).to eq(
-          []
-        )
+        expect(regex.match_positions).to eq([])
       end
     end
   end
@@ -181,9 +168,7 @@ RSpec.describe RegularExpression do
 
       it 'returns empty array since no named captures' do
         regex.valid?
-        expect(regex.named_captures).to eq(
-          []
-        )
+        expect(regex.named_captures).to eq([])
       end
     end
   end
@@ -251,11 +236,9 @@ RSpec.describe RegularExpression do
         )
       end
 
-      it 'returns no captures' do
+      it 'returns empty captures' do
         regex.valid?
-        expect(regex.captures).to eq(
-          []
-        )
+        expect(regex.captures).to eq([])
       end
     end
 
@@ -277,11 +260,9 @@ RSpec.describe RegularExpression do
         )
       end
 
-      it 'returns no captures' do
+      it 'returns empty captures' do
         regex.valid?
-        expect(regex.captures).to eq(
-          []
-        )
+        expect(regex.captures).to eq([])
       end
     end
 
@@ -306,11 +287,9 @@ RSpec.describe RegularExpression do
         )
       end
 
-      it 'returns captures' do
+      it 'returns empty captures' do
         regex.valid?
-        expect(regex.captures).to eq(
-          []
-        )
+        expect(regex.captures).to eq([])
       end
     end
 
@@ -334,11 +313,9 @@ RSpec.describe RegularExpression do
         )
       end
 
-      it 'returns correct captures for multiline match' do
+      it 'returns empty captures for multiline match' do
         regex.valid?
-        expect(regex.captures).to eq(
-          []
-        )
+        expect(regex.captures).to eq([])
       end
     end
 
@@ -359,11 +336,9 @@ RSpec.describe RegularExpression do
         )
       end
 
-      it 'returns captures' do
+      it 'returns empty captures' do
         regex.valid?
-        expect(regex.captures).to eq(
-          []
-        )
+        expect(regex.captures).to eq([])
       end
     end
 
