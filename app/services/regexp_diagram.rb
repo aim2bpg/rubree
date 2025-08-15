@@ -82,7 +82,7 @@ module RegexpDiagram
     when Regexp::Expression::Group::Options
       if ast.expressions.empty?
         option_flags = ast.text.gsub(/[()?:]/, "")
-        label = "options declaration"
+        label = "options"
         comment = parse_option_flags(option_flags)
         RailroadDiagrams::Group.new(RailroadDiagrams::Comment.new(comment), label)
       else
@@ -242,12 +242,12 @@ module RegexpDiagram
       choice_expr = RailroadDiagrams::Choice.new(0, label_true, label_false)
 
       condition_label = case ast.condition.to_s
-      when /<([^>]+)>/  # 名前付きキャプチャ
+      when /<([^>]+)>/
                           $1
-      when /\d+/  # 番号付きキャプチャ（001など）
+      when /\d+/
                           "group ##{$&.to_i}"
       else
-                          ast.condition.to_s  # その他
+                          ast.condition.to_s
       end
       RailroadDiagrams::Group.new(choice_expr, "Condition: #{condition_label}")
 

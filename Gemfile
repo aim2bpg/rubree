@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby file: ".ruby-version"
+ruby file: ".ruby-version" unless RUBY_PLATFORM =~ /wasm/
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2", group: [:default, :wasm]
@@ -26,7 +26,7 @@ gem "cssbundling-rails"
 gem "bootsnap", require: false
 
 # Tools and extensions to pack and run Rails apps on Wasm [https://github.com/palkan/wasmify-rails/]
-gem "wasmify-rails", "~> 0.2.3", group: [:default, :wasm]
+gem "wasmify-rails", group: [:default, :wasm]
 
 # A regular expression parser library for Ruby [https://github.com/ammar/regexp_parser/]
 gem "regexp_parser", group: [:default, :wasm]
