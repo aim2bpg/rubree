@@ -451,35 +451,38 @@ module RegularExpressionsHelper
 
       "Quantifiers Reluctant (Lazy)" => {
         short: "Quantifiers Reluctant (Lazy)",
-        description: "Reluctant (Lazy) quantifiers: Match as few times as possible.",
+        description: "Reluctant (Lazy) quantifiers: Match as few times as possible. \
+                     Note: Railroad diagrams are rendered using the `regexp_parser` library. \
+                     Ruby's regular expression engine (Onigmo) supports lazy quantifiers like `??`, `*?`, `+?`, `{n,m}?`, `{n,}?`, `{,n}?` as specified, \
+                     but some specific forms like `{n}?` are not supported and generally unnecessary because lazy behavior with exact counts is redundant.",
         examples: [
           { pattern: "a*?", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'a's lazily; prefers empty match." },
           { pattern: "a*?", test: "aaaabc123!", result: "match", options: "", description: "Matches zero 'a's lazily at start." },
           { pattern: "a+?", test: "abc123!", result: "match", options: "", description: "Matches one or more 'a's lazily; matches one 'a'." },
-          { pattern: "a{2}?", test: "abc123!", result: "no-match", options: "", description: "No match; requires exactly two 'a's." },
+          { pattern: "a{2}?", test: "abc123!", result: "no-match", options: "", description: "No match; requires exactly two 'a's. Not supported by Onigmo: `{n}?` lazy quantifier is unsupported and usually unnecessary." },
           { pattern: "(abc)*?", test: "abc123!", result: "match", options: "", description: "Matches zero 'abc's lazily at start." },
           { pattern: "(abc)+?", test: "abc123!", result: "match", options: "", description: "Matches one 'abc' lazily." },
           { pattern: "(abc)?", test: "abc123!", result: "match", options: "", description: "Matches zero or one 'abc' lazily." },
-          { pattern: "(abc){2}?", test: "abcabc123!", result: "match", options: "", description: "Matches exactly two 'abc' sequences lazily." },
-          { pattern: "(abc){2,3}?", test: "abcabc123!", result: "match", options: "", description: "Matches 2 'abc's lazily." },
-          { pattern: "(abc){2,3}?", test: "abcabcabc123!", result: "match", options: "", description: "Matches 2 'abc's lazily; stops early." }
+          { pattern: "(abc){2}?", test: "abcabc123!", result: "match", options: "", description: "Matches exactly two 'abc' sequences lazily. Diagram not rendered: `regexp_parser` does not support rendering lazy range quantifiers like `{2}?`." },
+          { pattern: "(abc){2,3}?", test: "abcabc123!", result: "match", options: "", description: "Matches 2 'abc's lazily. Diagram not rendered: `regexp_parser` does not support rendering lazy range quantifiers like `{2,3}?`." },
+          { pattern: "(abc){2,3}?", test: "abcabcabc123!", result: "match", options: "", description: "Matches 2 'abc's lazily; stops early. Diagram not rendered: `regexp_parser` does not support rendering lazy range quantifiers like `{2,3}?`." }
         ]
       },
 
+
       "Quantifiers Possessive" => {
         short: "Quantifiers Possessive",
-        description: "Possessive quantifiers: Match as many times as possible without backtracking.",
+        description: "Possessive quantifiers: Match as many times as possible without backtracking. \
+                     Note: Railroad diagrams are rendered using the `regexp_parser` library. \
+                     Possessive quantifiers using range syntax like `{n,m}+`, `{n,}+`, and `{n}+` are not supported by Ruby's regular expression engine (Onigmo) by default. \
+                     These are only supported in Onigmo when using specific syntaxes such as `ONIG_SYNTAX_JAVA` or `ONIG_SYNTAX_PERL`.",
         examples: [
           { pattern: "a*+", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'a's possessively; no backtracking." },
           { pattern: "a*+", test: "aaaabc123!", result: "match", options: "", description: "Matches all leading 'a's possessively." },
           { pattern: "a++", test: "abc123!", result: "match", options: "", description: "Matches one or more 'a's possessively." },
-          { pattern: "a{2}+", test: "abc123!", result: "no-match", options: "", description: "No match; requires exactly two 'a's possessively." },
           { pattern: "(abc)*+", test: "abc123!", result: "match", options: "", description: "Matches zero or more 'abc's possessively." },
           { pattern: "(abc)++", test: "abc123!", result: "match", options: "", description: "Matches one or more 'abc's possessively." },
-          { pattern: "(abc)?+", test: "abc123!", result: "match", options: "", description: "Matches zero or one 'abc' possessively." },
-          { pattern: "(abc){2}+", test: "abcabc123!", result: "match", options: "", description: "Matches exactly two 'abc' sequences possessively." },
-          { pattern: "(abc){2,3}+", test: "abcabc123!", result: "match", options: "", description: "Matches 2 to 3 'abc's possessively." },
-          { pattern: "(abc){2,3}+", test: "abcabcabc123!", result: "match", options: "", description: "Matches 2 to 3 'abc's possessively." }
+          { pattern: "(abc)?+", test: "abc123!", result: "match", options: "", description: "Matches zero or one 'abc' possessively." }
         ]
       },
 

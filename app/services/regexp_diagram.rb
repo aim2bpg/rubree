@@ -3,11 +3,16 @@ module RegexpDiagram
 
   def create_svg_from_regex(regexp_str, options: nil)
     begin
+      if regexp_str.match?(/\{\d*,?\d*\}[?+]/)
+        return generate_error_svg("Skipped: Lazy or possessive quantifier in range (e.g. {1,3}? or {2,}+)")
+      end
+
       regex_options = parse_options(options)
       regex = Regexp.new(regexp_str, regex_options)
       ast = Regexp::Parser.parse(regexp_str, options: regex_options)
 
       diagram_body = ast_to_railroad(ast)
+      puts diagram_body
       diagram = RailroadDiagrams::Diagram.new(diagram_body)
 
       svg_io = StringIO.new
@@ -16,7 +21,7 @@ module RegexpDiagram
     rescue StandardError => e
       puts "[ERROR] #{e.class}: #{e.message}"
       puts e.backtrace
-      "<!-- Error generating diagram: #{e.message} -->"
+      generate_error_svg("Error generating diagram: #{e.message}")
     end
   end
 
@@ -82,7 +87,7 @@ module RegexpDiagram
     when Regexp::Expression::Group::Options
       if ast.expressions.empty?
         option_flags = ast.text.gsub(/[()?:]/, "")
-        label = "options declaration"
+        label = "options"
         comment = parse_option_flags(option_flags)
         RailroadDiagrams::Group.new(RailroadDiagrams::Comment.new(comment), label)
       else
@@ -242,12 +247,12 @@ module RegexpDiagram
       choice_expr = RailroadDiagrams::Choice.new(0, label_true, label_false)
 
       condition_label = case ast.condition.to_s
-      when /<([^>]+)>/  # 名前付きキャプチャ
+      when /<([^>]+)>/
                           $1
-      when /\d+/  # 番号付きキャプチャ（001など）
+      when /\d+/
                           "group ##{$&.to_i}"
       else
-                          ast.condition.to_s  # その他
+                          ast.condition.to_s
       end
       RailroadDiagrams::Group.new(choice_expr, "Condition: #{condition_label}")
 
