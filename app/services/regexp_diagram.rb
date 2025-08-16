@@ -65,7 +65,7 @@ module RegexpDiagram
 
     when Regexp::Expression::Group::Named
       group_content = ast_to_railroad_sequence(ast.expressions)
-      label = ast.name ? "#{ast.name}" : "named group"
+      label = ast.name ? "group: #{ast.name}" : "named group"
       wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label), ast.quantifier)
 
     when Regexp::Expression::Group::Capture
@@ -233,12 +233,13 @@ module RegexpDiagram
       RailroadDiagrams::Comment.new(cleaned_comment)
 
     when Regexp::Expression::Conditional::Expression
-      true_branch_expr = ast.branches[0] ? ast_to_railroad(ast.branches[0]) : nil
-      false_branch_expr = ast.branches[1] ? ast_to_railroad(ast.branches[1]) : nil
+      true_branch = ast.branches[0]
+      false_branch = ast.branches[1]
 
-      label_true = true_branch_expr ? RailroadDiagrams::Group.new(true_branch_expr, "True") : RailroadDiagrams::Skip.new
-      label_false = false_branch_expr ? RailroadDiagrams::Group.new(false_branch_expr, "False") : RailroadDiagrams::Skip.new
-      choice_expr = RailroadDiagrams::Choice.new(0, label_true, label_false)
+      label_true = true_branch ? RailroadDiagrams::Group.new(ast_to_railroad(true_branch), "True") : RailroadDiagrams::Skip.new
+      label_false = false_branch ? RailroadDiagrams::Group.new(ast_to_railroad(false_branch), "False") : nil
+
+      choice_expr = label_false ? RailroadDiagrams::Choice.new(0, label_true, label_false) : label_true
 
       condition_label = case ast.condition.to_s
       when /<([^>]+)>/
@@ -248,6 +249,7 @@ module RegexpDiagram
       else
                           ast.condition.to_s
       end
+
       RailroadDiagrams::Group.new(choice_expr, "Condition: #{condition_label}")
 
     when Regexp::Expression::Keep::Mark
@@ -354,37 +356,28 @@ module RegexpDiagram
   end
 
   def ast_to_railroad_sequence(expressions)
-    return if expressions.empty?
+    return RailroadDiagrams::Skip.new if expressions.nil? || expressions.empty?
 
     sequence_items = merge_consecutive_literals(expressions).map { |e| ast_to_railroad(e) }
     RailroadDiagrams::Sequence.new(*sequence_items)
   end
 
   def wrap_with_quantifier(base, quant)
-    return base unless quant
+    return base unless quant&.respond_to?(:text)
 
     quant_text = quant.text
-
-    if quant_text == "{0}" || quant_text == "{0,0}" || quant_text == "{,0}"
-      return RailroadDiagrams::Skip.new
-    end
+    return RailroadDiagrams::Skip.new if ["{0}", "{0,0}", "{,0}"].include?(quant_text)
 
     matched = quant_text.match(/\A(\*|\+|\?|\{\d*(?:,\d*)?\})([?+]?)\z/)
-
-    unless matched
-      return RailroadDiagrams::Group.new(base, "quantifier: #{quant_text}")
-    end
+    return RailroadDiagrams::Group.new(base, "quantifier: #{quant_text}") unless matched
 
     quant_core = matched[1]
     suffix = matched[2]
 
     comment_suffix = case suffix
-    when "?"
-                       " (lazy)"
-    when "+"
-                       " (possessive)"
-    else
-                       " (greedy)"
+    when "?" then " (lazy)"
+    when "+" then " (possessive)"
+    else " (greedy)"
     end
 
     case quant_core
@@ -418,7 +411,7 @@ module RegexpDiagram
         RailroadDiagrams::OneOrMore.new(base, RailroadDiagrams::Comment.new("#{min} time(s) or more"))
       end
     when /\A\{,\d+\}\z/
-      max = $&.match(/\d+/)[0].to_i
+      max = $&.match(/\d+/)[0].to_i rescue 0
       RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("0 - #{max} time(s)"))
     else
       RailroadDiagrams::Group.new(base, "quantifier: #{quant_text}")
@@ -426,12 +419,12 @@ module RegexpDiagram
   end
 
   def parse_option_flags(flag_str)
-    enabled = flag_str[/^[^-]+/] || ""
-    disabled = flag_str[/-(.+)$/, 1] || ""
+    applied = flag_str[/^[^-]+/] || ""
+    nagated = flag_str[/-(.+)$/, 1] || ""
 
     parts = []
-    parts << "enabled: #{enabled.chars.join(', ')}" unless enabled.empty?
-    parts << "disabled: #{disabled.chars.join(', ')}" unless disabled.empty?
+    parts << "apply modifiers: #{applied.chars.join(', ')}" unless applied.empty?
+    parts << "negate modifiers: #{nagated.chars.join(', ')}" unless nagated.empty?
 
     parts.join(" / ")
   end

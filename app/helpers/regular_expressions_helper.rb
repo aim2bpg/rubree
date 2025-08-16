@@ -112,6 +112,30 @@ module RegularExpressionsHelper
         ]
       },
 
+      "Pattern Matching Examples" => {
+        short: "Patterns",
+        description: "Named capture patterns with multiline input, including query and fragment for URL, and non-greedy capture for log and YAML lines.",
+        examples: [
+          # Email address with local and domain parts
+          { pattern: "^(?<local_part>[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+)@(?<domain_name>([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\\.(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))*)$", test: "test@example.com\nfoo.bar@sub.domain.org\nbad@.com\nuser@site.co.jp\nwrong@site,com", result: "match", options: "m", description: "Match email addresses with named captures local_part and domain_name" },
+
+          # URL capturing scheme, host, path, query and fragment
+          { pattern: "^(?<scheme>https?|ftp):\\/\\/(?<host>[a-zA-Z0-9.-]+)(?<path>\\/[^\\s?#]*)?(\\?(?<query>[^#\\s]*))?(#(?<fragment>\\S+))?$", test: "https://example.com\nhttps://example.com/path?arg=1\nftp://files.net/path#section\nhttp://localhost\ninvalid_url", result: "match", options: "m", description: "Match valid URLs with scheme, host, optional path, query, fragment" },
+
+          # IPv4 address capturing each octet fully named
+          { pattern: "^(?<octet1>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet2>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet3>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet4>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)$", test: "192.168.0.1\n255.255.255.255\n256.100.100.100\n10.0.0.1\n0.0.0.0", result: "match", options: "m", description: "Match IPv4 addresses with named captures octet_one to octet_four" },
+
+          # IPv6 address capturing each 16-bit block with full names (also supports shorthand notation)
+          { pattern: "^(?<block1>[0-9a-fA-F]{1,4}):(?<block2>[0-9a-fA-F]{1,4}):(?<block3>[0-9a-fA-F]{1,4}):(?<block4>[0-9a-fA-F]{1,4}):(?<block5>[0-9a-fA-F]{1,4}):(?<block6>[0-9a-fA-F]{1,4}):(?<block7>[0-9a-fA-F]{1,4}):(?<block8>[0-9a-fA-F]{1,4})$|^(?<compressed_address>([0-9a-fA-F]{1,4}:){1,7}:)$", test: "2001:0db8:85a3:0000:0000:8a2e:0370:7334\n2001:db8::8a2e:370:7334\n::1\ninvalid::ip\nfe80::1ff:fe23:4567:890a", result: "match", options: "m", description: "Match IPv6 addresses with named captures block_one to block_eight or compressed_address" },
+
+          # Extract ERROR log entries with timestamp, level and non-greedy message
+          { pattern: "^\\[(?<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})\\] \\[(?<level>ERROR)\\] (?<message>.+?)$", test: "[2025-08-17 12:00:00] [INFO] Start\n[2025-08-17 12:01:00] [ERROR] Failed\n[2025-08-17 12:02:00] [WARN] Low\n[2025-08-17 12:03:00] [ERROR] Crash\n[2025-08-17 12:04:00] [INFO] Done", result: "match", options: "m", description: "Extract ERROR log entries with timestamp, level and message named captures" },
+
+          # YAML key-value pair with key and single-line value capture
+          { pattern: "^(?<parent>[a-zA-Z0-9_-]+):\\n(?: {2}(?<key1>[a-zA-Z0-9_-]+): (?<value1>.+)\\n){3}\\s*(?: {2}(?<key2>[a-zA-Z0-9_-]+): (?<value2>.+)\\n){3}?", test: "parent1:\n  name: Alice\n  age: 30\n  city: Tokyo\nparent2:\n  hobby: hiking\n  pet: dog\n  food: sushi\ninvalid line", result: "match", options: "m", description: "Match 2-level nested YAML with 3 key-value pairs each under parent keys" }
+        ]
+      },
+
       "Alternations" => {
         short: "Alternations",
         description: "Alternations: Match one of several alternatives using the | operator.",
