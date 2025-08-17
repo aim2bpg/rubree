@@ -1,11 +1,13 @@
 class RegularExpression
   include ActiveModel::Model
 
-  attr_accessor :expression, :test_string, :options
+  attr_accessor :expression, :test_string, :options, :substitution
 
   validate :check_expression
 
-  attr_reader :match_data, :elapsed_time_ms, :average_elapsed_time_ms, :match_success, :diagram_error_message
+  attr_reader :match_data, :elapsed_time_ms, :average_elapsed_time_ms,
+              :match_success, :diagram_error_message,
+              :substitution_result, :substitution_positions
 
   def unready?
     expression.blank? || test_string.blank?
@@ -92,6 +94,19 @@ class RegularExpression
     rescue => e
       @diagram_error_message = "Invalid Pattern: #{e.message}"
       nil
+    end
+  end
+
+  def perform_substitution
+    return nil if unready? || regexp.nil? || substitution.blank?
+
+    begin
+      @substitution_result = test_string.gsub(regexp) do |matched_text|
+        replaced_text = matched_text.gsub(regexp, substitution)
+        %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">#{ERB::Util.h(replaced_text)}</mark>)
+      end.html_safe
+    rescue => e
+      @substitution_result = "substitution error: #{e.message}"
     end
   end
 

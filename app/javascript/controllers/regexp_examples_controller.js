@@ -34,7 +34,8 @@ export default class extends Controller {
   }
 
   selectExample(event) {
-    const { pattern, test, options } = event.currentTarget.dataset;
+    const { pattern, test, options, substitution } =
+      event.currentTarget.dataset;
 
     const patternField = document.getElementById(
       "regular_expression_expression",
@@ -43,14 +44,20 @@ export default class extends Controller {
     const optionsField = document.querySelector(
       'input[name="regular_expression[options]"]',
     );
+    const substitutionField = document.getElementById(
+      "regular_expression_substitution",
+    );
 
     if (patternField && testField) {
       patternField.value = pattern;
       testField.value = test;
       if (optionsField) optionsField.value = options || "";
+      if (substitutionField) substitutionField.value = substitution || "";
 
       patternField.dispatchEvent(new Event("input", { bubbles: true }));
       testField.dispatchEvent(new Event("input", { bubbles: true }));
+      if (substitutionField)
+        substitutionField.dispatchEvent(new Event("input", { bubbles: true }));
     }
   }
 }

@@ -13,13 +13,6 @@
             class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-r focus:outline-none">
       Regex Examples
     </button>
-    </button>
-    <button type="button"
-            data-action="click->regexp-content-tab-switch#showSubstitution"
-            data-regexp-content-tab-switch-target="tabSubstitution"
-            class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-r focus:outline-none">
-      🚧 Substitution
-    </button>
   </div>
 
   <div id="tab-content" class="max-w-6xl mx-auto">
@@ -29,10 +22,6 @@
 
     <div data-regexp-content-tab-switch-target="examplesPanel" id="examples-panel" class="hidden">
       <%= render "regular_expressions/contents/examples" %>
-    </div>
-
-    <div data-regexp-content-tab-switch-target="substitutionPanel" id="substitution-panel" class="hidden">
-      <%= render "regular_expressions/contents/substitution" %>
     </div>
   </div>
 

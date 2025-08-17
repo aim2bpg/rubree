@@ -354,4 +354,90 @@ RSpec.describe RegularExpression do
       end
     end
   end
+
+  describe '#perform_substitution' do
+    context 'with simple substitution' do
+      let(:regex) {
+        described_class.new(
+          expression: 'h(e)llo',
+          test_string: 'hello hello',
+          substitution: 'H\\1LLO'
+        )
+      }
+
+      it 'returns substituted string with markup' do
+        regex.valid?
+        regex.perform_substitution
+        expect(regex.substitution_result).to eq(
+          '<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">HeLLO</mark> <mark class="bg-green-300 p-0.5 rounded-xs text-green-900">HeLLO</mark>'
+        )
+      end
+    end
+
+    context 'with named capture substitution' do
+      let(:regex) {
+        described_class.new(
+          expression: '(?<word>hello)',
+          test_string: 'hello hello',
+          substitution: '[\k<word>]'
+        )
+      }
+
+      it 'returns substituted string with named captures and markup' do
+        regex.valid?
+        regex.perform_substitution
+        expect(regex.substitution_result).to eq(
+          'hello hello'.gsub(/(?<word>hello)/, '<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">[hello]</mark>')
+        )
+      end
+    end
+
+    context 'with no substitution string' do
+      let(:regex) {
+        described_class.new(
+          expression: 'hello',
+          test_string: 'hello world',
+          substitution: nil
+        )
+      }
+
+      it 'returns nil for substitution' do
+        regex.valid?
+        regex.perform_substitution
+        expect(regex.substitution_result).to be_nil
+      end
+    end
+
+    context 'with invalid regex' do
+      let(:regex) {
+        described_class.new(
+          expression: '[a-z',
+          test_string: 'abc',
+          substitution: 'X'
+        )
+      }
+
+      it 'returns nil when regex is invalid' do
+        regex.valid?
+        regex.perform_substitution
+        expect(regex.substitution_result).to be_nil
+      end
+    end
+
+    context 'with no matches' do
+      let(:regex) {
+        described_class.new(
+          expression: '(goodbye)',
+          test_string: 'hello hello',
+          substitution: 'BYE'
+        )
+      }
+
+      it 'returns original string with no substitutions applied' do
+        regex.valid?
+        regex.perform_substitution
+        expect(regex.substitution_result).to eq('hello hello')
+      end
+    end
+  end
 end

@@ -6,7 +6,8 @@
       data-action="click->regexp-examples#selectExample"
       data-pattern=""
       data-test=""
-      data-options="">
+      data-options=""
+      data-substitution="">
       Rubree
     </span>
   </h1>
@@ -19,7 +20,8 @@
       data-action="click->regexp-examples#selectExample"
       data-pattern="(?<month>\d{1,2})\/(?<day>\d{1,2})\/(?<year>\d{4})"
       data-test="Today's date is: <%= Time.now.strftime("%-m/%-d/%Y") %>."
-      data-options="">
+      data-options=""
+      data-substitution="\k<year>/\k<month>/\k<day>">
       Try an example
     </span>
   </p>

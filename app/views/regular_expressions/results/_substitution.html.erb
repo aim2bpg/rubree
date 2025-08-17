@@ -1,0 +1,23 @@
+<div class="mb-2 text-left">
+  <h3 class="text-sm font-bold mb-2 text-white">Substitution result:</h3>
+
+  <% if regular_expression.substitution_result.present? %>
+    <template x-if="!showInvisibles">
+      <div
+        :class="wrap
+          ? 'whitespace-pre-wrap overflow-x-hidden break-words w-full'
+          : 'whitespace-pre overflow-x-auto w-full'"
+        class="bg-gray-900 border border-gray-700 px-4 py-4 font-mono text-sm text-white text-left leading-tight"><%= regular_expression.substitution_result %></div>
+    </template>
+
+    <template x-if="showInvisibles">
+      <div
+        :class="wrap
+          ? 'whitespace-pre-wrap overflow-x-hidden break-words w-full'
+          : 'whitespace-pre overflow-x-auto w-full'"
+        class="bg-gray-900 border border-gray-700 px-4 py-4 font-mono text-sm text-white text-left leading-tight"><% def escape_invisibles(str); str.gsub("\r\n", "\r␍\n⏎\n").gsub("\r", "␍").gsub("\n", "⏎\n").gsub("\t", "⇥"); end %><%= raw escape_invisibles(regular_expression.substitution_result) %></div>
+    </template>
+  <% else %>
+    <p class="text-yellow-400 text-sm">No substitution performed or no matches found.</p>
+  <% end %>
+</div>

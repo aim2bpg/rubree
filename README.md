@@ -120,7 +120,7 @@ bin/rspec
 
 ## Roadmap
 
-- [ ] Regexp replacement funciton
+- [x] Regexp substitution funciton
 - [ ] ..
 
 ## Contributing
