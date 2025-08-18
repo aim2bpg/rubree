@@ -336,7 +336,7 @@ GEM
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2025.2)
       tzinfo (>= 1.0.0)
-    unicode-display_width (3.1.4)
+    unicode-display_width (3.1.5)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
     uri (1.0.3)
