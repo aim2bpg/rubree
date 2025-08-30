@@ -2,7 +2,7 @@
   "name": "app",
   "private": true,
   "devDependencies": {
-    "@biomejs/biome": "2.2.0",
+    "@biomejs/biome": "2.2.2",
     "esbuild": "^0.25.9"
   },
   "scripts": {
@@ -18,7 +18,7 @@
     "@hotwired/turbo-rails": "^8.0.16",
     "@tailwindcss/cli": "^4.1.12",
     "alpinejs": "^3.14.9",
-    "playwright": "^1.54.2",
+    "playwright": "^1.55.0",
     "tailwindcss": "^4.1.10"
   }
 }
