@@ -368,14 +368,12 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   brakeman
-  capybara
   capybara-playwright-driver
   cssbundling-rails
   debug
   erb_lint
   jsbundling-rails
   lefthook
-  playwright-ruby-client
   propshaft
   puma (>= 5.0)
   railroad_diagrams

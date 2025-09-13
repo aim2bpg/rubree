@@ -60,6 +60,12 @@ updates:
         patterns:
           - 'turbo-rails'
           - 'stimulus-rails'
+      others:
+        patterns:
+          - '@biomejs/biome'
+          - 'alpinejs'
+          - 'esbuild'
+          - 'playwright'
 
   - package-ecosystem: github-actions
     directory: '/'
