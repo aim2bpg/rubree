@@ -96,5 +96,31 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ./.node-version
+          cache: yarn
+          cache-dependency-path: ./yarn.lock
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install JS dependencies
+        run: yarn install
+
+      - name: Install Playwright
+        run: |
+          yarn playwright install-deps
+          yarn playwright install
+
+      - name: Build frontend assets
+        run: yarn build
+
       - name: Run RSpec Tests
         run: bin/rspec

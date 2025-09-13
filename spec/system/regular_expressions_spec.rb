@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "RegularExpressions" do
-  before do
-    driven_by(:rack_test)
+  it 'example link' do
+    visit '/'
+    expect(page).to have_content('Rubree')
+    find('span', text: 'Try an example').click
+    expect(page).to have_content('Today\'s date is')
   end
-
-  pending "add some scenarios (or delete) #{__FILE__}"
 end
