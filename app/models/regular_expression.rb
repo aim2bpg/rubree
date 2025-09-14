@@ -3,6 +3,9 @@ class RegularExpression
 
   attr_accessor :expression, :test_string, :options, :substitution
 
+  validates :expression, presence: true
+  validates :test_string, presence: true
+
   validate :check_expression
 
   attr_reader :match_data, :elapsed_time_ms, :average_elapsed_time_ms,
@@ -102,12 +105,58 @@ class RegularExpression
 
     begin
       @substitution_result = test_string.gsub(regexp) do |matched_text|
-        replaced_text = matched_text.gsub(regexp, substitution)
-        %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">#{ERB::Util.h(replaced_text)}</mark>)
+        begin
+          replaced_text = matched_text.gsub(regexp, substitution)
+        rescue ArgumentError
+          replaced_text = matched_text
+        end
+
+        if replaced_text.empty?
+          matched_text
+        else
+          %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">#{ERB::Util.h(replaced_text)}</mark>)
+        end
       end.html_safe
     rescue => e
-      @substitution_result = "substitution error: #{e.message}"
+      @substitution_result = test_string
     end
+  end
+
+  def ruby_code_snippet
+    return nil if unready? || regexp.nil?
+
+    code = []
+    code << "# Ruby code for testing the regex"
+    code << "pattern = #{regexp.inspect}"
+    code << "test_string = #{test_string.inspect}"
+    code << ""
+
+    if substitution.present?
+      code << "# With substitution"
+      code << "result = test_string.gsub(pattern, #{substitution.inspect})"
+      code << "puts result"
+    else
+      code << "# Match and captures"
+      code << "if match = pattern.match(test_string)"
+      if regexp.names.any?
+        code << "  # Named captures:"
+        regexp.names.each do |name|
+          code << "  puts \"#{name}: \#{match[:#{name}]}\""
+        end
+      else
+        code << "  # Numbered captures:"
+        code << "  match.captures.each_with_index do |cap, i|"
+        code << "    puts \"\#{i + 1}: \#{cap}\""
+        code << "  end"
+      end
+      code << "else"
+      code << "  puts \"No match.\""
+      code << "end"
+    end
+
+    code.join("\n")
+  rescue => e
+    "# Error generating Ruby code: #{e.message}"
   end
 
   private

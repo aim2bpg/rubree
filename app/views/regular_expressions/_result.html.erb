@@ -33,6 +33,10 @@
         <%= render "regular_expressions/results/substitution", regular_expression: regular_expression %>
       <% end %>
 
+      <% if regular_expression.ruby_code_snippet.present? %>
+        <%= render "regular_expressions/results/ruby_code", regular_expression: regular_expression %>
+      <% end %>
+
     <% else %>
       <h3 class="text-sm font-bold text-white">Match result:</h3>
       <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2">No matches.</div>

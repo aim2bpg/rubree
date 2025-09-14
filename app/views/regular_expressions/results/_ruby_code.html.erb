@@ -1,0 +1,47 @@
+<% if regular_expression.ruby_code_snippet.present? %>
+  <div class="text-left">
+    <div x-data="{ show: false }" data-controller="copy-code">
+      <div class="mb-2 flex flex-wrap sm:flex-col md:flex-row justify-between items-center gap-2">
+        <h3 class="text-sm font-bold text-white whitespace-nowrap">Ruby Code:</h3>
+
+        <div class="flex items-center gap-2">
+          <button
+            x-on:click="show = !show"
+            class="text-xs text-blue-400 hover:underline whitespace-nowrap"
+            type="button">
+            <span x-text="show ? 'Hide' : 'Show'"></span>
+          </button>
+
+          <button
+            type="button"
+            class="relative inline-flex items-center justify-center text-gray-400 hover:text-white transition"
+            data-action="click->copy-code#copy"
+            title="Copy Ruby Code">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+              class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+            </svg>
+
+            <span
+              data-copy-code-target="tooltip"
+              class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[9px] leading-none px-1.5 py-px rounded
+                     opacity-0 invisible transition-opacity duration-300 pointer-events-none z-10 whitespace-nowrap">
+              Copied!
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        x-show="show"
+        x-transition
+        data-controller="drag-scroll"
+        :class="wrap
+          ? 'whitespace-pre-wrap overflow-x-hidden break-words'
+          : 'whitespace-pre overflow-x-auto'"
+        class="bg-gray-800 border border-gray-700 rounded p-4 font-mono text-sm text-green-200 text-left leading-tight"><code data-copy-code-target="source"><%= h regular_expression.ruby_code_snippet %></code></div>
+    </div>
+  </div>
+<% end %>

@@ -440,4 +440,83 @@ RSpec.describe RegularExpression do
       end
     end
   end
+
+  describe 'edge cases and advanced patterns' do
+    context 'when expression and test string are empty' do
+      let(:regex) {
+        described_class.new(expression: '', test_string: '')
+      }
+
+      it 'is invalid due to blank expression' do
+        expect(regex).not_to be_valid
+      end
+    end
+
+    context 'when options are reordered' do
+      let(:regex_case_sensitive_first) { described_class.new(expression: '^hello', test_string: 'HeLLo', options: 'im') }
+      let(:regex_case_sensitive_second) { described_class.new(expression: '^hello', test_string: 'HeLLo', options: 'mi') }
+
+      it 'behaves identically regardless of option order' do
+        expect(regex_case_sensitive_first).to be_valid
+        expect(regex_case_sensitive_second).to be_valid
+        regex_case_sensitive_first.valid?
+        regex_case_sensitive_second.valid?
+        expect(regex_case_sensitive_first.match_positions).to eq(regex_case_sensitive_second.match_positions)
+      end
+    end
+
+    context 'when using surrogate pairs (emoji)' do
+      let(:regex) {
+        described_class.new(expression: '😀', test_string: 'test😀test')
+      }
+
+      it 'matches emoji characters correctly' do
+        regex.valid?
+        expect(regex.match_positions).to eq([
+          { start: 4, end: 5, index: 0, invisible: true }
+        ])
+      end
+    end
+
+    context 'when case sensitivity is not ignored' do
+      let(:regex) {
+        described_class.new(expression: 'hello', test_string: 'HELLO')
+      }
+
+      it 'does not match if case is different and no i option is set' do
+        regex.valid?
+        expect(regex.match_success).to be false
+      end
+    end
+
+    context 'when invalid substitution backreference is used' do
+      let(:regex) {
+        described_class.new(
+          expression: '(hello)',
+          test_string: 'hello',
+          substitution: '\\9'
+        )
+      }
+
+      it 'does not raise error and returns original string fallback for substitution' do
+        regex.valid?
+        regex.perform_substitution
+        expect(regex.substitution_result).to eq('hello')
+      end
+    end
+
+    context 'when using lookahead and non-capturing groups' do
+      let(:regex) {
+        described_class.new(expression: '(?=foo)(?:foo)', test_string: 'foobar')
+      }
+
+      it 'matches foo using lookahead and non-capturing' do
+        regex.valid?
+        expect(regex.match_positions).to eq([
+          { start: 0, end: 3, index: 0, invisible: true }
+        ])
+        expect(regex.captures).to eq([]) # no capturing
+      end
+    end
+  end
 end
