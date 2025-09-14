@@ -70,4 +70,7 @@ end
 group :test do
   # Playwright driver for Capybara (https://github.com/YusukeIwaki/capybara-playwright-driver)
   gem "capybara-playwright-driver"
+
+  # A browser automation framework and ecosystem (https://github.com/SeleniumHQ/selenium/tree/trunk/rb)
+  gem "selenium-webdriver"
 end
