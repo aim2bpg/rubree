@@ -4,7 +4,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
     "playwright": "^1.55.0",
-    "esbuild": "^0.25.9"
+    "esbuild": "^0.25.10"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
