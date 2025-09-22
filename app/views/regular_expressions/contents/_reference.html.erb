@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 md:grid-cols-[auto_auto_16rem] gap-4">
       <% regex_reference_sections.each do |section| %>
         <div class="space-y-1">
-          <h4 class="font-semibold mb-1 text-white"><%= section[:title] %></h4>
+          <label class="font-semibold mb-1 text-white"><%= section[:title] %></label>
           <div class="space-y-0.5">
             <% section[:items].each do |code, description| %>
               <div class="grid <%= section[:col_class] %> items-start">

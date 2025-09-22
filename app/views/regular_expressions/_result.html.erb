@@ -19,7 +19,7 @@
       <p class="text-gray-400 text-sm">Please enter a regex pattern and a test string.</p>
 
     <% elsif !regular_expression.valid? %>
-      <h3 class="text-sm font-bold text-white">Match result:</h3>
+      <label class="text-sm font-bold text-white">Match result:</label>
       <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2">Invalid regular expression.</div>
 
     <% elsif regular_expression.match_success %>
@@ -38,7 +38,7 @@
       <% end %>
 
     <% else %>
-      <h3 class="text-sm font-bold text-white">Match result:</h3>
+      <label class="text-sm font-bold text-white">Match result:</label>
       <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2">No matches.</div>
     <% end %>
   </div>

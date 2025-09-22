@@ -4,102 +4,91 @@ include RegularExpressionsHelper
 
 RSpec.describe "RegularExpressionFlow" do
   describe "Normal behavior: Matching and substitution" do
-    it 'initial view' do
-      visit root_path
+    before { visit root_path }
 
-      # Check content on the top page
-      expect(page).to have_content('Rubree')
-      expect(page).to have_content('a Ruby regular expression editor')
+    it 'displays the initial view' do
+      # Header section
+      expect(page).to have_css 'span#example-link', text: 'Rubree'
+      expect(page).to have_css 'p', text: 'a Ruby regular expression editor'
+      expect(page).to have_css 'span#example-link', text: 'Try an example', class: /text-blue-400/
 
-      # Ensure input sections are rendered
-      expect(page).to have_content('Your regular expression:')
-      expect(page).to have_content('Your test string:')
-      expect(page).to have_content('Substitution:')
+      # Regular expression and options form
+      expect(page).to have_css 'label', text: 'Your regular expression:'
+      expect(page).to have_field 'regular_expression_expression', with: ''
+      expect(page).to have_css 'span', text: 'Options:'
+      expect(page).to have_field 'regular_expression_options', with: ''
+
+      # Test string and substitution form
+      expect(page).to have_css 'label', text: 'Your test string:'
+      expect(page).to have_field 'regular_expression_test_string', with: ''
+      expect(page).to have_css 'span', text: 'Substitution:'
+      expect(page).to have_field 'regular_expression_substitution', with: ''
+
+      # Output section (results and diagrams)
+      expect(page).to have_css 'p', text: 'Railroad diagram will appear here'
+      expect(page).to have_css 'p', text: 'Regexp test result will appear here'
+
+      # Reference and example sections
+      expect(page).to have_button 'Regex Quick Reference', class: /bg-gray-700/
+      expect(page).to have_button 'Regex Examples', class: /bg-gray-800/
+      expect(page).to have_css 'div#reference-panel'
+
+      # Footer section
+      expect(page).to have_css 'p', text: 'Inspired by Michael Lovitt’s excellent'
+      expect(page).to have_css 'a', text: 'Rubular', class: /text-blue-700/
     end
 
     it 'displays match and substitution results for example input' do
-      visit root_path
+      find('span#example-link', text: 'Try an example').click
 
-      # Click "Try an example" to auto-fill fields
-      find('span', text: 'Try an example').click
+      expect(page).to have_css 'turbo-frame#regexp'
 
-      # Ensure the railroad diagram is shown
-      expect(page).to have_content('Railroad diagram:')
-      expect(page).to have_css('svg')
+      # Railroad diagram section
+      expect(page).to have_css 'label', text: 'Railroad diagram:'
+      expect(page).to have_css 'svg'
 
-      # Ensure match result includes today's date
-      expect(page).to have_content('Match result:')
+      # Match result section
+      expect(page).to have_css 'label', text: 'Match result:'
       matched_date = Date.today.strftime('%-m/%-d/%Y')
-      expect(page).to have_content("Today's date is: #{matched_date}")
-      expect(page).to have_css('mark', text: matched_date)
+      expect(page).to have_css 'div', text: "Today's date is: #{matched_date}"
+      expect(page).to have_css 'mark', text: matched_date, class: /bg-blue-200/
 
-      # Check the execution time is displayed correctly
-      expect(page).to have_content('ms (avg of 5 runs)')
+      # Performance metrics (e.g., runtime)
+      expect(page).to have_css 'div', text: /🕒 .+ ms \(avg of 5 runs\)/
 
-      # Check each capture group is displayed correctly
-      expect(page).to have_content('Match groups:')
-      expect(page).to have_css('mark', text: Date.today.strftime('%-m'))
-      expect(page).to have_css('mark', text: Date.today.strftime('%-d'))
-      expect(page).to have_css('mark', text: Date.today.strftime('%Y'))
+      # Match groups section
+      expect(page).to have_css 'label', text: 'Match groups:'
+      expect(page).to have_css 'span.bg-yellow-200', text: 'month'
+      expect(page).to have_css 'code', text: Date.today.strftime('%-m')
+      expect(page).to have_css 'span.bg-yellow-200', text: 'day'
+      expect(page).to have_css 'code', text: Date.today.strftime('%-d')
 
-      # Check the substitution result is correctly shown
-      expect(page).to have_content('Substitution result:')
+      # Substitution result section
+      expect(page).to have_css 'label', text: 'Substitution result:'
       substituted_date = Date.today.strftime('%Y/%-m/%-d')
-      expect(page).to have_content("Today's date is: #{substituted_date}")
-      expect(page).to have_css('mark', text: substituted_date)
+      expect(page).to have_css 'div', text: "Today's date is: #{substituted_date}"
+      expect(page).to have_css 'mark', text: substituted_date, class: /bg-green-300/
 
-      # Check if Ruby code section is displayed
-      expect(page).to have_content('Ruby code:')
-    end
-  end
-
-  describe "Regex Syntax: Character classes" do
-    before { visit root_path }
-
-    it "matches using valid character class [abc]" do
-      fill_in "regular_expression[expression]", with: '[abc]'
-      fill_in "regular_expression[test_string]", with: 'cab'
-      expect(page).to have_css('mark', text: 'c')
-      expect(page).to have_css('mark', text: 'a')
-      expect(page).to have_css('mark', text: 'b')
+      # Ruby code display section
+      expect(page).to have_css 'label', text: 'Ruby code:'
     end
 
-    it "shows error for unterminated character class" do
-      fill_in "regular_expression[expression]", with: '[abc'
-      fill_in "regular_expression[test_string]", with: 'abc'
-      expect(page).to have_content('Invalid Pattern: premature end of char-class:')
-      expect(page).to have_content('Invalid regular expression.')
-    end
+    it 'resets the view to initial state when Rubree is clicked' do
+      find('span#example-link', text: 'Try an example').click
 
-    it "shows error for invalid range in character class" do
-      fill_in "regular_expression[expression]", with: '[z-a]'
-      fill_in "regular_expression[test_string]", with: 'abc'
-      expect(page).to have_content('Invalid Pattern: empty range in char class:')
-      expect(page).to have_content('Invalid regular expression.')
-    end
-  end
+      # Railroad diagram section
+      expect(page).to have_css 'label', text: 'Railroad diagram:'
+      expect(page).to have_css 'svg'
 
-  describe "Regex Syntax: Grouping and parentheses" do
-    before { visit root_path }
+      find('span#example-link', text: 'Rubree').click
 
-    it "matches with valid grouping (abc)" do
-      fill_in "regular_expression[expression]", with: '(abc)'
-      fill_in "regular_expression[test_string]", with: 'abc abc'
-      expect(page).to have_css('mark', text: 'abc', count: 2)
-    end
+      # Regular expression and options form
+      expect(page).to have_field 'regular_expression_expression', with: ''
+      expect(page).to have_field 'regular_expression_options', with: ''
 
-    it "shows error for unmatched open parenthesis" do
-      fill_in "regular_expression[expression]", with: '(abc'
-      fill_in "regular_expression[test_string]", with: 'abc'
-      expect(page).to have_content('Invalid Pattern: end pattern with unmatched parenthesis:')
-      expect(page).to have_content('Invalid regular expression.')
-    end
-
-    it "shows error for unmatched close parenthesis" do
-      fill_in "regular_expression[expression]", with: 'abc)'
-      fill_in "regular_expression[test_string]", with: 'abc'
-      expect(page).to have_content('Invalid Pattern: unmatched close parenthesis:')
-      expect(page).to have_content('Invalid regular expression.')
+      # Test string and substitution form
+      expect(page).to have_field 'regular_expression_test_string', with: ''
+      expect(page).to have_field 'regular_expression_substitution', with: ''
     end
   end
 
@@ -109,21 +98,134 @@ RSpec.describe "RegularExpressionFlow" do
     it "matches with valid Ruby-style named group" do
       fill_in "regular_expression[expression]", with: '(?<word>foo)'
       fill_in "regular_expression[test_string]", with: 'foo bar foo'
-      expect(page).to have_css('mark', text: 'foo', count: 2)
+
+      # Railroad diagram section
+      expect(page).to have_css 'svg'
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'foo', count: 2, class: /bg-blue-200/
+
+      # Match groups section
+      expect(page).to have_css 'label', text: 'Match 1', class: /text-yellow-400/
+      expect(page).to have_css 'span.bg-yellow-200', text: 'word', count: 2
+      expect(page).to have_css 'code.text-white', text: 'foo', count: 2
+      expect(page).to have_css 'label', text: 'Match 2', class: /text-yellow-400/
     end
 
     it "shows error for Python-style named group syntax" do
       fill_in "regular_expression[expression]", with: '(?P<name>Alice)'
       fill_in "regular_expression[test_string]", with: 'Alice'
-      expect(page).to have_content('Invalid Pattern: undefined group option:')
-      expect(page).to have_content('Invalid regular expression.')
+
+      # Railroad diagram section
+      expect(page).to have_css 'div', text: 'Invalid Pattern: undefined group option:', class: /bg-red-100/
+
+      # Match result section
+      expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
     end
 
     it "shows error for malformed named group" do
       fill_in "regular_expression[expression]", with: '(?<nameAlice)'
       fill_in "regular_expression[test_string]", with: 'Alice'
-      expect(page).to have_content('Invalid Pattern: invalid group name')
-      expect(page).to have_content('Invalid regular expression.')
+
+      # Railroad diagram section
+      expect(page).to have_css 'div', text: 'Invalid Pattern: invalid group name', class: /bg-red-100/
+
+      # Match result section
+      expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
+    end
+  end
+
+  describe "Regex Syntax: Character classes" do
+    before { visit root_path }
+
+    it "matches using valid character class [abc]" do
+      fill_in "regular_expression[expression]", with: '[abc]'
+      fill_in "regular_expression[test_string]", with: 'cab'
+
+      # Railroad diagram section
+      expect(page).to have_css 'svg'
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'c', class: /bg-blue-200/
+      expect(page).to have_css 'mark', text: 'a', class: /bg-blue-200/
+      expect(page).to have_css 'mark', text: 'b', class: /bg-blue-200/
+    end
+
+    it "shows error for unterminated character class" do
+      fill_in "regular_expression[expression]", with: '[abc'
+      fill_in "regular_expression[test_string]", with: 'abc'
+
+      # Railroad diagram section
+      expect(page).to have_css 'div', text: 'Invalid Pattern: premature end of char-class:', class: /bg-red-100/
+
+      # Match result section
+      expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
+    end
+
+    it "shows error for invalid range in character class" do
+      fill_in "regular_expression[expression]", with: '[z-a]'
+      fill_in "regular_expression[test_string]", with: 'abc'
+
+      # Railroad diagram section
+      expect(page).to have_css 'div', text: 'Invalid Pattern: empty range in char class:', class: /bg-red-100/
+
+      # Match result section
+      expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
+    end
+  end
+
+  describe "Regex Syntax: Grouping and parentheses" do
+    before { visit root_path }
+
+    it "matches with valid grouping (abc)" do
+      fill_in "regular_expression[expression]", with: '(abc)'
+      fill_in "regular_expression[test_string]", with: 'abc abc'
+
+      # Railroad diagram section
+      expect(page).to have_css 'svg'
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'abc', count: 2, class: /bg-blue-200/
+
+      # Match groups section
+      expect(page).to have_css 'label', text: 'Match 1', class: /text-blue-300/
+      expect(page).to have_css 'span.text-white', text: '1.', count: 2
+      expect(page).to have_css 'code.text-white', text: 'abc', count: 2
+      expect(page).to have_css 'label', text: 'Match 2', class: /text-blue-300/
+    end
+
+    it "shows error for unmatched open parenthesis" do
+      fill_in "regular_expression[expression]", with: '(abc'
+      fill_in "regular_expression[test_string]", with: 'abc'
+
+      # Railroad diagram section
+      expect(page).to have_css 'div', text: 'Invalid Pattern: end pattern with unmatched parenthesis:', class: /bg-red-100/
+
+      # Match result section
+      expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
+    end
+
+    it "shows error for unmatched close parenthesis" do
+      fill_in "regular_expression[expression]", with: 'abc)'
+      fill_in "regular_expression[test_string]", with: 'abc'
+
+      # Railroad diagram section
+      expect(page).to have_css 'div', text: 'Invalid Pattern: unmatched close parenthesis:', class: /bg-red-100/
+
+      # Match result section
+      expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
+    end
+
+    it "captures groups correctly in nested parentheses" do
+      fill_in "regular_expression[expression]", with: '(abc (def))'
+      fill_in "regular_expression[test_string]", with: 'abc def'
+
+      # Railroad diagram section
+      expect(page).to have_css 'svg'
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'abc', class: /bg-blue-200/
+      expect(page).to have_css 'mark', text: 'def', class: /bg-blue-200/
     end
   end
 
@@ -133,14 +235,23 @@ RSpec.describe "RegularExpressionFlow" do
     it "highlights matches when present" do
       fill_in "regular_expression[expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: 'foo bar foo'
-      expect(page).to have_css('mark', text: 'foo', count: 2)
+
+      # Railroad diagram section
+      expect(page).to have_css 'svg'
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'foo', count: 2, class: /bg-blue-200/
     end
 
     it "shows 'No matches.' when pattern does not match" do
       fill_in "regular_expression[expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: 'bar'
-      expect(page).to have_css('svg')
-      expect(page).to have_content('No matches.')
+
+      # Railroad diagram section
+      expect(page).to have_css 'svg'
+
+      # Match result section
+      expect(page).to have_css 'div', text: 'No matches.', class: /bg-red-100/
     end
   end
 
@@ -151,14 +262,36 @@ RSpec.describe "RegularExpressionFlow" do
       fill_in "regular_expression[expression]", with: '(foo)'
       fill_in "regular_expression[test_string]", with: 'foo foo'
       fill_in "regular_expression[substitution]", with: '\\1!'
-      expect(page).to have_css('mark', text: 'foo!', count: 2)
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'foo', count: 2, class: /bg-blue-200/
+
+      # Substitution result section
+      expect(page).to have_css 'mark', text: 'foo!', count: 2, class: /bg-green-300/
+    end
+
+    it "performs substitution with multiple groups" do
+      fill_in "regular_expression[expression]", with: '(foo)(bar)'
+      fill_in "regular_expression[test_string]", with: 'foobar'
+      fill_in "regular_expression[substitution]", with: '\\2\\1'
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'foobar', class: /bg-blue-200/
+
+      # Substitution result section
+      expect(page).to have_css 'mark', text: 'barfoo', class: /bg-green-300/
     end
 
     it "ignores invalid backreference \\2 in substitution" do
       fill_in "regular_expression[expression]", with: '(foo)'
       fill_in "regular_expression[test_string]", with: 'foo'
       fill_in "regular_expression[substitution]", with: '\\2!'
-      expect(page).to have_css('mark', text: 'foo!', count: 0)
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'foo', class: /bg-blue-200/
+
+      # Substitution result section
+      expect(page).to have_css 'mark', text: 'foo!', count: 0
     end
   end
 
@@ -168,55 +301,67 @@ RSpec.describe "RegularExpressionFlow" do
     it "shows message when both fields are empty" do
       fill_in "regular_expression[expression]", with: ''
       fill_in "regular_expression[test_string]", with: ''
-      expect(page).to have_content('Railroad diagram will appear here')
-      expect(page).to have_content('Regexp test result will appear here')
+
+      # Railroad diagram section
+      expect(page).to have_css 'p', text: 'Railroad diagram will appear here'
+
+      # Match result section
+      expect(page).to have_css 'p', text: 'Regexp test result will appear here'
     end
 
     it "shows message when only test string is empty" do
       fill_in "regular_expression[expression]", with: 'abc'
       fill_in "regular_expression[test_string]", with: ''
-      expect(page).to have_css('svg')
-      expect(page).to have_content('Please enter a regex pattern and a test string.')
+
+      # Railroad diagram section
+      expect(page).to have_css 'svg'
+
+      # Match result section
+      expect(page).to have_css 'p', text: 'Please enter a regex pattern and a test string.'
     end
 
     it "shows message when only regex pattern is empty" do
       fill_in "regular_expression[expression]", with: ''
       fill_in "regular_expression[test_string]", with: 'abc'
-      expect(page).to have_content('Railroad diagram will appear here')
-      expect(page).to have_content('Please enter a regex pattern and a test string.')
+
+      # Railroad diagram section
+      expect(page).to have_css 'p', text: 'Railroad diagram will appear here'
+
+      # Match result section
+      expect(page).to have_css 'p', text: 'Please enter a regex pattern and a test string.'
     end
   end
 
   describe "Ruby code display functionality", :js do
     before do
       visit root_path
-      find('span', text: 'Try an example').click
+      find('span#example-link', text: 'Try an example').click
     end
 
-    # We do not perform detailed tests on the actual show/hide visibility of the code block,
-    # because Alpine.js x-show uses complex style manipulations and transitions.
-    # This makes it difficult and unreliable to detect visibility via Capybara.
-    #
-    # Instead, we verify that the toggle button text changes appropriately,
-    # which reliably indicates that the UI interaction took place.
     it "shows and hides Ruby code block when toggling Show/Hide button" do
+      # Ruby code display section
       toggle_button = find('button', text: 'Show')
 
       toggle_button.click
-      expect(toggle_button).to have_text('Hide')
+      expect(toggle_button).to have_text 'Hide'
+      expect(page).to have_no_css 'div', style: /display: none/, visible: :all
 
       toggle_button.click
-      expect(toggle_button).to have_text('Show')
+      expect(toggle_button).to have_text 'Show'
+      expect(page).to have_css 'div', style: /display: none/, visible: :all
     end
 
-    it "shows 'Copied!' tooltip after clicking Copy button" do
+    it "shows and hides 'Copied!' tooltip after clicking Copy button" do
+      # Ruby code display section
       copy_button = find('button[title="Copy Ruby Code"]')
       tooltip = find('span[data-copy-code-target="tooltip"]', visible: false)
 
       copy_button.click
-
-      expect(tooltip).to have_text('Copied!')
+      expect(tooltip).to have_text 'Copied!'
       expect(tooltip[:class]).not_to include('invisible')
+
+      copy_button.click
+      expect(tooltip).to have_text 'Copied!'
     end
   end
 
@@ -227,29 +372,40 @@ RSpec.describe "RegularExpressionFlow" do
       fill_in "regular_expression[expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: 'FOO'
       fill_in "regular_expression[options]", with: 'i'
-      expect(page).to have_css('mark', text: 'FOO')
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'FOO', class: /bg-blue-200/
     end
 
     it "enables multiline matching with 'm' option" do
       fill_in "regular_expression[expression]", with: '^foo'
       fill_in "regular_expression[test_string]", with: "bar\nfoo"
       fill_in "regular_expression[options]", with: 'm'
-      expect(page).to have_css('mark', text: 'foo')
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'foo', class: /bg-blue-200/
     end
 
     it "enables extended mode (allow comments/spaces) with 'x' option" do
       fill_in "regular_expression[expression]", with: "f o o # match foo"
       fill_in "regular_expression[test_string]", with: 'foo'
       fill_in "regular_expression[options]", with: 'x'
-      expect(page).to have_css('mark', text: 'foo')
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'foo', class: /bg-blue-200/
     end
 
     it "enables multiple flags together" do
       fill_in "regular_expression[expression]", with: "^foo"
       fill_in "regular_expression[test_string]", with: "FOO\nfoo"
       fill_in "regular_expression[options]", with: 'im'
-      expect(page).to have_css('mark', text: 'FOO')
-      expect(page).to have_css('mark', text: 'foo')
+
+      # Railroad diagram section
+      expect(page).to have_css 'svg'
+
+      # Match result section
+      expect(page).to have_css 'mark', text: 'FOO', class: /bg-blue-200/
+      expect(page).to have_css 'mark', text: 'foo', class: /bg-blue-200/
     end
   end
 
@@ -264,6 +420,7 @@ RSpec.describe "RegularExpressionFlow" do
       fill_in "regular_expression[expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: 'foo bar foo'
 
+      # Match result section
       wrap_checkbox = find('input[type=checkbox][x-model=wrap]')
       expect(wrap_checkbox).to be_checked
 
@@ -287,52 +444,40 @@ RSpec.describe "RegularExpressionFlow" do
       fill_in "regular_expression[expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: "foo bar foo\nfoo bar foo"
 
+      # Match result section
       show_invisibles_checkbox = find('input[type=checkbox][x-model=showInvisibles]')
       show_invisibles_checkbox.uncheck
       expect(show_invisibles_checkbox).not_to be_checked
 
-      expect(page).to have_no_content("foo bar foo⏎")
+      expect(page).to have_no_content 'foo bar foo⏎'
 
       show_invisibles_checkbox.check
       expect(show_invisibles_checkbox).to be_checked
 
-      expect(page).to have_content("foo bar foo⏎")
+      expect(page).to have_content 'foo bar foo⏎'
     end
   end
 
   describe 'Regular Expressions Tab Switcher' do
-    before do
-      visit root_path
-      find('button[data-action="click->regexp-content-tab-switch#showReference"]', wait: true).click
-    end
+    before { visit root_path }
 
-    it 'displays the correct default tab (Reference)' do
-      expect(page).to have_content('Regex Quick Reference')
-      expect(page).to have_css('#reference-panel')
-      expect(page).to have_no_css('#examples-panel')
-
-      expect(page).to have_button('Regex Quick Reference', class: /bg-gray-700/)
-    end
-
-    it 'switches to the Examples tab when clicked' do
+    it 'toggles between Examples and Reference tabs correctly' do
+      # Reference and example sections
       find('button[data-action="click->regexp-content-tab-switch#showExamples"]', wait: true).click
 
-      expect(page).to have_no_css('#reference-panel')
-      expect(page).to have_css('#examples-panel')
+      expect(page).to have_css 'div#reference-panel', class: /hidden/, visible: :all
+      expect(page).to have_no_css 'div#examples-panel', class: /hidden/, visible: :all
 
-      expect(page).to have_button('Regex Examples', class: /bg-gray-700/)
-      expect(page).to have_button('Regex Quick Reference', class: /bg-gray-800/)
-    end
+      expect(page).to have_button 'Regex Examples', class: /bg-gray-700/
+      expect(page).to have_button 'Regex Quick Reference', class: /bg-gray-800/
 
-    it 'switches back to the Reference tab when clicked' do
-      find('button[data-action="click->regexp-content-tab-switch#showExamples"]', wait: true).click
       find('button[data-action="click->regexp-content-tab-switch#showReference"]', wait: true).click
 
-      expect(page).to have_css('#reference-panel')
-      expect(page).to have_no_css('#examples-panel')
+      expect(page).to have_no_css 'div#reference-panel', class: /hidden/, visible: :all
+      expect(page).to have_css 'div#examples-panel', class: /hidden/, visible: :all
 
-      expect(page).to have_button('Regex Quick Reference', class: /bg-gray-700/)
-      expect(page).to have_button('Regex Examples', class: /bg-gray-800/)
+      expect(page).to have_button 'Regex Quick Reference', class: /bg-gray-700/
+      expect(page).to have_button 'Regex Examples', class: /bg-gray-800/
     end
 
     context 'when viewing Regex Quick Reference content' do
@@ -341,6 +486,7 @@ RSpec.describe "RegularExpressionFlow" do
       end
 
       it 'displays section titles and code examples correctly' do
+        # Reference sections
         regex_reference_sections.each do |section|
           expect(page).to have_content(section[:title])
 
@@ -348,18 +494,21 @@ RSpec.describe "RegularExpressionFlow" do
             expect(page).to have_content(code)
             expect(page).to have_content(description)
 
-            expect(page).to have_css("code", text: code)
+            expect(page).to have_css "code", text: code
           end
         end
       end
 
       it '"Copied!" message appears when code is copied' do
+        # Reference sections
         code = '[abc]'
 
         code_element = find('code[data-copy-code-target="source"]', text: code)
         code_element.click
+        expect(page).to have_text 'Copied!'
 
-        expect(page).to have_content('Copied!')
+        code_element.click
+        expect(page).to have_text 'Copied!'
       end
     end
 
@@ -369,6 +518,7 @@ RSpec.describe "RegularExpressionFlow" do
       end
 
       it 'displays the example categories and allows switching between them' do
+        # Example sections
         regexp_example_categories.each_with_index do |(cat, data), i|
           expect(page).to have_css("button[data-category='#{cat.to_s.parameterize}']", text: data[:short])
         end
@@ -385,13 +535,14 @@ RSpec.describe "RegularExpressionFlow" do
       end
 
       it 'shows the correct example when clicked' do
+        # Example sections
         example = find('div[data-pattern="a|b|c"]')
         example.click
 
-        expect(page).to have_css('mark', text: 'c')
-        expect(page).to have_css('mark', text: 'a')
-        expect(page).to have_css('mark', text: 'b')
-        expect(page).to have_content('Alternation: Matches one of \'a\', \'b\', or \'c\'')
+        expect(page).to have_css 'mark', text: 'c', class: /bg-blue-200/
+        expect(page).to have_css 'mark', text: 'a', class: /bg-blue-200/
+        expect(page).to have_css 'mark', text: 'b', class: /bg-blue-200/
+        expect(page).to have_css 'span', text: 'Alternation: Matches one of \'a\', \'b\', or \'c\''
       end
     end
   end
@@ -404,14 +555,14 @@ RSpec.describe "RegularExpressionFlow" do
       fill_in "regular_expression[substitution]", with: '<script>alert(1)</script>'
       fill_in "regular_expression[test_string]", with: 'foo foo foo'
 
-      expect(page).to have_content('Substitution result:')
-
-      within find('h3', text: 'Substitution result:').find(:xpath, './ancestor::div[contains(@class, "mb-2")]') do
-        expect(page).to have_css('mark', text: '<script>alert(1)</script>', count: 3)
+      # Match result section
+      within 'div.mb-2.text-left', text: 'Match result:', exact_text: false do
+        expect(page).to have_css 'mark', text: 'foo', count: 3, class: /bg-blue-200/
       end
 
-      within 'div.mb-2.text-left', text: 'Match result:', exact_text: false do
-        expect(page).to have_css('mark', text: 'foo', count: 3)
+      # Substitution result section
+      within find('label', text: 'Substitution result:').find(:xpath, './ancestor::div[contains(@class, "mb-2")]') do
+        expect(page).to have_css 'mark', text: '<script>alert(1)</script>', count: 3, class: /bg-green-300/
       end
     end
   end

@@ -130,11 +130,11 @@ bin/rspec
 - [x] **Regex Diagram Generation**: Generates and visualizes regex patterns using SVG diagrams.
 - [x] **Regexp Substitution Function**: Supports regex-based string substitution.
 - [x] **Ruby Code Snippet Generation**: Automatically generates Ruby code snippets for testing regex patterns.
-- [ ] **Web Interface for Regex Testing**: Interactive web UI to test and visualize regular expressions in real-time.
+- [x] **Web Interface for Regex Testing**: Interactive web UI to test and visualize regular expressions in real-time.
 
 ---
 
-### Supported `Regexp::Parser` Gem Features
+### Supported Scope of `Regexp::Parser` Used for SVG Output in `Railroad Diagrams`
 
 - [x] **Alternation**: `a\|b\|c`
 - [x] **Anchors**: `\A`, `^`, `\b`
