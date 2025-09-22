@@ -19,5 +19,8 @@ AllCops:
 Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: false
 
+RSpec/ExampleLength:
+  Max: 20
+
 RSpec/MultipleExpectations:
   Enabled: false
