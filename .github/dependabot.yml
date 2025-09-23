@@ -67,6 +67,23 @@ updates:
           - 'esbuild'
           - 'playwright'
 
+  - package-ecosystem: npm
+    directory: '/pwa'
+    schedule:
+      interval: daily
+      time: '12:00'
+      timezone: Asia/Tokyo
+    open-pull-requests-limit: 10
+    versioning-strategy: auto
+    labels:
+      - dependencies
+      - javascript
+    groups:
+      others:
+        patterns:
+          - 'vite'
+          - 'vite-plugin-pwa'
+
   - package-ecosystem: github-actions
     directory: '/'
     schedule:
