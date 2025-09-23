@@ -1017,10 +1017,10 @@
     "@bjorn3/browser_wasi_shim" "^0.3.0"
     tslib "^2.8.1"
 
-"@sqlite.org/sqlite-wasm@3.46.1-build3":
-  version "3.46.1-build3"
-  resolved "https://registry.yarnpkg.com/@sqlite.org/sqlite-wasm/-/sqlite-wasm-3.46.1-build3.tgz#b30fe93ab21541ecbf44bf9a9ca92cb946226e6d"
-  integrity sha512-9FY9C1A8jZTU8Lm6sz16zBeBN+jFIUL/LGAZMym9QaRB796/KHHL9xo6OgaTL8iDw2VeltGen7hNwJedVN/j4w==
+"@sqlite.org/sqlite-wasm@3.46.1-build5":
+  version "3.46.1-build5"
+  resolved "https://registry.yarnpkg.com/@sqlite.org/sqlite-wasm/-/sqlite-wasm-3.46.1-build5.tgz#5bb1a1ff91b3fffa67d61a17ba43e1d811785ce2"
+  integrity sha512-zs1wSjcUSILA55xJjEP+IxOU8GDuTnrxNFNIqz/aDo/mWm8pYijueuO3WW8olWNKFWOOUzq9BVu+zkG46EYcyw==
 
 "@surma/rollup-plugin-off-main-thread@^2.2.3":
   version "2.2.3"
