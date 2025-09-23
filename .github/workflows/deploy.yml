@@ -76,6 +76,9 @@ jobs:
           yarn install
           yarn build
 
+      - name: Add .nojekyll to prevent GitHub Pages Jekyll build
+        run: echo "" > ./pwa/dist/.nojekyll
+
       - name: Upload GitHub Pages Artifact
         uses: actions/upload-pages-artifact@v4
         with:
