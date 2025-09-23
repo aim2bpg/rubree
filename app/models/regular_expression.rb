@@ -63,17 +63,13 @@ class RegularExpression
         start: match.begin(0),
         end: match.end(0),
         index: i,
-        invisible: invisible_match?(match)
+        invisible: true
       }
     end
 
     positions
   rescue RegexpError
     []
-  end
-
-  def invisible_match?(match)
-    match[0].match?(/\A\s/) || match[0].match?(/\z/) || match[0].match?(/\s/)
   end
 
   def diagram_svg
@@ -101,9 +97,20 @@ class RegularExpression
   end
 
   def perform_substitution
-    return nil if unready? || regexp.nil? || substitution.blank?
+    return nil if unready? || regexp.nil? || substitution.nil?
 
     begin
+      if substitution.match?(/\\\d+/)
+        test_string.match(regexp)
+        valid_groups = Regexp.last_match&.captures&.size.to_i
+
+        max_ref = substitution.scan(/\\(\d+)/).flatten.map(&:to_i).max.to_i
+        if max_ref > valid_groups
+          @substitution_result = test_string
+          return
+        end
+      end
+
       @substitution_result = test_string.gsub(regexp) do |matched_text|
         begin
           replaced_text = matched_text.gsub(regexp, substitution)
@@ -112,7 +119,7 @@ class RegularExpression
         end
 
         if replaced_text.empty?
-          matched_text
+          %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900"></mark>)
         else
           %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">#{ERB::Util.h(replaced_text)}</mark>)
         end
@@ -154,7 +161,7 @@ class RegularExpression
       code << "end"
     end
 
-    code.join("\n")
+    code.join("\n").chomp
   rescue => e
     "# Error generating Ruby code: #{e.message}"
   end
@@ -183,7 +190,12 @@ class RegularExpression
   end
 
   def check_expression
-    return if unready? || regexp.nil?
+    return if unready?
+
+    if regexp.nil?
+      errors.add(:base, "Invalid regular expression")
+      return
+    end
 
     times = []
     last_match = nil
