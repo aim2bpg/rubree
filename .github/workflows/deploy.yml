@@ -1,9 +1,16 @@
 name: Deploy
 
 on:
+  pull_request:
+    branches: [ main ]
   push:
     branches: [ main ]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: deploy-${{ github.ref_name }}
@@ -90,11 +97,6 @@ jobs:
     runs-on: ubuntu-latest
 
     if: github.ref == 'refs/heads/main'
-
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
 
     environment:
       name: github-pages
