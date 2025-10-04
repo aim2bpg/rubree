@@ -7,14 +7,16 @@ assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## 🔧 Feature Proposal Template (Simplified Version)
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+- **Overview (What)**  
+  A brief description of the feature or improvement you'd like to propose.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+- **Background (Why)**  
+  Why is this necessary? What problem or inconvenience does it aim to solve?
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+- **Details (How)**  
+  Implementation ideas, UI suggestions, expected behavior, etc.
+
+- **Additional Notes**  
+  Include relevant links, screenshots, or how this relates to other suggestions.
