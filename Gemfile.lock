@@ -310,20 +310,13 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
-    ruby_wasm (2.7.2)
-      logger
-    ruby_wasm (2.7.2-aarch64-linux)
-      logger
-    ruby_wasm (2.7.2-aarch64-linux-musl)
-      logger
-    ruby_wasm (2.7.2-arm64-darwin)
-      logger
-    ruby_wasm (2.7.2-x86_64-darwin)
-      logger
-    ruby_wasm (2.7.2-x86_64-linux)
-      logger
-    ruby_wasm (2.7.2-x86_64-linux-musl)
-      logger
+    ruby_wasm (2.7.1)
+    ruby_wasm (2.7.1-aarch64-linux)
+    ruby_wasm (2.7.1-aarch64-linux-musl)
+    ruby_wasm (2.7.1-arm64-darwin)
+    ruby_wasm (2.7.1-x86_64-darwin)
+    ruby_wasm (2.7.1-x86_64-linux)
+    ruby_wasm (2.7.1-x86_64-linux-musl)
     rubyzip (3.1.1)
     securerandom (0.4.1)
     selenium-webdriver (4.36.0)
@@ -405,6 +398,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   rubocop-rspec_rails
+  ruby_wasm (< 2.7.2)
   selenium-webdriver
   sqlite3 (>= 2.1)
   stimulus-rails

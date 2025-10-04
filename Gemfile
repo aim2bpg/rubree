@@ -25,6 +25,9 @@ gem "cssbundling-rails"
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# ruby.wasm is a collection of WebAssembly ports of the CRuby
+gem "ruby_wasm", "< 2.7.2", group: [:default, :wasm]
+
 # Tools and extensions to pack and run Rails apps on Wasm [https://github.com/palkan/wasmify-rails/]
 gem "wasmify-rails", "~> 0.2.3", group: [:default, :wasm]
 
