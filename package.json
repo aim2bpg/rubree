@@ -12,6 +12,7 @@
     "lint": "biome lint ./",
     "lint:fix": "biome lint --write ./",
     "format": "biome format --write ./",
+    "migrate": "biome migrate --write",
     "check": "biome check --write ./"
   },
   "dependencies": {
