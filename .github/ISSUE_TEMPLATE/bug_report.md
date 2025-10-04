@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-## 🐛 Bug Report Template (Simplified Version)
-
 - **Summary**  
   A brief description of the bug.
 

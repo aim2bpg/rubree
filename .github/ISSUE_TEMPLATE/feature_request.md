@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-## 🔧 Feature Proposal Template (Simplified Version)
-
 - **Overview (What)**  
   A brief description of the feature or improvement you'd like to propose.
 
