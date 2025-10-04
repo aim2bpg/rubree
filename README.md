@@ -59,7 +59,7 @@ Inspired by: https://rubular.com
 1. Clone the repo locally:
 
 ```
-git clone git@github.com:aim2bpg/rubree.git
+git clone https://github.com/aim2bpg/rubree.git
 cd rubree
 ```
 
