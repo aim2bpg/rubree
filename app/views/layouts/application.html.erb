@@ -8,6 +8,14 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@aim2bpg">
+    <meta name="twitter:creator" content="@aim2bpg">
+    <meta name="twitter:title" content="Rubree - A Ruby regular expression editor inspired by Rubular">
+    <meta name="twitter:description" content="Rubree lets you instantly test and visualize Ruby regular expressions. Inspired by Rubular.">
+    <meta name="twitter:image" content="<%= image_url("Rubree-logo.png") %>">
+
     <%= yield :head %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
