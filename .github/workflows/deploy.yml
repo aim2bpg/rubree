@@ -96,7 +96,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/main'
+    if: github.ref_name == 'main'
 
     environment:
       name: github-pages
