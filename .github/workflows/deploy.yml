@@ -1,11 +1,10 @@
 name: Deploy
 
 on:
-  pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
 
 permissions:
   contents: read
@@ -13,7 +12,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: deploy-${{ github.ref_name }}
+  group: deploy-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: true
 
 jobs:
@@ -21,11 +20,17 @@ jobs:
     name: Build Web App
     runs-on: ubuntu-latest
 
-    if: github.ref_name == 'main'
+    if: >-
+      ${{ 
+        github.event.workflow_run.conclusion == 'success' && 
+        github.event.workflow_run.head_branch == 'main' 
+      }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -97,8 +102,6 @@ jobs:
     name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
-
-    if: github.ref_name == 'main'
 
     environment:
       name: github-pages
