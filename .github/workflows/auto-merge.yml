@@ -1,3 +1,6 @@
+# See also:
+# https://github.com/aim2bpg/rubree/wiki/Using-PAT-to-Trigger-Workflows-After-Auto‐Merge-in-GitHub-Actions
+
 name: Dependabot auto-merge
 
 on: pull_request_target
