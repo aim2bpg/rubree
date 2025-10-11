@@ -1,9 +1,14 @@
 name: Dependabot auto-merge
+
 on: pull_request_target
 
 permissions:
   contents: write
   pull-requests: write
+
+concurrency:
+  group: dependabot-auto-merge
+  cancel-in-progress: false
 
 jobs:
   dependabot:
@@ -18,7 +23,14 @@ jobs:
 
       - name: Enable auto-merge for Dependabot PRs
         if: ${{ steps.metadata.outputs.update-type != 'version-update:semver-major' }}
-        run: gh pr merge --auto --squash "$PR_URL"
+        run: |
+          n=0
+          until [ $n -ge 3 ]; do
+            gh pr merge --auto --squash "$PR_URL" && break
+            echo "Retrying auto-merge... ($((n+1)))"
+            n=$((n+1))
+            sleep 5
+          done
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
+          PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.PAT }}
