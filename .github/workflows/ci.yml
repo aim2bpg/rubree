@@ -103,10 +103,20 @@ jobs:
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install JS dependencies
         run: yarn install
 
       - name: Install playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
       - name: Build frontend assets
