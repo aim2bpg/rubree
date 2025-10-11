@@ -106,9 +106,8 @@ jobs:
       - name: Install JS dependencies
         run: yarn install
 
-      - name: Set up Playwright (official action)
-        uses: microsoft/playwright-github-action@v1
-
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
 
       - name: Build frontend assets
         run: yarn build
