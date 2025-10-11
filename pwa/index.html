@@ -1,2 +1,118 @@
-<meta http-equiv="Refresh" content="0; url=./boot.html" />
-<p>Please follow <a href="./boot.html">this link</a>.</p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Rubree - A Ruby regular expression editor inspired by Rubular</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Rubree is a Ruby regular expression editor inspired by Rubular. Quickly test and visualize your regex patterns in an intuitive interface.">
+    <meta name="keywords" content="Ruby, regular expression, regex tester, regex editor, online regex tool, Rubular alternative, Rubree, Ruby regex playground, pattern matching, regex visualization, live regex testing, railroad diagrams, railroad diagrams visualization, regex diagram, visual regex, regex railroads">
+
+    <!-- Open Graph (OGP) -->
+    <meta property="og:title" content="Rubree - A Ruby regular expression editor inspired by Rubular">
+    <meta property="og:description" content="Rubree lets you instantly test and visualize Ruby regular expressions. Inspired by Rubular.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/logo.png">
+    <meta property="og:url" content="https://aim2bpg.github.io/rubree/">
+    <meta property="og:site_name" content="Rubree">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@aim2bpg">
+    <meta name="twitter:creator" content="@aim2bpg">
+    <meta name="twitter:title" content="Rubree - A Ruby regular expression editor inspired by Rubular">
+    <meta name="twitter:description" content="Rubree lets you instantly test and visualize Ruby regular expressions. Inspired by Rubular.">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/logo.png">
+
+    <script type="module" src="./boot-entry.js"></script>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background-color: #111827;
+        color: #ffffff;
+        margin: 0;
+        padding: 2em;
+      }
+
+      main {
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5em;
+      }
+
+      p.description {
+        color: #d1d5db;
+        font-size: 1.1rem;
+        margin-bottom: 1.5em;
+      }
+
+      #boot-message {
+        margin-top: 1em;
+        margin-bottom: 0.5em;
+        font-size: 1rem;
+        color: #93c5fd;
+      }
+
+      progress {
+        width: 100%;
+        height: 20px;
+        margin-top: 1em;
+        margin-bottom: 2em;
+      }
+
+      #launch-button {
+        background-color: #2563eb;
+        color: #fff;
+        border: none;
+        padding: 0.75em 2em;
+        font-size: 1rem;
+        border-radius: 0.5em;
+        cursor: pointer;
+      }
+
+      #launch-button:disabled {
+        background-color: #4b5563;
+        cursor: not-allowed;
+      }
+
+      footer {
+        margin-top: 3em;
+        font-size: 0.9rem;
+        color: #9ca3af;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Rubree</h1>
+      <p class="description">
+        A Ruby regular expression editor - inspired by Rubular
+      </p>
+      
+      <p class="description">
+        The initial load may take about 10 seconds.<br />
+        Please click the button when it's ready.
+      </p>
+
+      <div id="boot-message">Preparing Service Worker...</div>
+      <button id="launch-button" disabled>Start Rubree</button>
+
+      <progress id="boot-progress" max="100" value="0"></progress>
+
+      <img src="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/site_view.png" alt="Site View">
+
+      <footer>
+        © 2025 Rubree. Powered by Wasmify-Rails.
+      </footer>
+    </main>
+  </body>
+</html>

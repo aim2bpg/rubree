@@ -63,7 +63,7 @@ async function init() {
   if (!registration) {
     return;
   }
-  bootMessage.textContent = "Service Worker Ready";
+  bootMessage.textContent = "Ready to Start!";
   bootProgress.value = 100;
 
   const launchButton = document.getElementById("launch-button");
@@ -73,24 +73,24 @@ async function init() {
     window.open("./", "_blank");
   });
 
-  const rebootButton = document.getElementById("reboot-button");
-  rebootButton.disabled = false;
-  rebootButton.addEventListener("click", async function () {
-    await registration.unregister();
-    window.location.reload();
-  });
+  // const rebootButton = document.getElementById("reboot-button");
+  // rebootButton.disabled = false;
+  // rebootButton.addEventListener("click", async function () {
+  //   await registration.unregister();
+  //   window.location.reload();
+  // });
 
-  const reloadButton = document.getElementById("reload-button");
-  reloadButton.disabled = false;
-  reloadButton.addEventListener("click", async function () {
-    registration.active.postMessage({ type: "reload-rails" });
-  });
+  // const reloadButton = document.getElementById("reload-button");
+  // reloadButton.disabled = false;
+  // reloadButton.addEventListener("click", async function () {
+  //   registration.active.postMessage({ type: "reload-rails" });
+  // });
 
-  const reloadDebugButton = document.getElementById("reload-debug-button");
-  reloadDebugButton.disabled = false;
-  reloadDebugButton.addEventListener("click", async function () {
-    registration.active.postMessage({ type: "reload-rails", debug: true });
-  });
+  // const reloadDebugButton = document.getElementById("reload-debug-button");
+  // reloadDebugButton.disabled = false;
+  // reloadDebugButton.addEventListener("click", async function () {
+  //   registration.active.postMessage({ type: "reload-rails", debug: true });
+  // });
 }
 
 init();

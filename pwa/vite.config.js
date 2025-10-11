@@ -18,7 +18,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, "index.html"),
-        boot: path.resolve(__dirname, "boot.html"),
+        // boot: path.resolve(__dirname, "boot.html"),
         "boot-entry": path.resolve(__dirname, "boot-entry.js"),
       },
     },
