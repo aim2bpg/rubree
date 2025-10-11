@@ -18,8 +18,8 @@ FileUtils.chdir APP_ROOT do
   # Install JavaScript dependencies
   system("yarn install --check-files")
 
-  # puts "\n== Installing Playwright browsers =="
-  # system!("npx playwright install")
+  puts "\n== Installing Playwright browsers =="
+  system!("npx playwright install")
 
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")

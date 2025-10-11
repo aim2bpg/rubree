@@ -106,12 +106,49 @@ Biome Lint:
 bin/yarn biome check
 ```
 
+Brakeman (security scan):
+
+```
+bin/brakeman --no-pager --skip-files app/assets/builds/,build/,node_modules/,pwa/,rubies/
+```
+
+### Fixing lint errors
+
+Rubocop:
+
+```
+bin/rubocop -a
+```
+
+ERB Lint:
+
+```
+bin/erb_lint --lint-all -a
+```
+
+Biome Lint:
+
+```
+bin/yarn biome check --write
+bin/yarn biome migrate --write
+```
+
 ### Running tests locally
 
-Ruby test:
+Run tests with the default Playwright driver:
 
 ```
 bin/rspec
+```
+
+Run tests with different browser drivers:
+
+```
+# Switch to Selenium Chrome (with browser UI):
+DRIVER=selenium_chrome bin/rspec
+
+# Switch to Selenium Chrome Headless (no browser UI):
+DRIVER=selenium_chrome_headless bin/rspec
 ```
 
 ### Test deployment locally
