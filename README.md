@@ -7,6 +7,8 @@ A Ruby-based regular expression editor.
 
 Inspired by: https://rubular.com
 
+![Site View](https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/site_view.png)
+
 ## Technology stack
 
 ### ⚙️ Backend

@@ -83,6 +83,26 @@
         background-color: #4b5563;
         cursor: not-allowed;
       }
+      
+      #site-image {
+        max-width: 100%;
+        width: 600px;
+        height: auto;
+        display: block;
+        margin: 2em auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+      }
+      
+      #site-image:hover {
+        transform: scale(1.02);
+      }
+      
+      @media (max-width: 600px) {
+        #site-image {
+          width: 90%;
+        }
+      }
 
       footer {
         margin-top: 3em;
@@ -108,7 +128,7 @@
 
       <progress id="boot-progress" max="100" value="0"></progress>
 
-      <img src="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/site_view.png" alt="Site View">
+      <img id="site-image" src="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/site_view.png" alt="Site View">
 
       <footer>
         © 2025 Rubree. Powered by Wasmify-Rails.
