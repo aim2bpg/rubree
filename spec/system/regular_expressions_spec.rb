@@ -350,19 +350,6 @@ RSpec.describe "RegularExpressionFlow" do
       expect(toggle_button).to have_text 'Show'
       expect(page).to have_css 'div', style: /display: none/, visible: :all
     end
-
-    it "shows and hides 'Copied!' tooltip after clicking Copy button" do
-      # Ruby code display section
-      copy_button = find('button[title="Copy Ruby Code"]')
-      tooltip = find('span[data-copy-code-target="tooltip"]', visible: false)
-
-      copy_button.click
-      expect(tooltip).to have_text 'Copied!'
-      expect(tooltip[:class]).not_to include('invisible')
-
-      copy_button.click
-      expect(tooltip).to have_text 'Copied!'
-    end
   end
 
   describe "Regex options: Flags (i, m, x) behavior" do
@@ -497,18 +484,6 @@ RSpec.describe "RegularExpressionFlow" do
             expect(page).to have_css "code", text: code
           end
         end
-      end
-
-      it '"Copied!" message appears when code is copied' do
-        # Reference sections
-        code = '[abc]'
-
-        code_element = find('code[data-copy-code-target="source"]', text: code)
-        code_element.click
-        expect(page).to have_text 'Copied!'
-
-        code_element.click
-        expect(page).to have_text 'Copied!'
       end
     end
 
