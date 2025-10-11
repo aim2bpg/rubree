@@ -108,7 +108,7 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
 
