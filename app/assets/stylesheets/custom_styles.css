@@ -41,3 +41,24 @@ svg.railroad-diagram rect.group-box {
   width: 100%;
   overflow-x: auto;
 }
+
+/* Modal styling */
+.modal {
+  transition: opacity 0.3s ease;
+}
+
+.modal.hidden {
+  display: none;
+  opacity: 0;
+}
+
+/* Cursor helper classes (fallback when Tailwind is not used) */
+.cursor-pointer {
+  cursor: pointer;
+}
+.cursor-grab {
+  cursor: grab;
+}
+.cursor-grabbing {
+  cursor: grabbing;
+}

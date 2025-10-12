@@ -5,7 +5,9 @@ export default class extends Controller {
   connect() {
     this.isDragging = false;
     this.startX = 0;
+    this.startY = 0;
     this.scrollLeft = 0;
+    this.scrollTop = 0;
 
     this.element.style.cursor = "grab";
 
@@ -29,7 +31,9 @@ export default class extends Controller {
     document.body.style.userSelect = "none";
 
     this.startX = e.pageX - this.element.offsetLeft;
+    this.startY = e.pageY - this.element.offsetTop;
     this.scrollLeft = this.element.scrollLeft;
+    this.scrollTop = this.element.scrollTop;
   };
 
   onMouseLeave = () => {
@@ -45,8 +49,13 @@ export default class extends Controller {
     e.preventDefault();
 
     const x = e.pageX - this.element.offsetLeft;
-    const walk = (x - this.startX) * 1.5;
-    this.element.scrollLeft = this.scrollLeft - walk;
+    const y = e.pageY - this.element.offsetTop;
+
+    const walkX = (x - this.startX) * 1.5;
+    const walkY = (y - this.startY) * 1.5;
+
+    this.element.scrollLeft = this.scrollLeft - walkX;
+    this.element.scrollTop = this.scrollTop - walkY;
   };
 
   stopDragging() {

@@ -8,6 +8,10 @@ import CopyCodeController from "./copy_code_controller";
 
 application.register("copy-code", CopyCodeController);
 
+import DiagramModalController from "./diagram_modal_controller";
+
+application.register("diagram-modal", DiagramModalController);
+
 import DragScrollController from "./drag_scroll_controller";
 
 application.register("drag-scroll", DragScrollController);
