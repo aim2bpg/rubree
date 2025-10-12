@@ -1,0 +1,67 @@
+{
+  "id": 8820821,
+  "name": "branch-all-users-rules",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "aim2bpg/rubree",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": ["refs/heads/main"]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "required_linear_history"
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": false,
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          {
+            "context": "Lint Ruby",
+            "integration_id": 15368
+          },
+          {
+            "context": "Lint Frontend",
+            "integration_id": 15368
+          },
+          {
+            "context": "Secret Scan",
+            "integration_id": 15368
+          },
+          {
+            "context": "SAST",
+            "integration_id": 15368
+          },
+          {
+            "context": "Run Tests",
+            "integration_id": 15368
+          }
+        ]
+      }
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "required_approving_review_count": 1,
+        "dismiss_stale_reviews_on_push": true,
+        "require_code_owner_review": true,
+        "require_last_push_approval": true,
+        "required_review_thread_resolution": true,
+        "automatic_copilot_code_review_enabled": false,
+        "allowed_merge_methods": ["merge", "squash", "rebase"]
+      }
+    }
+  ],
+  "bypass_actors": []
+}
