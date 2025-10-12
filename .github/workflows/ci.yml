@@ -123,8 +123,8 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      - name: Install system dependencies for Playwright WebKit (only if cache hit)
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
+      - name: Install system dependencies for Playwright WebKit (only if cache hit, main branch and not dependabot)
+        if: steps.playwright-cache.outputs.cache-hit == 'true' && github.ref == 'refs/heads/main' && github.actor != 'dependabot[bot]'
         run: npx playwright install-deps webkit
 
       - name: Build frontend assets
@@ -134,13 +134,13 @@ jobs:
         run: DRIVER=playwright_chromium_headless bin/rspec
 
       - name: Run system specs with Playwright (Firefox Headless)
-        # if: github.ref == 'refs/heads/main' # debug
+        if: github.ref == 'refs/heads/main' && github.actor != 'dependabot[bot]'
         run: DRIVER=playwright_firefox_headless bin/rspec
 
       - name: Run system specs with Playwright (WebKit Headless)
-        # if: github.ref == 'refs/heads/main' # debug
+        if: github.ref == 'refs/heads/main' && github.actor != 'dependabot[bot]'
         run: DRIVER=playwright_webkit_headless bin/rspec
 
       - name: Run system specs with Selenium (Chrome Headless)
-        # if: github.ref == 'refs/heads/main' # debug
+        if: github.ref == 'refs/heads/main' && github.actor != 'dependabot[bot]'
         run: DRIVER=selenium_chrome_headless bin/rspec
