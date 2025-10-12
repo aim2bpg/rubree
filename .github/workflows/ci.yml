@@ -103,11 +103,6 @@ jobs:
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
-      - name: Install dependencies for Playwright WebKit
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwoff2-1 libatk-bridge2.0-0 libgtk-3-0 libxss1 libnss3 libasound2
-
       - name: Extract Playwright version
         id: playwright-version
         run: echo "version=$(jq -r '.devDependencies.playwright' package.json)" >> "$GITHUB_OUTPUT"
@@ -128,28 +123,24 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
+      - name: Install system dependencies for Playwright WebKit
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps all
+
       - name: Build frontend assets
         run: yarn build
 
       - name: Run system specs with Playwright (Chromium Headless)
-        run: |
-          echo "Running with DRIVER=playwright_chromium_headless"
-          DRIVER=playwright_chromium_headless bin/rspec
+        run: DRIVER=playwright_chromium_headless bin/rspec
 
       - name: Run system specs with Playwright (Firefox Headless)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "Running with DRIVER=playwright_firefox_headless"
-          DRIVER=playwright_firefox_headless bin/rspec
+        # if: github.ref == 'refs/heads/main' # debug
+        run: DRIVER=playwright_firefox_headless bin/rspec
 
       - name: Run system specs with Playwright (WebKit Headless)
         # if: github.ref == 'refs/heads/main' # debug
-        run: |
-          echo "Running with DRIVER=playwright_webkit_headless"
-          DRIVER=playwright_webkit_headless bin/rspec
+        run: DRIVER=playwright_webkit_headless bin/rspec
 
       - name: Run system specs with Selenium (Chrome Headless)
         # if: github.ref == 'refs/heads/main' # debug
-        run: |
-          echo "Running with DRIVER=selenium_chrome_headless"
-          DRIVER=selenium_chrome_headless bin/rspec
+        run: DRIVER=selenium_chrome_headless bin/rspec
