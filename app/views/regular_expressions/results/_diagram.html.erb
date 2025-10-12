@@ -1,11 +1,88 @@
-<div class="flex flex-col space-y-2 overflow-auto rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white text-left">
-  <% if @diagram_error_message.present? %>
-    <label class="text-sm font-bold text-white">Railroad diagram:</label>
-    <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2"><%= h @diagram_error_message %></div>
-  <% elsif @svg_output.present? %>
-    <label class="text-sm font-bold text-white">Railroad diagram:</label>
-    <div data-controller="drag-scroll" class="w-full overflow-x-auto overflow-y-hidden whitespace-nowrap cursor-grab"><%= regular_expression.diagram_svg %></div>
-  <% else %>
-    <p class="text-gray-500 m-auto text-center">Railroad diagram will appear here</p>
-  <% end %>
+<div data-controller="diagram-modal">
+  <div class="flex flex-col space-y-2 rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white text-left relative">
+    <% if @diagram_error_message.present? %>
+      <label class="text-sm font-bold text-white">Railroad diagram:</label>
+      <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2">
+        <%= h @diagram_error_message %>
+      </div>
+
+    <% elsif @svg_output.present? %>
+      <div class="flex justify-between items-center mb-1">
+        <label class="text-sm font-bold text-white">Railroad diagram:</label>
+
+        <div class="flex items-center gap-2">
+          <!-- Modal open button -->
+          <button
+            type="button"
+            class="p-0 text-gray-400 hover:text-white transition w-5 h-5 flex items-center justify-center"
+            aria-label="View Full Diagram"
+            data-action="click->diagram-modal#open">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="w-[18px] h-[18px]">
+              <circle cx="11" cy="11" r="7" stroke-width="2" />
+              <line x1="16.656" y1="16.657" x2="21" y2="21" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+          <!-- Clipboard PNG button -->
+          <button
+            type="button"
+            class="relative inline-flex items-center justify-center text-gray-400 hover:text-white transition w-5 h-5"
+            aria-label="Copy Diagram as PNG"
+            data-controller="diagram-clipboard"
+            data-action="click->diagram-clipboard#copyPng"
+            title="Copy Diagram as PNG">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+              class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+            </svg>
+            <span
+              data-diagram-clipboard-target="tooltip"
+              class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs leading-none px-2 py-1 rounded
+                     opacity-0 invisible transition-opacity duration-300 pointer-events-none z-10 whitespace-nowrap">
+              Copied!
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        data-controller="drag-scroll"
+        class="w-full overflow-auto whitespace-nowrap cursor-grab border border-gray-600 rounded p-2 bg-gray-800 max-h-[400px]"
+        data-diagram-modal-target="source">
+        <%= regular_expression.diagram_svg %>
+      </div>
+
+    <% else %>
+      <p class="text-gray-500 m-auto text-center">Railroad diagram will appear here</p>
+    <% end %>
+  </div>
+
+  <!-- Modal container -->
+  <div
+    data-diagram-modal-target="modal"
+    class="modal hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+    data-action="click->diagram-modal#close">
+    <div
+      class="relative bg-white rounded shadow-lg p-4 max-w-[90vw] max-h-[90vh] overflow-auto"
+      data-action="click->diagram-modal#stopPropagation">
+      <button
+        type="button"
+        class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+        data-action="click->diagram-modal#close"
+        aria-label="Close">
+        ✕
+      </button>
+
+      <div
+        data-diagram-modal-target="content"
+        class="overflow-auto max-w-full cursor-grab max-h-[80vh]"
+        data-controller="drag-scroll"></div>
+    </div>
+  </div>
 </div>
