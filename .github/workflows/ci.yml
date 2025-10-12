@@ -119,13 +119,13 @@ jobs:
       - name: Install JS dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Install playwright browsers
+      - name: Install playwright browsers (only if cache missed)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      - name: Install system dependencies for Playwright WebKit
+      - name: Install system dependencies for Playwright WebKit (only if cache hit)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps all
+        run: npx playwright install-deps webkit
 
       - name: Build frontend assets
         run: yarn build
