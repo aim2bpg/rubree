@@ -77,16 +77,23 @@ self.addEventListener("install", (event) => {
 const rackHandler = new RackHandler(initVM, { assumeSSL: true });
 
 self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+
+  if (url.origin !== location.origin) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   const bootResources = ["./boot", "./boot.js", "./boot.html", "./rails.sw.js"];
 
   if (
-    bootResources.find((r) => new URL(event.request.url).pathname.endsWith(r))
+    bootResources.find((r) => url.pathname.endsWith(r))
   ) {
     console.log(
       "[rails-web] Fetching boot files from network:",
       event.request.url,
     );
-    event.respondWith(fetch(event.request.url));
+    event.respondWith(fetch(event.request));
     return;
   }
 
@@ -97,7 +104,7 @@ self.addEventListener("fetch", (event) => {
       "[rails-web] Fetching Vite files from network:",
       event.request.url,
     );
-    event.respondWith(fetch(event.request.url));
+    event.respondWith(fetch(event.request));
     return;
   }
 
