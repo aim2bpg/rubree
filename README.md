@@ -135,20 +135,41 @@ bin/yarn biome migrate --write
 
 ### Running tests locally
 
-Run tests with the default Playwright driver:
+Run tests with the default Playwright (Chromium, headless) driver:
 
 ```
 bin/rspec
 ```
 
-Run tests with different browser drivers:
+Run tests with a specific driver by setting the DRIVER environment variable:
 
 ```
-# Switch to Selenium Chrome (with browser UI):
+# Playwright - Chromium (with browser UI)
+DRIVER=playwright_chromium bin/rspec
+
+# Playwright - Chromium (headless)
+DRIVER=playwright_chromium_headless bin/rspec
+
+# Playwright - Firefox (with browser UI)
+DRIVER=playwright_firefox bin/rspec
+
+# Playwright - Firefox (headless)
+DRIVER=playwright_firefox_headless bin/rspec
+
+# Playwright - WebKit (with browser UI)
+DRIVER=playwright_webkit bin/rspec
+
+# Playwright - WebKit (headless)
+DRIVER=playwright_webkit_headless bin/rspec
+
+# Selenium - Chrome (with browser UI)
 DRIVER=selenium_chrome bin/rspec
 
-# Switch to Selenium Chrome Headless (no browser UI):
+# Selenium - Chrome (headless)
 DRIVER=selenium_chrome_headless bin/rspec
+
+# Rack Test (no JS support)
+DRIVER=rack_test bin/rspec
 ```
 
 ### Test deployment locally

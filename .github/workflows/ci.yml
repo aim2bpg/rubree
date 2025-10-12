@@ -126,5 +126,25 @@ jobs:
       - name: Build frontend assets
         run: yarn build
 
-      - name: Run RSpec Tests
-        run: bin/rspec
+      - name: Run system specs with Playwright (Chromium Headless)
+        run: |
+          echo "Running with DRIVER=playwright_chromium_headless"
+          DRIVER=playwright_chromium_headless bin/rspec
+
+      - name: Run system specs with Playwright (Firefox Headless)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Running with DRIVER=playwright_firefox_headless"
+          DRIVER=playwright_firefox_headless bin/rspec
+
+      - name: Run system specs with Playwright (WebKit Headless)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Running with DRIVER=playwright_webkit_headless"
+          DRIVER=playwright_webkit_headless bin/rspec
+
+      - name: Run system specs with Selenium (Chrome Headless)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Running with DRIVER=selenium_chrome_headless"
+          DRIVER=selenium_chrome_headless bin/rspec
