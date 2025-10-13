@@ -265,6 +265,6 @@ For more detailed information about supported syntax, refer to the official docu
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/aim2bpg/rubree
 
-## Lisence
+## Licence
 
 This project is licensed under the MIT License, see the LICENSE file for details
