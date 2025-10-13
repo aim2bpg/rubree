@@ -2,7 +2,7 @@
 
 The app provides a Service Worker to serve requests through the Rails/Wasm app.
 
-## Running locallly
+## Running locally
 
 ```sh
 yarn install
