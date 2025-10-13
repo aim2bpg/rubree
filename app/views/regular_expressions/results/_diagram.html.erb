@@ -16,7 +16,8 @@
             type="button"
             class="p-0 text-gray-400 hover:text-white transition w-5 h-5 flex items-center justify-center"
             aria-label="View Full Diagram"
-            data-action="click->diagram-modal#open">
+            data-action="click->diagram-modal#open"
+            data-pattern="<%= h regular_expression.expression %>">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -34,6 +35,7 @@
             aria-label="Copy Diagram as PNG"
             data-controller="diagram-clipboard"
             data-action="click->diagram-clipboard#copyPng"
+            data-pattern="<%= h regular_expression.expression %>"
             title="Copy Diagram as PNG">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
               viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
