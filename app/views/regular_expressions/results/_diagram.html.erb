@@ -17,7 +17,7 @@
             class="p-0 text-gray-400 hover:text-white transition w-5 h-5 flex items-center justify-center"
             aria-label="View Full Diagram"
             data-action="click->diagram-modal#open"
-            data-pattern="<%= h regular_expression.expression %>">
+            data-pattern="<%= regular_expression.expression %>">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -75,16 +75,19 @@
       data-action="click->diagram-modal#stopPropagation">
       <button
         type="button"
-        class="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+        class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 z-20"
         data-action="click->diagram-modal#close"
-        aria-label="Close">
+        aria-label="Close"
+        style="z-index: 20;">
         ✕
       </button>
 
       <div
         data-diagram-modal-target="content"
-        class="overflow-auto max-w-full cursor-grab max-h-[80vh]"
-        data-controller="drag-scroll"></div>
+        class="relative max-w-full max-h-[80vh] flex flex-col"
+        style="min-width: 0;">
+        <!-- label and svg will be injected by controller -->
+      </div>
     </div>
   </div>
 </div>
