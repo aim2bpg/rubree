@@ -15,5 +15,16 @@ pre-commit:
     - name: SAST (brakeman)
       run: bin/brakeman --no-pager --skip-files app/assets/builds/,build/,node_modules/,pwa/,rubies/
 
-    - name: Run Tests (rspec)
+    - name: Run All Tests (Playwright/Chromium)
       run: bin/rspec
+
+pre-push:
+  jobs:
+    - name: Run System Tests (Playwright/Firefox)
+      run: DRIVER=playwright_firefox_headless bin/rspec spec/system
+
+    - name: Run System Tests (Playwright/WebKit)
+      run: DRIVER=playwright_webkit_headless bin/rspec spec/system
+
+    - name: Run System Tests (Selenium/Chrome)
+      run: DRIVER=selenium_chrome_headless bin/rspec spec/system
