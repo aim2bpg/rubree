@@ -43,3 +43,6 @@
 build/
 rubies/
 dist/
+
+# Ignore DS_Store files created by macOS Finder
+.DS_Store
