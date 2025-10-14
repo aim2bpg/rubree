@@ -14,6 +14,9 @@ Inspired by: https://rubular.com
 ### ⚙️ Backend
 
 - [Ruby](https://www.ruby-lang.org/de/) 3.3
+  > Ruby 3.4 causes runtime issues in WebAssembly builds due to missing `bigdecimal` support when used as a gem,  
+  > as described in [`wasmify-rails` Issue #7](https://github.com/palkan/wasmify-rails/issues/7).  
+  > We use Ruby 3.3 as a stable fallback until full 3.4 support is confirmed.
 - [Ruby on Rails](https://rubyonrails.org/) 8.0
 - [Regexp::Parser](https://github.com/ammar/regexp_parser/) a regular expression parser library for Ruby
 
@@ -25,7 +28,7 @@ Inspired by: https://rubular.com
 
 ### 🛠️ Development
 
-- [Forman](https://github.com/ddollar/foreman/) for jsbundling-rails, cssbundling-rails
+- [Foreman](https://github.com/ddollar/foreman/) for jsbundling-rails, cssbundling-rails
 - [Lefthook](https://github.com/evilmartians/lefthook/) Fast and powerful Git hooks manager for any type of projects
 
 ### 🧹 Linting and testing
