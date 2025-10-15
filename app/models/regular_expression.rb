@@ -72,111 +72,32 @@ class RegularExpression
   def diagram_svg
     return nil if expression.blank?
 
-    begin
-      @diagram_error_message = nil
-      raw_svg = RegexpDiagram.create_svg_from_regex(expression, options: options)
-
-      ActionController::Base.helpers.sanitize(
-        raw_svg,
-        tags: %w[
-          svg g path rect circle line text style defs title desc
-        ],
-        attributes: %w[
-          d fill stroke x y cx cy r width height viewBox xmlns class type
-          transform text-anchor font stroke-width rx ry
-        ],
-        scrubber: nil
-      )
-    rescue => e
-      @diagram_error_message = "Invalid Pattern: #{e.message}"
-      nil
-    end
+    renderer = DiagramSvgRenderer.new(expression: expression, options: options)
+    svg = renderer.render
+    @diagram_error_message = renderer.error_message
+    svg
   end
 
   def perform_substitution
     return nil if unready? || regexp.nil? || substitution.nil?
 
-    begin
-      if substitution.match?(/\\\d+/)
-        test_string.match(regexp)
-        valid_groups = Regexp.last_match&.captures&.size.to_i
-
-        max_ref = substitution.scan(/\\(\d+)/).flatten.map(&:to_i).max.to_i
-        if max_ref > valid_groups
-          @substitution_result = test_string
-          return
-        end
-      end
-
-      @substitution_result = test_string.gsub(regexp) do |matched_text|
-        begin
-          replaced_text = matched_text.gsub(regexp, substitution)
-        rescue ArgumentError
-          replaced_text = matched_text
-        end
-
-        content = replaced_text.empty? ? "" : ERB::Util.h(replaced_text)
-        %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">#{content}</mark>)
-      end.html_safe
-    rescue => e
-      @substitution_result = test_string
-    end
+    substitutor = RegexpSubstitutor.new(
+      regexp: regexp,
+      test_string: test_string,
+      substitution: substitution
+    )
+    @substitution_result = substitutor.perform
   end
 
   def ruby_code_snippet
     return nil if unready? || regexp.nil?
 
-    begin
-      if substitution.present?
-        <<~RUBY
-          # Ruby code for testing the regex
-          pattern = #{regexp.inspect}
-          test_string = #{test_string.inspect}
-
-          # With substitution
-          result = test_string.gsub(pattern, #{substitution.inspect})
-          puts result
-        RUBY
-      else
-        if regexp.names.any?
-          named_captures = regexp.names.map do |name|
-            "puts \"#{name}: \#{match[:#{name}]}\""
-          end.join("\n  ")
-
-          <<~RUBY
-            # Ruby code for testing the regex
-            pattern = #{regexp.inspect}
-            test_string = #{test_string.inspect}
-
-            # Match and captures
-            if match = pattern.match(test_string)
-              # Named captures:
-              #{named_captures}
-            else
-              puts "No match."
-            end
-          RUBY
-        else
-          <<~RUBY
-            # Ruby code for testing the regex
-            pattern = #{regexp.inspect}
-            test_string = #{test_string.inspect}
-
-            # Match and captures
-            if match = pattern.match(test_string)
-              # Numbered captures:
-              match.captures.each_with_index do |cap, i|
-                puts "\#{i + 1}: \#{cap}"
-              end
-            else
-              puts "No match."
-            end
-          RUBY
-        end
-      end.chomp
-    rescue => e
-      "# Error generating Ruby code: #{e.message}"
-    end
+    generator = RegexpCodeGenerator.new(
+      regexp: regexp,
+      test_string: test_string,
+      substitution: substitution
+    )
+    generator.generate
   end
 
   private
