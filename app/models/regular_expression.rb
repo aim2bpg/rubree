@@ -126,38 +126,57 @@ class RegularExpression
   def ruby_code_snippet
     return nil if unready? || regexp.nil?
 
-    code = []
-    code << "# Ruby code for testing the regex"
-    code << "pattern = #{regexp.inspect}"
-    code << "test_string = #{test_string.inspect}"
-    code << ""
+    begin
+      if substitution.present?
+        <<~RUBY
+          # Ruby code for testing the regex
+          pattern = #{regexp.inspect}
+          test_string = #{test_string.inspect}
 
-    if substitution.present?
-      code << "# With substitution"
-      code << "result = test_string.gsub(pattern, #{substitution.inspect})"
-      code << "puts result"
-    else
-      code << "# Match and captures"
-      code << "if match = pattern.match(test_string)"
-      if regexp.names.any?
-        code << "  # Named captures:"
-        regexp.names.each do |name|
-          code << "  puts \"#{name}: \#{match[:#{name}]}\""
-        end
+          # With substitution
+          result = test_string.gsub(pattern, #{substitution.inspect})
+          puts result
+        RUBY
       else
-        code << "  # Numbered captures:"
-        code << "  match.captures.each_with_index do |cap, i|"
-        code << "    puts \"\#{i + 1}: \#{cap}\""
-        code << "  end"
-      end
-      code << "else"
-      code << "  puts \"No match.\""
-      code << "end"
-    end
+        if regexp.names.any?
+          named_captures = regexp.names.map do |name|
+            "puts \"#{name}: \#{match[:#{name}]}\""
+          end.join("\n  ")
 
-    code.join("\n").chomp
-  rescue => e
-    "# Error generating Ruby code: #{e.message}"
+          <<~RUBY
+            # Ruby code for testing the regex
+            pattern = #{regexp.inspect}
+            test_string = #{test_string.inspect}
+
+            # Match and captures
+            if match = pattern.match(test_string)
+              # Named captures:
+              #{named_captures}
+            else
+              puts "No match."
+            end
+          RUBY
+        else
+          <<~RUBY
+            # Ruby code for testing the regex
+            pattern = #{regexp.inspect}
+            test_string = #{test_string.inspect}
+
+            # Match and captures
+            if match = pattern.match(test_string)
+              # Numbered captures:
+              match.captures.each_with_index do |cap, i|
+                puts "\#{i + 1}: \#{cap}"
+              end
+            else
+              puts "No match."
+            end
+          RUBY
+        end
+      end.chomp
+    rescue => e
+      "# Error generating Ruby code: #{e.message}"
+    end
   end
 
   private
