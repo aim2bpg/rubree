@@ -115,11 +115,8 @@ class RegularExpression
           replaced_text = matched_text
         end
 
-        if replaced_text.empty?
-          %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900"></mark>)
-        else
-          %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">#{ERB::Util.h(replaced_text)}</mark>)
-        end
+        content = replaced_text.empty? ? "" : ERB::Util.h(replaced_text)
+        %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">#{content}</mark>)
       end.html_safe
     rescue => e
       @substitution_result = test_string
