@@ -56,18 +56,15 @@ class RegularExpression
   def match_positions
     return [] if unready? || regexp.nil?
 
-    positions = []
-    test_string.to_enum(:scan, regexp).each_with_index do |_, i|
+    test_string.to_enum(:scan, regexp).map.with_index do |_, i|
       match = Regexp.last_match
-      positions << {
+      {
         start: match.begin(0),
         end: match.end(0),
         index: i,
         invisible: true
       }
     end
-
-    positions
   rescue RegexpError
     []
   end
