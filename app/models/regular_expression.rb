@@ -81,22 +81,14 @@ class RegularExpression
   def perform_substitution
     return nil if unready? || regexp.nil? || substitution.nil?
 
-    substitutor = RegexpSubstitutor.new(
-      regexp: regexp,
-      test_string: test_string,
-      substitution: substitution
-    )
+    substitutor = RegexpSubstitutor.new(regexp:, test_string:, substitution:)
     @substitution_result = substitutor.perform
   end
 
   def ruby_code_snippet
     return nil if unready? || regexp.nil?
 
-    generator = RegexpCodeGenerator.new(
-      regexp: regexp,
-      test_string: test_string,
-      substitution: substitution
-    )
+    generator = RegexpCodeGenerator.new(regexp:, test_string:, substitution:)
     generator.generate
   end
 
