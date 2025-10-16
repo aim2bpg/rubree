@@ -56,18 +56,15 @@ class RegularExpression
   def match_positions
     return [] if unready? || regexp.nil?
 
-    positions = []
-    test_string.to_enum(:scan, regexp).each_with_index do |_, i|
+    test_string.to_enum(:scan, regexp).map.with_index do |_, i|
       match = Regexp.last_match
-      positions << {
+      {
         start: match.begin(0),
         end: match.end(0),
         index: i,
         invisible: true
       }
     end
-
-    positions
   rescue RegexpError
     []
   end
@@ -75,95 +72,24 @@ class RegularExpression
   def diagram_svg
     return nil if expression.blank?
 
-    begin
-      @diagram_error_message = nil
-      raw_svg = RegexpDiagram.create_svg_from_regex(expression, options: options)
-
-      ActionController::Base.helpers.sanitize(
-        raw_svg,
-        tags: %w[
-          svg g path rect circle line text style defs title desc
-        ],
-        attributes: %w[
-          d fill stroke x y cx cy r width height viewBox xmlns class type
-          transform text-anchor font stroke-width rx ry
-        ],
-        scrubber: nil
-      )
-    rescue => e
-      @diagram_error_message = "Invalid Pattern: #{e.message}"
-      nil
-    end
+    renderer = DiagramSvgRenderer.new(expression: expression, options: options)
+    svg = renderer.render
+    @diagram_error_message = renderer.error_message
+    svg
   end
 
   def perform_substitution
     return nil if unready? || regexp.nil? || substitution.nil?
 
-    begin
-      if substitution.match?(/\\\d+/)
-        test_string.match(regexp)
-        valid_groups = Regexp.last_match&.captures&.size.to_i
-
-        max_ref = substitution.scan(/\\(\d+)/).flatten.map(&:to_i).max.to_i
-        if max_ref > valid_groups
-          @substitution_result = test_string
-          return
-        end
-      end
-
-      @substitution_result = test_string.gsub(regexp) do |matched_text|
-        begin
-          replaced_text = matched_text.gsub(regexp, substitution)
-        rescue ArgumentError
-          replaced_text = matched_text
-        end
-
-        if replaced_text.empty?
-          %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900"></mark>)
-        else
-          %Q(<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">#{ERB::Util.h(replaced_text)}</mark>)
-        end
-      end.html_safe
-    rescue => e
-      @substitution_result = test_string
-    end
+    substitutor = RegexpSubstitutor.new(regexp:, test_string:, substitution:)
+    @substitution_result = substitutor.perform
   end
 
   def ruby_code_snippet
     return nil if unready? || regexp.nil?
 
-    code = []
-    code << "# Ruby code for testing the regex"
-    code << "pattern = #{regexp.inspect}"
-    code << "test_string = #{test_string.inspect}"
-    code << ""
-
-    if substitution.present?
-      code << "# With substitution"
-      code << "result = test_string.gsub(pattern, #{substitution.inspect})"
-      code << "puts result"
-    else
-      code << "# Match and captures"
-      code << "if match = pattern.match(test_string)"
-      if regexp.names.any?
-        code << "  # Named captures:"
-        regexp.names.each do |name|
-          code << "  puts \"#{name}: \#{match[:#{name}]}\""
-        end
-      else
-        code << "  # Numbered captures:"
-        code << "  match.captures.each_with_index do |cap, i|"
-        code << "    puts \"\#{i + 1}: \#{cap}\""
-        code << "  end"
-      end
-      code << "else"
-      code << "  puts \"No match.\""
-      code << "end"
-    end
-
-    code.join("\n").chomp
-  rescue => e
-    "# Error generating Ruby code: #{e.message}"
+    generator = RegexpCodeGenerator.new(regexp:, test_string:, substitution:)
+    generator.generate
   end
 
   private

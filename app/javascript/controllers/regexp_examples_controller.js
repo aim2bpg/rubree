@@ -2,7 +2,15 @@ import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="regexp-examples"
 export default class extends Controller {
-  static targets = ["tab", "category", "example"];
+  static targets = [
+    "tab",
+    "category",
+    "example",
+    "pattern",
+    "test",
+    "options",
+    "substitution",
+  ];
 
   connect() {
     if (this.hasTabTarget && this.tabTargets[0]) {
@@ -37,27 +45,29 @@ export default class extends Controller {
     const { pattern, test, options, substitution } =
       event.currentTarget.dataset;
 
-    const patternField = document.getElementById(
-      "regular_expression_expression",
-    );
-    const testField = document.getElementById("regular_expression_test_string");
-    const optionsField = document.querySelector(
-      'input[name="regular_expression[options]"]',
-    );
-    const substitutionField = document.getElementById(
-      "regular_expression_substitution",
-    );
+    if (this.hasPatternTarget && this.hasTestTarget) {
+      this.patternTarget.value = pattern;
+      this.testTarget.value = test;
 
-    if (patternField && testField) {
-      patternField.value = pattern;
-      testField.value = test;
-      if (optionsField) optionsField.value = options || "";
-      if (substitutionField) substitutionField.value = substitution || "";
+      if (this.hasOptionsTarget) {
+        this.optionsTarget.value = options || "";
+      }
 
-      patternField.dispatchEvent(new Event("input", { bubbles: true }));
-      testField.dispatchEvent(new Event("input", { bubbles: true }));
-      if (substitutionField)
-        substitutionField.dispatchEvent(new Event("input", { bubbles: true }));
+      if (this.hasSubstitutionTarget) {
+        this.substitutionTarget.value = substitution || "";
+      }
+
+      // Trigger input events
+      this.patternTarget.dispatchEvent(new Event("input", { bubbles: true }));
+      this.testTarget.dispatchEvent(new Event("input", { bubbles: true }));
+
+      if (this.hasSubstitutionTarget) {
+        this.substitutionTarget.dispatchEvent(
+          new Event("input", { bubbles: true }),
+        );
+      }
+    } else {
+      console.warn("⚠️ Pattern or Test target not found");
     }
   }
 }
