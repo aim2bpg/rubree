@@ -49,7 +49,7 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body class="bg-gray-800 text-white">
+  <body class="bg-gray-800 text-white" data-controller="regexp-examples">
     <%= render "layouts/header" %>
     <div class="container mx-auto">
       <%= yield %>
