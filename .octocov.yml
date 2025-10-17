@@ -1,0 +1,23 @@
+coverage:
+  paths:
+    - coverage/.resultset.json
+  acceptable: current >= 80% && diff >= 0%
+testExecutionTime:
+  steps:
+    - Run tests
+  acceptable: current <= 10min && diff <= 5min
+codeToTestRatio:
+  code:
+    - "app/**/*.rb"
+  test:
+    - "spec/**/*_spec.rb"
+  acceptable: current >= 1:1 && diff >= 0
+comment:
+  if: is_pull_request
+  hideFooterLink: false
+report:
+  datastores:
+    - artifact://${GITHUB_REPOSITORY}
+diff:
+  datastores:
+    - artifact://${GITHUB_REPOSITORY}/base

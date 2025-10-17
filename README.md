@@ -1,5 +1,7 @@
 [![CI](https://github.com/aim2bpg/rubree/actions/workflows/ci.yml/badge.svg)](https://github.com/aim2bpg/rubree/actions/workflows/ci.yml)
 [![Deploy](https://github.com/aim2bpg/rubree/actions/workflows/deploy.yml/badge.svg)](https://github.com/aim2bpg/rubree/actions/workflows/deploy.yml)
+[![coverage]](https://github.com/aim2bpg/rubree/docs/coverage.svg)
+[![coverage]](https://github.com/aim2bpg/rubree/docs/time.svg)
 
 # [WIP] Rubree
 
