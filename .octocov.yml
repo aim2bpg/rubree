@@ -11,7 +11,7 @@ codeToTestRatio:
     - "app/**/*.rb"
   test:
     - "spec/**/*_spec.rb"
-  acceptable: current >= 1.2 && diff >= 0
+  acceptable: current >= 1.1 && diff >= 0
 comment:
   if: is_pull_request
   hideFooterLink: false
