@@ -1,4 +1,4 @@
-module RegexpDiagram
+module RegexpDiagramGenerator
   module_function
 
   def create_svg_from_regex(regexp_str, options: nil)

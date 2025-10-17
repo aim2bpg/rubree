@@ -1,4 +1,4 @@
-class RegularExpression
+class RegularExpressionForm
   include ActiveModel::Model
 
   attr_accessor :expression, :test_string, :options, :substitution
@@ -72,7 +72,7 @@ class RegularExpression
   def diagram_svg
     return nil if expression.blank?
 
-    renderer = DiagramSvgRenderer.new(expression: expression, options: options)
+    renderer = RegexpDiagramRenderer.new(expression: expression, options: options)
     svg = renderer.render
     @diagram_error_message = renderer.error_message
     svg

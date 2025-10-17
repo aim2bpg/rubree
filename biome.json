@@ -12,7 +12,8 @@
       "!**/app/assets/builds",
       "!**/build",
       "!**/rubies",
-      "!**/pwa"
+      "!**/pwa",
+      "!**/coverage"
     ]
   },
   "formatter": {
