@@ -4,7 +4,7 @@ coverage:
   acceptable: current >= 80% && diff >= 0%
 testExecutionTime:
   steps:
-    - Exec rspec
+    - Run tests
   acceptable: current <= 10min && diff <= 5min
 codeToTestRatio:
   code:
