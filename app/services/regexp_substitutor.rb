@@ -37,4 +37,13 @@ class RegexpSubstitutor
   rescue => e
     @substitution_result = test_string
   end
+
+  def self.perform_substitution(expression, test_string, substitution, _unused = nil)
+    regexp = Regexp.new(expression) rescue nil
+    return nil unless regexp
+
+    new(regexp: regexp, test_string: test_string, substitution: substitution).perform
+  rescue
+    nil
+  end
 end
