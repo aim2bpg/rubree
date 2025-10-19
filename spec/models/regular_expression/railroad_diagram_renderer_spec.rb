@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe RegexpDiagramRenderer do
+RSpec.describe RegularExpression::RailroadDiagramRenderer do
   describe '.sanitize_svg' do
     let(:raw_svg) { '<svg><script>alert("XSS")</script><text>Test</text></svg>' }
 
@@ -34,13 +34,13 @@ RSpec.describe RegexpDiagramRenderer do
   end
 
   describe '#render' do
-    let(:expression) { 'a+b*' }
+    let(:regular_expression) { 'a+b*' }
     let(:options) { { some_option: true } }
-    let(:renderer) { described_class.new(expression: expression, options: options) }
+    let(:renderer) { described_class.new(regular_expression: regular_expression, options: options) }
 
     context 'when expression is valid' do
       before do
-        allow(RegexpDiagramGenerator).to receive(:create_svg_from_regex).and_return('<svg><g></g></svg>')
+        allow(RegularExpression::RailroadDiagramGenerator).to receive(:create_svg_from_regex).and_return('<svg><g></g></svg>')
       end
 
       it 'returns sanitized SVG' do
@@ -51,33 +51,23 @@ RSpec.describe RegexpDiagramRenderer do
     end
 
     context 'when expression is invalid' do
-      let(:invalid_expression) { '[' } # Invalid regex to simulate error
-      let(:renderer) { described_class.new(expression: invalid_expression, options: options) }
+      let(:invalid_regular_expression) { '[' } # Invalid regex to simulate error
+      let(:renderer) { described_class.new(regular_expression: invalid_regular_expression, options: options) }
 
       it 'sets an error message and returns nil' do
         result = renderer.render
         expect(result).to be_nil
+        expect(renderer.error_message).to be_present
       end
     end
 
     context 'when expression is blank' do
-      let(:renderer) { described_class.new(expression: '', options: options) }
+      let(:renderer) { described_class.new(regular_expression: '', options: options) }
 
       it 'returns nil' do
         result = renderer.render
         expect(result).to be_nil
       end
     end
-
-    # context 'when options is not a hash' do
-    #   let(:invalid_options) { 'invalid' }
-    #   let(:renderer) { described_class.new(expression: 'a+b*', options: invalid_options) }
-
-    #   it 'sets an error message and returns nil' do
-    #     result = renderer.render
-    #     expect(result).to be_nil
-    #     expect(renderer.error_message).to include('Invalid Pattern: Options must be a Hash')
-    #   end
-    # end
   end
 end

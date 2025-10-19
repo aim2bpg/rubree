@@ -1,21 +1,21 @@
-<% max_label_length = regular_expression.named_captures.flat_map(&:keys).map(&:length).max || 0 %>
+<% max_label_length = regular_expression.named_capture_groups.flat_map(&:keys).map(&:length).max || 0 %>
 
 <div class="mb-2">
   <label class="text-sm font-bold mb-2 text-white">Match groups:</label>
   <div class="bg-gray-900 border border-gray-700 p-4 space-y-6 text-left">
 
     <% begin %>
-      <% regex = Regexp.new(regular_expression.expression) %>
+      <% regex = Regexp.new(regular_expression.regular_expression) %>
       <% has_named = regex.names.any? %>
     <% rescue RegexpError %>
       <% has_named = false %>
     <% end %>
 
     <% if has_named %>
-      <% regular_expression.named_captures.each_with_index do |named_set, idx| %>
+      <% regular_expression.named_capture_groups.each_with_index do |named_set, idx| %>
         <% next if named_set.blank? %>
         <div>
-          <% if regular_expression.named_captures.size > 1 %>
+          <% if regular_expression.named_capture_groups.size > 1 %>
             <label class="text-xs font-semibold mb-2 text-yellow-400">Match <%= idx + 1 %></label>
           <% end %>
           <table class="text-sm text-white table-auto border-separate">
@@ -37,10 +37,10 @@
       <% end %>
 
     <% else %>
-      <% regular_expression.captures.each_with_index do |capture_set, idx| %>
+      <% regular_expression.capture_groups.each_with_index do |capture_set, idx| %>
         <% next if capture_set.blank? || capture_set.all?(&:blank?) %>
         <div>
-          <% if regular_expression.captures.size > 1 %>
+          <% if regular_expression.capture_groups.size > 1 %>
             <label class="text-xs font-semibold mb-2 text-blue-300">Match <%= idx + 1 %></label>
           <% end %>
           <table class="text-sm text-white table-auto border-separate">

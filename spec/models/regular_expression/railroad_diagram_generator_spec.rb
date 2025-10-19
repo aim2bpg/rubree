@@ -1,87 +1,93 @@
 require 'rails_helper'
 
-RSpec.describe RegexpDiagramGenerator do
+RSpec.describe RegularExpression::RailroadDiagramGenerator do
   describe '.create_svg_from_regex' do
-    context 'when regex contains quantifiers' do
-      it 'returns valid SVG for zero or more quantifier (*)' do
+    context 'when the regex contains quantifiers' do
+      it 'generates valid SVG for zero or more quantifier (*)' do
         svg = described_class.create_svg_from_regex('a*')
         expect(svg).to include('<svg')
         expect(svg).to include('0 time or more (greedy)')
       end
 
-      it 'returns valid SVG for one or more quantifier (+)' do
+      it 'generates valid SVG for one or more quantifier (+)' do
         svg = described_class.create_svg_from_regex('a+')
         expect(svg).to include('<svg')
         expect(svg).to include('1 time or more (greedy)')
       end
 
-      it 'returns valid SVG for optional quantifier (?)' do
+      it 'generates valid SVG for complex quantifier with nested groups (a{2,4})+' do
+        svg = described_class.create_svg_from_regex('(a{2,4})+')
+        expect(svg).to include('<svg')
+        expect(svg).to include('1 time or more (greedy)')
+      end
+
+      it 'generates valid SVG for possessive quantifier with nested groups (a{2,4})++' do
+        svg = described_class.create_svg_from_regex('(a{2,4})++')
+        expect(svg).to include('<svg')
+        expect(svg).to include('1 time or more (possessive)')
+      end
+
+      it 'generates valid SVG for optional quantifier (?)' do
         svg = described_class.create_svg_from_regex('a?')
         expect(svg).to include('<svg')
         expect(svg).to include('&quot;a&quot;')
       end
 
-      it 'returns valid SVG for single occurrence quantifier' do
+      it 'generates valid SVG for lazy quantifier (+?)' do
+        svg = described_class.create_svg_from_regex('a+?')
+        expect(svg).to include('<svg')
+        expect(svg).to include('1 time or more (lazy)')
+      end
+
+      it 'generates valid SVG for single occurrence quantifier (a{1})' do
         svg = described_class.create_svg_from_regex('a{1}')
         expect(svg).to include('<svg')
         expect(svg).to include('1 time(s)')
       end
 
-      it 'returns valid SVG for quantifier (2,2)' do
+      it 'generates valid SVG for exact occurrence quantifier (a{2,2})' do
         svg = described_class.create_svg_from_regex('a{2,2}')
         expect(svg).to include('<svg')
         expect(svg).to include('2 time(s)')
       end
 
-      it 'returns valid SVG for quantifier (0,4)' do
+      it 'generates valid SVG for range quantifier (a{0,4})' do
         svg = described_class.create_svg_from_regex('a{0,4}')
         expect(svg).to include('<svg')
         expect(svg).to include('0-4 time(s)')
       end
 
-      it 'returns valid SVG for quantifier (2,4)' do
+      it 'generates valid SVG for range quantifier (a{2,4})' do
         svg = described_class.create_svg_from_regex('a{2,4}')
         expect(svg).to include('<svg')
         expect(svg).to include('2-4 time(s)')
       end
 
-      it 'returns valid SVG for quantifier (0,)' do
+      it 'generates valid SVG for zero or more quantifier (a{0,})' do
         svg = described_class.create_svg_from_regex('a{0,}')
         expect(svg).to include('<svg')
         expect(svg).to include('0 time or more')
       end
 
-      it 'returns valid SVG for quantifier (2,)' do
+      it 'generates valid SVG for two or more quantifier (a{2,})' do
         svg = described_class.create_svg_from_regex('a{2,}')
         expect(svg).to include('<svg')
         expect(svg).to include('2 time(s) or more')
       end
 
-      it 'returns valid SVG for quantifier (,4)' do
+      it 'generates valid SVG for quantifier with an upper bound (,4)' do
         svg = described_class.create_svg_from_regex('a{,4}')
         expect(svg).to include('<svg')
         expect(svg).to include('0 - 4 time(s)')
       end
 
-      # it 'returns valid SVG for complex range quantifier' do
-      #   svg = described_class.create_svg_from_regex('a{,0}')
-      #   expect(svg).to include('<svg')
-      #   expect(svg).to include('quantifier:')
-      # end
+      it 'generates valid SVG for complex range quantifier (a{,0})' do
+        svg = described_class.create_svg_from_regex('a{,0}')
+        expect(svg).to include('<svg')
+        expect(svg).not_to include('</text>')
+      end
 
-      # it 'returns valid SVG for lazy quantifier (min,max)?' do
-      #   svg = described_class.create_svg_from_regex('a{1,3}?')
-      #   expect(svg).to include('<svg')
-      #   expect(svg).to include('quantifier: {1,3}?')
-      # end
-
-      # it 'returns valid SVG for complex quantifier with nested groups' do
-      #   svg = described_class.create_svg_from_regex('(a{2,4})+')
-      #   expect(svg).to include('<svg')
-      #   expect(svg).to include('quantifier: +')
-      # end
-
-      it 'handles multiple consecutive quantifiers' do
+      it 'handles multiple consecutive quantifiers (a{2,4}b{1,3})' do
         svg = described_class.create_svg_from_regex('a{2,4}b{1,3}')
         expect(svg).to include('<svg')
         expect(svg).to include('2-4 time(s)')
@@ -89,50 +95,50 @@ RSpec.describe RegexpDiagramGenerator do
       end
     end
 
-    context 'when regex contains anchors' do
-      it 'returns valid SVG for beginning of line anchor (^)' do
+    context 'when the regex contains anchors' do
+      it 'generates valid SVG for the beginning of line anchor (^)' do
         svg = described_class.create_svg_from_regex('^a')
         expect(svg).to include('<svg')
         expect(svg).to include('beginning of line')
       end
 
-      it 'returns valid SVG for end of line anchor ($)' do
+      it 'generates valid SVG for the end of line anchor ($)' do
         svg = described_class.create_svg_from_regex('a$')
         expect(svg).to include('<svg')
         expect(svg).to include('end of line')
       end
 
-      it 'returns valid SVG for beginning of string anchor (\A)' do
-        svg = described_class.create_svg_from_regex('\\A')
+      it 'generates valid SVG for the beginning of string anchor (\A)' do
+        svg = described_class.create_svg_from_regex('\A')
         expect(svg).to include('<svg')
         expect(svg).to include('beginning of string')
       end
 
-      it 'returns valid SVG for end of string anchor (\z)' do
-        svg = described_class.create_svg_from_regex('\\z')
+      it 'generates valid SVG for the end of string anchor (\z)' do
+        svg = described_class.create_svg_from_regex('\z')
         expect(svg).to include('<svg')
         expect(svg).to include('end of string')
       end
 
-      it 'returns valid SVG for end of string or before end of line anchor' do
-        svg = described_class.create_svg_from_regex('a$|\\Z')
+      it 'generates valid SVG for the end of string or before end of line anchor' do
+        svg = described_class.create_svg_from_regex('a$|\Z')
         expect(svg).to include('<svg')
         expect(svg).to include('end of string or before end of line')
       end
 
-      it 'returns valid SVG for word boundary anchor' do
-        svg = described_class.create_svg_from_regex('\\b')
+      it 'generates valid SVG for word boundary anchor (\b)' do
+        svg = described_class.create_svg_from_regex('\b')
         expect(svg).to include('<svg')
         expect(svg).to include('word boundary')
       end
 
-      it 'returns valid SVG for non-word boundary anchor' do
-        svg = described_class.create_svg_from_regex('\\B')
+      it 'generates valid SVG for non-word boundary anchor (\B)' do
+        svg = described_class.create_svg_from_regex('\B')
         expect(svg).to include('<svg')
         expect(svg).to include('non-word boundary')
       end
 
-      it 'returns valid SVG for match start anchor' do
+      it 'generates valid SVG for match start anchor (\G)' do
         svg = described_class.create_svg_from_regex('\G')
         expect(svg).to include('<svg')
         expect(svg).to include('match start')
@@ -140,29 +146,35 @@ RSpec.describe RegexpDiagramGenerator do
     end
 
     context 'when regex contains backreferences' do
-      it 'returns valid SVG for backreference number' do
-        svg = described_class.create_svg_from_regex('(abc)\\1')
+      it 'returns valid SVG for a backreference number' do
+        svg = described_class.create_svg_from_regex('(abc)\1')
         expect(svg).to include('<svg')
         expect(svg).to include('backreference number')
       end
 
       it 'returns valid SVG for backreference number recursion level' do
-        svg = described_class.create_svg_from_regex('(abc)\\k<1-0>')
+        svg = described_class.create_svg_from_regex('(abc)\k<1-0>')
         expect(svg).to include('<svg')
         expect(svg).to include('backreference number recursion level')
       end
 
       it 'returns valid SVG for backreference number call' do
-        svg = described_class.create_svg_from_regex('(abc)\\g<1>')
+        svg = described_class.create_svg_from_regex('(abc)\g<1>')
         expect(svg).to include('<svg')
         expect(svg).to include('backreference number call')
       end
 
-      # it 'returns valid SVG for backreference number call relative' do
-      #   svg = described_class.create_svg_from_regex('(abc)\\g<-1>')
-      #   expect(svg).to include('<svg')
-      #   expect(svg).to include('backreference number call relative')
-      # end
+      it 'returns valid SVG for backreference number call relative' do
+        svg = described_class.create_svg_from_regex('(abc)\g<-1>')
+        expect(svg).to include('<svg')
+        expect(svg).to include('backreference number call relative')
+      end
+
+      it 'returns valid SVG for backreference number relative' do
+        svg = described_class.create_svg_from_regex('(abc)\k<-1>')
+        expect(svg).to include('<svg')
+        expect(svg).to include('backreference number relative')
+      end
 
       it 'returns valid SVG for backreference name' do
         svg = described_class.create_svg_from_regex('(?<name>abc)\k<name>')
@@ -170,160 +182,172 @@ RSpec.describe RegexpDiagramGenerator do
         expect(svg).to include('backreference name')
       end
 
-      it 'returns valid SVG for backreference name recursion level' do
-        svg = described_class.create_svg_from_regex('(?<name>abc)\\k<name-0>')
+      it 'returns valid SVG for backreference by name with recursion level' do
+        svg = described_class.create_svg_from_regex('(?<name>abc)\k<name-0>')
         expect(svg).to include('<svg')
         expect(svg).to include('backreference name recursion level')
       end
 
-      it 'returns valid SVG for backreference name call' do
-        svg = described_class.create_svg_from_regex('(?<name>abc)\\g<name>')
+      it 'returns valid SVG for backreference by name call' do
+        svg = described_class.create_svg_from_regex('(?<name>abc)\g<name>')
         expect(svg).to include('<svg')
         expect(svg).to include('backreference name call')
       end
     end
 
     context 'when regex contains character types' do
-      it 'returns valid SVG for any character' do
+      it 'returns valid SVG for any character (.)' do
         svg = described_class.create_svg_from_regex('.')
         expect(svg).to include('<svg')
         expect(svg).to include('any character')
       end
 
-      it 'returns valid SVG for digit' do
-        svg = described_class.create_svg_from_regex('\\d')
+      it 'returns valid SVG for a digit (\d)' do
+        svg = described_class.create_svg_from_regex('\d')
         expect(svg).to include('<svg')
         expect(svg).to include('digit')
       end
 
-      it 'returns valid SVG for non-digit' do
-        svg = described_class.create_svg_from_regex('\\D')
+      it 'returns valid SVG for a non-digit (\D)' do
+        svg = described_class.create_svg_from_regex('\D')
         expect(svg).to include('<svg')
         expect(svg).to include('non-digit')
       end
 
-      it 'returns valid SVG for hex character' do
-        svg = described_class.create_svg_from_regex('\\h')
+      it 'returns valid SVG for a hex character (\h)' do
+        svg = described_class.create_svg_from_regex('\h')
         expect(svg).to include('<svg')
         expect(svg).to include('hex character')
       end
 
-      it 'returns valid SVG for non-hex character' do
-        svg = described_class.create_svg_from_regex('\\H')
+      it 'returns valid SVG for a non-hex character (\H)' do
+        svg = described_class.create_svg_from_regex('\H')
         expect(svg).to include('<svg')
         expect(svg).to include('non-hex character')
       end
 
-      it 'returns valid SVG for word character' do
-        svg = described_class.create_svg_from_regex('\\w')
+      it 'returns valid SVG for a word character (\w)' do
+        svg = described_class.create_svg_from_regex('\w')
         expect(svg).to include('<svg')
         expect(svg).to include('word character')
       end
 
-      it 'returns valid SVG for non-word character' do
-        svg = described_class.create_svg_from_regex('\\W')
+      it 'returns valid SVG for a non-word character (\W)' do
+        svg = described_class.create_svg_from_regex('\W')
         expect(svg).to include('<svg')
         expect(svg).to include('non-word character')
       end
 
-      it 'returns valid SVG for whitespace' do
-        svg = described_class.create_svg_from_regex('\\s')
+      it 'returns valid SVG for whitespace (\s)' do
+        svg = described_class.create_svg_from_regex('\s')
         expect(svg).to include('<svg')
         expect(svg).to include('whitespace')
       end
 
-      it 'returns valid SVG for non-whitespace' do
-        svg = described_class.create_svg_from_regex('\\S')
+      it 'returns valid SVG for non-whitespace (\S)' do
+        svg = described_class.create_svg_from_regex('\S')
         expect(svg).to include('<svg')
         expect(svg).to include('non-whitespace')
       end
 
-      # it 'returns valid SVG for line break' do
-      #   svg = described_class.create_svg_from_regex('\\r\\n')
-      #   expect(svg).to include('<svg')
-      #   expect(svg).to include('line break')
-      # end
+      it 'returns valid SVG for a line break (\R)' do
+        svg = described_class.create_svg_from_regex('\R')
+        expect(svg).to include('<svg')
+        expect(svg).to include('line break')
+      end
 
-      it 'returns valid SVG for extended grapheme' do
-        svg = described_class.create_svg_from_regex('\\X')
+      it 'returns valid SVG for an extended grapheme (\X)' do
+        svg = described_class.create_svg_from_regex('\X')
         expect(svg).to include('<svg')
         expect(svg).to include('extended grapheme')
       end
 
-      it 'returns valid SVG for conditional expression' do
+      it 'returns valid SVG for a space character' do
+        svg = described_class.create_svg_from_regex(' ')
+        expect(svg).to include('<svg')
+        expect(svg).to include('&quot; &quot;')
+      end
+
+      it 'returns valid SVG for a comment' do
+        svg = described_class.create_svg_from_regex('(?x)a # comment')
+        expect(svg).to include('<svg')
+        expect(svg).to include('class="comment"')
+      end
+
+      it 'returns valid SVG for a conditional expression (1)' do
         svg = described_class.create_svg_from_regex('(?<A>a)(?(<A>)T|)')
         expect(svg).to include('<svg')
         expect(svg).to include('Condition: A')
       end
 
-      it 'returns valid SVG for atomic group' do
+      it 'returns valid SVG for a conditional expression (2)' do
+        svg = described_class.create_svg_from_regex('(a)(?(001)T)')
+        expect(svg).to include('<svg')
+        expect(svg).to include('Condition: group #1')
+      end
+
+      it 'returns valid SVG for an atomic group (?>)' do
         svg = described_class.create_svg_from_regex('(?>a)')
         expect(svg).to include('<svg')
         expect(svg).to include('atomic group')
       end
 
-      it 'returns valid SVG for absence group' do
+      it 'returns valid SVG for an absence group (?~)' do
         svg = described_class.create_svg_from_regex('(?~a)')
         expect(svg).to include('<svg')
         expect(svg).to include('absence group')
       end
 
-      it 'returns valid SVG for named group' do
+      it 'returns valid SVG for a named group (?<groupname>)' do
         svg = described_class.create_svg_from_regex('(?<groupname>a)')
         expect(svg).to include('<svg')
         expect(svg).to include('group: groupname')
       end
 
-      it 'returns valid SVG for options group' do
+      it 'returns valid SVG for an options group (?ix)' do
         svg = described_class.create_svg_from_regex('(?ix)a')
         expect(svg).to include('<svg')
         expect(svg).to include('options')
         expect(svg).to include('i, x')
       end
 
-      it 'returns valid SVG for non-capturing group' do
+      it 'returns valid SVG for a non-capturing group (?:)' do
         svg = described_class.create_svg_from_regex('(?:a)')
         expect(svg).to include('<svg')
         expect(svg).to include('non-capturing group')
       end
 
-      it 'returns valid SVG for negated character set' do
+      it 'returns valid SVG for a negated character set ([^a])' do
         svg = described_class.create_svg_from_regex('[^a]')
         expect(svg).to include('<svg')
         expect(svg).to include('negated character set')
       end
 
-      it 'returns valid SVG for character set' do
+      it 'returns valid SVG for a character set ([a-z])' do
         svg = described_class.create_svg_from_regex('[a-z]')
         expect(svg).to include('<svg')
         expect(svg).to include('character set')
       end
 
-      it 'returns valid SVG for character set with range' do
+      it 'returns valid SVG for a character set with range ([a-d])' do
         svg = described_class.create_svg_from_regex('[a-d]')
         expect(svg).to include('<svg')
         expect(svg).to include('&quot;a&quot; - &quot;d&quot;')
       end
 
-      it 'returns valid SVG for character set intersection' do
+      it 'returns valid SVG for a character set intersection ([a-d&&aeiou])' do
         svg = described_class.create_svg_from_regex('[a-d&&aeiou]')
         expect(svg).to include('<svg')
         expect(svg).to include('intersection of character sets')
       end
 
-      it 'returns valid SVG for end of string or before end of line anchor' do
-        svg = described_class.create_svg_from_regex('a$|\\Z')
+      it 'returns valid SVG for a conditional expression with group (a$|\Z)' do
+        svg = described_class.create_svg_from_regex('a$|\Z')
         expect(svg).to include('<svg')
         expect(svg).to include('end of string or before end of line')
       end
 
-      it 'returns valid SVG for comment' do
-        svg = described_class.create_svg_from_regex('# This is a comment')
-        expect(svg).to include('<svg')
-        expect(svg).to include('&quot;# This is a comment&quot;')
-      end
-
-      it 'returns valid SVG for optional quantifier with group' do
+      it 'returns valid SVG for an optional quantifier with group ((a)?)' do
         svg = described_class.create_svg_from_regex('(a)?')
         expect(svg).to include('<svg')
         expect(svg).to include('&quot;a&quot;')
@@ -333,148 +357,158 @@ RSpec.describe RegexpDiagramGenerator do
         expect { described_class.create_svg_from_regex('[a') }.to raise_error(RegexpError)
       end
 
-      it 'returns valid SVG for condition group' do
+      it 'returns valid SVG for a conditional group (a(b|c))' do
         svg = described_class.create_svg_from_regex('a(b|c)')
         expect(svg).to include('<svg')
         expect(svg).to include('&quot;b&quot;')
       end
 
-      it 'returns valid SVG for keep mark' do
-        svg = described_class.create_svg_from_regex('ab\\Kcd')
+      it 'returns valid SVG for a keep mark (ab\Kcd)' do
+        svg = described_class.create_svg_from_regex('ab\Kcd')
         expect(svg).to include('<svg')
         expect(svg).to include('&quot;cd&quot;')
       end
 
-      it 'returns valid SVG for literal' do
-        svg = described_class.create_svg_from_regex('"text"')
+      it 'returns valid SVG for a single literal (\g)' do
+        svg = described_class.create_svg_from_regex('\g')
         expect(svg).to include('<svg')
-        expect(svg).to include('&quot;&quot;text&quot;&quot;')
+        expect(svg).to include('&quot;g&quot;')
       end
 
-      it 'returns valid SVG for POSIX class' do
+      it 'returns valid SVG for a multi literal (c\gt)' do
+        svg = described_class.create_svg_from_regex('c\gt')
+        expect(svg).to include('<svg')
+        expect(svg).to include('&quot;cgt&quot;')
+      end
+
+      it 'returns valid SVG for POSIX class ([[:digit:]])' do
         svg = described_class.create_svg_from_regex('[[:digit:]]')
         expect(svg).to include('<svg')
         expect(svg).to include('[:digit:]')
       end
 
-      it 'returns valid SVG for Unicode property base' do
-        svg = described_class.create_svg_from_regex('[\\p{L}]')
+      it 'returns valid SVG for Unicode property base ([\p{L}])' do
+        svg = described_class.create_svg_from_regex('[\p{L}]')
         expect(svg).to include('<svg')
         expect(svg).to include('\p{L}')
       end
 
-      it 'returns valid SVG for ASCII escape sequence' do
-        svg = described_class.create_svg_from_regex('a\\ec')
+      it 'returns valid SVG for ASCII escape sequence (a\ec)' do
+        svg = described_class.create_svg_from_regex('a\ec')
         expect(svg).to include('<svg')
         expect(svg).to include('ASCII escape')
       end
 
-      it 'returns valid SVG for backspace escape sequence' do
-        svg = described_class.create_svg_from_regex('[\\b]')
+      it 'returns valid SVG for backspace escape sequence ([\b])' do
+        svg = described_class.create_svg_from_regex('[\b]')
         expect(svg).to include('<svg')
         expect(svg).to include('backspace')
       end
 
-      it 'returns valid SVG for bell escape sequence' do
-        svg = described_class.create_svg_from_regex('\\a')
+      it 'returns valid SVG for bell escape sequence (\a)' do
+        svg = described_class.create_svg_from_regex('\a')
         expect(svg).to include('<svg')
         expect(svg).to include('bell')
       end
 
-      it 'returns valid SVG for form feed escape sequence' do
-        svg = described_class.create_svg_from_regex('\\f')
+      it 'returns valid SVG for form feed escape sequence (\f)' do
+        svg = described_class.create_svg_from_regex('\f')
         expect(svg).to include('<svg')
         expect(svg).to include('form feed')
       end
 
-      it 'returns valid SVG for newline escape sequence' do
-        svg = described_class.create_svg_from_regex('\\n')
+      it 'returns valid SVG for newline escape sequence (\n)' do
+        svg = described_class.create_svg_from_regex('\n')
         expect(svg).to include('<svg')
         expect(svg).to include('newline')
       end
 
-      it 'returns valid SVG for carriage return escape sequence' do
-        svg = described_class.create_svg_from_regex('\\r')
+      it 'returns valid SVG for carriage return escape sequence (\r)' do
+        svg = described_class.create_svg_from_regex('\r')
         expect(svg).to include('<svg')
         expect(svg).to include('carriage return')
       end
 
-      it 'returns valid SVG for tab escape sequence' do
-        svg = described_class.create_svg_from_regex('\\t')
+      it 'returns valid SVG for tab escape sequence (\t)' do
+        svg = described_class.create_svg_from_regex('\t')
         expect(svg).to include('<svg')
         expect(svg).to include('tab')
       end
 
-      it 'returns valid SVG for vertical tab escape sequence' do
-        svg = described_class.create_svg_from_regex('\\v')
+      it 'returns valid SVG for vertical tab escape sequence (\v)' do
+        svg = described_class.create_svg_from_regex('\v')
         expect(svg).to include('<svg')
         expect(svg).to include('vertical tab')
       end
 
-      it 'returns valid SVG for literal escape sequence' do
-        svg = described_class.create_svg_from_regex('\\\"')
+      it 'returns valid SVG for literal escape sequence (\")' do
+        svg = described_class.create_svg_from_regex('\\"')
         expect(svg).to include('<svg')
         expect(svg).to include('&quot;&quot;&quot;')
       end
 
-      it 'returns valid SVG for octal escape sequence' do
-        svg = described_class.create_svg_from_regex('\\0')
+      it 'returns valid SVG for octal escape sequence (\0)' do
+        svg = described_class.create_svg_from_regex('\0')
         expect(svg).to include('<svg')
         expect(svg).to include('octal')
       end
 
-      it 'returns valid SVG for hex escape sequence' do
-        svg = described_class.create_svg_from_regex('\\x41')
+      it 'returns valid SVG for hex escape sequence (\x41)' do
+        svg = described_class.create_svg_from_regex('\x41')
         expect(svg).to include('<svg')
         expect(svg).to include('hex')
       end
 
-      it 'returns valid SVG for codepoint escape sequence' do
-        svg = described_class.create_svg_from_regex('\\u{41}')
+      it 'returns valid SVG for codepoint escape sequence (\u0640)' do
+        svg = described_class.create_svg_from_regex('\u0640')
         expect(svg).to include('<svg')
-        expect(svg).to include('codepoint')
+        expect(svg).to include('codepoint</text>')
       end
 
-      it 'returns valid SVG for codepoint list escape sequence' do
-        svg = described_class.create_svg_from_regex('\\p{Letter}')
+      it 'returns valid SVG for codepoint list escape sequence (\u{640 0641})' do
+        svg = described_class.create_svg_from_regex('\u{640 0641}')
         expect(svg).to include('<svg')
-        expect(svg).to include('\p{Letter}')
+        expect(svg).to include('codepoint list')
       end
 
-      it 'returns valid SVG for UTF-8 hex escape sequence' do
-        svg = described_class.create_svg_from_regex('\\x41{UTF-8}')
+      it 'returns valid SVG for UTF-8 hex escape sequence (\xE2\x82\xAC)' do
+        svg = described_class.create_svg_from_regex('\xE2\x82\xAC')
         expect(svg).to include('<svg')
-        expect(svg).to include('&quot;{UTF-8}&quot;')
+        expect(svg).to include('hex')
       end
 
-      # it 'returns valid SVG for abstract meta control escape sequence' do
-      #   svg = described_class.create_svg_from_regex('\\M-x')
-      #   expect(svg).to include('<svg')
-      #   expect(svg).to include('abstract meta control')
-      # end
+      it 'returns valid SVG for abstract meta control escape sequence (\C-C)' do
+        svg = described_class.create_svg_from_regex('\C-C')
+        expect(svg).to include('<svg')
+        expect(svg).to include('abstract meta control')
+      end
 
+      ## RegexpError: too short escaped multibyte character: /\M-c/
       # it 'returns valid SVG for control character escape sequence' do
-      #   svg = described_class.create_svg_from_regex('\\C-a')
+      #   svg = described_class.create_svg_from_regex('\M-c')
       #   expect(svg).to include('<svg')
       #   expect(svg).to include('control character')
       # end
 
+      ## RegexpError: invalid multibyte escape: /\M-\C-C/
       # it 'returns valid SVG for meta character escape sequence' do
-      #   svg = described_class.create_svg_from_regex('\\M-a')
+      #   svg = described_class.create_svg_from_regex('\M-\C-C')
       #   expect(svg).to include('<svg')
       #   expect(svg).to include('meta character')
       # end
 
+      ## RegexpError: invalid multibyte escape: /\M-\cC/
       # it 'returns valid SVG for meta control escape sequence' do
-      #   svg = described_class.create_svg_from_regex('\\M-\\C-a')
+      #   svg = described_class.create_svg_from_regex('\M-\cC')
       #   expect(svg).to include('<svg')
       #   expect(svg).to include('meta control')
       # end
 
+      ## RegexpError: invalid multibyte escape: /\C-\M-C/
       # it 'returns valid SVG for unknown escape sequence' do
-      #   svg = described_class.create_svg_from_regex('\\xZZ')
+      #   svg = described_class.create_svg_from_regex('\0')
       #   expect(svg).to include('<svg')
-      #   expect(svg).to include('\"xZZ\"')
+      #   expect(svg).to include('\C-\M-C')
       # end
     end
 
@@ -491,6 +525,7 @@ RSpec.describe RegexpDiagramGenerator do
         expect(svg).to include('options apply modifiers: i, x')
       end
 
+      ## RegexpError: undefined group option: /(?g:a)/
       # it 'returns SVG with global flag' do
       #   svg = described_class.create_svg_from_regex('(?g:a)')
       #   expect(svg).to include('<svg')
@@ -574,10 +609,6 @@ RSpec.describe RegexpDiagramGenerator do
       it 'raises error for malformed regex' do
         expect { described_class.create_svg_from_regex('[') }.to raise_error(RegexpError)
       end
-
-      # it 'raises error for lazy quantifiers' do
-      #   expect { described_class.create_svg_from_regex('a{1,3}?') }.to raise_error(ArgumentError, "Skipped: Lazy or possessive quantifier in range")
-      # end
     end
   end
 end

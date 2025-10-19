@@ -240,15 +240,15 @@ DRIVER=rack_test bin/rspec
 - [x] **POSIX Classes**:
   - [x] `[:alpha:]`, `[:^digit:]`
 
-- [x] **Quantifiers**:
+- [ ] **Quantifiers**:
   - [x] **Greedy**: `?`, `*`, `+`, `{m,M}`
   - [ ] **Reluctant (Lazy)**: `??`, `*?`, `+?`
   - [ ] **Possessive**: `?+`, `*+`, `++`
 
-- [x] **String Escapes**:
+- [ ] **String Escapes**:
   - [x] **Control**: `\C-C`, `\cD`
   - [x] **Hex**: `\x20`, `\xE2\x82\xAC`
-  - [x] **Meta**: `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`
+  - [ ] **Meta**: `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`
   - [x] **Octal**: `\0`, `\01`, `\012`
   - [x] **Unicode**: `\uHHHH`, `\u{H+ H+}`
 

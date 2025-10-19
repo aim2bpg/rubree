@@ -1,0 +1,135 @@
+require 'rails_helper'
+
+RSpec.describe RegularExpression::Substitutor do
+  describe '.perform_substitution' do
+    subject(:substitution_result) { described_class.perform(regular_expression, test_string, substitution) }
+
+    context 'with simple numbered capture' do
+      let(:regular_expression) { 'h(e)llo' }
+      let(:test_string) { 'hello hello' }
+      let(:substitution) { 'H\\1LLO' }
+
+      it 'returns substituted and highlighted result' do
+        expect(substitution_result).to include('<mark')
+        expect(substitution_result).to include('HeLLO')
+      end
+    end
+
+    context 'with named capture group' do
+      let(:regular_expression) { '(?<word>hello)' }
+      let(:test_string) { 'hello hello' }
+      let(:substitution) { '[\k<word>]' }
+
+      it 'uses named capture correctly in substitution' do
+        expect(substitution_result).to include('<mark')
+        expect(substitution_result).to include('[hello]')
+      end
+    end
+
+    context 'when substitution is nil' do
+      let(:regular_expression) { 'hello' }
+      let(:test_string) { 'hello world' }
+      let(:substitution) { nil }
+
+      it 'returns nil' do
+        expect(substitution_result).to be_nil
+      end
+    end
+
+    context 'with invalid regular expression' do
+      let(:regular_expression) { '[a-z' } # unclosed character class
+      let(:test_string) { 'abc' }
+      let(:substitution) { 'X' }
+
+      it 'returns nil without raising error' do
+        expect { substitution_result }.not_to raise_error
+        expect(substitution_result).to be_nil
+      end
+    end
+
+    context 'when no matches are found' do
+      let(:regular_expression) { '(goodbye)' }
+      let(:test_string) { 'hello hello' }
+      let(:substitution) { 'BYE' }
+
+      it 'returns original test string unchanged' do
+        expect(substitution_result).to eq('hello hello')
+      end
+    end
+
+    context 'when substitution string is empty' do
+      let(:regular_expression) { '(hello)' }
+      let(:test_string) { 'hello' }
+      let(:substitution) { '' }
+
+      it 'wraps empty result in highlight markup' do
+        expect(substitution_result).to include('<mark')
+        expect(substitution_result).to include('></mark>') # empty inner content
+      end
+    end
+
+    context 'when substitution references a non-existent group' do
+      let(:regular_expression) { '(hello)' }
+      let(:test_string) { 'hello' }
+      let(:substitution) { '\\9' }
+
+      it 'returns original string' do
+        expect(substitution_result).to eq('hello')
+      end
+    end
+  end
+
+  describe '#validate_capture_references' do
+    subject(:substitutor) do
+      described_class.new(
+        regular_expression: regular_expression,
+        test_string: test_string,
+        substitution: substitution
+      )
+    end
+
+    before do
+      substitutor.valid?
+    end
+
+    context 'with valid numbered reference' do
+      let(:regular_expression) { '(hello)' }
+      let(:test_string) { 'hello' }
+      let(:substitution) { '\\1' }
+
+      it 'does not add an error' do
+        expect(substitutor.errors[:substitution]).to be_empty
+      end
+    end
+
+    context 'with invalid numbered reference' do
+      let(:regular_expression) { '(hello)' }
+      let(:test_string) { 'hello' }
+      let(:substitution) { '\\9' }
+
+      it 'adds a validation error' do
+        expect(substitutor.errors[:substitution]).to include("References non-existent numbered capture group(s): (\\9)")
+      end
+    end
+
+    context 'with valid named reference' do
+      let(:regular_expression) { '(?<word>hello)' }
+      let(:test_string) { 'hello' }
+      let(:substitution) { '\k<word>' }
+
+      it 'does not add an error' do
+        expect(substitutor.errors[:substitution]).to be_empty
+      end
+    end
+
+    context 'with invalid named reference' do
+      let(:regular_expression) { '(?<word>hello)' }
+      let(:test_string) { 'hello' }
+      let(:substitution) { '\k<missing>' }
+
+      it 'adds a validation error' do
+        expect(substitutor.errors[:substitution]).to include("References non-existent named capture group(s): missing")
+      end
+    end
+  end
+end

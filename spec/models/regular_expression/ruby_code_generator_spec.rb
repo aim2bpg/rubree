@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe RegexpCodeGenerator do
+RSpec.describe RegularExpression::RubyCodeGenerator do
   describe '#generate' do
     context 'when expression and test_string are present' do
       let(:generator) {
         described_class.new(
-          regexp: Regexp.new('h(e)llo'),
+          regular_expression: Regexp.new('h(e)llo'),
           test_string: 'hello'
         )
       }
@@ -42,7 +42,7 @@ RSpec.describe RegexpCodeGenerator do
     context 'when substitution is present' do
       let(:generator) {
         described_class.new(
-          regexp: Regexp.new('h(e)llo'),
+          regular_expression: Regexp.new('h(e)llo'),
           test_string: 'hello',
           substitution: 'X\\1Y'
         )
@@ -72,7 +72,7 @@ RSpec.describe RegexpCodeGenerator do
     context 'when expression is blank' do
       it 'returns nil' do
         generator = described_class.new(
-          regexp: nil,
+          regular_expression: nil,
           test_string: 'foo'
         )
         expect(generator.generate).to be_nil
@@ -82,7 +82,7 @@ RSpec.describe RegexpCodeGenerator do
     context 'when test_string is blank' do
       it 'returns nil' do
         generator = described_class.new(
-          regexp: Regexp.new('foo'),
+          regular_expression: Regexp.new('foo'),
           test_string: nil
         )
         expect(generator.generate).to be_nil
@@ -92,7 +92,7 @@ RSpec.describe RegexpCodeGenerator do
     context 'when no match is found in the test string' do
       let(:generator) {
         described_class.new(
-          regexp: Regexp.new('goodbye'),
+          regular_expression: Regexp.new('goodbye'),
           test_string: 'hello'
         )
       }
@@ -126,7 +126,7 @@ RSpec.describe RegexpCodeGenerator do
     context 'when named captures are present in the regexp' do
       let(:generator) {
         described_class.new(
-          regexp: Regexp.new('(?<greeting>hello) (?<farewell>goodbye)'),
+          regular_expression: Regexp.new('(?<greeting>hello) (?<farewell>goodbye)'),
           test_string: 'hello goodbye'
         )
       }

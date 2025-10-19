@@ -1,4 +1,4 @@
-<% if regular_expression.ruby_code_snippet.present? %>
+<% if regular_expression.ruby_code.present? %>
   <div class="text-left">
     <div x-data="{ show: false }" data-controller="copy-code">
       <div class="mb-2 flex sm:flex-col md:flex-row justify-between gap-2">
@@ -41,7 +41,7 @@
         :class="wrap
           ? 'whitespace-pre-wrap overflow-x-hidden break-words'
           : 'whitespace-pre overflow-x-auto'"
-        class="bg-gray-800 border border-gray-700 rounded p-4 font-mono text-sm text-green-200 text-left leading-tight"><code data-copy-code-target="source"><%= h regular_expression.ruby_code_snippet %></code></div>
+        class="bg-gray-800 border border-gray-700 rounded p-4 font-mono text-sm text-green-200 text-left leading-tight"><code data-copy-code-target="source"><%= h regular_expression.ruby_code %></code></div>
     </div>
   </div>
 <% end %>
