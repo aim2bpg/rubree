@@ -1,26 +1,26 @@
 class RegularExpression
-  class RubyCodeGenerator
+  class RubyCode
     include ActiveModel::Model
 
-    attr_accessor :regular_expression, :test_string, :substitution
+    attr_accessor :regular_expression, :test_string, :substitution_string
 
-    def initialize(regular_expression:, test_string:, substitution: nil)
+    def initialize(regular_expression:, test_string:, substitution_string: nil)
       @regular_expression = regular_expression
       @test_string = test_string
-      @substitution = substitution
+      @substitution_string = substitution_string
     end
 
     def generate
       return nil if regular_expression.nil? || test_string.nil?
 
-      if substitution&.present?
+      if substitution_string&.present?
         <<~RUBY
           # Ruby code for testing the regex
           pattern = #{regular_expression.inspect}
           test_string = #{test_string.inspect}
 
           # With substitution
-          result = test_string.gsub(pattern, #{substitution.inspect})
+          result = test_string.gsub(pattern, #{substitution_string.inspect})
           puts result
         RUBY
       else

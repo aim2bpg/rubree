@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe RegularExpression::RubyCodeGenerator do
+RSpec.describe RegularExpression::RubyCode do
   describe '#generate' do
     context 'when expression and test_string are present' do
       let(:generator) {
@@ -44,7 +44,7 @@ RSpec.describe RegularExpression::RubyCodeGenerator do
         described_class.new(
           regular_expression: Regexp.new('h(e)llo'),
           test_string: 'hello',
-          substitution: 'X\\1Y'
+          substitution_string: 'X\\1Y'
         )
       }
 

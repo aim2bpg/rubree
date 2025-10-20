@@ -1,7 +1,7 @@
 class RegularExpression
   include ActiveModel::Model
 
-  attr_accessor :regular_expression, :test_string, :options, :substitution
+  attr_accessor :regular_expression, :test_string, :options, :substitution_string
 
   validates :regular_expression, presence: true
   validates :test_string, presence: true
@@ -79,31 +79,23 @@ class RegularExpression
   def diagram_svg
     return nil if regular_expression.blank?
 
-    renderer = RegularExpression::RailroadDiagramRenderer.new(regular_expression:, options:)
-    svg = renderer.render
-    @diagram_error_message = renderer.error_message
+    railroad_diagram = RegularExpression::RailroadDiagram.new(regular_expression:, options:)
+    svg = railroad_diagram.generate
+    @diagram_error_message = railroad_diagram.error_message
     svg
   end
 
   def substitute
-    return nil if unready? || regexp.nil? || substitution.nil?
+    return nil if unready? || regexp.nil? || substitution_string.nil?
 
-    substitutor = RegularExpression::Substitutor.new(
-      regular_expression: regexp,
-      test_string: test_string,
-      substitution: substitution
-    )
-    @substitution_result = substitutor.perform
+    substitution = RegularExpression::Substitution.new(regular_expression: regexp, test_string:, substitution_string:)
+    @substitution_result = substitution.result
   end
 
   def ruby_code
     return nil if unready? || regexp.nil?
 
-    generator = RegularExpression::RubyCodeGenerator.new(
-      regular_expression: regexp,
-      test_string: test_string,
-      substitution: substitution
-    )
+    generator = RegularExpression::RubyCode.new(regular_expression: regexp, test_string:, substitution_string:)
     generator.generate
   end
 

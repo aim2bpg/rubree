@@ -177,7 +177,7 @@ RSpec.describe RegularExpression do
 
   describe '#substitute' do
     context 'with valid substitution' do
-      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world', substitution: 'hi') }
+      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world', substitution_string: 'hi') }
 
       it 'returns highlighted substitution' do
         result = regex.substitute
@@ -186,7 +186,7 @@ RSpec.describe RegularExpression do
     end
 
     context 'with invalid backreference in substitution' do
-      let(:regex) { described_class.new(regular_expression: '(hello)', test_string: 'hello world', substitution: '\\9') }
+      let(:regex) { described_class.new(regular_expression: '(hello)', test_string: 'hello world', substitution_string: '\\9') }
 
       it 'returns original test string' do
         result = regex.substitute
@@ -206,7 +206,7 @@ RSpec.describe RegularExpression do
 
   describe '#ruby_code' do
     context 'when substitution is provided' do
-      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world', substitution: 'hi') }
+      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world', substitution_string: 'hi') }
 
       it 'generates ruby code snippet' do
         result = regex.ruby_code

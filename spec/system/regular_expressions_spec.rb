@@ -22,7 +22,7 @@ RSpec.describe "RegularExpressionFlow" do
       expect(page).to have_css 'label', text: 'Your test string:'
       expect(page).to have_field 'regular_expression[test_string]', with: ''
       expect(page).to have_css 'span', text: 'Substitution:'
-      expect(page).to have_field 'regular_expression[substitution]', with: ''
+      expect(page).to have_field 'regular_expression[substitution_string]', with: ''
 
       # Output section (results and diagrams)
       expect(page).to have_css 'p', text: 'Railroad diagram will appear here'
@@ -88,7 +88,7 @@ RSpec.describe "RegularExpressionFlow" do
 
       # Test string and substitution form
       expect(page).to have_field 'regular_expression[test_string]', with: ''
-      expect(page).to have_field 'regular_expression[substitution]', with: ''
+      expect(page).to have_field 'regular_expression[substitution_string]', with: ''
     end
   end
 
@@ -261,7 +261,7 @@ RSpec.describe "RegularExpressionFlow" do
     it "performs substitution using backreference \\1" do
       fill_in "regular_expression[regular_expression]", with: '(foo)'
       fill_in "regular_expression[test_string]", with: 'foo foo'
-      fill_in "regular_expression[substitution]", with: '\\1!'
+      fill_in "regular_expression[substitution_string]", with: '\\1!'
 
       # Match result section
       expect(page).to have_css 'mark', text: 'foo', count: 2, class: /bg-blue-200/
@@ -273,7 +273,7 @@ RSpec.describe "RegularExpressionFlow" do
     it "performs substitution with multiple groups" do
       fill_in "regular_expression[regular_expression]", with: '(foo)(bar)'
       fill_in "regular_expression[test_string]", with: 'foobar'
-      fill_in "regular_expression[substitution]", with: '\\2\\1'
+      fill_in "regular_expression[substitution_string]", with: '\\2\\1'
 
       # Match result section
       expect(page).to have_css 'mark', text: 'foobar', class: /bg-blue-200/
@@ -285,7 +285,7 @@ RSpec.describe "RegularExpressionFlow" do
     it "ignores invalid backreference \\2 in substitution" do
       fill_in "regular_expression[regular_expression]", with: '(foo)'
       fill_in "regular_expression[test_string]", with: 'foo'
-      fill_in "regular_expression[substitution]", with: '\\2!'
+      fill_in "regular_expression[substitution_string]", with: '\\2!'
 
       # Match result section
       expect(page).to have_css 'mark', text: 'foo', class: /bg-blue-200/
@@ -527,7 +527,7 @@ RSpec.describe "RegularExpressionFlow" do
       visit root_path
 
       fill_in "regular_expression[regular_expression]", with: 'foo'
-      fill_in "regular_expression[substitution]", with: '<script>alert(1)</script>'
+      fill_in "regular_expression[substitution_string]", with: '<script>alert(1)</script>'
       fill_in "regular_expression[test_string]", with: 'foo foo foo'
 
       # Match result section
