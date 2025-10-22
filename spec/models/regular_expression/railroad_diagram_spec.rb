@@ -30,7 +30,7 @@ RSpec.describe RegularExpression::RailroadDiagram do
       it 'generates valid SVG for optional quantifier (?)' do
         svg = described_class.new(regular_expression: 'a?').generate
         expect(svg).to include('<svg')
-        expect(svg).to include('"a"')
+        expect(svg).to include(/<text[^>]*>a<\/text>/)
       end
 
       it 'generates valid SVG for lazy quantifier (+?)' do
