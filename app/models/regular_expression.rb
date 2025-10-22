@@ -1,22 +1,22 @@
 class RegularExpression
   include ActiveModel::Model
 
-  attr_accessor :expression, :test_string, :options, :substitution
+  attr_accessor :regular_expression, :test_string, :options, :substitution_string
 
-  validates :expression, presence: true
+  validates :regular_expression, presence: true
   validates :test_string, presence: true
 
-  validate :check_expression
+  validate :validate_regular_expression
 
   attr_reader :match_data, :elapsed_time_ms, :average_elapsed_time_ms,
               :match_success, :diagram_error_message,
-              :substitution_result, :substitution_positions
+              :substitution_result
 
   def unready?
-    expression.blank? || test_string.blank?
+    regular_expression.blank? || test_string.blank?
   end
 
-  def named_captures
+  def named_capture_groups
     return [] if unready? || regexp.nil? || regexp.named_captures.empty?
 
     results = []
@@ -24,8 +24,8 @@ class RegularExpression
       match = Regexp.last_match
       captures_hash = {}
 
-      regexp.named_captures.each do |name, _|
-        captures_hash[name] = match[name] unless match[name].nil?
+      regexp.named_captures.each_key do |name|
+        captures_hash[name] = match[name] if match[name]
       end
 
       results << captures_hash unless captures_hash.empty?
@@ -34,7 +34,7 @@ class RegularExpression
     results
   end
 
-  def captures
+  def capture_groups
     return [] if unready? || regexp.nil?
 
     results = []
@@ -50,10 +50,17 @@ class RegularExpression
   def display_captures
     return [] if unready? || regexp.nil?
 
-    regexp.names.any? ? named_captures : captures
+    captures = regexp.names.any? ? named_capture_groups : capture_groups
+    captures.flatten.map do |capture|
+      if capture.is_a?(String)
+        "<mark class=\"bg-green-300 p-0.5 rounded-xs text-green-900\">#{capture}</mark>"
+      else
+        capture
+      end
+    end
   end
 
-  def match_positions
+  def match_spans
     return [] if unready? || regexp.nil?
 
     test_string.to_enum(:scan, regexp).map.with_index do |_, i|
@@ -70,25 +77,25 @@ class RegularExpression
   end
 
   def diagram_svg
-    return nil if expression.blank?
+    return nil if regular_expression.blank?
 
-    renderer = DiagramSvgRenderer.new(expression: expression, options: options)
-    svg = renderer.render
-    @diagram_error_message = renderer.error_message
+    railroad_diagram = RegularExpression::RailroadDiagram.new(regular_expression:, options:)
+    svg = railroad_diagram.generate
+    @diagram_error_message = railroad_diagram.error_message
     svg
   end
 
-  def perform_substitution
-    return nil if unready? || regexp.nil? || substitution.nil?
+  def substitute
+    return nil if unready? || regexp.nil? || substitution_string.nil?
 
-    substitutor = RegexpSubstitutor.new(regexp:, test_string:, substitution:)
-    @substitution_result = substitutor.perform
+    substitution = RegularExpression::Substitution.new(regular_expression: regexp, test_string:, substitution_string:)
+    @substitution_result = substitution.result
   end
 
-  def ruby_code_snippet
+  def ruby_code
     return nil if unready? || regexp.nil?
 
-    generator = RegexpCodeGenerator.new(regexp:, test_string:, substitution:)
+    generator = RegularExpression::RubyCode.new(regular_expression: regexp, test_string:, substitution_string:)
     generator.generate
   end
 
@@ -97,9 +104,9 @@ class RegularExpression
   def regexp
     return @regexp if defined?(@regexp)
 
-    @regexp = Regexp.new(expression, parse_options)
+    @regexp = Regexp.new(regular_expression, parse_options)
   rescue RegexpError => e
-    errors.add(:base, "#{e.message}")
+    errors.add(:base, e.message)
     @regexp = nil
   end
 
@@ -115,7 +122,7 @@ class RegularExpression
     options.downcase.chars.map { |opt| option_map[opt] }.compact.inject(0, :|)
   end
 
-  def check_expression
+  def validate_regular_expression
     return if unready?
 
     if regexp.nil?
@@ -125,19 +132,19 @@ class RegularExpression
 
     times = []
     last_match = nil
-    match_result = false
+    matched = false
 
     5.times do
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       last_match = regexp.match(test_string)
-      match_result = !last_match.nil?
+      matched = !last_match.nil?
       end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       times << (end_time - start_time)
     end
 
     @elapsed_time_ms = (times.last * 1000).round(3)
     @average_elapsed_time_ms = (times.sum / times.size * 1000).round(3)
-    @match_success = match_result
+    @match_success = matched
     @match_data = last_match
   end
 end

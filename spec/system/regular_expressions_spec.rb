@@ -14,15 +14,15 @@ RSpec.describe "RegularExpressionFlow" do
 
       # Regular expression and options form
       expect(page).to have_css 'label', text: 'Your regular expression:'
-      expect(page).to have_field 'regular_expression_expression', with: ''
+      expect(page).to have_field 'regular_expression[regular_expression]', with: ''
       expect(page).to have_css 'span', text: 'Options:'
-      expect(page).to have_field 'regular_expression_options', with: ''
+      expect(page).to have_field 'regular_expression[options]', with: ''
 
       # Test string and substitution form
       expect(page).to have_css 'label', text: 'Your test string:'
-      expect(page).to have_field 'regular_expression_test_string', with: ''
+      expect(page).to have_field 'regular_expression[test_string]', with: ''
       expect(page).to have_css 'span', text: 'Substitution:'
-      expect(page).to have_field 'regular_expression_substitution', with: ''
+      expect(page).to have_field 'regular_expression[substitution_string]', with: ''
 
       # Output section (results and diagrams)
       expect(page).to have_css 'p', text: 'Railroad diagram will appear here'
@@ -83,12 +83,12 @@ RSpec.describe "RegularExpressionFlow" do
       find('span#example-link', text: 'Rubree').click
 
       # Regular expression and options form
-      expect(page).to have_field 'regular_expression_expression', with: ''
-      expect(page).to have_field 'regular_expression_options', with: ''
+      expect(page).to have_field 'regular_expression[regular_expression]', with: ''
+      expect(page).to have_field 'regular_expression[options]', with: ''
 
       # Test string and substitution form
-      expect(page).to have_field 'regular_expression_test_string', with: ''
-      expect(page).to have_field 'regular_expression_substitution', with: ''
+      expect(page).to have_field 'regular_expression[test_string]', with: ''
+      expect(page).to have_field 'regular_expression[substitution_string]', with: ''
     end
   end
 
@@ -96,7 +96,7 @@ RSpec.describe "RegularExpressionFlow" do
     before { visit root_path }
 
     it "matches with valid Ruby-style named group" do
-      fill_in "regular_expression[expression]", with: '(?<word>foo)'
+      fill_in "regular_expression[regular_expression]", with: '(?<word>foo)'
       fill_in "regular_expression[test_string]", with: 'foo bar foo'
 
       # Railroad diagram section
@@ -113,22 +113,22 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "shows error for Python-style named group syntax" do
-      fill_in "regular_expression[expression]", with: '(?P<name>Alice)'
+      fill_in "regular_expression[regular_expression]", with: '(?P<name>Alice)'
       fill_in "regular_expression[test_string]", with: 'Alice'
 
       # Railroad diagram section
-      expect(page).to have_css 'div', text: 'Invalid Pattern: undefined group option:', class: /bg-red-100/
+      expect(page).to have_css 'div', text: 'Invalid pattern: undefined group option:', class: /bg-red-100/
 
       # Match result section
       expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
     end
 
     it "shows error for malformed named group" do
-      fill_in "regular_expression[expression]", with: '(?<nameAlice)'
+      fill_in "regular_expression[regular_expression]", with: '(?<nameAlice)'
       fill_in "regular_expression[test_string]", with: 'Alice'
 
       # Railroad diagram section
-      expect(page).to have_css 'div', text: 'Invalid Pattern: invalid group name', class: /bg-red-100/
+      expect(page).to have_css 'div', text: 'Invalid pattern: invalid group name', class: /bg-red-100/
 
       # Match result section
       expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
@@ -139,7 +139,7 @@ RSpec.describe "RegularExpressionFlow" do
     before { visit root_path }
 
     it "matches using valid character class [abc]" do
-      fill_in "regular_expression[expression]", with: '[abc]'
+      fill_in "regular_expression[regular_expression]", with: '[abc]'
       fill_in "regular_expression[test_string]", with: 'cab'
 
       # Railroad diagram section
@@ -152,22 +152,22 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "shows error for unterminated character class" do
-      fill_in "regular_expression[expression]", with: '[abc'
+      fill_in "regular_expression[regular_expression]", with: '[abc'
       fill_in "regular_expression[test_string]", with: 'abc'
 
       # Railroad diagram section
-      expect(page).to have_css 'div', text: 'Invalid Pattern: premature end of char-class:', class: /bg-red-100/
+      expect(page).to have_css 'div', text: 'Invalid pattern: premature end of char-class:', class: /bg-red-100/
 
       # Match result section
       expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
     end
 
     it "shows error for invalid range in character class" do
-      fill_in "regular_expression[expression]", with: '[z-a]'
+      fill_in "regular_expression[regular_expression]", with: '[z-a]'
       fill_in "regular_expression[test_string]", with: 'abc'
 
       # Railroad diagram section
-      expect(page).to have_css 'div', text: 'Invalid Pattern: empty range in char class:', class: /bg-red-100/
+      expect(page).to have_css 'div', text: 'Invalid pattern: empty range in char class:', class: /bg-red-100/
 
       # Match result section
       expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
@@ -178,7 +178,7 @@ RSpec.describe "RegularExpressionFlow" do
     before { visit root_path }
 
     it "matches with valid grouping (abc)" do
-      fill_in "regular_expression[expression]", with: '(abc)'
+      fill_in "regular_expression[regular_expression]", with: '(abc)'
       fill_in "regular_expression[test_string]", with: 'abc abc'
 
       # Railroad diagram section
@@ -195,29 +195,29 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "shows error for unmatched open parenthesis" do
-      fill_in "regular_expression[expression]", with: '(abc'
+      fill_in "regular_expression[regular_expression]", with: '(abc'
       fill_in "regular_expression[test_string]", with: 'abc'
 
       # Railroad diagram section
-      expect(page).to have_css 'div', text: 'Invalid Pattern: end pattern with unmatched parenthesis:', class: /bg-red-100/
+      expect(page).to have_css 'div', text: 'Invalid pattern: end pattern with unmatched parenthesis:', class: /bg-red-100/
 
       # Match result section
       expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
     end
 
     it "shows error for unmatched close parenthesis" do
-      fill_in "regular_expression[expression]", with: 'abc)'
+      fill_in "regular_expression[regular_expression]", with: 'abc)'
       fill_in "regular_expression[test_string]", with: 'abc'
 
       # Railroad diagram section
-      expect(page).to have_css 'div', text: 'Invalid Pattern: unmatched close parenthesis:', class: /bg-red-100/
+      expect(page).to have_css 'div', text: 'Invalid pattern: unmatched close parenthesis:', class: /bg-red-100/
 
       # Match result section
       expect(page).to have_css 'div', text: 'Invalid regular expression.', class: /bg-red-100/
     end
 
     it "captures groups correctly in nested parentheses" do
-      fill_in "regular_expression[expression]", with: '(abc (def))'
+      fill_in "regular_expression[regular_expression]", with: '(abc (def))'
       fill_in "regular_expression[test_string]", with: 'abc def'
 
       # Railroad diagram section
@@ -233,7 +233,7 @@ RSpec.describe "RegularExpressionFlow" do
     before { visit root_path }
 
     it "highlights matches when present" do
-      fill_in "regular_expression[expression]", with: 'foo'
+      fill_in "regular_expression[regular_expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: 'foo bar foo'
 
       # Railroad diagram section
@@ -244,7 +244,7 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "shows 'No matches.' when pattern does not match" do
-      fill_in "regular_expression[expression]", with: 'foo'
+      fill_in "regular_expression[regular_expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: 'bar'
 
       # Railroad diagram section
@@ -259,9 +259,9 @@ RSpec.describe "RegularExpressionFlow" do
     before { visit root_path }
 
     it "performs substitution using backreference \\1" do
-      fill_in "regular_expression[expression]", with: '(foo)'
+      fill_in "regular_expression[regular_expression]", with: '(foo)'
       fill_in "regular_expression[test_string]", with: 'foo foo'
-      fill_in "regular_expression[substitution]", with: '\\1!'
+      fill_in "regular_expression[substitution_string]", with: '\\1!'
 
       # Match result section
       expect(page).to have_css 'mark', text: 'foo', count: 2, class: /bg-blue-200/
@@ -271,9 +271,9 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "performs substitution with multiple groups" do
-      fill_in "regular_expression[expression]", with: '(foo)(bar)'
+      fill_in "regular_expression[regular_expression]", with: '(foo)(bar)'
       fill_in "regular_expression[test_string]", with: 'foobar'
-      fill_in "regular_expression[substitution]", with: '\\2\\1'
+      fill_in "regular_expression[substitution_string]", with: '\\2\\1'
 
       # Match result section
       expect(page).to have_css 'mark', text: 'foobar', class: /bg-blue-200/
@@ -283,9 +283,9 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "ignores invalid backreference \\2 in substitution" do
-      fill_in "regular_expression[expression]", with: '(foo)'
+      fill_in "regular_expression[regular_expression]", with: '(foo)'
       fill_in "regular_expression[test_string]", with: 'foo'
-      fill_in "regular_expression[substitution]", with: '\\2!'
+      fill_in "regular_expression[substitution_string]", with: '\\2!'
 
       # Match result section
       expect(page).to have_css 'mark', text: 'foo', class: /bg-blue-200/
@@ -299,7 +299,7 @@ RSpec.describe "RegularExpressionFlow" do
     before { visit root_path }
 
     it "shows message when both fields are empty" do
-      fill_in "regular_expression[expression]", with: ''
+      fill_in "regular_expression[regular_expression]", with: ''
       fill_in "regular_expression[test_string]", with: ''
 
       # Railroad diagram section
@@ -310,7 +310,7 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "shows message when only test string is empty" do
-      fill_in "regular_expression[expression]", with: 'abc'
+      fill_in "regular_expression[regular_expression]", with: 'abc'
       fill_in "regular_expression[test_string]", with: ''
 
       # Railroad diagram section
@@ -321,7 +321,7 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "shows message when only regex pattern is empty" do
-      fill_in "regular_expression[expression]", with: ''
+      fill_in "regular_expression[regular_expression]", with: ''
       fill_in "regular_expression[test_string]", with: 'abc'
 
       # Railroad diagram section
@@ -356,7 +356,7 @@ RSpec.describe "RegularExpressionFlow" do
     before { visit root_path }
 
     it "enables case-insensitive matching with 'i' option" do
-      fill_in "regular_expression[expression]", with: 'foo'
+      fill_in "regular_expression[regular_expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: 'FOO'
       fill_in "regular_expression[options]", with: 'i'
 
@@ -365,7 +365,7 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "enables multiline matching with 'm' option" do
-      fill_in "regular_expression[expression]", with: '^foo'
+      fill_in "regular_expression[regular_expression]", with: '^foo'
       fill_in "regular_expression[test_string]", with: "bar\nfoo"
       fill_in "regular_expression[options]", with: 'm'
 
@@ -374,7 +374,7 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "enables extended mode (allow comments/spaces) with 'x' option" do
-      fill_in "regular_expression[expression]", with: "f o o # match foo"
+      fill_in "regular_expression[regular_expression]", with: "f o o # match foo"
       fill_in "regular_expression[test_string]", with: 'foo'
       fill_in "regular_expression[options]", with: 'x'
 
@@ -383,7 +383,7 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "enables multiple flags together" do
-      fill_in "regular_expression[expression]", with: "^foo"
+      fill_in "regular_expression[regular_expression]", with: "^foo"
       fill_in "regular_expression[test_string]", with: "FOO\nfoo"
       fill_in "regular_expression[options]", with: 'im'
 
@@ -404,7 +404,7 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "toggles Wrap words option and checks applied CSS classes" do
-      fill_in "regular_expression[expression]", with: 'foo'
+      fill_in "regular_expression[regular_expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: 'foo bar foo'
 
       # Match result section
@@ -428,7 +428,7 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it "toggles Show invisibles option and verifies visibility of line breaks" do
-      fill_in "regular_expression[expression]", with: 'foo'
+      fill_in "regular_expression[regular_expression]", with: 'foo'
       fill_in "regular_expression[test_string]", with: "foo bar foo\nfoo bar foo"
 
       # Match result section
@@ -526,8 +526,8 @@ RSpec.describe "RegularExpressionFlow" do
     it "escapes HTML tags in substitution result" do
       visit root_path
 
-      fill_in "regular_expression[expression]", with: 'foo'
-      fill_in "regular_expression[substitution]", with: '<script>alert(1)</script>'
+      fill_in "regular_expression[regular_expression]", with: 'foo'
+      fill_in "regular_expression[substitution_string]", with: '<script>alert(1)</script>'
       fill_in "regular_expression[test_string]", with: 'foo foo foo'
 
       # Match result section

@@ -20,7 +20,10 @@ require "action_view/railtie"
 if Rails.env.test?
   module Warning
     def self.warn(message, category: nil)
-      ignore = ["warning: flags ignored"].any? { |m| message.include?(m) }
+      ignore = [
+        "warning: flags ignored",
+        "warning: invalid subexp call:"
+      ].any? { |m| message.include?(m) }
       super(message, category: category) unless ignore
     end
   end

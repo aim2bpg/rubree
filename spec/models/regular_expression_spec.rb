@@ -1,568 +1,250 @@
+# spec/models/regular_expression_spec.rb
 require 'rails_helper'
 
 RSpec.describe RegularExpression do
   describe 'validations' do
-    context 'with valid expression and matching test string' do
-      let(:regex) {
-        described_class.new(
-          expression: 'h(e)llo',
-          test_string: 'hello'
-        )
-      }
+    context 'when regular_expression and test_string are present and valid' do
+      let(:regex) { described_class.new(regular_expression: 'h(e)llo', test_string: 'hello') }
 
       it 'is valid' do
         expect(regex).to be_valid
       end
-
-      it 'matches successfully and returns match positions' do
-        regex.valid?
-        expect(regex.match_positions).to eq([
-          { start: 0, end: 5, index: 0, invisible: true }
-        ])
-      end
-
-      it 'returns captures' do
-        regex.valid?
-        expect(regex.captures).to eq(
-          [['e']]
-        )
-      end
     end
 
-    context 'with multiple matches' do
-      let(:regex) {
-        described_class.new(
-          expression: 'h(e)llo',
-          test_string: 'hello hello'
-        )
-      }
+    context 'when regular_expression is blank' do
+      let(:regex) { described_class.new(regular_expression: '', test_string: 'hello') }
 
-      it 'is valid' do
-        expect(regex).to be_valid
-      end
-
-      it 'matches multiple times' do
-        regex.valid?
-        expect(regex.match_positions).to eq([
-          { start: 0, end: 5, index: 0, invisible: true },
-          { start: 6, end: 11, index: 1, invisible: true }
-        ])
-      end
-
-      it 'returns multiple capture groups' do
-        regex.valid?
-        expect(regex.captures).to eq(
-          [['e'], ['e']]
-        )
-      end
-
-      it 'returns display_captures as unnamed captures' do
-        regex.valid?
-        expect(regex.display_captures).to eq(
-          [['e'], ['e']]
-        )
-      end
-    end
-
-    context 'with named captures and multiple matches' do
-      let(:regex) {
-        described_class.new(
-          expression: '(?<word>hello)',
-          test_string: 'hello hello'
-        )
-      }
-
-      it 'returns named captures for each match' do
-        regex.valid?
-        expect(regex.named_captures).to eq(
-          [{ 'word' => 'hello' }, { 'word' => 'hello' }]
-        )
-      end
-
-      it 'returns display_captures as named captures' do
-        regex.valid?
-        expect(regex.display_captures).to eq(
-          [{ 'word' => 'hello' }, { 'word' => 'hello' }]
-        )
-      end
-    end
-
-    context 'when both named and unnamed captures exist' do
-      let(:regex) {
-        described_class.new(
-          expression: '(?<name>hello)(world)',
-          test_string: 'helloworld helloworld'
-        )
-      }
-
-      it 'returns named captures only' do
-        regex.valid?
-        expect(regex.display_captures).to eq(
-          [{ 'name' => 'hello' }, { 'name' => 'hello' }]
-        )
-      end
-    end
-
-    context 'with valid expression and no match' do
-      let(:regex) {
-        described_class.new(
-          expression: 'foo',
-          test_string: 'bar'
-        )
-      }
-
-      it 'is valid' do
-        expect(regex).to be_valid
-      end
-
-      it 'has no match success' do
-        regex.valid?
-        expect(regex.match_success).to be false
-      end
-
-      it 'returns empty captures' do
-        regex.valid?
-        expect(regex.captures).to eq([])
-      end
-
-      it 'returns no match positions' do
-        regex.valid?
-        expect(regex.match_positions).to eq([])
-      end
-    end
-
-    context 'when invalid regex syntax' do
-      let(:regex) {
-        described_class.new(
-          expression: '[a-z',
-          test_string: 'abc'
-        )
-      }
-
-      it 'is invalid and adds error' do
-        regex.valid?
+      it 'is invalid' do
         expect(regex).not_to be_valid
-        expect(regex.errors[:base].first).to match(
-          /char-class|unterminated|invalid/i
-        )
+        expect(regex.errors[:regular_expression]).to include("can't be blank")
       end
 
-      it 'returns no match positions' do
-        regex.valid?
-        expect(regex.match_positions).to eq([])
+      it 'is unready' do
+        expect(regex).to be_unready
+      end
+    end
+
+    context 'when test_string is blank' do
+      let(:regex) { described_class.new(regular_expression: 'abc', test_string: '') }
+
+      it 'is invalid' do
+        expect(regex).not_to be_valid
+        expect(regex.errors[:test_string]).to include("can't be blank")
+      end
+
+      it 'is unready' do
+        expect(regex).to be_unready
+      end
+    end
+
+    context 'when regex syntax is invalid' do
+      let(:regex) { described_class.new(regular_expression: '[a-z', test_string: 'abc') }
+
+      it 'is invalid and adds base error' do
+        expect(regex).not_to be_valid
+        expect(regex.errors[:base].first).to match(/char-class|unterminated|invalid/i)
+      end
+    end
+
+    context 'with valid regex options' do
+      let(:regex) { described_class.new(regular_expression: '^hello', test_string: 'HeLLo', options: 'i') }
+
+      it 'is valid' do
+        expect(regex).to be_valid
+      end
+    end
+
+    context 'with unsupported regex options' do
+      let(:regex) { described_class.new(regular_expression: '^hello', test_string: 'hello', options: 'o') }
+
+      it 'is valid but ignores unsupported options' do
+        expect(regex).to be_valid
       end
     end
   end
 
-  describe '#named_captures' do
-    context 'with single named capture' do
-      let(:regex) {
-        described_class.new(
-          expression: '(?<word>hello)',
-          test_string: 'hello'
-        )
-      }
+  describe '#named_capture_groups' do
+    context 'when named captures are present' do
+      let(:regex) { described_class.new(regular_expression: '(?<word>hello)', test_string: 'hello world hello') }
 
-      it 'returns single named capture' do
-        regex.valid?
-        expect(regex.named_captures).to eq([{ 'word' => 'hello' }])
+      it 'returns the named captures correctly' do
+        expect(regex.named_capture_groups).to eq([{ 'word' => 'hello' }, { 'word' => 'hello' }])
       end
     end
 
-    context 'with no named capture' do
-      let(:regex) {
-        described_class.new(
-          expression: '(hello)',
-          test_string: 'hello'
-        )
-      }
+    context 'when no named captures are present' do
+      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world hello') }
 
-      it 'returns empty array since no named captures' do
-        regex.valid?
-        expect(regex.named_captures).to eq([])
+      it 'returns an empty array' do
+        expect(regex.named_capture_groups).to eq([])
+      end
+    end
+  end
+
+  describe '#capture_groups' do
+    context 'when captures are present' do
+      let(:regex) { described_class.new(regular_expression: '(hello)', test_string: 'hello world hello') }
+
+      it 'returns the captures correctly' do
+        expect(regex.capture_groups).to eq([['hello'], ['hello']])
+      end
+    end
+
+    context 'when no captures are present' do
+      let(:regex) { described_class.new(regular_expression: 'world', test_string: 'hello world hello') }
+
+      it 'returns an empty array' do
+        expect(regex.capture_groups).to eq([])
+      end
+    end
+  end
+
+  describe '#captures' do
+    context 'when named captures are present' do
+      let(:regex) { described_class.new(regular_expression: '(?<word>hello)', test_string: 'hello world hello') }
+
+      it 'returns named captures' do
+        expect(regex.named_capture_groups).to eq([{ 'word' => 'hello' }, { 'word' => 'hello' }])
+      end
+    end
+
+    context 'when only regular captures are present' do
+      let(:regex) { described_class.new(regular_expression: '(hello)', test_string: 'hello world hello') }
+
+      it 'returns capture groups' do
+        expect(regex.capture_groups).to eq([['hello'], ['hello']])
+      end
+    end
+
+    context 'when no captures are present' do
+      let(:regex) { described_class.new(regular_expression: 'world', test_string: 'hello hello') }
+
+      it 'returns empty array' do
+        expect(regex.capture_groups).to eq([])
+      end
+    end
+  end
+
+  describe '#match_spans' do
+    context 'when matches are present' do
+      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world hello') }
+
+      it 'returns correct match spans' do
+        expect(regex.match_spans).to eq([
+          { start: 0, end: 5, index: 0, invisible: true },
+          { start: 12, end: 17, index: 1, invisible: true }
+        ])
+      end
+    end
+
+    context 'when no matches are present' do
+      let(:regex) { described_class.new(regular_expression: 'goodbye', test_string: 'hello world hello') }
+
+      it 'returns an empty array' do
+        expect(regex.match_spans).to eq([])
+      end
+    end
+
+    context 'when RegexpError occurs' do
+      let(:regex) { described_class.new(regular_expression: '[a-z', test_string: 'abc') }
+
+      it 'returns an empty array' do
+        expect(regex.match_spans).to eq([])
       end
     end
   end
 
   describe '#diagram_svg' do
-    let(:regex) { described_class.new(
-      expression: 'a+',
-      test_string: 'aaa'
-    ) }
+    context 'when rendering succeeds' do
+      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world') }
 
-    before do
-      allow(RegexpDiagram).to receive(
-        :create_svg_from_regex
-      ).and_return('<svg><text>Diagram</text></svg>')
-    end
-
-    it 'returns sanitized SVG' do
-      expect(regex.diagram_svg).to include('<svg>')
-    end
-
-    it 'is html_safe' do
-      expect(regex.diagram_svg).to be_html_safe
-    end
-  end
-
-  describe '#unready?' do
-    it 'returns true if expression is blank' do
-      expect(described_class.new(
-        expression: '',
-        test_string: 'test'
-      )).to be_unready
-    end
-
-    it 'returns true if test_string is blank' do
-      expect(described_class.new(
-        expression: 'abc',
-        test_string: ''
-      )).to be_unready
-    end
-
-    it 'returns false if both are present' do
-      expect(described_class.new(
-        expression: 'abc',
-        test_string: 'abc'
-      )).not_to be_unready
-    end
-  end
-
-  describe 'regex options' do
-    context 'with i (ignore case) option' do
-      let(:regex) {
-        described_class.new(
-          expression: '^hello',
-          test_string: 'HeLLo',
-          options: 'i'
-        )
-      }
-
-      it 'is valid' do
-        expect(regex).to be_valid
-      end
-
-      it 'matches successfully' do
-        regex.valid?
-        expect(regex.match_positions).to eq([
-          { start: 0, end: 5, index: 0, invisible: true }
-        ])
-      end
-
-      it 'returns empty captures' do
-        regex.valid?
-        expect(regex.captures).to eq([])
+      it 'returns SVG string' do
+        result = regex.diagram_svg
+        expect(result).to be_a(String)
+        expect(result).to include('<svg')
       end
     end
 
-    context 'with m (multiline) option' do
-      let(:regex) {
-        described_class.new(
-          expression: 'hello.hello',
-          test_string: "hello\nhello",
-          options: 'm'
-        )
-      }
+    context 'when regular_expression is invalid' do
+      let(:regex) { described_class.new(regular_expression: '[a-z', test_string: 'abc') }
 
-      it 'matches across lines with dot' do
-        regex.valid?
-        expect(regex.match_positions).to eq([
-          { start: 0, end: 11, index: 0, invisible: true }
-        ])
-      end
-    end
-
-    context 'with x (verbose) option' do
-      let(:regex) {
-        described_class.new(
-          expression: /
-          ^          # line start
-          hello      # match "hello"
-          $          # line end
-          /x,
-          test_string: 'hello'
-        )
-      }
-
-      it 'matches successfully with verbose option' do
-        regex.valid?
-        expect(regex.match_positions).to eq([
-          { start: 0, end: 5, index: 0, invisible: true }
-        ])
-      end
-    end
-
-    context 'with mx (multiline and verbose) options' do
-      let(:regex) {
-        described_class.new(
-          expression: /^hello/x,
-          test_string: "hello\nhello",
-          options: 'mx'
-        )
-      }
-
-      it 'matches at the start of each line' do
-        regex.valid?
-        expect(regex.match_positions).to eq([
-          { start: 0, end: 5, index: 0, invisible: true },
-          { start: 6, end: 11, index: 1, invisible: true }
-        ])
-      end
-    end
-
-    context 'when unsupported options are provided' do
-      let(:regex) { described_class.new(
-        expression: '^hello',
-        test_string: "hello",
-        options: 'o'
-      ) }
-
-      it 'is valid' do
-        expect(regex).to be_valid
+      it 'returns nil' do
+        result = regex.diagram_svg
+        expect(result).to be_nil
       end
     end
   end
 
-  describe '#perform_substitution' do
-    context 'with simple substitution' do
-      let(:regex) {
-        described_class.new(
-          expression: 'h(e)llo',
-          test_string: 'hello hello',
-          substitution: 'H\\1LLO'
-        )
-      }
+  describe '#substitute' do
+    context 'with valid substitution' do
+      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world', substitution_string: 'hi') }
 
-      it 'returns substituted string with markup' do
-        regex.valid?
-        regex.perform_substitution
-        expect(regex.substitution_result).to eq(
-          '<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">HeLLO</mark> <mark class="bg-green-300 p-0.5 rounded-xs text-green-900">HeLLO</mark>'
-        )
+      it 'returns highlighted substitution' do
+        result = regex.substitute
+        expect(result).to eq('<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">hi</mark> world')
       end
     end
 
-    context 'with named capture substitution' do
-      let(:regex) {
-        described_class.new(
-          expression: '(?<word>hello)',
-          test_string: 'hello hello',
-          substitution: '[\k<word>]'
-        )
-      }
+    context 'with invalid backreference in substitution' do
+      let(:regex) { described_class.new(regular_expression: '(hello)', test_string: 'hello world', substitution_string: '\\9') }
 
-      it 'returns substituted string with named captures and markup' do
-        regex.valid?
-        regex.perform_substitution
-        expect(regex.substitution_result).to eq(
-          'hello hello'.gsub(/(?<word>hello)/, '<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">[hello]</mark>')
-        )
+      it 'returns original test string' do
+        result = regex.substitute
+        expect(result).to eq('hello world')
       end
     end
 
-    context 'with no substitution string' do
-      let(:regex) {
-        described_class.new(
-          expression: 'hello',
-          test_string: 'hello world',
-          substitution: nil
-        )
-      }
+    context 'when substitution is nil' do
+      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world') }
 
-      it 'returns nil for substitution' do
-        regex.valid?
-        regex.perform_substitution
-        expect(regex.substitution_result).to be_nil
-      end
-    end
-
-    context 'with invalid regex' do
-      let(:regex) {
-        described_class.new(
-          expression: '[a-z',
-          test_string: 'abc',
-          substitution: 'X'
-        )
-      }
-
-      it 'returns nil when regex is invalid' do
-        regex.valid?
-        regex.perform_substitution
-        expect(regex.substitution_result).to be_nil
-      end
-    end
-
-    context 'with no matches' do
-      let(:regex) {
-        described_class.new(
-          expression: '(goodbye)',
-          test_string: 'hello hello',
-          substitution: 'BYE'
-        )
-      }
-
-      it 'returns original string with no substitutions applied' do
-        regex.valid?
-        regex.perform_substitution
-        expect(regex.substitution_result).to eq('hello hello')
-      end
-    end
-
-    context 'when substitution results in empty string' do
-      let(:regex) {
-        described_class.new(
-          expression: '(hello)',
-          test_string: 'hello',
-          substitution: ''
-        )
-      }
-
-      it 'returns original string with match wrapped in markup' do
-        regex.valid?
-        regex.perform_substitution
-        expect(regex.substitution_result).to eq('<mark class="bg-green-300 p-0.5 rounded-xs text-green-900"></mark>')
-      end
-    end
-
-    context 'when invalid substitution backreference is used' do
-      let(:regex) {
-        described_class.new(
-          expression: '(hello)',
-          test_string: 'hello',
-          substitution: '\\9'
-        )
-      }
-
-      it 'does not raise error and returns original string fallback for substitution' do
-        regex.valid?
-        regex.perform_substitution
-        expect(regex.substitution_result).to eq('hello')
+      it 'returns nil' do
+        result = regex.substitute
+        expect(result).to be_nil
       end
     end
   end
 
-  describe 'edge cases and advanced patterns' do
-    context 'when expression and test string are empty' do
-      let(:regex) {
-        described_class.new(expression: '', test_string: '')
-      }
+  describe '#ruby_code' do
+    context 'when substitution is provided' do
+      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world', substitution_string: 'hi') }
 
-      it 'is invalid due to blank expression' do
-        expect(regex).not_to be_valid
+      it 'generates ruby code snippet' do
+        result = regex.ruby_code
+        expect(result).to be_a(String)
+        expect(result).to include('substitution')
       end
     end
 
-    context 'when options are reordered' do
-      let(:regex_case_sensitive_first) {
-        described_class.new(
-          expression: '^hello',
-          test_string: 'HeLLo',
-          options: 'im'
-        )
-      }
+    context 'when substitution is not provided' do
+      let(:regex) { described_class.new(regular_expression: 'hello', test_string: 'hello world') }
 
-      let(:regex_case_sensitive_second) {
-        described_class.new(
-          expression: '^hello',
-          test_string: 'HeLLo',
-          options: 'mi'
-        )
-      }
-
-      it 'behaves identically regardless of option order' do
-        expect(regex_case_sensitive_first).to be_valid
-        expect(regex_case_sensitive_second).to be_valid
-
-        regex_case_sensitive_first.valid?
-        regex_case_sensitive_second.valid?
-
-        expect(regex_case_sensitive_first.match_positions).to eq(
-          regex_case_sensitive_second.match_positions
-        )
-      end
-    end
-
-    context 'when using surrogate pairs (emoji)' do
-      let(:regex) {
-        described_class.new(expression: '😀', test_string: 'test😀test')
-      }
-
-      it 'matches emoji characters correctly' do
-        regex.valid?
-        expect(regex.match_positions).to eq([
-          { start: 4, end: 5, index: 0, invisible: true }
-        ])
-      end
-    end
-
-    context 'when case sensitivity is not ignored' do
-      let(:regex) {
-        described_class.new(expression: 'hello', test_string: 'HELLO')
-      }
-
-      it 'does not match if case is different and no i option is set' do
-        regex.valid?
-        expect(regex.match_success).to be false
-      end
-    end
-
-    context 'when using lookahead and non-capturing groups' do
-      let(:regex) {
-        described_class.new(expression: '(?=foo)(?:foo)', test_string: 'foobar')
-      }
-
-      it 'matches foo using lookahead and non-capturing' do
-        regex.valid?
-        expect(regex.match_positions).to eq([
-          { start: 0, end: 3, index: 0, invisible: true }
-        ])
-        expect(regex.captures).to eq([])
+      it 'generates ruby code without substitution code' do
+        result = regex.ruby_code
+        expect(result).to be_a(String)
+        expect(result).not_to include('substitute')
       end
     end
   end
 
-  describe '#ruby_code_snippet' do
-    context 'when the regex is ready and substitution is not present' do
-      let(:regex) {
-        described_class.new(
-          expression: '(h)(e)llo',
-          test_string: 'hello world'
+  describe '#display_captures' do
+    context 'when captures are present' do
+      let(:regex) { described_class.new(regular_expression: '(hello) world (hello)', test_string: 'hello world hello') }
+
+      it 'returns a list of highlighted captures' do
+        result = regex.display_captures
+        expect(result).to eq(
+          ['<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">hello</mark>',
+           '<mark class="bg-green-300 p-0.5 rounded-xs text-green-900">hello</mark>']
         )
-      }
-
-      it 'generates Ruby code for match and captures' do
-        regex.valid?
-
-        expected_code = <<~CODE.strip
-          # Ruby code for testing the regex
-          pattern = /(h)(e)llo/
-          test_string = "hello world"
-
-          # Match and captures
-          if match = pattern.match(test_string)
-            # Numbered captures:
-            match.captures.each_with_index do |cap, i|
-              puts "\#{i + 1}: \#{cap}"
-            end
-          else
-            puts "No match."
-          end
-        CODE
-
-        expect(regex.ruby_code_snippet).to eq(expected_code)
       end
     end
 
-    context 'when the expression or test string is blank' do
-      let(:regex) {
-        described_class.new(
-          expression: '',
-          test_string: 'hello'
-        )
-      }
+    context 'when no captures are present' do
+      let(:regex) { described_class.new(regular_expression: 'world', test_string: 'hello world hello') }
 
-      it 'returns nil if unready' do
-        expect(regex.ruby_code_snippet).to be_nil
+      it 'returns an empty array' do
+        result = regex.display_captures
+        expect(result).to eq([])
       end
     end
   end

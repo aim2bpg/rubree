@@ -1,0 +1,18 @@
+coverage:
+  badge:
+    path: docs/coverage.svg
+  paths:
+    - coverage/.resultset.json
+testExecutionTime:
+  badge:
+    path: docs/time.svg
+  steps:
+    - Exec rspec
+codeToTestRatio:
+  code:
+    - "app/**/*.rb"
+  test:
+    - "spec/**/*_spec.rb"
+report:
+  datastores:
+    - artifact://${GITHUB_REPOSITORY}/base

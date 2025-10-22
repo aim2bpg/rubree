@@ -2,9 +2,7 @@
   <div class="flex flex-col space-y-2 rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white text-left relative">
     <% if @diagram_error_message.present? %>
       <label class="text-sm font-bold text-white">Railroad diagram:</label>
-      <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2">
-        <%= h @diagram_error_message %>
-      </div>
+      <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2"><%= h @diagram_error_message %></div>
 
     <% elsif @svg_output.present? %>
       <div class="flex justify-between items-center mb-1">
@@ -17,7 +15,7 @@
             class="p-0 text-gray-400 hover:text-white transition w-5 h-5 flex items-center justify-center"
             aria-label="View Full Diagram"
             data-action="click->diagram-modal#open"
-            data-pattern="<%= regular_expression.expression %>">
+            data-pattern="<%= regular_expression.regular_expression %>">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -35,7 +33,7 @@
             aria-label="Copy Diagram as PNG"
             data-controller="diagram-clipboard"
             data-action="click->diagram-clipboard#copyPng"
-            data-pattern="<%= h regular_expression.expression %>"
+            data-pattern="<%= h regular_expression.regular_expression %>"
             title="Copy Diagram as PNG">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
               viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"

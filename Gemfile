@@ -76,4 +76,7 @@ group :test do
 
   # A browser automation framework and ecosystem (https://github.com/SeleniumHQ/selenium/tree/trunk/rb)
   gem "selenium-webdriver"
+
+  # Code coverage for Ruby (https://github.com/simplecov-ruby/simplecov)
+  gem "simplecov", require: false
 end
