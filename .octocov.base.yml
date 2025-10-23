@@ -1,11 +1,7 @@
 coverage:
-  badge:
-    path: .github/octocov/coverage.svg
   paths:
     - coverage/.resultset.json
 testExecutionTime:
-  badge:
-    path: .github/octocov/time.svg
   steps:
     - Exec rspec
 codeToTestRatio:
