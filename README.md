@@ -1,7 +1,7 @@
 [![CI](https://github.com/aim2bpg/rubree/actions/workflows/ci.yml/badge.svg)](https://github.com/aim2bpg/rubree/actions/workflows/ci.yml)
 [![Deploy](https://github.com/aim2bpg/rubree/actions/workflows/deploy.yml/badge.svg)](https://github.com/aim2bpg/rubree/actions/workflows/deploy.yml)
-[![coverage]](https://github.com/aim2bpg/rubree/docs/coverage.svg)
-[![coverage]](https://github.com/aim2bpg/rubree/docs/time.svg)
+[![coverage]](https://github.com/aim2bpg/rubree/.github/octocov/coverage.svg)
+[![coverage]](https://github.com/aim2bpg/rubree/.github/octocov/time.svg)
 
 # [WIP] Rubree
 
@@ -19,7 +19,7 @@ Inspired by: https://rubular.com
   > Ruby 3.4 causes runtime issues in WebAssembly builds due to missing `bigdecimal` support when used as a gem,  
   > as described in [`wasmify-rails` Issue #7](https://github.com/palkan/wasmify-rails/issues/7).  
   > We use Ruby 3.3 as a stable fallback until full 3.4 support is confirmed.
-- [Ruby on Rails](https://rubyonrails.org/) 8.0
+- [Ruby on Rails](https://rubyonrails.org/) 8.1
 - [Regexp::Parser](https://github.com/ammar/regexp_parser/) a regular expression parser library for Ruby
 
 ### 🎨 Frontend

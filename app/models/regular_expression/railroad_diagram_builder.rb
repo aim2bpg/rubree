@@ -179,11 +179,11 @@ class RegularExpression
 
         RailroadDiagrams::Group.new(choice_expr, "Condition: #{condition_label}")
 
-      when Regexp::Expression::Keep::Mark
+      when Regexp::Expression::Keep::Mark, Regexp::Expression::PosixClass, Regexp::Expression::UnicodeProperty::Base
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ast.text), ast.quantifier)
 
-      when Regexp::Expression::Literal, Regexp::Expression::PosixClass, Regexp::Expression::UnicodeProperty::Base
-        wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ast.text), ast.quantifier)
+      when Regexp::Expression::Literal
+        wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{ast.text}\""), ast.quantifier)
 
       when *ESCAPE_SEQUENCE_LABELS.keys
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ESCAPE_SEQUENCE_LABELS[ast.class]), ast.quantifier)
