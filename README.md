@@ -193,7 +193,7 @@ DRIVER=rack_test bin/rspec
 - [x] **Regex Examples**: Interactive examples to test and visualize regex patterns in real-time.
 - [x] **Execution Time Measurement**: Measures and reports the execution time of regex operations.
 - [x] **Regex Diagram Generation**: Generates and visualizes regex patterns using SVG diagrams.
-- [x] **Regexp Substitution Function**: Supports regex-based string substitution.
+- [x] **Regex Substitution Function**: Supports regex-based string substitution.
 - [x] **Ruby Code Snippet Generation**: Automatically generates Ruby code snippets for testing regex patterns.
 - [x] **Web Interface for Regex Testing**: Interactive web UI to test and visualize regular expressions in real-time.
 
