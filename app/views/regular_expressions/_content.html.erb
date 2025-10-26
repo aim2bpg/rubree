@@ -1,4 +1,4 @@
-<div data-controller="regexp-content-tab-switch" class="max-w-6xl mx-auto px-4">
+<div data-controller="regexp-content-tab-switch" class="w-full">
   <div class="bg-gray-900 rounded-lg shadow-lg py-2 px-4 text-gray-400 text-sm flex mb-4 max-w-lg mx-auto">
     <button type="button"
             data-action="click->regexp-content-tab-switch#showReference"
@@ -17,7 +17,7 @@
     </button>
   </div>
 
-  <div id="tab-content" class="max-w-6xl mx-auto">
+  <div id="tab-content" class="w-full">
     <div data-regexp-content-tab-switch-target="referencePanel" id="reference-panel" class="">
       <%= render "regular_expressions/contents/reference" %>
     </div>
