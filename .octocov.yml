@@ -20,4 +20,4 @@ report:
     - artifact://${GITHUB_REPOSITORY}
 diff:
   datastores:
-    - artifact://${GITHUB_REPOSITORY}/base
+    - artifact://${GITHUB_REPOSITORY}
