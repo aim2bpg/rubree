@@ -5,7 +5,7 @@
 
     <!-- Your regular expression section -->
     <div class="bg-gray-800 p-4 rounded-lg shadow-inner border border-gray-700 flex flex-col">
-      <div class="flex flex-wrap sm:flex-col md:flex-row items-start justify-between mb-2">
+      <div class="flex flex-wrap sm:flex-col md:flex-row items-start justify-between mb-1.5">
         <label class="block text-sm font-bold text-white" for="regular_expression_regular_expression">
           Your regular expression:
         </label>
@@ -14,7 +14,7 @@
           <%= f.text_field :options,
                 id: "regular_expression_options",
                 data: { regexp_examples_target: "options" },
-                class: "w-8 px-1 py-0.5 bg-gray-900 border border-gray-700 rounded text-white text-xs focus:ring-2 focus:ring-blue-500 hover:border-gray-600 transition-colors duration-200 text-left",
+                class: "w-8 px-1 py-0.5 bg-gray-900 border border-gray-700 rounded text-white text-xs focus:ring-2 focus:ring-blue-500 text-left",
                 placeholder: "imx",
                 autocomplete: "off" %>
         </div>
@@ -22,12 +22,12 @@
       <%= f.text_area :regular_expression,
             id: "regular_expression_expression",
             data: { regexp_examples_target: "pattern" },
-            class: "w-full px-4 py-2 min-h-[120px] bg-gray-900 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 hover:border-gray-600 transition-colors duration-200 resize-y" %>
+            class: "w-full px-4 py-2 min-h-[120px] bg-gray-900 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 resize-y" %>
     </div>
 
     <!-- Your test string and substitution section -->
     <div class="bg-gray-800 p-4 rounded-lg shadow-inner border border-gray-700 flex flex-col">
-      <div class="flex flex-wrap sm:flex-col md:flex-row items-start justify-between mb-2">
+      <div class="flex flex-wrap sm:flex-col md:flex-row items-start justify-between mb-1.5">
         <label class="block text-sm font-bold text-white" for="regular_expression_test_string">
           Your test string:
         </label>
@@ -36,7 +36,7 @@
           <%= f.text_field :substitution_string,
                   id: "regular_expression_substitution",
                   data: { regexp_examples_target: "substitution" },
-                  class: "w-45 px-1 py-0.5 bg-gray-900 border border-gray-700 rounded text-white text-xs focus:ring-2 focus:ring-blue-500 hover:border-gray-600 transition-colors duration-200 text-left resize-y",
+                  class: "w-45 px-1 py-0.5 bg-gray-900 border border-gray-700 rounded text-white text-xs focus:ring-2 focus:ring-blue-500 text-left resize-y",
                   placeholder: "\\1, \\2",
                   autocomplete: "off" %>
         </div>
@@ -44,7 +44,7 @@
       <%= f.text_area :test_string,
             id: "regular_expression_test_string",
             data: { regexp_examples_target: "test" },
-            class: "w-full px-4 py-2 min-h-[120px] bg-gray-900 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 hover:border-gray-600 transition-colors duration-200 resize-y" %>
+            class: "w-full px-4 py-2 min-h-[120px] bg-gray-900 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 resize-y" %>
     </div>
   </div>
 <% end %>
