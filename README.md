@@ -1,5 +1,8 @@
-[![CI](https://github.com/aim2bpg/rubree/actions/workflows/ci.yml/badge.svg)](https://github.com/aim2bpg/rubree/actions/workflows/ci.yml)
-[![Deploy](https://github.com/aim2bpg/rubree/actions/workflows/deploy.yml/badge.svg)](https://github.com/aim2bpg/rubree/actions/workflows/deploy.yml)
+![CI](https://github.com/aim2bpg/rubree/actions/workflows/ci.yml/badge.svg)
+![Deploy](https://github.com/aim2bpg/rubree/actions/workflows/deploy.yml/badge.svg)
+![Coverage](https://raw.githubusercontent.com/aim2bpg/octocovs/main/badges/aim2bpg/rubree/coverage.svg)
+![Code to Test Ratio](https://raw.githubusercontent.com/aim2bpg/octocovs/main/badges/aim2bpg/rubree/ratio.svg)
+![Test Execution Time](https://raw.githubusercontent.com/aim2bpg/octocovs/main/badges/aim2bpg/rubree/time.svg)
 
 # [WIP] Rubree
 
@@ -40,6 +43,7 @@ Inspired by: https://rubular.com
 - [Biome](https://biomejs.dev/) Format, lint, and more in a fraction of a second
 - [RSpec](https://rspec.info/) for Ruby testing
 - [Playwright](https://playwright.dev/) for E2E testing
+- [Octocov](https://github.com/k1LoW/octocov) octocov is a toolkit for collecting code metrics
 
 ### 🚀 Deployment
 
