@@ -1,11 +1,11 @@
 <div data-controller="diagram-modal">
   <div class="flex flex-col space-y-2 rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white text-left relative">
     <% if @diagram_error_message.present? %>
-      <label class="text-sm font-bold text-white">Railroad diagram:</label>
+      <label class="text-sm font-bold mb-2 text-white">Railroad diagram:</label>
       <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2"><%= h @diagram_error_message %></div>
 
     <% elsif @svg_output.present? %>
-      <div class="flex justify-between items-center mb-1">
+      <div class="flex justify-between items-center mb-2">
         <label class="text-sm font-bold text-white">Railroad diagram:</label>
 
         <div class="flex items-center gap-2">
