@@ -70,7 +70,7 @@ RSpec.describe "RegularExpressionFlow" do
       expect(page).to have_css 'mark', text: substituted_date, class: /bg-green-300/
 
       # Ruby code display section
-      expect(page).to have_css 'label', text: 'Ruby code:'
+      expect(page).to have_css 'label', text: 'Ruby code (Show):'
     end
 
     it 'resets the view to initial state when Rubree is clicked' do
