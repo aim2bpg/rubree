@@ -66,17 +66,20 @@
   <!-- Modal container -->
   <div
     data-diagram-modal-target="modal"
-    class="modal hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Diagram viewer"
+    tabindex="-1"
+    class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-200 opacity-0"
     data-action="click->diagram-modal#close">
     <div
       class="relative bg-white rounded shadow-lg p-4 max-w-[90vw] max-h-[90vh] overflow-auto"
       data-action="click->diagram-modal#stopPropagation">
       <button
         type="button"
-        class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 z-20"
+        class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 z-30"
         data-action="click->diagram-modal#close"
-        aria-label="Close"
-        style="z-index: 20;">
+        aria-label="Close">
         ✕
       </button>
 
