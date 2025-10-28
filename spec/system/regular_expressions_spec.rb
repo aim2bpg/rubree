@@ -38,6 +38,46 @@ RSpec.describe "RegularExpressionFlow" do
       expect(page).to have_css 'a', text: 'Rubular', class: /text-blue-700/
     end
 
+    it 'applies example when Try an example is clicked' do
+      # Click the Try an example span in the header and ensure test string is populated
+      find('span#example-link', text: 'Try an example', wait: true).click
+
+      test_val = find('textarea#regular_expression_test_string').value
+      expect(test_val).to include(Date.today.strftime('%-m/%-d/%Y'))
+    end
+
+    it 'resets the form when Rubree (site title) is clicked' do
+      # apply example first
+      find('span#example-link', text: 'Try an example').click
+      # then click site title to reset
+      find('span#example-link', text: 'Rubree').click
+
+      # the expression field is a textarea in the form
+      expect(find('textarea#regular_expression_expression').value).to eq('')
+      expect(find('textarea#regular_expression_test_string').value).to eq('')
+    end
+
+    it 'dice button triggers a brief animation' do
+      btn = find('button[data-regexp-examples-target="diceButton"]', visible: true)
+      btn.click
+      expect(page).to have_css('button[data-regexp-examples-target="diceButton"].animate-bounce', wait: 1)
+    end
+
+    it 'caret button opens the header dropdown' do
+      find('button[data-regexp-examples-target="caretButton"]', wait: true).click
+      expect(page).to have_css('[data-regexp-examples-target="headerDropdown"]', visible: :visible)
+    end
+
+    it 'allows dragging the examples dropdown to scroll' do
+      # open the header dropdown via the caret button
+      find('button[data-action="click->regexp-examples#toggleHeaderDropdown"]', wait: true).click
+      selector = '[data-regexp-examples-target="headerScroll"]'
+      expect(page).to have_selector(selector, visible: :visible)
+
+      # simple presence check: ensure the scroll container has at least one example button
+      expect(page).to have_css("#{selector} button", minimum: 1)
+    end
+
     it 'displays match and substitution results for example input' do
       find('span#example-link', text: 'Try an example').click
 

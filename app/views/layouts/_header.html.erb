@@ -1,28 +1,88 @@
-<header class="text-center mb-4 mt-4 leading-relaxed">
-  <h1 class="text-5xl text-white bg-transparent leading-tight font-work-sans">
-    <span
-      id="example-link"
-      class="hover:underline cursor-pointer"
-      data-action="click->regexp-examples#selectExample"
-      data-pattern=""
-      data-test=""
-      data-options=""
-      data-substitution="">
-      Rubree
-    </span>
-  </h1>
+<header class="relative text-center mb-4 mt-4 leading-relaxed">
+  <div class="max-w-5xl mx-auto px-4">
+    <h1 class="text-5xl text-white bg-transparent leading-tight font-work-sans">
+      <span
+        id="example-link"
+        role="button"
+        class="hover:underline cursor-pointer bg-transparent border-0 text-white text-5xl"
+        data-action="click->regexp-examples#selectExample"
+        data-pattern=""
+        data-test=""
+        data-options=""
+        data-substitution="">
+        Rubree
+      </span>
+    </h1>
 
-  <p class="text-gray-400 text-lg bg-transparent leading-relaxed">
-    a Ruby regular expression editor
-    <span
-      id="example-link"
-      class="text-blue-400 hover:underline cursor-pointer break-words block sm:inline"
-      data-action="click->regexp-examples#selectExample"
-      data-pattern="(?<month>\d{1,2})\/(?<day>\d{1,2})\/(?<year>\d{4})"
-      data-test="Today's date is: <%= Time.now.strftime("%-m/%-d/%Y") %>."
-      data-options=""
-      data-substitution="\k<year>/\k<month>/\k<day>">
-      Try an example
-    </span>
-  </p>
+    <div class="flex items-center justify-center gap-1">
+  <p class="text-gray-400 text-lg whitespace-nowrap">a Ruby regular expression editor</p>
+
+      <!-- Inline group: Try + Dice (never wrap) -->
+      <div class="inline-flex items-center gap-0 whitespace-nowrap">
+        <span id="example-link"
+          role="button"
+          class="text-blue-400 text-lg hover:underline cursor-pointer whitespace-nowrap bg-transparent px-1 rounded"
+          data-action="click->regexp-examples#selectExample"
+          data-pattern="(?<month>\d{1,2})\/(?<day>\d{1,2})\/(?<year>\d{4})"
+          data-test="Today's date is: <%= Time.now.strftime("%-m/%-d/%Y") %>."
+          data-options=""
+          data-substitution="\k<year>/\k<month>/\k<day>">
+          Try an example
+        </span>
+
+        <button type="button"
+          class="text-sm text-gray-300 hover:text-white bg-transparent px-1 rounded transition duration-200"
+          data-action="click->regexp-examples#tryExample"
+          data-regexp-examples-target="diceButton"
+          aria-label="Try a random example">🎲</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown: kept outside of inline flow so it cannot affect header layout. Controller will portal/position it on open. -->
+  <div data-regexp-examples-target="headerDropdown" class="hidden z-50 sm:w-80 w-full max-w-full sm:max-w-xs" role="menu" aria-label="Examples">
+    <div class="bg-gradient-to-b from-slate-900 to-gray-800 text-gray-100 border border-gray-700 rounded-lg shadow-2xl overflow-hidden ring-1 ring-black/40">
+      <div class="py-3 px-4">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-gray-200 font-semibold">Examples</div>
+          <div data-regexp-examples-target="hoverCategory" class="text-sm text-gray-300 ml-2"></div>
+        </div>
+      </div>
+  <div data-regexp-examples-target="headerScroll" class="max-h-80 overflow-auto px-2 py-2 space-y-2">
+        <% idx = 0 %>
+        <% regexp_example_categories.each do |(cat, data)| %>
+          <div class="border-t border-gray-700 px-3 pt-3 pb-2">
+            <div class="text-sm text-gray-300 font-medium px-1"><%= data[:short] %> — <%= cat.to_s.humanize %></div>
+            <div class="mt-2 space-y-2">
+              <% data[:examples].each do |ex| %>
+                <button type="button"
+                  class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-700 focus:outline-none transition-colors"
+                  data-action="mouseenter->regexp-examples#showExampleCategory mouseleave->regexp-examples#clearExampleCategory click->regexp-examples#selectExample"
+                  data-category="<%= cat.to_s.humanize %>"
+                  data-pattern="<%= ex[:pattern].gsub("\"", "&quot;") %>"
+                  data-test="<%= ex[:test].gsub("\"", "&quot;") %>"
+                  data-substitution="<%= ex[:substitution] || "" %>"
+                  data-options="<%= ex[:options] || "" %>">
+                  <div class="text-base text-gray-100 leading-snug"><%= (ex[:description].presence || ex[:test]).truncate(120) %></div>
+                  <div class="text-sm text-gray-300 mt-1 truncate"><%= ex[:pattern].truncate(80) %> — <%= ex[:test].truncate(80) %></div>
+                </button>
+                <% idx += 1 %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top-right anchor button (text + border only). This is the caretButtonTarget used by the controller. -->
+  <div class="absolute right-6 top-4">
+    <button type="button"
+      class="bg-transparent border border-blue-500 text-blue-400 text-sm px-3 py-1 rounded hover:bg-blue-50/5"
+      data-action="click->regexp-examples#toggleHeaderDropdown"
+      data-regexp-examples-target="caretButton"
+      aria-label="Open examples (top-right)">
+      Regex Examples
+    </button>
+  </div>
 </header>
