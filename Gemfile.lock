@@ -397,7 +397,7 @@ DEPENDENCIES
   propshaft
   puma (>= 5.0)
   railroad_diagrams
-  rails (~> 8.0.2)
+  rails (~> 8.0.4)
   regexp_parser
   rspec-rails
   rubocop-capybara
