@@ -68,6 +68,14 @@ export default class extends Controller {
     this._outsideClickHandler = null;
     this._dropdownKeyHandler = this._onDropdownKeydown.bind(this);
     this._repositionHandler = null;
+    // remember last scroll position inside the header dropdown so we can restore it
+    this._headerScrollTop = 0;
+    // remember last selected example element/index so we can re-apply highlight/focus
+    this._lastSelectedElement = null;
+    this._lastSelectedIndex = null;
+    // persistent selection marker: left-edge border + padding so hover background remains visible
+    // stored as a space-separated list of classes; helpers below will add/remove each class
+    this._lastSelectedClass = "border-l-4 border-blue-400 pl-4";
   }
 
   disconnect() {
@@ -107,11 +115,28 @@ export default class extends Controller {
         document.removeEventListener("click", this._outsideClickHandler, true);
       document.removeEventListener("keydown", this._boundHeaderEsc);
     } catch (_e) {}
-
-    // restore moved form if still moved
-    if (this._movedForm) this._restoreForm();
   }
 
+  // helpers to add/remove the persistent set of classes (space-separated)
+  _applyLastSelectedClass(el) {
+    if (!el || !this._lastSelectedClass) return;
+    try {
+      this._lastSelectedClass.split(" ").forEach((c) => {
+        if (c) el.classList.add(c);
+      });
+    } catch (_e) {}
+  }
+
+  _removeLastSelectedClass(el) {
+    if (!el || !this._lastSelectedClass) return;
+    try {
+      this._lastSelectedClass.split(" ").forEach((c) => {
+        if (c) el.classList.remove(c);
+      });
+    } catch (_e) {}
+  }
+
+  // --- Drag-to-scroll support for header dropdown (mouse drag / touch pointer) ---
   showCategory(event) {
     const tab = event.currentTarget;
     this.showCategoryByElement(tab);
@@ -173,6 +198,10 @@ export default class extends Controller {
           this.headerDropdownTarget.contains(event.currentTarget);
         if (!fromHeaderDropdown) this._closeHeaderDropdown();
       }
+    } catch (_e) {}
+    // remember the selection by element so we can restore highlight on reopen
+    try {
+      this._setLastSelectedIndex(event.currentTarget);
     } catch (_e) {}
   }
 
@@ -405,10 +434,29 @@ export default class extends Controller {
       this._setCaretOpen(true);
       this._headerOpen = true;
 
-      // focus first interactive item in dropdown if available
+      // focus previously selected item if present, otherwise first interactive item
       try {
-        const first = this.headerDropdownTarget.querySelector("button");
-        if (first) first.focus();
+        const examples = Array.from(
+          this.headerDropdownTarget.querySelectorAll("button"),
+        );
+        if (
+          typeof this._lastSelectedIndex === "number" &&
+          examples[this._lastSelectedIndex]
+        ) {
+          const sel = examples[this._lastSelectedIndex];
+          try {
+            // apply persistent left-edge marker
+            this._applyLastSelectedClass(sel);
+            sel.focus();
+            sel.scrollIntoView({ block: "center", behavior: "auto" });
+            const cat = sel.dataset.category || "";
+            if (this.hasHoverCategoryTarget)
+              this.hoverCategoryTarget.textContent = cat;
+          } catch (_e) {}
+        } else {
+          const first = this.headerDropdownTarget.querySelector("button");
+          if (first) first.focus();
+        }
       } catch (_e) {}
 
       // enable drag-to-scroll on the internal scroll area (mouse/touch drag)
@@ -532,12 +580,13 @@ export default class extends Controller {
       el.style.position = "absolute";
       if (smallScreen) {
         // On small screens avoid full-bleed width (overlap issues).
-        // Use a capped width (max 360px) and center the dropdown under the caret when possible.
+        // Use a capped width (max 360px) and align the dropdown's right edge
+        // with the caret's right edge where possible.
         const pagePadding = 12; // keep a small margin from edges
-        const maxWidth = Math.min(360, window.innerWidth - pagePadding * 2);
-        const width = Math.max(220, maxWidth);
-        const tentativeLeft =
-          rect.left + rect.width / 2 - width / 2 + window.scrollX;
+        const maxWidth = Math.min(420, window.innerWidth - pagePadding * 2);
+        const width = Math.max(260, maxWidth);
+        // prefer aligning right edges: caret.right - width
+        const tentativeLeft = rect.right + window.scrollX - width;
         const minLeft = window.scrollX + pagePadding;
         const maxLeft =
           window.scrollX + window.innerWidth - pagePadding - width;
@@ -547,19 +596,18 @@ export default class extends Controller {
         el.style.top = `${top}px`;
         el.style.width = `${width}px`;
       } else {
-        // compute left such that dropdown is centered under caret
+        // Position dropdown so its right edge aligns with the caret's right edge
         const ddWidth = el.offsetWidth || 280;
-        const left = rect.left + rect.width / 2 - ddWidth / 2 + window.scrollX;
+        let left = rect.right + window.scrollX - ddWidth;
         const top = rect.bottom + window.scrollY + 6; // small gap
-        el.style.left = `${Math.max(8, left)}px`;
-        el.style.top = `${top}px`;
-        // ensure dropdown doesn't overflow right edge
+        const minLeft = window.scrollX + 8;
         const maxRight = window.scrollX + window.innerWidth - 8;
-        const curRight = left + ddWidth;
-        if (curRight > maxRight) {
-          const shift = curRight - maxRight;
-          el.style.left = `${Math.max(8, left - shift)}px`;
-        }
+        // ensure dropdown doesn't overflow left/right bounds
+        if (left < minLeft) left = minLeft;
+        if (left + ddWidth > maxRight)
+          left = Math.max(minLeft, maxRight - ddWidth);
+        el.style.left = `${left}px`;
+        el.style.top = `${top}px`;
         // clear any width set previously
         el.style.width = "";
       }
@@ -578,12 +626,14 @@ export default class extends Controller {
       e.preventDefault();
       const next = items[(idx + 1) % items.length] || items[0];
       next.focus();
+      // do not update persistent selection on arrow navigation — only move focus
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       const prev =
         items[(idx - 1 + items.length) % items.length] ||
         items[items.length - 1];
       prev.focus();
+      // do not update persistent selection on arrow navigation — only move focus
     } else if (e.key === "Enter") {
       // activate current focused item if it's in the dropdown
       if (
@@ -591,7 +641,11 @@ export default class extends Controller {
         document.activeElement.tagName === "BUTTON"
       ) {
         e.preventDefault();
+        const cur = document.activeElement;
         document.activeElement.click();
+        try {
+          this._setLastSelectedIndex(cur);
+        } catch (_e) {}
         this._closeHeaderDropdown();
       }
     } else if (e.key === "Escape") {
@@ -605,6 +659,7 @@ export default class extends Controller {
       if (!this.hasHoverCategoryTarget) return;
       const cat = e.currentTarget.dataset.category || "";
       this.hoverCategoryTarget.textContent = cat;
+      // keep persistent marker visible while hovering (no removal) to avoid blinking
     } catch (_e) {}
   }
 
@@ -612,6 +667,74 @@ export default class extends Controller {
     try {
       if (!this.hasHoverCategoryTarget) return;
       this.hoverCategoryTarget.textContent = "";
+      // nothing to do here for marker; keep persistent marker always visible
+    } catch (_e) {}
+  }
+
+  _setLastSelectedIndex(itemOrIdx) {
+    try {
+      const examples = Array.from(
+        document.querySelectorAll('[data-regexp-examples-target="example"]'),
+      );
+      // resolve new element (either an Element passed or an index)
+      let newEl = null;
+      if (itemOrIdx && itemOrIdx.nodeType === 1) {
+        // If the caller passed an element it may be a cloned node (e.g. modal copy).
+        // Try to resolve to the canonical element within the header examples list by matching dataset
+        const passedEl = itemOrIdx;
+        const idxInExamples = examples.indexOf(passedEl);
+        if (idxInExamples >= 0) {
+          newEl = examples[idxInExamples];
+        } else {
+          const pat = passedEl.dataset.pattern || null;
+          const tst = passedEl.dataset.test || null;
+          const sub = passedEl.dataset.substitution || null;
+          // find first element that matches key identifying fields
+          newEl =
+            examples.find((e) => {
+              try {
+                return (
+                  (pat === null || e.dataset.pattern === pat) &&
+                  (tst === null || e.dataset.test === tst) &&
+                  (sub === null || e.dataset.substitution === sub)
+                );
+              } catch (_err) {
+                return false;
+              }
+            }) || null;
+        }
+      } else if (typeof itemOrIdx === "number") {
+        newEl = examples[itemOrIdx] || null;
+      }
+
+      // remove previous highlight (prefer element ref if available)
+      try {
+        if (
+          this._lastSelectedElement &&
+          this._lastSelectedElement.nodeType === 1
+        ) {
+          this._removeLastSelectedClass(this._lastSelectedElement);
+        } else if (
+          typeof this._lastSelectedIndex === "number" &&
+          examples[this._lastSelectedIndex]
+        ) {
+          this._removeLastSelectedClass(examples[this._lastSelectedIndex]);
+        }
+      } catch (_e) {}
+
+      if (newEl) {
+        try {
+          this._applyLastSelectedClass(newEl);
+          this._lastSelectedElement = newEl;
+          this._lastSelectedIndex = examples.indexOf(newEl);
+        } catch (_e) {
+          this._lastSelectedElement = null;
+          this._lastSelectedIndex = null;
+        }
+      } else {
+        this._lastSelectedElement = null;
+        this._lastSelectedIndex = null;
+      }
     } catch (_e) {}
   }
 
@@ -620,6 +743,12 @@ export default class extends Controller {
     try {
       if (!this.hasHeaderScrollTarget) return;
       const el = this.headerScrollTarget;
+
+      // restore previous scroll position when enabling scroll handlers
+      try {
+        if (typeof this._headerScrollTop === "number")
+          el.scrollTop = this._headerScrollTop || 0;
+      } catch (_e) {}
 
       // state
       this._dragState = {
@@ -683,6 +812,15 @@ export default class extends Controller {
       });
       el.addEventListener("pointerup", this._pointerUpHandler);
       el.addEventListener("pointercancel", this._pointerUpHandler);
+      // track scroll to remember position when dropdown is closed
+      this._headerScrollHandler = () => {
+        try {
+          this._headerScrollTop = el.scrollTop;
+        } catch (_e) {}
+      };
+      el.addEventListener("scroll", this._headerScrollHandler, {
+        passive: true,
+      });
     } catch (_e) {}
   }
 
@@ -704,11 +842,18 @@ export default class extends Controller {
         el.removeEventListener("pointerup", this._pointerUpHandler);
         el.removeEventListener("pointercancel", this._pointerUpHandler);
       } catch (_e) {}
+      try {
+        if (this._headerScrollHandler)
+          el.removeEventListener("scroll", this._headerScrollHandler, {
+            passive: true,
+          });
+      } catch (_e) {}
       el.classList.remove("select-none");
       this._dragState = null;
       this._pointerDownHandler = null;
       this._pointerMoveHandler = null;
       this._pointerUpHandler = null;
+      this._headerScrollHandler = null;
     } catch (_e) {}
   }
 

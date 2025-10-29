@@ -14,14 +14,14 @@
       </span>
     </h1>
 
-    <div class="flex items-center justify-center gap-1">
-  <p class="text-gray-400 text-lg whitespace-nowrap">a Ruby regular expression editor</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-0">
+      <p class="text-gray-400 text-lg sm:mr-1">a Ruby regular expression editor</p>
 
-      <!-- Inline group: Try + Dice (never wrap) -->
-      <div class="inline-flex items-center gap-0 whitespace-nowrap">
+      <!-- Try + Dice: stacked margin on small, no margin on sm+ (single-line) -->
+      <div class="mt-1 sm:mt-0 inline-flex items-center gap-0">
         <span id="example-link"
           role="button"
-          class="text-blue-400 text-lg hover:underline cursor-pointer whitespace-nowrap bg-transparent px-1 rounded"
+          class="text-blue-400 text-lg hover:underline cursor-pointer bg-transparent px-1 rounded"
           data-action="click->regexp-examples#selectExample"
           data-pattern="(?<month>\d{1,2})\/(?<day>\d{1,2})\/(?<year>\d{4})"
           data-test="Today's date is: <%= Time.now.strftime("%-m/%-d/%Y") %>."
@@ -40,7 +40,7 @@
   </div>
 
   <!-- Dropdown: kept outside of inline flow so it cannot affect header layout. Controller will portal/position it on open. -->
-  <div data-regexp-examples-target="headerDropdown" class="hidden z-50 sm:w-80 w-full max-w-full sm:max-w-xs" role="menu" aria-label="Examples">
+  <div data-regexp-examples-target="headerDropdown" class="hidden z-50 sm:w-96 w-full max-w-full sm:max-w-sm" role="menu" aria-label="Examples">
     <div class="bg-gradient-to-b from-slate-900 to-gray-800 text-gray-100 border border-gray-700 rounded-lg shadow-2xl overflow-hidden ring-1 ring-black/40">
       <div class="py-3 px-4">
         <div class="flex items-center justify-between">
@@ -57,6 +57,7 @@
               <% data[:examples].each do |ex| %>
                 <button type="button"
                   class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-700 focus:outline-none transition-colors"
+                  data-regexp-examples-target="example"
                   data-action="mouseenter->regexp-examples#showExampleCategory mouseleave->regexp-examples#clearExampleCategory click->regexp-examples#selectExample"
                   data-category="<%= cat.to_s.humanize %>"
                   data-pattern="<%= ex[:pattern].gsub("\"", "&quot;") %>"
