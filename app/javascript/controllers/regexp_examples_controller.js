@@ -1,4 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
+import { positionHeaderDropdown } from "./regexp_examples/dropdown_positioner";
+import { updateSelectionPersistence } from "./regexp_examples/selection_persistence";
 
 // Connects to data-controller="regexp-examples"
 export default class extends Controller {
@@ -572,45 +574,7 @@ export default class extends Controller {
   _positionHeaderDropdown() {
     if (!this.hasHeaderDropdownTarget || !this.hasCaretButtonTarget) return;
     try {
-      const el = this.headerDropdownTarget;
-      const caret = this.caretButtonTarget;
-      const rect = caret.getBoundingClientRect();
-      // responsive: on small screens make dropdown full-width with small page padding
-      const smallScreen = window.innerWidth < 640; // Tailwind 'sm' breakpoint
-      el.style.position = "absolute";
-      if (smallScreen) {
-        // On small screens avoid full-bleed width (overlap issues).
-        // Use a capped width (max 360px) and align the dropdown's right edge
-        // with the caret's right edge where possible.
-        const pagePadding = 12; // keep a small margin from edges
-        const maxWidth = Math.min(420, window.innerWidth - pagePadding * 2);
-        const width = Math.max(260, maxWidth);
-        // prefer aligning right edges: caret.right - width
-        const tentativeLeft = rect.right + window.scrollX - width;
-        const minLeft = window.scrollX + pagePadding;
-        const maxLeft =
-          window.scrollX + window.innerWidth - pagePadding - width;
-        const left = Math.min(Math.max(tentativeLeft, minLeft), maxLeft);
-        const top = rect.bottom + window.scrollY + 6;
-        el.style.left = `${left}px`;
-        el.style.top = `${top}px`;
-        el.style.width = `${width}px`;
-      } else {
-        // Position dropdown so its right edge aligns with the caret's right edge
-        const ddWidth = el.offsetWidth || 280;
-        let left = rect.right + window.scrollX - ddWidth;
-        const top = rect.bottom + window.scrollY + 6; // small gap
-        const minLeft = window.scrollX + 8;
-        const maxRight = window.scrollX + window.innerWidth - 8;
-        // ensure dropdown doesn't overflow left/right bounds
-        if (left < minLeft) left = minLeft;
-        if (left + ddWidth > maxRight)
-          left = Math.max(minLeft, maxRight - ddWidth);
-        el.style.left = `${left}px`;
-        el.style.top = `${top}px`;
-        // clear any width set previously
-        el.style.width = "";
-      }
+      positionHeaderDropdown(this.headerDropdownTarget, this.caretButtonTarget);
     } catch (_e) {}
   }
 
@@ -673,68 +637,14 @@ export default class extends Controller {
 
   _setLastSelectedIndex(itemOrIdx) {
     try {
-      const examples = Array.from(
-        document.querySelectorAll('[data-regexp-examples-target="example"]'),
+      const state = updateSelectionPersistence(
+        itemOrIdx,
+        '[data-regexp-examples-target="example"]',
+        this._lastSelectedClass,
+        { el: this._lastSelectedElement, index: this._lastSelectedIndex },
       );
-      // resolve new element (either an Element passed or an index)
-      let newEl = null;
-      if (itemOrIdx && itemOrIdx.nodeType === 1) {
-        // If the caller passed an element it may be a cloned node (e.g. modal copy).
-        // Try to resolve to the canonical element within the header examples list by matching dataset
-        const passedEl = itemOrIdx;
-        const idxInExamples = examples.indexOf(passedEl);
-        if (idxInExamples >= 0) {
-          newEl = examples[idxInExamples];
-        } else {
-          const pat = passedEl.dataset.pattern || null;
-          const tst = passedEl.dataset.test || null;
-          const sub = passedEl.dataset.substitution || null;
-          // find first element that matches key identifying fields
-          newEl =
-            examples.find((e) => {
-              try {
-                return (
-                  (pat === null || e.dataset.pattern === pat) &&
-                  (tst === null || e.dataset.test === tst) &&
-                  (sub === null || e.dataset.substitution === sub)
-                );
-              } catch (_err) {
-                return false;
-              }
-            }) || null;
-        }
-      } else if (typeof itemOrIdx === "number") {
-        newEl = examples[itemOrIdx] || null;
-      }
-
-      // remove previous highlight (prefer element ref if available)
-      try {
-        if (
-          this._lastSelectedElement &&
-          this._lastSelectedElement.nodeType === 1
-        ) {
-          this._removeLastSelectedClass(this._lastSelectedElement);
-        } else if (
-          typeof this._lastSelectedIndex === "number" &&
-          examples[this._lastSelectedIndex]
-        ) {
-          this._removeLastSelectedClass(examples[this._lastSelectedIndex]);
-        }
-      } catch (_e) {}
-
-      if (newEl) {
-        try {
-          this._applyLastSelectedClass(newEl);
-          this._lastSelectedElement = newEl;
-          this._lastSelectedIndex = examples.indexOf(newEl);
-        } catch (_e) {
-          this._lastSelectedElement = null;
-          this._lastSelectedIndex = null;
-        }
-      } else {
-        this._lastSelectedElement = null;
-        this._lastSelectedIndex = null;
-      }
+      this._lastSelectedElement = state.el;
+      this._lastSelectedIndex = state.index;
     } catch (_e) {}
   }
 
