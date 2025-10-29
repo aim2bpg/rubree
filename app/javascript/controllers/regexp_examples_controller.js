@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 import { enableDragScroll } from "./regexp_examples/drag_scroll";
+import { attachDropdownLifecycle } from "./regexp_examples/dropdown_helpers";
 import { positionHeaderDropdown } from "./regexp_examples/dropdown_positioner";
+import { moveFormIntoModal } from "./regexp_examples/modal_form_mover";
 import {
   createResultObserver,
   trapFocus as modalTrapFocus,
@@ -223,11 +225,13 @@ export default class extends Controller {
       'form[data-controller*="regexp-form"]',
     );
     if (mainForm && !this._movedForm) {
-      this._movedForm = {
-        el: mainForm,
-        parent: mainForm.parentNode,
-        nextSibling: mainForm.nextSibling,
-      };
+      // use modal_form_mover helper to manage move/restore
+      try {
+        this._movedForm = moveFormIntoModal(mainForm, this.modalContentTarget);
+        // if we moved, mover.move() will be called below when inserting to modal
+      } catch (_e) {
+        this._movedForm = null;
+      }
     }
 
     // clone examples block but avoid copying turbo frames
@@ -242,8 +246,11 @@ export default class extends Controller {
 
     // insert form (moved) and clone into modal
     this.modalContentTarget.innerHTML = "";
-    if (this._movedForm)
-      this.modalContentTarget.appendChild(this._movedForm.el);
+    if (this._movedForm) {
+      try {
+        this._movedForm.move();
+      } catch (_e) {}
+    }
     this.modalContentTarget.appendChild(clone);
 
     // show modal
@@ -275,7 +282,14 @@ export default class extends Controller {
 
     this.modalTarget.classList.add("hidden");
     // restore moved form
-    if (this._movedForm) this._restoreForm();
+    try {
+      if (this._movedForm && typeof this._movedForm.restore === "function") {
+        this._movedForm.restore();
+      } else if (this._movedForm) {
+        // fallback to legacy restore
+        this._restoreForm();
+      }
+    } catch (_e) {}
     this.modalContentTarget.innerHTML = "";
     if (this.hasModalResultTarget) this.modalResultTarget.innerHTML = "";
     try {
@@ -490,36 +504,17 @@ export default class extends Controller {
         this._enableDragScroll();
       } catch (_e) {}
 
-      // close on outside click (clicks outside caret and dropdown)
-      this._outsideClickHandler = (ev) => {
-        try {
-          const target = ev.target;
-          if (
-            this.hasCaretButtonTarget &&
-            this.hasHeaderDropdownTarget &&
-            !this.caretButtonTarget.contains(target) &&
-            !this.headerDropdownTarget.contains(target)
-          ) {
-            this._closeHeaderDropdown();
-          }
-        } catch (_e) {}
-      };
-      document.addEventListener("click", this._outsideClickHandler, true);
+      // attach dropdown lifecycle handlers (outside click, reposition, Esc)
+      try {
+        this._dropdownLifecycle = attachDropdownLifecycle({
+          dropdownEl: this.headerDropdownTarget,
+          caretEl: this.caretButtonTarget,
+          onClose: () => this._closeHeaderDropdown(),
+          onReposition: () => this._positionHeaderDropdown(),
+        });
+      } catch (_e) {}
 
-      // add reposition handler for scroll/resize
-      this._repositionHandler = () => {
-        try {
-          if (this._headerOpen) this._positionHeaderDropdown();
-        } catch (_e) {}
-      };
-      window.addEventListener("resize", this._repositionHandler);
-      window.addEventListener("scroll", this._repositionHandler, true);
-
-      // close on Esc and handle arrow/enter navigation
-      this._boundHeaderEsc = (ev) => {
-        if (ev.key === "Escape") this._closeHeaderDropdown();
-      };
-      document.addEventListener("keydown", this._boundHeaderEsc);
+      // keyboard navigation for dropdown items (arrow/enter) remains handled
       document.addEventListener("keydown", this._dropdownKeyHandler);
     } catch (_e) {}
   }
@@ -569,14 +564,15 @@ export default class extends Controller {
       }, 160);
       this._setCaretOpen(false);
       this._headerOpen = false;
-      if (this._outsideClickHandler) {
-        document.removeEventListener("click", this._outsideClickHandler, true);
-        this._outsideClickHandler = null;
-      }
-      if (this._boundHeaderEsc) {
-        document.removeEventListener("keydown", this._boundHeaderEsc);
+      try {
+        if (this._dropdownLifecycle) {
+          this._dropdownLifecycle.detach();
+          this._dropdownLifecycle = null;
+        }
+      } catch (_e) {}
+      try {
         this._boundHeaderEsc = null;
-      }
+      } catch (_e) {}
       try {
         document.removeEventListener("keydown", this._dropdownKeyHandler);
       } catch (_e) {}
