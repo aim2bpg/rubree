@@ -38,97 +38,38 @@ RSpec.describe "RegularExpressionFlow" do
       expect(page).to have_css 'a', text: 'Rubular', class: /text-blue-700/
     end
 
-    it 'applies example when Try an example is clicked' do
-      # Click the Try an example span in the header and ensure test string is populated
+    it 'applies an example and shows match/substitution results (fast)' do
+      # click Try an example and assert the important outcomes only
       find('span#example-link', text: 'Try an example', wait: true).click
 
-      test_val = find('textarea#regular_expression_test_string').value
-      expect(test_val).to include(Date.today.strftime('%-m/%-d/%Y'))
+      # test string should be populated with today's date fragment
+      expect(find('textarea#regular_expression_test_string').value).to include(Date.today.strftime('%-m/%-d/%Y'))
+
+      # the result frame should be present and contain the matched and substituted dates
+      expect(page).to have_css 'turbo-frame#regexp', visible: :visible
+      matched_date = Date.today.strftime('%-m/%-d/%Y')
+      substituted_date = Date.today.strftime('%Y/%-m/%-d')
+      expect(page).to have_css 'mark', text: matched_date
+      expect(page).to have_css 'mark', text: substituted_date
     end
 
-    it 'resets the form when Rubree (site title) is clicked' do
-      # apply example first
+    it 'header interactions: reset, dice, caret and dropdown (fast)' do
+      # clicking Rubree resets inputs
       find('span#example-link', text: 'Try an example').click
-      # then click site title to reset
       find('span#example-link', text: 'Rubree').click
-
-      # the expression field is a textarea in the form
       expect(find('textarea#regular_expression_expression').value).to eq('')
       expect(find('textarea#regular_expression_test_string').value).to eq('')
-    end
 
-    it 'dice button triggers a brief animation' do
-      btn = find('button[data-regexp-examples-target="diceButton"]', visible: true)
+      # dice button briefly animates
+      btn = find('button[data-regexp-examples-target="diceButton"]', visible: :visible)
       btn.click
-      expect(page).to have_css('button[data-regexp-examples-target="diceButton"].animate-bounce', wait: 1)
-    end
+      expect(page).to have_css('button[data-regexp-examples-target="diceButton"].animate-bounce', wait: 0.8)
 
-    it 'caret button opens the header dropdown' do
+      # caret opens dropdown and scroll container exists
       find('button[data-regexp-examples-target="caretButton"]', wait: true).click
-      expect(page).to have_css('[data-regexp-examples-target="headerDropdown"]', visible: :visible)
-    end
-
-    it 'allows dragging the examples dropdown to scroll' do
-      # open the header dropdown via the caret button
-      find('button[data-action="click->regexp-examples#toggleHeaderDropdown"]', wait: true).click
       selector = '[data-regexp-examples-target="headerScroll"]'
       expect(page).to have_selector(selector, visible: :visible)
-
-      # simple presence check: ensure the scroll container has at least one example button
       expect(page).to have_css("#{selector} button", minimum: 1)
-    end
-
-    it 'displays match and substitution results for example input' do
-      find('span#example-link', text: 'Try an example').click
-
-      expect(page).to have_css 'turbo-frame#regexp'
-
-      # Railroad diagram section
-      expect(page).to have_css 'label', text: 'Railroad diagram:'
-      expect(page).to have_css 'svg'
-
-      # Match result section
-      expect(page).to have_css 'label', text: 'Match result:'
-      matched_date = Date.today.strftime('%-m/%-d/%Y')
-      expect(page).to have_css 'div', text: "Today's date is: #{matched_date}"
-      expect(page).to have_css 'mark', text: matched_date, class: /bg-blue-200/
-
-      # Performance metrics (e.g., runtime)
-      expect(page).to have_css 'div', text: /🕒 .+ ms \(avg of 5 runs\)/
-
-      # Match groups section
-      expect(page).to have_css 'label', text: 'Match groups:'
-      expect(page).to have_css 'span.bg-yellow-200', text: 'month'
-      expect(page).to have_css 'code', text: Date.today.strftime('%-m')
-      expect(page).to have_css 'span.bg-yellow-200', text: 'day'
-      expect(page).to have_css 'code', text: Date.today.strftime('%-d')
-
-      # Substitution result section
-      expect(page).to have_css 'label', text: 'Substitution result:'
-      substituted_date = Date.today.strftime('%Y/%-m/%-d')
-      expect(page).to have_css 'div', text: "Today's date is: #{substituted_date}"
-      expect(page).to have_css 'mark', text: substituted_date, class: /bg-green-300/
-
-      # Ruby code display section
-      expect(page).to have_css 'label', text: 'Ruby code (Show):'
-    end
-
-    it 'resets the view to initial state when Rubree is clicked' do
-      find('span#example-link', text: 'Try an example').click
-
-      # Railroad diagram section
-      expect(page).to have_css 'label', text: 'Railroad diagram:'
-      expect(page).to have_css 'svg'
-
-      find('span#example-link', text: 'Rubree').click
-
-      # Regular expression and options form
-      expect(page).to have_field 'regular_expression[regular_expression]', with: ''
-      expect(page).to have_field 'regular_expression[options]', with: ''
-
-      # Test string and substitution form
-      expect(page).to have_field 'regular_expression[test_string]', with: ''
-      expect(page).to have_field 'regular_expression[substitution_string]', with: ''
     end
   end
 

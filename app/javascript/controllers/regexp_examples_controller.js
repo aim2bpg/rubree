@@ -1,4 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
+import { enableDragScroll } from "./regexp_examples/drag_scroll";
+import { attachDropdownLifecycle } from "./regexp_examples/dropdown_helpers";
+import { positionHeaderDropdown } from "./regexp_examples/dropdown_positioner";
+import { moveFormIntoModal } from "./regexp_examples/modal_form_mover";
+import {
+  createResultObserver,
+  trapFocus as modalTrapFocus,
+} from "./regexp_examples/modal_helpers";
+import { updateSelectionPersistence } from "./regexp_examples/selection_persistence";
 
 // Connects to data-controller="regexp-examples"
 export default class extends Controller {
@@ -33,6 +42,7 @@ export default class extends Controller {
     this._focusHandler = null;
     this._previousActive = null;
     this._observer = null;
+    this._modalResultObserver = null;
     this._movedForm = null;
 
     // wire select change for all exampleSelect elements and choose a primary select (header if present)
@@ -68,6 +78,14 @@ export default class extends Controller {
     this._outsideClickHandler = null;
     this._dropdownKeyHandler = this._onDropdownKeydown.bind(this);
     this._repositionHandler = null;
+    // remember last scroll position inside the header dropdown so we can restore it
+    this._headerScrollTop = 0;
+    // remember last selected example element/index so we can re-apply highlight/focus
+    this._lastSelectedElement = null;
+    this._lastSelectedIndex = null;
+    // persistent selection marker: left-edge border + padding so hover background remains visible
+    // stored as a space-separated list of classes; helpers below will add/remove each class
+    this._lastSelectedClass = "border-l-4 border-blue-400 pl-4";
   }
 
   disconnect() {
@@ -107,11 +125,28 @@ export default class extends Controller {
         document.removeEventListener("click", this._outsideClickHandler, true);
       document.removeEventListener("keydown", this._boundHeaderEsc);
     } catch (_e) {}
-
-    // restore moved form if still moved
-    if (this._movedForm) this._restoreForm();
   }
 
+  // helpers to add/remove the persistent set of classes (space-separated)
+  _applyLastSelectedClass(el) {
+    if (!el || !this._lastSelectedClass) return;
+    try {
+      this._lastSelectedClass.split(" ").forEach((c) => {
+        if (c) el.classList.add(c);
+      });
+    } catch (_e) {}
+  }
+
+  _removeLastSelectedClass(el) {
+    if (!el || !this._lastSelectedClass) return;
+    try {
+      this._lastSelectedClass.split(" ").forEach((c) => {
+        if (c) el.classList.remove(c);
+      });
+    } catch (_e) {}
+  }
+
+  // --- Drag-to-scroll support for header dropdown (mouse drag / touch pointer) ---
   showCategory(event) {
     const tab = event.currentTarget;
     this.showCategoryByElement(tab);
@@ -174,6 +209,10 @@ export default class extends Controller {
         if (!fromHeaderDropdown) this._closeHeaderDropdown();
       }
     } catch (_e) {}
+    // remember the selection by element so we can restore highlight on reopen
+    try {
+      this._setLastSelectedIndex(event.currentTarget);
+    } catch (_e) {}
   }
 
   // open modal: move real form into modal and clone examples for readability
@@ -186,11 +225,13 @@ export default class extends Controller {
       'form[data-controller*="regexp-form"]',
     );
     if (mainForm && !this._movedForm) {
-      this._movedForm = {
-        el: mainForm,
-        parent: mainForm.parentNode,
-        nextSibling: mainForm.nextSibling,
-      };
+      // use modal_form_mover helper to manage move/restore
+      try {
+        this._movedForm = moveFormIntoModal(mainForm, this.modalContentTarget);
+        // if we moved, mover.move() will be called below when inserting to modal
+      } catch (_e) {
+        this._movedForm = null;
+      }
     }
 
     // clone examples block but avoid copying turbo frames
@@ -205,8 +246,11 @@ export default class extends Controller {
 
     // insert form (moved) and clone into modal
     this.modalContentTarget.innerHTML = "";
-    if (this._movedForm)
-      this.modalContentTarget.appendChild(this._movedForm.el);
+    if (this._movedForm) {
+      try {
+        this._movedForm.move();
+      } catch (_e) {}
+    }
     this.modalContentTarget.appendChild(clone);
 
     // show modal
@@ -215,12 +259,21 @@ export default class extends Controller {
     // focus select or modal
     if (this._primarySelect) this._primarySelect.focus();
     else this.modalTarget.focus();
-    this.trapFocus(this.modalTarget);
+    // use modal helper to trap focus (returns cleanup fn)
+    try {
+      this._removeModalFocusTrap = modalTrapFocus(this.modalTarget);
+    } catch (_e) {}
     document.addEventListener("keydown", this._boundEsc);
 
-    // start observing result frame for live updates
-    this._startResultObserver();
-    this._updateModalResult();
+    // start observing result frame for live updates via helper
+    try {
+      this._modalResultObserver = createResultObserver(
+        this.modalTarget,
+        this.modalResultTarget,
+      );
+      this._modalResultObserver.start();
+      this._modalResultObserver.update();
+    } catch (_e) {}
   }
 
   closeModal(event) {
@@ -229,13 +282,29 @@ export default class extends Controller {
 
     this.modalTarget.classList.add("hidden");
     // restore moved form
-    if (this._movedForm) this._restoreForm();
+    try {
+      if (this._movedForm && typeof this._movedForm.restore === "function") {
+        this._movedForm.restore();
+      } else if (this._movedForm) {
+        // fallback to legacy restore
+        this._restoreForm();
+      }
+    } catch (_e) {}
     this.modalContentTarget.innerHTML = "";
     if (this.hasModalResultTarget) this.modalResultTarget.innerHTML = "";
     try {
       if (this._previousActive) this._previousActive.focus();
     } catch (_e) {}
     document.removeEventListener("keydown", this._boundEsc);
+    try {
+      if (this._removeModalFocusTrap) this._removeModalFocusTrap();
+    } catch (_e) {}
+    try {
+      if (this._modalResultObserver) {
+        this._modalResultObserver.stop();
+        this._modalResultObserver = null;
+      }
+    } catch (_e) {}
     if (this._observer) {
       this._observer.disconnect();
       this._observer = null;
@@ -405,10 +474,29 @@ export default class extends Controller {
       this._setCaretOpen(true);
       this._headerOpen = true;
 
-      // focus first interactive item in dropdown if available
+      // focus previously selected item if present, otherwise first interactive item
       try {
-        const first = this.headerDropdownTarget.querySelector("button");
-        if (first) first.focus();
+        const examples = Array.from(
+          this.headerDropdownTarget.querySelectorAll("button"),
+        );
+        if (
+          typeof this._lastSelectedIndex === "number" &&
+          examples[this._lastSelectedIndex]
+        ) {
+          const sel = examples[this._lastSelectedIndex];
+          try {
+            // apply persistent left-edge marker
+            this._applyLastSelectedClass(sel);
+            sel.focus();
+            sel.scrollIntoView({ block: "center", behavior: "auto" });
+            const cat = sel.dataset.category || "";
+            if (this.hasHoverCategoryTarget)
+              this.hoverCategoryTarget.textContent = cat;
+          } catch (_e) {}
+        } else {
+          const first = this.headerDropdownTarget.querySelector("button");
+          if (first) first.focus();
+        }
       } catch (_e) {}
 
       // enable drag-to-scroll on the internal scroll area (mouse/touch drag)
@@ -416,36 +504,17 @@ export default class extends Controller {
         this._enableDragScroll();
       } catch (_e) {}
 
-      // close on outside click (clicks outside caret and dropdown)
-      this._outsideClickHandler = (ev) => {
-        try {
-          const target = ev.target;
-          if (
-            this.hasCaretButtonTarget &&
-            this.hasHeaderDropdownTarget &&
-            !this.caretButtonTarget.contains(target) &&
-            !this.headerDropdownTarget.contains(target)
-          ) {
-            this._closeHeaderDropdown();
-          }
-        } catch (_e) {}
-      };
-      document.addEventListener("click", this._outsideClickHandler, true);
+      // attach dropdown lifecycle handlers (outside click, reposition, Esc)
+      try {
+        this._dropdownLifecycle = attachDropdownLifecycle({
+          dropdownEl: this.headerDropdownTarget,
+          caretEl: this.caretButtonTarget,
+          onClose: () => this._closeHeaderDropdown(),
+          onReposition: () => this._positionHeaderDropdown(),
+        });
+      } catch (_e) {}
 
-      // add reposition handler for scroll/resize
-      this._repositionHandler = () => {
-        try {
-          if (this._headerOpen) this._positionHeaderDropdown();
-        } catch (_e) {}
-      };
-      window.addEventListener("resize", this._repositionHandler);
-      window.addEventListener("scroll", this._repositionHandler, true);
-
-      // close on Esc and handle arrow/enter navigation
-      this._boundHeaderEsc = (ev) => {
-        if (ev.key === "Escape") this._closeHeaderDropdown();
-      };
-      document.addEventListener("keydown", this._boundHeaderEsc);
+      // keyboard navigation for dropdown items (arrow/enter) remains handled
       document.addEventListener("keydown", this._dropdownKeyHandler);
     } catch (_e) {}
   }
@@ -495,14 +564,15 @@ export default class extends Controller {
       }, 160);
       this._setCaretOpen(false);
       this._headerOpen = false;
-      if (this._outsideClickHandler) {
-        document.removeEventListener("click", this._outsideClickHandler, true);
-        this._outsideClickHandler = null;
-      }
-      if (this._boundHeaderEsc) {
-        document.removeEventListener("keydown", this._boundHeaderEsc);
+      try {
+        if (this._dropdownLifecycle) {
+          this._dropdownLifecycle.detach();
+          this._dropdownLifecycle = null;
+        }
+      } catch (_e) {}
+      try {
         this._boundHeaderEsc = null;
-      }
+      } catch (_e) {}
       try {
         document.removeEventListener("keydown", this._dropdownKeyHandler);
       } catch (_e) {}
@@ -524,45 +594,7 @@ export default class extends Controller {
   _positionHeaderDropdown() {
     if (!this.hasHeaderDropdownTarget || !this.hasCaretButtonTarget) return;
     try {
-      const el = this.headerDropdownTarget;
-      const caret = this.caretButtonTarget;
-      const rect = caret.getBoundingClientRect();
-      // responsive: on small screens make dropdown full-width with small page padding
-      const smallScreen = window.innerWidth < 640; // Tailwind 'sm' breakpoint
-      el.style.position = "absolute";
-      if (smallScreen) {
-        // On small screens avoid full-bleed width (overlap issues).
-        // Use a capped width (max 360px) and center the dropdown under the caret when possible.
-        const pagePadding = 12; // keep a small margin from edges
-        const maxWidth = Math.min(360, window.innerWidth - pagePadding * 2);
-        const width = Math.max(220, maxWidth);
-        const tentativeLeft =
-          rect.left + rect.width / 2 - width / 2 + window.scrollX;
-        const minLeft = window.scrollX + pagePadding;
-        const maxLeft =
-          window.scrollX + window.innerWidth - pagePadding - width;
-        const left = Math.min(Math.max(tentativeLeft, minLeft), maxLeft);
-        const top = rect.bottom + window.scrollY + 6;
-        el.style.left = `${left}px`;
-        el.style.top = `${top}px`;
-        el.style.width = `${width}px`;
-      } else {
-        // compute left such that dropdown is centered under caret
-        const ddWidth = el.offsetWidth || 280;
-        const left = rect.left + rect.width / 2 - ddWidth / 2 + window.scrollX;
-        const top = rect.bottom + window.scrollY + 6; // small gap
-        el.style.left = `${Math.max(8, left)}px`;
-        el.style.top = `${top}px`;
-        // ensure dropdown doesn't overflow right edge
-        const maxRight = window.scrollX + window.innerWidth - 8;
-        const curRight = left + ddWidth;
-        if (curRight > maxRight) {
-          const shift = curRight - maxRight;
-          el.style.left = `${Math.max(8, left - shift)}px`;
-        }
-        // clear any width set previously
-        el.style.width = "";
-      }
+      positionHeaderDropdown(this.headerDropdownTarget, this.caretButtonTarget);
     } catch (_e) {}
   }
 
@@ -578,12 +610,14 @@ export default class extends Controller {
       e.preventDefault();
       const next = items[(idx + 1) % items.length] || items[0];
       next.focus();
+      // do not update persistent selection on arrow navigation — only move focus
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       const prev =
         items[(idx - 1 + items.length) % items.length] ||
         items[items.length - 1];
       prev.focus();
+      // do not update persistent selection on arrow navigation — only move focus
     } else if (e.key === "Enter") {
       // activate current focused item if it's in the dropdown
       if (
@@ -591,7 +625,11 @@ export default class extends Controller {
         document.activeElement.tagName === "BUTTON"
       ) {
         e.preventDefault();
+        const cur = document.activeElement;
         document.activeElement.click();
+        try {
+          this._setLastSelectedIndex(cur);
+        } catch (_e) {}
         this._closeHeaderDropdown();
       }
     } else if (e.key === "Escape") {
@@ -605,6 +643,7 @@ export default class extends Controller {
       if (!this.hasHoverCategoryTarget) return;
       const cat = e.currentTarget.dataset.category || "";
       this.hoverCategoryTarget.textContent = cat;
+      // keep persistent marker visible while hovering (no removal) to avoid blinking
     } catch (_e) {}
   }
 
@@ -612,103 +651,45 @@ export default class extends Controller {
     try {
       if (!this.hasHoverCategoryTarget) return;
       this.hoverCategoryTarget.textContent = "";
+      // nothing to do here for marker; keep persistent marker always visible
     } catch (_e) {}
   }
 
-  // --- Drag-to-scroll support for header dropdown (mouse drag / touch pointer) ---
+  _setLastSelectedIndex(itemOrIdx) {
+    try {
+      const state = updateSelectionPersistence(
+        itemOrIdx,
+        '[data-regexp-examples-target="example"]',
+        this._lastSelectedClass,
+        { el: this._lastSelectedElement, index: this._lastSelectedIndex },
+      );
+      this._lastSelectedElement = state.el;
+      this._lastSelectedIndex = state.index;
+    } catch (_e) {}
+  }
+
+  // --- Drag-to-scroll: delegate to helper module ---
   _enableDragScroll() {
     try {
       if (!this.hasHeaderScrollTarget) return;
-      const el = this.headerScrollTarget;
-
-      // state
-      this._dragState = {
-        active: false,
-        pointerId: null,
-        startY: 0,
-        startScroll: 0,
-      };
-
-      // pointerdown: record initial position but DO NOT start dragging until a small
-      // movement threshold is exceeded. This prevents tiny accidental pointermove
-      // events from cancelling click events.
-      this._pointerDownHandler = (e) => {
-        // only left mouse button or touch/pen
-        if (e.button && e.button !== 0) return;
-        this._dragState.active = false; // not yet a drag
-        this._dragState.pointerId = e.pointerId;
-        this._dragState.startY = e.clientY;
-        this._dragState.startScroll = el.scrollTop;
-      };
-
-      this._pointerMoveHandler = (e) => {
-        if (!this._dragState) return;
-        if (e.pointerId !== this._dragState.pointerId) return;
-        const dy = e.clientY - this._dragState.startY;
-        const threshold = 6; // pixels before we consider the gesture a drag
-
-        // if not yet active, only activate when movement exceeds threshold
-        if (!this._dragState.active) {
-          if (Math.abs(dy) < threshold) return;
-          this._dragState.active = true;
-          try {
-            el.setPointerCapture(e.pointerId);
-          } catch (_e) {}
-          // prevent accidental text selection while dragging
-          el.classList.add("select-none");
-        }
-
-        // perform scroll while dragging
-        el.scrollTop = this._dragState.startScroll - dy;
-        // prevent default to avoid native touch scrolling while we're handling drag
-        e.preventDefault();
-      };
-
-      this._pointerUpHandler = (_e) => {
-        if (!this._dragState) return;
-        try {
-          if (this._dragState.pointerId != null)
-            el.releasePointerCapture(this._dragState.pointerId);
-        } catch (_e) {}
-        this._dragState.active = false;
-        this._dragState.pointerId = null;
-        el.classList.remove("select-none");
-      };
-
-      el.addEventListener("pointerdown", this._pointerDownHandler, {
-        passive: false,
-      });
-      el.addEventListener("pointermove", this._pointerMoveHandler, {
-        passive: false,
-      });
-      el.addEventListener("pointerup", this._pointerUpHandler);
-      el.addEventListener("pointercancel", this._pointerUpHandler);
+      this._dragScrollObj = enableDragScroll(
+        this.headerScrollTarget,
+        this._headerScrollTop,
+      );
     } catch (_e) {}
   }
 
   _disableDragScroll() {
     try {
-      if (!this.hasHeaderScrollTarget) return;
-      const el = this.headerScrollTarget;
-      try {
-        el.removeEventListener("pointerdown", this._pointerDownHandler, {
-          passive: false,
-        });
-      } catch (_e) {}
-      try {
-        el.removeEventListener("pointermove", this._pointerMoveHandler, {
-          passive: false,
-        });
-      } catch (_e) {}
-      try {
-        el.removeEventListener("pointerup", this._pointerUpHandler);
-        el.removeEventListener("pointercancel", this._pointerUpHandler);
-      } catch (_e) {}
-      el.classList.remove("select-none");
-      this._dragState = null;
-      this._pointerDownHandler = null;
-      this._pointerMoveHandler = null;
-      this._pointerUpHandler = null;
+      if (this._dragScrollObj) {
+        try {
+          this._headerScrollTop = this._dragScrollObj.getScrollTop();
+        } catch (_e) {}
+        try {
+          this._dragScrollObj.disable();
+        } catch (_e) {}
+        this._dragScrollObj = null;
+      }
     } catch (_e) {}
   }
 
@@ -779,6 +760,7 @@ export default class extends Controller {
 
   // result observer & update
   _startResultObserver() {
+    // legacy: kept for backward compatibility, prefer createResultObserver helper
     const frame = document.getElementById("regexp");
     if (!frame) return;
     this._observer = new MutationObserver(() => {
@@ -789,18 +771,27 @@ export default class extends Controller {
   }
 
   _updateModalResult() {
-    if (!this.hasModalResultTarget) return;
-    const frame = document.getElementById("regexp");
-    if (!frame) return;
-    const clone = frame.cloneNode(true);
-    // avoid duplicate ids
-    const ts = Date.now();
-    clone.querySelectorAll("[id]").forEach((el) => {
-      const old = el.getAttribute("id");
-      if (old) el.setAttribute("id", `${old}-modal-${ts}`);
-    });
-    clone.id = `${clone.id || "regexp"}-modal-${ts}`;
-    this.modalResultTarget.innerHTML = "";
-    this.modalResultTarget.appendChild(clone);
+    try {
+      if (
+        this._modalResultObserver &&
+        typeof this._modalResultObserver.update === "function"
+      ) {
+        this._modalResultObserver.update();
+        return;
+      }
+      // fallback to previous behavior
+      if (!this.hasModalResultTarget) return;
+      const frame = document.getElementById("regexp");
+      if (!frame) return;
+      const clone = frame.cloneNode(true);
+      const ts = Date.now();
+      clone.querySelectorAll("[id]").forEach((el) => {
+        const old = el.getAttribute("id");
+        if (old) el.setAttribute("id", `${old}-modal-${ts}`);
+      });
+      clone.id = `${clone.id || "regexp"}-modal-${ts}`;
+      this.modalResultTarget.innerHTML = "";
+      this.modalResultTarget.appendChild(clone);
+    } catch (_e) {}
   }
 }
