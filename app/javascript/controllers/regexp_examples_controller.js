@@ -1,5 +1,10 @@
 import { Controller } from "@hotwired/stimulus";
+import { enableDragScroll } from "./regexp_examples/drag_scroll";
 import { positionHeaderDropdown } from "./regexp_examples/dropdown_positioner";
+import {
+  createResultObserver,
+  trapFocus as modalTrapFocus,
+} from "./regexp_examples/modal_helpers";
 import { updateSelectionPersistence } from "./regexp_examples/selection_persistence";
 
 // Connects to data-controller="regexp-examples"
@@ -35,6 +40,7 @@ export default class extends Controller {
     this._focusHandler = null;
     this._previousActive = null;
     this._observer = null;
+    this._modalResultObserver = null;
     this._movedForm = null;
 
     // wire select change for all exampleSelect elements and choose a primary select (header if present)
@@ -246,12 +252,21 @@ export default class extends Controller {
     // focus select or modal
     if (this._primarySelect) this._primarySelect.focus();
     else this.modalTarget.focus();
-    this.trapFocus(this.modalTarget);
+    // use modal helper to trap focus (returns cleanup fn)
+    try {
+      this._removeModalFocusTrap = modalTrapFocus(this.modalTarget);
+    } catch (_e) {}
     document.addEventListener("keydown", this._boundEsc);
 
-    // start observing result frame for live updates
-    this._startResultObserver();
-    this._updateModalResult();
+    // start observing result frame for live updates via helper
+    try {
+      this._modalResultObserver = createResultObserver(
+        this.modalTarget,
+        this.modalResultTarget,
+      );
+      this._modalResultObserver.start();
+      this._modalResultObserver.update();
+    } catch (_e) {}
   }
 
   closeModal(event) {
@@ -267,6 +282,15 @@ export default class extends Controller {
       if (this._previousActive) this._previousActive.focus();
     } catch (_e) {}
     document.removeEventListener("keydown", this._boundEsc);
+    try {
+      if (this._removeModalFocusTrap) this._removeModalFocusTrap();
+    } catch (_e) {}
+    try {
+      if (this._modalResultObserver) {
+        this._modalResultObserver.stop();
+        this._modalResultObserver = null;
+      }
+    } catch (_e) {}
     if (this._observer) {
       this._observer.disconnect();
       this._observer = null;
@@ -648,122 +672,28 @@ export default class extends Controller {
     } catch (_e) {}
   }
 
-  // --- Drag-to-scroll support for header dropdown (mouse drag / touch pointer) ---
+  // --- Drag-to-scroll: delegate to helper module ---
   _enableDragScroll() {
     try {
       if (!this.hasHeaderScrollTarget) return;
-      const el = this.headerScrollTarget;
-
-      // restore previous scroll position when enabling scroll handlers
-      try {
-        if (typeof this._headerScrollTop === "number")
-          el.scrollTop = this._headerScrollTop || 0;
-      } catch (_e) {}
-
-      // state
-      this._dragState = {
-        active: false,
-        pointerId: null,
-        startY: 0,
-        startScroll: 0,
-      };
-
-      // pointerdown: record initial position but DO NOT start dragging until a small
-      // movement threshold is exceeded. This prevents tiny accidental pointermove
-      // events from cancelling click events.
-      this._pointerDownHandler = (e) => {
-        // only left mouse button or touch/pen
-        if (e.button && e.button !== 0) return;
-        this._dragState.active = false; // not yet a drag
-        this._dragState.pointerId = e.pointerId;
-        this._dragState.startY = e.clientY;
-        this._dragState.startScroll = el.scrollTop;
-      };
-
-      this._pointerMoveHandler = (e) => {
-        if (!this._dragState) return;
-        if (e.pointerId !== this._dragState.pointerId) return;
-        const dy = e.clientY - this._dragState.startY;
-        const threshold = 6; // pixels before we consider the gesture a drag
-
-        // if not yet active, only activate when movement exceeds threshold
-        if (!this._dragState.active) {
-          if (Math.abs(dy) < threshold) return;
-          this._dragState.active = true;
-          try {
-            el.setPointerCapture(e.pointerId);
-          } catch (_e) {}
-          // prevent accidental text selection while dragging
-          el.classList.add("select-none");
-        }
-
-        // perform scroll while dragging
-        el.scrollTop = this._dragState.startScroll - dy;
-        // prevent default to avoid native touch scrolling while we're handling drag
-        e.preventDefault();
-      };
-
-      this._pointerUpHandler = (_e) => {
-        if (!this._dragState) return;
-        try {
-          if (this._dragState.pointerId != null)
-            el.releasePointerCapture(this._dragState.pointerId);
-        } catch (_e) {}
-        this._dragState.active = false;
-        this._dragState.pointerId = null;
-        el.classList.remove("select-none");
-      };
-
-      el.addEventListener("pointerdown", this._pointerDownHandler, {
-        passive: false,
-      });
-      el.addEventListener("pointermove", this._pointerMoveHandler, {
-        passive: false,
-      });
-      el.addEventListener("pointerup", this._pointerUpHandler);
-      el.addEventListener("pointercancel", this._pointerUpHandler);
-      // track scroll to remember position when dropdown is closed
-      this._headerScrollHandler = () => {
-        try {
-          this._headerScrollTop = el.scrollTop;
-        } catch (_e) {}
-      };
-      el.addEventListener("scroll", this._headerScrollHandler, {
-        passive: true,
-      });
+      this._dragScrollObj = enableDragScroll(
+        this.headerScrollTarget,
+        this._headerScrollTop,
+      );
     } catch (_e) {}
   }
 
   _disableDragScroll() {
     try {
-      if (!this.hasHeaderScrollTarget) return;
-      const el = this.headerScrollTarget;
-      try {
-        el.removeEventListener("pointerdown", this._pointerDownHandler, {
-          passive: false,
-        });
-      } catch (_e) {}
-      try {
-        el.removeEventListener("pointermove", this._pointerMoveHandler, {
-          passive: false,
-        });
-      } catch (_e) {}
-      try {
-        el.removeEventListener("pointerup", this._pointerUpHandler);
-        el.removeEventListener("pointercancel", this._pointerUpHandler);
-      } catch (_e) {}
-      try {
-        if (this._headerScrollHandler)
-          el.removeEventListener("scroll", this._headerScrollHandler, {
-            passive: true,
-          });
-      } catch (_e) {}
-      el.classList.remove("select-none");
-      this._dragState = null;
-      this._pointerDownHandler = null;
-      this._pointerMoveHandler = null;
-      this._pointerUpHandler = null;
-      this._headerScrollHandler = null;
+      if (this._dragScrollObj) {
+        try {
+          this._headerScrollTop = this._dragScrollObj.getScrollTop();
+        } catch (_e) {}
+        try {
+          this._dragScrollObj.disable();
+        } catch (_e) {}
+        this._dragScrollObj = null;
+      }
     } catch (_e) {}
   }
 
@@ -834,6 +764,7 @@ export default class extends Controller {
 
   // result observer & update
   _startResultObserver() {
+    // legacy: kept for backward compatibility, prefer createResultObserver helper
     const frame = document.getElementById("regexp");
     if (!frame) return;
     this._observer = new MutationObserver(() => {
@@ -844,18 +775,27 @@ export default class extends Controller {
   }
 
   _updateModalResult() {
-    if (!this.hasModalResultTarget) return;
-    const frame = document.getElementById("regexp");
-    if (!frame) return;
-    const clone = frame.cloneNode(true);
-    // avoid duplicate ids
-    const ts = Date.now();
-    clone.querySelectorAll("[id]").forEach((el) => {
-      const old = el.getAttribute("id");
-      if (old) el.setAttribute("id", `${old}-modal-${ts}`);
-    });
-    clone.id = `${clone.id || "regexp"}-modal-${ts}`;
-    this.modalResultTarget.innerHTML = "";
-    this.modalResultTarget.appendChild(clone);
+    try {
+      if (
+        this._modalResultObserver &&
+        typeof this._modalResultObserver.update === "function"
+      ) {
+        this._modalResultObserver.update();
+        return;
+      }
+      // fallback to previous behavior
+      if (!this.hasModalResultTarget) return;
+      const frame = document.getElementById("regexp");
+      if (!frame) return;
+      const clone = frame.cloneNode(true);
+      const ts = Date.now();
+      clone.querySelectorAll("[id]").forEach((el) => {
+        const old = el.getAttribute("id");
+        if (old) el.setAttribute("id", `${old}-modal-${ts}`);
+      });
+      clone.id = `${clone.id || "regexp"}-modal-${ts}`;
+      this.modalResultTarget.innerHTML = "";
+      this.modalResultTarget.appendChild(clone);
+    } catch (_e) {}
   }
 }
