@@ -76,8 +76,9 @@
     </div>
   </div>
 
-  <!-- Top-right anchor button (text + border only). This is the caretButtonTarget used by the controller. -->
-  <div class="absolute right-6 top-4">
+  <!-- Top-right anchor button (text + border only). On small screens it flows inline under the header
+       to avoid overlapping the logo; on sm+ it becomes absolute in the top-right as before. -->
+  <div class="sm:absolute sm:top-4 sm:right-6 mt-3 sm:mt-0 flex justify-end">
     <button type="button"
       class="bg-transparent border border-blue-500 text-blue-400 text-sm px-3 py-1 rounded hover:bg-blue-50/5"
       data-action="click->regexp-examples#toggleHeaderDropdown"
