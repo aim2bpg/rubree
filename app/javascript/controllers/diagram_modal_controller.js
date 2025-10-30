@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import { trapFocus as sharedTrapFocus } from "./lib/trap_focus";
 
 export default class extends Controller {
   static targets = ["modal", "content", "source"];
@@ -54,7 +55,12 @@ export default class extends Controller {
 
     // accessibility: store previous focus and trap focus inside modal
     this._previousActive = document.activeElement;
-    this.trapFocus(this.modalTarget);
+    // use shared focus trap utility (returns cleanup fn)
+    try {
+      this._removeModalFocusTrap = sharedTrapFocus(this.modalTarget);
+    } catch (_e) {
+      this._removeModalFocusTrap = null;
+    }
     document.addEventListener("keydown", this._boundEsc);
   }
 
@@ -82,30 +88,20 @@ export default class extends Controller {
   }
 
   trapFocus(modal) {
-    const focusable = modal.querySelectorAll(
-      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
-    );
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    first.focus();
-    this._focusHandler = (e) => {
-      if (e.key !== "Tab") return;
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    modal.addEventListener("keydown", this._focusHandler);
+    // Deprecated: use shared focus trap. Keep for compatibility.
+    try {
+      this._removeModalFocusTrap = sharedTrapFocus(modal);
+    } catch (_e) {
+      this._removeModalFocusTrap = null;
+    }
   }
 
   releaseFocus() {
-    if (this.modalTarget && this._focusHandler) {
-      this.modalTarget.removeEventListener("keydown", this._focusHandler);
-      this._focusHandler = null;
+    if (this.modalTarget && this._removeModalFocusTrap) {
+      try {
+        this._removeModalFocusTrap();
+      } catch (_e) {}
+      this._removeModalFocusTrap = null;
     }
     try {
       if (this._previousActive) this._previousActive.focus();
