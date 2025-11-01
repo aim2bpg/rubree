@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Rubree - A Ruby regular expression editor inspired by Rubular</title>
+    <title><%= t("application.title", default: "Rubree - A Ruby regular expression editor inspired by Rubular") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta charset="utf-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,15 +10,15 @@
     <%= csp_meta_tag %>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Rubree is a Ruby regular expression editor inspired by Rubular. Quickly test and visualize your regex patterns in an intuitive interface.">
+    <meta name="description" content="<%= t("application.description", default: "Rubree is a Ruby regular expression editor inspired by Rubular. Quickly test and visualize your regex patterns in an intuitive interface.") %>">
     <meta name="keywords" content="Ruby, regular expression, regex tester, regex editor, online regex tool, Rubular alternative, Rubree, Ruby regex playground, pattern matching, regex visualization, live regex testing, railroad diagrams, railroad diagrams visualization, regex diagram, visual regex, regex railroads">
 
     <!-- Open Graph (OGP) -->
-    <meta property="og:title" content="Rubree - A Ruby regular expression editor inspired by Rubular">
-    <meta property="og:description" content="Rubree lets you instantly test and visualize Ruby regular expressions. Inspired by Rubular.">
+    <meta property="og:title" content="<%= t("application.title") %>">
+    <meta property="og:description" content="<%= t("application.description") %>">
     <meta property="og:image" content="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/logo.png">
     <meta property="og:url" content="https://aim2bpg.github.io/rubree/">
-    <meta property="og:site_name" content="Rubree">
+    <meta property="og:site_name" content="<%= t("application.site_name") %>">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
 
@@ -26,8 +26,8 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@aim2bpg">
     <meta name="twitter:creator" content="@aim2bpg">
-    <meta name="twitter:title" content="Rubree - A Ruby regular expression editor inspired by Rubular">
-    <meta name="twitter:description" content="Rubree lets you instantly test and visualize Ruby regular expressions. Inspired by Rubular.">
+    <meta name="twitter:title" content="<%= t("application.title") %>">
+    <meta name="twitter:description" content="<%= t("application.description") %>">
     <meta name="twitter:image" content="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/logo.png">
 
     <%= yield :head %>

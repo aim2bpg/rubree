@@ -3,8 +3,8 @@
     <div x-data="{ show: false }" data-controller="copy-code">
       <div class="mb-2 flex sm:flex-col md:flex-row justify-between gap-2">
         <label class="text-sm font-bold text-white whitespace-nowrap">
-          Ruby code
-          <span class="ml-1 text-sm font-bold text-white">(<button x-on:click="show = !show" class="text-xs text-blue-400 hover:underline whitespace-nowrap align-baseline p-0 m-0" type="button"><span x-text="show ? 'Hide' : 'Show'"></span></button>):</span>
+          <%= t("regular_expressions.results.ruby_code_label") %>
+          <span class="ml-1 text-sm font-bold text-white">(<button x-on:click="show = !show" class="text-xs text-blue-400 hover:underline whitespace-nowrap align-baseline p-0 m-0" type="button"><span x-text="show ? $el.dataset.hideText : $el.dataset.showText" data-hide-text="<%= t("regular_expressions.results.hide") %>" data-show-text="<%= t("regular_expressions.results.show") %>"></span></button>):</span>
         </label>
 
         <div class="flex items-center gap-2">
@@ -19,7 +19,7 @@
           type="button"
           class="absolute top-2 right-2 inline-flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-gray-200 p-2 rounded-lg focus:outline-none z-20"
           data-action="click->copy-code#copy"
-          title="Copy Ruby Code">
+          title="<%= t("regular_expressions.results.copy_ruby_code") %>">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="w-4 h-4">
@@ -31,7 +31,7 @@
             data-copy-code-target="tooltip"
             class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs leading-none px-2 py-1 rounded
                    opacity-0 invisible transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap">
-            Copied!
+            <%= t("regular_expressions.results.copied") %>
           </span>
         </button>
 

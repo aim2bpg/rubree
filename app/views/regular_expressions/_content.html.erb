@@ -5,7 +5,7 @@
             data-regexp-content-tab-switch-target="tabReference"
             class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-l focus:outline-none"
             :class="{ 'bg-gray-700': isReferenceActive }">
-      Regex Quick Reference
+      <%= t("regular_expressions.content.quick_reference", default: "Regex Quick Reference") %>
     </button>
 
     <button type="button"
@@ -13,7 +13,7 @@
             data-regexp-content-tab-switch-target="tabExamples"
             class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-r focus:outline-none"
             :class="{ 'bg-gray-700': isExamplesActive }">
-      Regex Examples
+      <%= t("regular_expressions.content.examples_tab", default: "Regex Examples") %>
     </button>
   </div>
 
