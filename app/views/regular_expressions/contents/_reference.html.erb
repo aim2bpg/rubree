@@ -1,30 +1,32 @@
 <div class="bg-gray-900 rounded-lg shadow-lg pt-4 pb-4 text-gray-400 text-sm leading-snug">
   <div class="text-left w-full px-4">
 
-    <div class="grid grid-cols-1 md:grid-cols-[auto_auto_16rem] gap-4">
-      <% regex_reference_sections.each do |section| %>
-        <div class="space-y-1">
+    <div class="flex justify-center">
+      <div class="grid grid-cols-1 md:grid-cols-[auto_auto_minmax(16rem,1fr)] gap-4 mx-auto max-w-[1100px]">
+        <% regex_reference_sections.each do |section| %>
+          <div class="space-y-1 min-w-0">
           <label class="font-semibold mb-2 text-white"><%= section[:title] %></label>
           <div class="space-y-0.5">
             <% section[:items].each do |code, description| %>
-              <div class="grid <%= section[:col_class] %> items-start">
+              <div class="grid <%= section[:col_class] %> items-start min-w-0">
                 <code
                   data-controller="copy-code"
                   data-copy-code-target="source"
                   data-action="click->copy-code#copy"
-                  class="cursor-pointer hover:text-green-400 transition duration-200"
-                  title="Click to copy"><%= code %></code>
-                <span><%= description %></span>
+                  class="cursor-pointer hover:text-green-400 transition duration-200 whitespace-nowrap"
+                  title="<%= t("common.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                <span class="break-words"><%= description %></span>
               </div>
             <% end %>
           </div>
         </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
 
     <!-- Options -->
     <div class="mt-2 pt-2 border-t border-gray-600 text-gray-400 text-sm text-left md:text-center flex flex-col md:flex-row md:items-center justify-center gap-x-4 gap-y-1">
-      <strong class="text-white mr-2 mb-1 md:mb-0 whitespace-nowrap">options:</strong>
+      <strong class="text-white mr-2 mb-1 md:mb-0 whitespace-nowrap"><%= t("regular_expressions.reference.sections.options_label", default: "Options:") %></strong>
       <div class="flex flex-col md:flex-row flex-wrap md:flex-nowrap justify-center gap-x-4 gap-y-0.5 md:gap-y-0">
         <% regex_reference_options.each do |code, label| %>
           <div class="basis-full md:basis-auto text-left md:text-center">
@@ -33,7 +35,7 @@
               data-copy-code-target="source"
               data-action="click->copy-code#copy"
               class="cursor-pointer hover:text-green-400 transition duration-200 mx-2"
-              title="Click to copy"><%= code %></code>
+              title="<%= t("common.click_to_copy", default: "Click to copy") %>"><%= code %></code>
             <%= label %>
           </div>
         <% end %>

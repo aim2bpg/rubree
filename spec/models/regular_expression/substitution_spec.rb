@@ -1,6 +1,41 @@
 require 'rails_helper'
 
 RSpec.describe RegularExpression::Substitution do
+  describe 'basic cases' do
+    it 'escapes HTML in substitution result' do
+      sub = described_class.new(
+        regular_expression: '(foo)',
+        test_string: 'foo foo foo',
+        substitution_string: '<script>alert(1)</script>'
+      )
+
+      # substitution wraps each replaced fragment in a marked element and escapes HTML
+      expect(sub.result).to include('&lt;script&gt;alert(1)&lt;/script&gt;')
+      expect(sub.errors).to be_empty
+    end
+
+    it 'returns original string when invalid backreference used' do
+      sub = described_class.new(
+        regular_expression: '(foo)',
+        test_string: 'foo',
+        substitution_string: '\\2!'
+      )
+
+      expect(sub.result).to eq('foo')
+    end
+
+    it 'supports named captures in substitution and escapes content' do
+      sub = described_class.new(
+        regular_expression: '(?<word>foo)',
+        test_string: 'foo',
+        substitution_string: '\\k<word><script>'
+      )
+
+      expect(sub.result).to include('foo')
+      expect(sub.result).to include('&lt;script&gt;')
+    end
+  end
+
   describe '#result' do
     subject(:substitution_result) do
       described_class.new(

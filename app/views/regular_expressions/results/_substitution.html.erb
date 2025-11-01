@@ -1,5 +1,5 @@
 <div class="mb-2 text-left">
-  <label class="block text-sm font-bold mb-2 text-white">Substitution result:</label>
+  <label class="block text-sm font-bold mb-2 text-white"><%= t("regular_expressions.results.substitution.label", default: "Substitution result:") %></label>
 
   <% if regular_expression.substitution_result.present? %>
     <template x-if="!showInvisibles">
@@ -18,6 +18,6 @@
         class="bg-gray-900 border border-gray-700 px-4 py-4 font-mono text-sm text-white text-left leading-tight"><% def escape_invisibles(str); str.gsub("\r\n", "\r␍\n⏎\n").gsub("\r", "␍").gsub("\n", "⏎\n").gsub("\t", "⇥"); end %><%= raw escape_invisibles(regular_expression.substitution_result) %></div>
     </template>
   <% else %>
-    <p class="text-yellow-400 text-sm">No substitution performed or no matches found.</p>
+    <p class="text-yellow-400 text-sm"><%= t("regular_expressions.results.substitution.no_substitution", default: "No substitution performed or no matches found.") %></p>
   <% end %>
 </div>

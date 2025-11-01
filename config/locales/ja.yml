@@ -1,0 +1,838 @@
+ja:
+  application:
+    title: "Rubree — Rubular に触発された Ruby 用の正規表現エディタ"
+    description: "Rubree は Rubular に触発された Ruby 用の正規表現エディタです。直感的な操作で正規表現を素早く試し、視覚的に確認できます。"
+    site_name: Rubree
+  regular_expressions:
+    header:
+      subtitle: Ruby の正規表現エディタ
+      try_example: 例を試す
+      try_random: ランダムな例を試す
+      examples: 例
+      open_examples: 例を開く（右上）
+      button: 正規表現の例
+
+    form:
+      your_regular_expression: '正規表現:'
+      options: 'オプション:'
+      your_test_string: 'テスト文字列:'
+      substitution: '置換文字列:'
+
+    results:
+      railroad_diagram: 'レールロード図:'
+      railroad_diagram_placeholder: 'レールロード図がここに表示されます'
+      view_full_diagram: '図を全体表示'
+      copy_diagram_png: '図をPNGとしてコピー'
+      close: '閉じる'
+      copied: 'コピーしました!'
+      test_result_placeholder: '正規表現のテスト結果がここに表示されます'
+      please_enter: '正規表現パターンとテスト文字列を入力してください。'
+      match_result_label: 'マッチ結果:'
+      invalid_regex: '無効な正規表現です。'
+      no_matches: 'マッチがありません。'
+      match_groups: 'マッチグループ:'
+      match_number: 'マッチ %{number}件'
+      substitution:
+        label: '置換結果:'
+        no_substitution: '置換が実行されなかったか、マッチが見つかりませんでした。'
+      ruby_code_label: 'Ruby コード'
+      show: '表示する'
+      hide: '非表示'
+      copy_ruby_code: 'Ruby コードをコピー'
+
+    content:
+      quick_reference: "クイックリファレンス"
+      examples_tab: "例一覧"
+
+    reference:
+      sections:
+        character-classes-anchors:
+          title: 文字クラスとアンカー
+          items:
+            0: 単一の文字（a、b、または c）
+            1: 指定した文字以外の単一文字
+            2: a-z の範囲の単一文字
+            3: a-z または A-Z の単一文字
+            4: 行の先頭
+            5: 行の末尾
+            6: 文字列の先頭
+            7: 文字列の末尾
+        common-patterns:
+          title: よく使うパターン
+          items:
+            0: 任意の一文字
+            1: 空白文字
+            2: 空白以外の文字
+            3: 数字
+            4: 数字以外
+            5: 単語文字（英数字またはアンダースコア）
+            6: 単語文字以外
+            7: 単語境界
+        groups-quantifiers:
+          title: グループと量指定子
+          items:
+            0: キャプチャグループの使い方
+            1: 非キャプチャグループ (?:...)
+            2: 名前付きグループとその利点
+            3: 以前のキャプチャへのバックリファレンス
+            4: 貪欲・遅延（レイジー）・所有的量指定子の違い
+            5: インラインオプションと局所的なモディファイア
+            6: "3 個以上の 'a' にマッチする例"
+            7: "3 から 6 個の 'a' にマッチする例"
+        options:
+          options_label: "オプション:"
+          i: 大文字小文字を区別しない
+          m: ドットが改行にもマッチするようにする
+          x: 正規表現の空白とコメントを無視する（拡張モード）
+    categories:
+      basic-operations:
+        short: 基本操作
+        description: "基本操作：連結、選択、繰り返し（構文糖衣を使わない）を示す例。"
+        examples:
+          0:
+            description: 基本操作：連結、選択、繰り返し（構文糖衣を使わない例）。
+          1:
+            description: 連結：'a' + 'b' + 'c' にマッチする例。
+          2:
+            description: 連結：文字列の中間に 'ab' が現れる場合にマッチ。
+          3:
+            description: 連結：'a' の後に 'b' が続かない場合にマッチ。
+          4:
+            description: 選択：'a', 'b', 'c' のいずれかにマッチ。
+          5:
+            description: 選択：'a' または繰り返される 'b' のどちらかにマッチ。
+          6:
+            description: '繰り返し: 1 回の ''a'' にマッチする。'
+          7:
+            description: 範囲指定 [a-d] で 'a' が含まれる例（母音か否かの例示）。
+          8:
+            description: 範囲指定で 'b' が含まれる別例。
+          9:
+            description: 複数の文字を組み合わせた文字クラスの等価表現の例。
+          10:
+            description: '選択と繰り返し: ''a'' にマッチする。'
+          11:
+            description: '連結と繰り返し: ''a*'' + ''b'' + ''c'' にマッチする。'
+      syntax-sugar:
+        short: 糖衣構文
+        description: よく使われる糖衣構文：量指定子、ドット、文字クラス、エスケープ、アンカーなど。
+        examples:
+          0:
+            description: '量指定子 ''+'' : 1回以上の ''a'' にマッチする。'
+          1:
+            description: '量指定子 ''?'' : ''a'' があってもなくてもマッチする（任意）。'
+          2:
+            description: '量指定子 ''{n,m}'' : 2 回から 4 回の ''a'' にマッチする。'
+          3:
+            description: 'ドット ''.'' : 任意の1文字にマッチする。'
+          4:
+            description: '文字クラス: 小文字の英字にマッチする。'
+          5:
+            description: '文字クラス（範囲）: ハイフンを含む範囲にマッチする。'
+          6:
+            description: '否定クラス: 小文字の英字以外にマッチする。'
+          7:
+            description: 'エスケープ: タブ文字 ''\t'' にマッチする。'
+          8:
+            description: 'アンカー ''^'' : 文字列の先頭にマッチする。'
+          9:
+            description: 'アンカー ''$'' : 文字列の末尾にマッチする。'
+          10:
+            description: '単語境界 ''\b'' : 単語の境界にマッチする。'
+          11:
+            description: '非単語境界 ''\B'' : 単語境界でない位置にマッチする。'
+      pattern-matching-examples:
+        short: パターン
+        description: 名前付きキャプチャやマルチライン入力を使った実践的なパターン例。URLやログ、IPアドレスなどの抜き出しを示します。
+        examples:
+          0:
+            description: "名前付きキャプチャ local_part と domain_name を使ってメールアドレスにマッチさせる例。"
+          1:
+            description: スキーム、ホスト、オプションのパス、クエリ、フラグメントを含む有効なURLにマッチする。
+          2:
+            description: "octet_one から octet_four の名前付きキャプチャを使って IPv4 アドレスにマッチさせる例。"
+          3:
+            description: "名前付きキャプチャ local_part と domain_name を使ってメールアドレスにマッチさせる例。"
+          4:
+            description: スキーム、ホスト、オプションのパス、クエリ、フラグメントを含む有効なURLにマッチする。
+          5:
+            description: "octet_one から octet_four の名前付きキャプチャを使って IPv4 アドレスにマッチさせる例。"
+          6:
+            description: "block_one から block_eight の名前付きキャプチャ、または compressed_address を使用して IPv6 アドレスにマッチさせる例。"
+          7:
+            description: "タイムスタンプ、レベル、メッセージを名前付きキャプチャして、ERROR ログエントリを抽出する例。"
+          8:
+            description: 親キー配下にそれぞれ3つずつのキー=値ペアを持つ 2 レベルのネストされた YAML をマッチする。
+      alternations:
+        short: 選択
+        description: 複数の選択肢のいずれかにマッチさせる '|' 演算子の使い方を示します。
+        examples:
+          0:
+            description: "'cat' または 'dog' のいずれかにマッチする。"
+          1:
+            description: "'cat' または 'dog' のいずれかにマッチする（重複例）。"
+          2:
+            description: 該当する選択肢がないためマッチしない。
+          3:
+            description: リストされた色のいずれかにマッチする。
+          4:
+            description: "'yellow' が選択肢にないためマッチしない。"
+      anchors:
+        short: アンカー
+        description: アンカーを使って文字列内の位置（先頭・末尾・単語境界など）をマッチさせる方法を示します。
+        examples:
+          0:
+            description: "文字列の先頭にある 'start' にマッチする例。"
+          1:
+            description: 先頭にないためマッチしない。
+          2:
+            description: 文字列の末尾にある 'end' にマッチする。
+          3:
+            description: 末尾にないためマッチしない。
+          4:
+            description: 単語として独立した 'word' にマッチする。
+          5:
+            description: "単語境界で分離されていない 'hello' はマッチしない例。"
+          6:
+            description: 先頭の 'abc' にマッチする。
+          7:
+            description: 先頭でないためマッチしない。
+          8:
+            description: 単語境界に続く 'xyz' にマッチする。
+          9:
+            description: 単語境界上の 'xyz' にマッチする。
+          10:
+            description: "文字列末尾の 'start' にマッチする例。"
+          11:
+            description: "文字列末尾の 'start' にマッチする例（重複）。"
+      character-classes:
+        short: 文字クラス
+        description: 角括弧で囲んだ文字集合にマッチさせる方法（範囲、否定、エスケープなど）。
+        examples:
+          0:
+            description: "[abc] の中にあるため 'a'、'b'、'c' にマッチする。'1' はマッチしない。"
+          1:
+            description: "[^abc] のため '1' にマッチする。'a'、'b'、'c' はマッチしない。"
+          2:
+            description: "[0-9] の範囲により '1','2','3' のような数字にマッチする。'a' はマッチしない。"
+          3:
+            description: "[a-z] の範囲により小文字の英字にマッチする。'1' はマッチしない。"
+          4:
+            description: "[A-Z] により大文字の英字（X,Y,Zなど）にマッチする。小文字や数字はマッチしない。"
+          5:
+            description: "[^\\] のようにバックスラッシュを除外したクラスは '\\' をマッチさせない（他の文字はマッチ）。"
+          6:
+            description: "[a-d] の範囲で 'a' が母音の条件を満たすためマッチする。"
+          7:
+            description: "[a-d] 範囲で 'b' が母音でないためマッチする（'a','c','d' はマッチせず）。"
+          8:
+            description: クラス内での同値記述により 'a' が 'e' と 'b' と同様に扱われる例。
+      character-types:
+        short: 文字タイプ
+        description: 数字や空白など、特定の文字タイプ（\d, \s, \w 等）にマッチさせる例。
+        examples:
+          0:
+            description: 数字や空白などの文字タイプを扱う基本例。
+          1:
+            description: "'1','2','3' のような数字にマッチする例（\\d に相当）。"
+          2:
+            description: "'hello world' の全ての文字が非空白であるのでマッチする例。"
+          3:
+            description: "'hello world' の空白文字（スペース）にマッチする例。"
+          4:
+            description: "'hello' と 'world' の間の空白文字（スペース）にマッチする例。"
+          5:
+            description: 単語文字（'h','e','l','l','o','w','o','r','l','d','1','2','3'）にマッチする例。
+          6:
+            description: 単語文字（\w）により英数字がマッチする例（'1','2','3' を含む）。
+          7:
+            description: 単語文字にマッチする例。'@' は単語文字ではないため不一致。
+          8:
+            description: 非単語文字（'@' など）にマッチする例。
+          9:
+            description: すべてが単語文字であるためマッチしない例。
+      cluster-types:
+        short: クラスタ（グラフェム）
+        description: グラフェム（表示単位）や改行などのクラスタを \R や \X で扱う例。
+        examples:
+          0:
+            description: "\\R/\\X を使ったグラフェムクラスタの基本例。"
+          1:
+            description: "'abc' と '123' の間の改行文字にマッチする例。"
+          2:
+            description: "絵文字（例: \U0001F44B）を 1 つのグラフェムクラスタとして扱う例。"
+          3:
+            description: "文字列全体を絵文字を含めて単一のグラフェムクラスタとして扱う例。"
+          4:
+            description: 絵文字を含めて文字列全体を単一のグラフェムクラスタとして扱う例。
+          5:
+            description: 合字や結合文字を1つの表示単位として扱う例（アクセント付き文字）。
+      conditional-expressions:
+        short: 条件式
+        description: '条件式: (?(cond)yes-subexp|no-subexp) のような条件付きサブパターンにマッチする例。'
+        examples:
+          0:
+            description: 条件によって処理を分岐する条件式の基本例。
+          1:
+            description: 条件 (<A>) が真であるため 'T' にマッチする例。
+          2:
+            description: 条件が真で空の分岐が無視される場合のマッチ例。
+          3:
+            description: 条件 (001) が有効なため 'T' にマッチする例。
+          4:
+            description: 条件が真の場合に 'set x=32' のような構造をグループで取得する例。
+          5:
+            description: 条件が偽の場合に 'print x' のように別分岐が適用される例。
+          6:
+            description: 条件を満たさないためマッチしない例（数値が続くべき場所に非数値がある等）。
+      escape-sequences:
+        short: エスケープシーケンス
+        description: エスケープシーケンス：\t, \n+                , \d などのエスケープ表現で文字を表す例。
+        examples:
+          0:
+            description: エスケープで特殊文字を表現する基本例（\t, \n+                , \d など）。
+          1:
+            description: タブ文字（\t）にマッチする例。
+          2:
+            description: 改行文字（\n）にマッチする例。
+          3:
+            description: '数字（例: ''5''）にマッチする例（\d）。'
+          4:
+            description: "'a' は数字ではないため不一致の例。"
+          5:
+            description: スペースなどの空白文字にマッチする例。
+          6:
+            description: 非空白文字にマッチする例。
+          7:
+            description: '単語文字（例: ''a''）にマッチする例（\w）。'
+          8:
+            description: '非単語文字（例: ''$''）にマッチする例。'
+          9:
+            description: "'word' の前の単語境界にマッチする例（\\b）。"
+          10:
+            description: "\\B を使って単語境界でない位置を示す例（'word' は一致しない）。"
+          11:
+            description: フォームフィード文字にマッチする例。
+          12:
+            description: キャリッジリターン文字にマッチする例。
+          13:
+            description: ヌル文字にマッチする例。
+          14:
+            description: 16進エスケープで 'A' を表現する例。
+          15:
+            description: 1 つ以上のバックスラッシュにマッチする例。
+          16:
+            description: 疑問符を文字としてマッチさせる例（リテラル問符）。
+      free-space:
+        short: フリースペース
+        description: x 修飾子を使って空白やコメントを無視する（可読性向上のためのモード）の例。
+        examples:
+          0:
+            description: x モードで空白やコメントを無視する基本例。
+          1:
+            description: 空白とコメントが無視されるため、'a' と 'b' がマッチする例。
+          2:
+            description: 空白とコメントが無視されるため、'ab' にマッチする例。
+          3:
+            description: 同様に空白を無視して 'ab' にマッチする別例。
+          4:
+            description: 空白とコメントが除外され、'ab' がマッチする例。
+      group-assertions:
+        short: グループアサーション
+        description: 先読み・後読みのように文字を消費せずに位置をマッチさせるアサーションの例。
+        examples:
+          0:
+            description: 先読み・後読みを使った位置マッチの基本例。
+          1:
+            description: "'abc' の直前の位置にマッチする先読みの例。"
+          2:
+            description: 単語境界のため 'hello' の直前にマッチする例。
+          3:
+            description: "'abc' が存在しない位置を検出する例（否定の先読み）。"
+          4:
+            description: "'abc' の直後の位置にマッチする後読みの例。"
+          5:
+            description: 3 桁の連続する数字の直後の位置にマッチする例。
+          6:
+            description: 単語境界の直後に位置がある場合のマッチ例（'hello' の前など）。
+          7:
+            description: 前方位置マッチの別例（'abc' の直前）。
+          8:
+            description: 数字が前にない場合に 'abc' の直前にマッチする例。
+          9:
+            description: 2 桁の数字が前にない場合に 'abc' の直前にマッチする例。
+      group-atomic:
+        short: アトミックグループ
+        description: アトミックグループ (?>...) はグループ内でバックトラックを許可せず部分パターンをマッチさせます。全体が失敗してもグループ内の別経路は試されません。これにより不要なバックトラックを減らせます。
+        examples:
+          0:
+            description: アトミックグループの基本例：グループ内でバックトラックしない動作を示す。
+          1:
+            description: '非アトミック: ''b'' を試して失敗し、バックトラックして ''bc'' をマッチする例。'
+          2:
+            description: 'アトミック: ''bc'' にマッチするが ''c'' が失敗した場合に ''b'' へはバックトラックしない例。'
+          3:
+            description: "'user123' をマッチして 'user' をグループ1で取得し、'123' は別扱いにする例。"
+          4:
+            description: "(?>\\w+) が貪欲に 'user123' を消費してしまい、\\d{3} がマッチする余地がなくなるため不一致となる例。"
+          5:
+            description: '非アトミック: ''A+'' を試して失敗し、バックトラックして ''A*B'' を試す例。'
+          6:
+            description: 'アトミック: ''A+'' を貪欲にマッチさせて失敗した場合、''A*B'' を試さない例。'
+      group-absence:
+        short: グループ不在
+        description: "グループ不在: 不在演算子 (?~pattern) は、パターンを含まない部分列にマッチします。文字列全体に対しては、パターンがどこかに存在すれば失敗しますが、部分文字列に対する部分一致は発生します。"
+        examples:
+          0:
+            description: "文字列全体に対してマッチ（'abc' が存在しない）。"
+          1:
+            description: "文字列全体に対してマッチ（'abc' が存在しない）。"
+          2:
+            description: "文字列全体に対してマッチ（'abc' が存在しない）。"
+          3:
+            description: "'abc' を含まない文字列の部分（例: 'ab', 'bc', 空）にマッチする。全体一致はできない。"
+          4:
+            description: "文字列全体に 'abc' が含まれるため不一致。"
+          5:
+            description: "'abc' を除いた部分で部分一致が見つかるが、全体一致は失敗する。"
+          6:
+            description: "'abc' を除く部分列に対する部分一致でマッチが見つかる。"
+          7:
+            description: "C 風の空コメントにマッチする例。"
+          8:
+            description: "内容を持つ C 風のコメントにマッチする例。"
+      group-back-references:
+        short: グループ参照
+        description: "グループ参照: 以前にキャプチャしたテキストと同じ内容をバックリファレンスでマッチさせます。"
+        examples:
+          0:
+            description: "両方の桁が同じなので '11' にマッチする。"
+          1:
+            description: "名前付きバックリファレンスを使って 'hello hello' にマッチする。"
+          2:
+            description: "番号付きバックリファレンスで '123123' にマッチする。"
+          3:
+            description: "両単語が同じなので 'hello hello' にマッチする。"
+          4:
+            description: "入れ子のバックリファレンスを使って '123-45-6789123' にマッチする例。"
+          5:
+            description: "2 番目のグループが繰り返されるため 'apple-orangeorange' にマッチする例（k<2> を使用）。"
+          6:
+            description: "グループ2への番号付きバックリファレンスで '123-45-678945' にマッチする。"
+          7:
+            description: "桁が繰り返されないため '12345' は不一致。"
+          8:
+            description: "\\k<-2> と \\k<-1> がそれぞれ直前の 2 つと 1 つのキャプチャを参照する例（'yzyz' にマッチ）。"
+      group-capturing:
+        short: グループキャプチャ
+        description: "グループキャプチャ: マッチした部分をキャプチャして、番号付きや名前付きグループで後から参照できます。ローカル変数へ格納する例も含みます。"
+        examples:
+          0:
+            description: "最初のキャプチャグループで 'abc' を取得する例。"
+          1:
+            description: "日付の各部分を 3 つのグループ（'12','34','5678'）に分けてキャプチャする例。"
+          2:
+            description: "ユーザー名 'alice' とドメイン 'example.com' を 2 つのグループでキャプチャする例。"
+          3:
+            description: "最初のグループで '123'、二番目のグループで '456' をキャプチャする例。"
+          4:
+            description: "最初のグループで 'abc'、二番目で 'def' をキャプチャする例。"
+          5:
+            description: "'2021','12','25' をそれぞれ別のグループでキャプチャする例。"
+          6:
+            description: "最初のグループで 'hello'、二番目で 'world' をキャプチャする例。"
+          7:
+            description: "同じキャプチャグループを使って 'hello' をキャプチャし再度マッチさせる例。"
+      group-comments:
+        short: グループ内コメント
+        description: "グループ内コメント: 正規表現内に (?# comment ) のようにコメントを含める例。コメントはマッチに影響しません。"
+        examples:
+          0:
+            description: "コメントを無視して 'abc' にマッチする。"
+          1:
+            description: "括弧内のコメントを無視して 'ab' にマッチする。"
+          2:
+            description: "先頭と末尾で 'abc' にマッチするが、コメントは無視される。"
+          3:
+            description: "途中のコメントを無視して 'ab' にマッチする。"
+          4:
+            description: "桁に関するコメントを無視して 1 個以上の数字にマッチする。"
+          5:
+            description: "コメントを無視して空白 1 文字にマッチする。"
+          6:
+            description: "3 文字以上の単語として 'word' にマッチする例（コメントは無視）。"
+      group-named:
+        short: 名前付きグループ
+        description: "名前付きグループ: 特定の名前を付けたグループでマッチを取得し、参照を簡単にします。"
+        examples:
+          0:
+            description: "名前 'name' のグループで 'abc' をキャプチャする例。"
+          1:
+            description: "名前 'name' のグループで 'abc' をキャプチャする例（重複）。"
+          2:
+            description: "Python 風の '(?P<name>...)' 構文は Ruby ではサポートされないため不一致の例。"
+          3:
+            description: "年・月・日を名前付きグループにキャプチャする例。"
+          4:
+            description: "時・分を名前付きグループにキャプチャする例。"
+          5:
+            description: "'alice' を名前付きグループ 'alice' に、'example.com' を名前付きグループ 'domain' にキャプチャする例。"
+          6:
+            description: "'dollars' と 'cents' の名前付きグループに金額をキャプチャし、MatchData のシンボルキーで参照する例。"
+          7:
+            description: "名前付きキャプチャとバックリファレンスを使って繰り返す母音をマッチする例。"
+          8:
+            description: "成功例：名前付きキャプチャ 'name' と番号付きキャプチャが共存するが、MatchData は主に名前付きキャプチャを公開する。"
+      group-options:
+        short: グループ内オプション
+        description: "グループ内オプション: (?i) や (?m) のようなインラインオプションで正規表現の動作を変更する例。"
+        examples:
+          0:
+            description: "(?i) オプションにより 'ABC' が大文字小文字を区別せずにマッチする。"
+          1:
+            description: "(?m) マルチラインオプションにより各行の先頭で 'abc' がマッチする。"
+          2:
+            description: "(?x) 拡張オプションにより空白とコメントを無視して 'ab' にマッチする。"
+          3:
+            description: "インラインオプションにより 'HELLO' は大文字小文字を区別せず、'world' は区別してマッチする例。"
+          4:
+            description: "'ABC' は大文字小文字を区別せずに、'def' は区別してマッチする例。"
+          5:
+            description: "(?m) により各行の先頭で 'start' がマッチする。"
+          6:
+            description: "(?x) によりコメントと空白を無視して 'ac' にマッチする例。"
+      group-passive:
+        short: パッシブグループ
+        description: "パッシブグループ: マッチを保持しない非キャプチャグループを作る例。"
+        examples:
+          0:
+            description: "'abc' に対する非キャプチャグループの例。"
+          1:
+            description: "日付パターンでの非キャプチャグループの例。"
+          2:
+            description: "ドメインはキャプチャするがユーザー名は無視する非キャプチャグループの例。"
+      group-subexpression-calls:
+        short: サブ式呼び出し
+        description: "サブ式呼び出し: 以前定義した部分式を名前またはインデックスで呼び出す例。"
+        examples:
+          0:
+            description: "最初のキャプチャグループを参照する例。"
+          1:
+            description: "名前 'name' のグループを参照する例。"
+          2:
+            description: "インデックスで 2 つのキャプチャグループを参照する例。"
+      keep:
+        short: 保持
+        description: "Keep: 現在のマッチを保持し、\\K を使ってそれ以降のマッチを続行する例。"
+        examples:
+          0:
+            description: "\\K を使って 'ab' を破棄した後に 'cd' にマッチする例。"
+          1:
+            description: "\\K により 'a' を破棄した後に 'b' にマッチする例。"
+          2:
+            description: "\\K により 'foo' を破棄して 'bar' にマッチする例。"
+          3:
+            description: "\\K によって 'xyz' を破棄し 'abc' にマッチさせる例。"
+          4:
+            description: "'start' を破棄して 'end' にマッチする例。"
+          5:
+            description: "'one' を破棄して 'two' にマッチする例。"
+          6:
+            description: "'aaa' を破棄して 'bbb' にマッチする例。"
+          7:
+            description: "'1' を破棄して '2' にマッチする例。"
+          8:
+            description: "'abc' を破棄して 'xyz' にマッチする例。"
+          9:
+            description: "'quick' を破棄して 'brown' にマッチする例。"
+      literals:
+        short: リテラル
+        description: "リテラル: Unicode を含む特定の文字列をそのままマッチさせる例。"
+        examples:
+          0:
+            description: "'Ruby' を正確にマッチする。"
+          1:
+            description: "'apple pie' の中で 'apple' を正確にマッチする。"
+          2:
+            description: "'doghouse' の中で 'dog' を正確にマッチする。"
+          3:
+            description: "'1234' の中で '123' を正確にマッチする。"
+          4:
+            description: "'abcdef' の中で 'abc' を正確にマッチする。"
+          5:
+            description: "絵文字（例: '😍'）などの正確な Unicode をマッチする例。"
+          6:
+            description: "日本語の単語 'ルビー' を正確にマッチする。"
+          7:
+            description: "アラビア語の単語 'روبي' を正確にマッチする。"
+          8:
+            description: "単語が 'pie' に付随しているため 'apple' はマッチしない例。"
+          9:
+            description: "文字の順序が異なるため 'dog' はマッチしない例。"
+          10:
+            description: "別の絵文字（例: '🌍'）を正確にマッチする例。"
+      posix-classes:
+        short: POSIX クラス
+        description: "POSIX クラス: [:alpha:], [:digit:] 等の POSIX 文字クラスにマッチさせる例。否定も使用できます（例: [:^alpha:]）。"
+        examples:
+          0:
+            description: "'abc' や 'XYZ' にマッチし、数字は除外する例。"
+          1:
+            description: "'123' のような数字にマッチし、英字は除外する例。"
+          2:
+            description: "'123' や '45' のような数字列にマッチする例。"
+          3:
+            description: "句読点 '!?' にマッチする例。"
+          4:
+            description: "スペース、タブ、改行にマッチする例。"
+          5:
+            description: "小文字の 'b' のみをマッチする例。"
+          6:
+            description: "大文字の 'A' と 'C' にマッチする例。"
+      quantifiers-greedy:
+        short: 貪欲な量指定子
+        description: "貪欲な量指定子: 可能な限り多くマッチさせる量指定子の例。"
+        examples:
+          0:
+            description: "0 回以上の 'a' を貪欲にマッチする（先頭で空文字か 'a'）。"
+          1:
+            description: "先頭の連続する 'a' をすべて貪欲にマッチする。"
+          2:
+            description: "1 回以上の 'a' を貪欲にマッチし、最初の 'a' にマッチする例。"
+          3:
+            description: "不一致（ちょうど 2 回の 'a' が必要）。"
+          4:
+            description: "0 回以上の 'abc' を貪欲にマッチし、1 個の 'abc' にマッチする例。"
+          5:
+            description: "1 回以上の 'abc' を貪欲にマッチする例。"
+          6:
+            description: "0 または 1 個の 'abc' を貪欲にマッチする例。"
+          7:
+            description: "ちょうど 2 個の 'abc' を貪欲にマッチする例。"
+          8:
+            description: "2〜3 個の 'abc' を貪欲にマッチ（2 個にマッチ）。"
+          9:
+            description: "2〜3 個の 'abc' を貪欲にマッチ（3 個にマッチ）。"
+      quantifiers-reluctant-lazy:
+        short: 遅延（レイジー）量指定子
+        description: "遅延（レイジー）量指定子: 可能な限り少なくマッチさせる量指定子の例。注意: レールロード図は `regexp_parser` で描画されます。Onigmo（Ruby の正規表現エンジン）は `??`, `*?`, `+?`, `{n,m}?` 等をサポートしますが、`{n}?` のような形式は一般的に不要でサポートされない場合があります。"
+        examples:
+          0:
+            description: "0 回以上の 'a' をレイジーにマッチし、空文字を優先する例。"
+          1:
+            description: "先頭で 0 回の 'a' をレイジーにマッチする例。"
+          2:
+            description: "1 回以上の 'a' をレイジーにマッチし、1 個の 'a' にマッチする例。"
+          3:
+            description: "不一致（ちょうど 2 回の 'a' が必要）。Onigmo では `{n}?` はサポートされないことが多い。"
+          4:
+            description: "先頭で 0 個の 'abc' をレイジーにマッチする例。"
+          5:
+            description: "1 個の 'abc' をレイジーにマッチする例。"
+          6:
+            description: "0 または 1 個の 'abc' をレイジーにマッチする例。"
+          7:
+            description: "ちょうど 2 個の 'abc' をレイジーにマッチする例（図は `regexp_parser` により描画不可）。"
+          8:
+            description: "2 個の 'abc' をレイジーにマッチする例（図は描画不可）。"
+          9:
+            description: "2 個の 'abc' をレイジーにマッチし途中で止まる例（図は描画不可）。"
+      quantifiers-possessive:
+        short: 所有的量指定子
+        description: "所有的量指定子: バックトラックを許さず可能な限り多くマッチさせる量指定子の例。注意: レールロード図は `regexp_parser` で描画されます。範囲構文 `{n,m}+` 等はデフォルトの Onigmo ではサポートされない場合があります。"
+        examples:
+          0:
+            description: "0 回以上の 'a' を所有的にマッチ（バックトラックなし）。"
+          1:
+            description: "先頭の 'a' を所有的にすべてマッチする。"
+          2:
+            description: "1 回以上の 'a' を所有的にマッチする。"
+          3:
+            description: "0 回以上の 'abc' を所有的にマッチする。"
+          4:
+            description: "1 回以上の 'abc' を所有的にマッチする。"
+          5:
+            description: "0 または 1 個の 'abc' を所有的にマッチする。"
+      string-escapes:
+        short: 文字列エスケープ
+        description: "文字列エスケープ: \\d や \\w などのエスケープで特殊文字を表す例。"
+        examples:
+          0:
+            description: "\\d が数字にマッチするため '1' にマッチする例。"
+          1:
+            description: "先頭に数字がないため不一致の例。"
+          2:
+            description: "\\w が単語文字にマッチするため 'a' にマッチする例。"
+          3:
+            description: "\\w が数字にもマッチするため '1' にマッチする例。"
+          4:
+            description: "\\W により非単語文字（例: '!'）にマッチする例。"
+          5:
+            description: "\\s が空白にマッチするためスペースにマッチする例。"
+          6:
+            description: "\\S が非空白にマッチするため 'a' にマッチする例。"
+          7:
+            description: "'hello' と 'world' の境界にマッチする例。"
+          8:
+            description: "\\B によって単語境界でない位置（'a' と 'b' の間）にマッチする例。"
+          9:
+            description: "'\\x20'（スペースの 16 進コード）にマッチする例。"
+          10:
+            description: "Unicode エスケープで絵文字（例: '\\U0001F60D'）をマッチする例。"
+      unicode-age:
+        short: Unicode 世代
+        description: "Unicode のバージョン（Age）ごとに文字をマッチさせる例。\\p{Age}、\\P{Age}、およびキャレット (^) による否定をサポートします。"
+        examples:
+          0:
+            description: "Age 5.2 の絵文字（\U0001F929）にマッチし、星 '☆' の手前で止まる例。"
+          1:
+            description: "Age 6.1 に含まれない文字にマッチし、絵文字の手前で止まる例。"
+          2:
+            description: "Age 3.0 の句読点にマッチし、'D' の手前で止まる例。"
+          3:
+            description: "'ABC' にマッチし、Age 5.2 の絵文字 \U0001F929 の手前で止まる例。"
+          4:
+            description: "Age 7.0 の音楽記号にマッチし、'C' の手前で止まる例。"
+          5:
+            description: "'abc' にマッチし、Age 8.0 のコンパス絵文字 \U0001F9ED の手前で止まる例。"
+      unicode-blocks:
+        short: Unicode ブロック
+        description: "Unicode ブロックでマッチさせる例。\\p{In…}, \\P{In…}、キャレットでの否定が使えます。"
+        examples:
+          0:
+            description: "カタカナ文字にマッチし、ひらがな 'あ' の手前で止まる例。"
+          1:
+            description: "アルメニア文字にマッチし、ラテン 'abc' の手前で止まる例。"
+          2:
+            description: "タイ以外の文字 'Hello' にマッチし、タイ文字の手前で止まる例。"
+          3:
+            description: "クメール以外の文字にマッチし、クメール文字で止まる例。"
+          4:
+            description: "キリル文字にマッチし、ラテン 'X' の手前で止まる例。"
+          5:
+            description: "ヘブライ文字以外にマッチし、ヘブライ文字の手前で止まる例。"
+      unicode-classes:
+        short: Unicode クラス
+        description: "Unicode クラス: Alpha, Space, Alnum のようなバイナリプロパティやその否定を扱います。"
+        examples:
+          0:
+            description: "英字にマッチし、数字の手前で止まる例。"
+          1:
+            description: "非空白文字（例: 'Az'）にマッチし、空白の手前で止まる例。"
+          2:
+            description: "英数字でない文字にマッチし、英字や数字の手前で止まる例。"
+          3:
+            description: "数字のみをマッチし、英字の手前で止まる例。"
+          4:
+            description: "英字以外の文字にマッチし、'A' の手前で止まる例。"
+          5:
+            description: "空白のみをマッチし、'b' の手前で止まる例。"
+      unicode-derived:
+        short: Unicode 派生プロパティ
+        description: "派生プロパティ（Math, Lowercase, Cased など）を扱う例。"
+        examples:
+          0:
+            description: "数学記号にマッチし、空白の手前で止まる例。"
+          1:
+            description: "小文字でない文字にマッチし、'd' の手前で止まる例。"
+          2:
+            description: "ケースを持たない文字にマッチし、'a' の手前で止まる例。"
+          3:
+            description: "小文字にマッチし、大文字の手前で止まる例。"
+          4:
+            description: "数学記号以外にマッチし、数学記号の手前で止まる例。"
+          5:
+            description: "英字にマッチし、数字の手前で止まる例。"
+      unicode-general-categories:
+        short: Unicode 一般カテゴリ
+        description: "Unicode の一般カテゴリ（Lu, Cs など）やスクリプトの否定を扱う例。"
+        examples:
+          0:
+            description: "大文字略記 'LU' が大文字にマッチする例。"
+          1:
+            description: "小文字略記 'lu' が大文字にマッチする例（略記の違いの説明）。"
+          2:
+            description: "スペースを含む完全なプロパティ名が大文字にマッチする例。"
+          3:
+            description: "アンダースコアを含む完全なプロパティ名が大文字にマッチする例。"
+          4:
+            description: "ハイフンを含むプロパティ名が大文字にマッチする例。"
+          5:
+            description: "大文字でない文字にマッチし、大文字の手前で止まる例。"
+          6:
+            description: "スクリプトを持たない文字にマッチし、ギリシャ文字の手前で止まる例。"
+          7:
+            description: "制御文字にマッチし、'A' の手前で止まる例。"
+          8:
+            description: "フォーマット文字にマッチし、'A' の手前で止まる例。"
+      unicode-scripts:
+        short: Unicode スクリプト
+        description: "スクリプトプロパティに基づくマッチ（否定含む）の例。"
+        examples:
+          0:
+            description: "アラビア文字スクリプトにマッチし、ラテン文字の手前で止まる例。"
+          1:
+            description: "ひらがな以外の文字にマッチし、ひらがなの手前で止まる例。"
+          2:
+            description: "ギリシャ文字以外にマッチし、ギリシャの手前で止まる例。"
+          3:
+            description: "カタカナにマッチし、ラテン文字の手前で止まる例。"
+          4:
+            description: "キリル文字にマッチし、ラテン文字の手前で止まる例。"
+          5:
+            description: "デーヴァナーガリー以外にマッチし、デーヴァナーガリーの手前で止まる例。"
+      unicode-simple-props:
+        short: Unicode 単純プロパティ
+        description: "Dash や Extender のような単純な二値プロパティとその否定の例。"
+        examples:
+          0:
+            description: "ダッシュ文字にマッチし、'A' の手前で止まる例。"
+          1:
+            description: "伸長記号（ː）にマッチし、'X' の手前で止まる例。"
+          2:
+            description: "ハイフン以外の文字にマッチし、ハイフンで止まる例。"
+          3:
+            description: "ダッシュでない文字にマッチし、ダッシュの手前で止まる例。"
+          4:
+            description: "ハイフン文字にマッチし、'B' の手前で止まる例。"
+          5:
+            description: "絵文字ファミリーにマッチし、'abc' の手前で止まる例。"
+      posix-classes-vs-unicode-properties:
+        short: POSIX と Unicode の比較
+        description: "POSIX 文字クラスと Unicode プロパティの構文を比較し、マッチ境界がどう変わるかを示します。"
+        examples:
+          0:
+            description: "POSIX の [:alpha:] は 'abc' と 'XYZ' にマッチし、'123' はスキップします。"
+          1:
+            description: "Unicode の \\p{Alpha} は 'abc' と 'XYZ' にマッチし、'123' をスキップします。"
+          2:
+            description: "否定された POSIX の [:alpha:] は '123' にマッチし、英字をスキップします。"
+          3:
+            description: "Unicode の非 Alpha は '123' にマッチし、英字をスキップします。"
+          4:
+            description: "POSIX の [:digit:] は '123' と '45' にマッチします。"
+          5:
+            description: "Unicode の Digit プロパティは '123' と '45' にマッチします。"
+          6:
+            description: "POSIX の句読点クラスは '!?' のような句読点にマッチします。"
+          7:
+            description: "Unicode の句読点 (Punct) も '!?' のような句読点にマッチします。"
+          8:
+            description: "POSIX のスペースクラスはスペース、タブ、改行にマッチします。"
+          9:
+            description: "Unicode の Space プロパティはスペース、タブ、改行にマッチします。"
+          10:
+            description: "POSIX の lower クラスは 'b' にマッチします。"
+          11:
+            description: "Unicode の Lower プロパティは 'b' にマッチします。"
+          12:
+            description: "POSIX の upper クラスは 'A' と 'C' にマッチします。"
+          13:
+            description: "Unicode の Upper プロパティは 'A' と 'C' にマッチします。"
+    footer:
+      inspired_by: Michael Lovitt の素晴らしい作品に触発
+      rubree_uses_ruby: Rubree は Ruby %{version} を使用しています。
+      issues_text: 問題
+      issues_handle: "@rubree"
+      made_by: "作成者: %{name}"
+      made_by_handle: "@aim2bpg"

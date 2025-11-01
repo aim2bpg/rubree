@@ -1,6 +1,6 @@
 module RegularExpressionsHelper
   def regex_reference_sections
-    [
+    orig = [
       {
         title: "Character Classes & Anchors",
         col_class: "grid-cols-[80px_1fr]",
@@ -44,18 +44,34 @@ module RegularExpressionsHelper
         ]
       }
     ]
+
+    # translate titles/items when translations are present; fallback to original
+    orig.map.with_index do |sec, s_idx|
+      key = sec[:title].parameterize
+      translated_title = I18n.t("regular_expressions.reference.sections.#{key}.title", default: sec[:title])
+      translated_items = sec[:items].map.with_index do |(pattern, desc), i|
+        [pattern, I18n.t("regular_expressions.reference.sections.#{key}.items.#{i}", default: desc)]
+      end
+
+      sec.merge(title: translated_title, items: translated_items)
+    end
   end
 
   def regex_reference_options
-    [
+    orig = [
       ["i", "case insensitive"],
       ["m", "make dot match newlines"],
       ["x", "ignore whitespace in regex"]
     ]
+
+    orig.map do |flag, desc|
+      # translations for options live under reference.sections.options in locale files
+      [flag, I18n.t("regular_expressions.reference.sections.options.#{flag}", default: desc)]
+    end
   end
 
   def regexp_example_categories
-    {
+    orig = {
       "Basic operations" => {
         short: "Basics",
         description: "Basic operations: Concatenation, Alternation, Repeat (no syntax sugar).",
@@ -653,5 +669,24 @@ module RegularExpressionsHelper
         ]
       }
     }
+
+    # Translate category short/description and each example.description when translations are present
+    translated = {}
+    orig.each do |cat, data|
+      cat_key = cat.to_s.parameterize
+
+      short = I18n.t("regular_expressions.categories.#{cat_key}.short", default: data[:short])
+      description = I18n.t("regular_expressions.categories.#{cat_key}.description", default: data[:description])
+
+      examples = (data[:examples] || []).map.with_index do |ex, i|
+        ex_dup = ex.dup
+        ex_dup[:description] = I18n.t("regular_expressions.categories.#{cat_key}.examples.#{i}.description", default: ex[:description])
+        ex_dup
+      end
+
+      translated[cat] = data.merge(short: short, description: description, examples: examples)
+    end
+
+    translated
   end
 end

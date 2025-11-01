@@ -1,7 +1,7 @@
 <% max_label_length = regular_expression.named_capture_groups.flat_map(&:keys).map(&:length).max || 0 %>
 
 <div class="mb-2">
-  <label class="block text-sm font-bold mb-2 text-white">Match groups:</label>
+  <label class="block text-sm font-bold mb-2 text-white"><%= t("regular_expressions.results.match_groups", default: "Match groups:") %></label>
   <div class="bg-gray-900 border border-gray-700 p-4 space-y-6 text-left">
 
     <% begin %>
@@ -16,7 +16,7 @@
         <% next if named_set.blank? %>
         <div>
           <% if regular_expression.named_capture_groups.size > 1 %>
-            <label class="text-xs font-semibold mb-2 text-yellow-400">Match <%= idx + 1 %></label>
+            <label class="text-xs font-semibold mb-2 text-yellow-400"><%= t("regular_expressions.results.match_number", number: idx + 1, default: "Match #{idx + 1}") %></label>
           <% end %>
           <table class="text-sm text-white table-auto border-separate">
             <tbody>
@@ -41,7 +41,7 @@
         <% next if capture_set.blank? || capture_set.all?(&:blank?) %>
         <div>
           <% if regular_expression.capture_groups.size > 1 %>
-            <label class="text-xs font-semibold mb-2 text-blue-300">Match <%= idx + 1 %></label>
+            <label class="text-xs font-semibold mb-2 text-blue-300"><%= t("regular_expressions.results.match_number", number: idx + 1, default: "Match #{idx + 1}") %></label>
           <% end %>
           <table class="text-sm text-white table-auto border-separate">
             <tbody>

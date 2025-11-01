@@ -1,19 +1,19 @@
 <div data-controller="diagram-modal">
   <div class="flex flex-col space-y-2 rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white text-left relative">
     <% if @diagram_error_message.present? %>
-      <label class="text-sm font-bold mb-2 text-white">Railroad diagram:</label>
+      <label class="text-sm font-bold mb-2 text-white"><%= t("regular_expressions.results.railroad_diagram") %></label>
       <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2"><%= h @diagram_error_message %></div>
 
     <% elsif @svg_output.present? %>
       <div class="flex justify-between items-center mb-2">
-        <label class="text-sm font-bold text-white">Railroad diagram:</label>
+        <label class="text-sm font-bold text-white"><%= t("regular_expressions.results.railroad_diagram") %></label>
 
         <div class="flex items-center gap-2">
           <!-- Modal open button -->
           <button
             type="button"
             class="p-0 text-gray-400 hover:text-white transition w-5 h-5 flex items-center justify-center"
-            aria-label="View Full Diagram"
+            aria-label="<%= t("regular_expressions.results.view_full_diagram") %>"
             data-action="click->diagram-modal#open"
             data-pattern="<%= regular_expression.regular_expression %>">
             <svg
@@ -30,11 +30,11 @@
           <button
             type="button"
             class="relative inline-flex items-center justify-center text-gray-400 hover:text-white transition w-5 h-5"
-            aria-label="Copy Diagram as PNG"
+            aria-label="<%= t("regular_expressions.results.copy_diagram_png") %>"
             data-controller="diagram-clipboard"
             data-action="click->diagram-clipboard#copyPng"
             data-pattern="<%= h regular_expression.regular_expression %>"
-            title="Copy Diagram as PNG">
+            title="<%= t("regular_expressions.results.copy_diagram_png") %>">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
               viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
               class="w-4 h-4">
@@ -45,7 +45,7 @@
               data-diagram-clipboard-target="tooltip"
               class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs leading-none px-2 py-1 rounded
                      opacity-0 invisible transition-opacity duration-300 pointer-events-none z-10 whitespace-nowrap">
-              Copied!
+              <%= t("regular_expressions.results.copied") %>
             </span>
           </button>
         </div>
@@ -59,7 +59,7 @@
       </div>
 
     <% else %>
-      <p class="text-gray-500 m-auto text-center">Railroad diagram will appear here</p>
+      <p class="text-gray-500 m-auto text-center"><%= t("regular_expressions.results.railroad_diagram_placeholder") %></p>
     <% end %>
   </div>
 
@@ -68,7 +68,7 @@
     data-diagram-modal-target="modal"
     role="dialog"
     aria-modal="true"
-    aria-label="Diagram viewer"
+    aria-label="<%= t("regular_expressions.results.diagram_viewer", default: "Diagram viewer") %>"
     tabindex="-1"
     class="modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-200 opacity-0"
     data-action="click->diagram-modal#close">
@@ -79,7 +79,7 @@
         type="button"
         class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 z-30"
         data-action="click->diagram-modal#close"
-        aria-label="Close">
+        aria-label="<%= t("regular_expressions.results.close") %>">
         ✕
       </button>
 

@@ -1,24 +1,24 @@
 <footer class="text-gray-500 text-xs p-4 text-center">
   <p>
-    Inspired by Michael Lovitt’s excellent
+    <%= t("regular_expressions.footer.inspired_by") %>
     <a href="https://rubular.com" class="hover:underline text-blue-500 hover:text-blue-700" target="_blank" rel="noopener noreferrer">
       Rubular
     </a>.
   </p>
   <p>
     <span class="block md:inline">
-      Rubree uses Ruby <%= RUBY_VERSION %>.
+      <%= t("regular_expressions.footer.rubree_uses_ruby", version: RUBY_VERSION) %>
     </span>
     <span class="block md:inline md:ml-1">
-      Issues
+      <%= t("regular_expressions.footer.issues_text") %>
       <a href="https://github.com/aim2bpg/rubree/issues" class="hover:underline text-blue-500 hover:text-blue-700" target="_blank" rel="noopener noreferrer">
-        @rubree
+        <%= t("regular_expressions.footer.issues_handle") %>
       </a>.
     </span>
     <span class="block md:inline md:ml-1">
-      Made by Takashi Shimokawa
+      <%= t("regular_expressions.footer.made_by", name: "Takashi Shimokawa") %>
       <a href="https://x.com/aim2bpg" class="hover:underline text-blue-500 hover:text-blue-700" target="_blank" rel="noopener noreferrer">
-        @aim2bpg
+        <%= t("regular_expressions.footer.made_by_handle") %>
       </a>.
     </span>
   </p>

@@ -15,7 +15,7 @@
     </h1>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-0">
-      <p class="text-gray-400 text-lg sm:mr-1">a Ruby regular expression editor</p>
+      <p class="text-gray-400 text-lg sm:mr-1"><%= t("regular_expressions.header.subtitle", default: "a Ruby regular expression editor") %></p>
 
       <!-- Try + Dice: stacked margin on small, no margin on sm+ (single-line) -->
       <div class="mt-1 sm:mt-0 inline-flex items-center gap-0">
@@ -27,24 +27,24 @@
           data-test="Today's date is: <%= Time.now.strftime("%-m/%-d/%Y") %>."
           data-options=""
           data-substitution="\k<year>/\k<month>/\k<day>">
-          Try an example
+          <%= t("regular_expressions.header.try_example", default: "Try an example") %>
         </span>
 
         <button type="button"
-          class="text-sm text-gray-300 hover:text-white bg-transparent px-1 rounded transition duration-200"
+          class="text-sm text-gray-300 hover:text-white bg-transparent px-1 rounded transition transform hover:scale-110 duration-200"
           data-action="click->regexp-examples#tryExample"
           data-regexp-examples-target="diceButton"
-          aria-label="Try a random example">🎲</button>
+          aria-label="<%= t("regular_expressions.header.try_random", default: "Try a random example") %>">🎲</button>
       </div>
     </div>
   </div>
 
   <!-- Dropdown: kept outside of inline flow so it cannot affect header layout. Controller will portal/position it on open. -->
-  <div data-regexp-examples-target="headerDropdown" class="hidden z-50 sm:w-96 w-full max-w-full sm:max-w-sm" role="menu" aria-label="Examples">
+  <div data-regexp-examples-target="headerDropdown" class="hidden z-50 sm:w-96 w-full max-w-full sm:max-w-sm" role="menu" aria-label="<%= t("regular_expressions.header.examples", default: "Examples") %>">
     <div class="bg-gradient-to-b from-slate-900 to-gray-800 text-gray-100 border border-gray-700 rounded-lg shadow-2xl overflow-hidden ring-1 ring-black/40">
       <div class="py-3 px-4">
         <div class="flex items-center justify-between">
-          <div class="text-sm text-gray-200 font-semibold">Examples</div>
+          <div class="text-sm text-gray-200 font-semibold"><%= t("regular_expressions.header.examples", default: "Examples") %></div>
           <div data-regexp-examples-target="hoverCategory" class="text-sm text-gray-300 ml-2"></div>
         </div>
       </div>
@@ -59,7 +59,7 @@
                   class="w-full text-left px-3 py-2 hover:bg-gray-700 focus:outline-none transition-colors"
                   data-regexp-examples-target="example"
                   data-action="mouseenter->regexp-examples#showExampleCategory mouseleave->regexp-examples#clearExampleCategory click->regexp-examples#selectExample"
-                  data-category="<%= cat.to_s.humanize %>"
+                  data-category="<%= data[:short] %>"
                   data-pattern="<%= ex[:pattern].gsub("\"", "&quot;") %>"
                   data-test="<%= ex[:test].gsub("\"", "&quot;") %>"
                   data-substitution="<%= ex[:substitution] || "" %>"
@@ -79,12 +79,22 @@
   <!-- Top-right anchor button (text + border only). On small screens it flows inline under the header
        to avoid overlapping the logo; on sm+ it becomes absolute in the top-right as before. -->
   <div class="sm:absolute sm:top-4 sm:right-6 mt-3 sm:mt-0 flex justify-end">
-    <button type="button"
-      class="bg-transparent border border-blue-500 text-blue-400 text-sm px-3 py-1 rounded hover:bg-blue-50/5"
-      data-action="click->regexp-examples#toggleHeaderDropdown"
-      data-regexp-examples-target="caretButton"
-      aria-label="Open examples (top-right)">
-      Regex Examples
-    </button>
+    <div class="flex items-center gap-2">
+      <!-- Locale switcher: preserve current params and add locale param -->
+      <%# Single locale toggle: show the opposite locale code as the action label (EN <-> JP) %>
+      <% other = I18n.locale.to_s == "ja" ? "en" : "ja" %>
+      <% label = I18n.locale.to_s == "ja" ? "EN" : "JP" %>
+      <%= link_to url_for(params.to_unsafe_h.merge(locale: other)), class: "inline-flex items-center text-sm px-2 py-1 rounded border transition-colors hover:bg-blue-600 hover:text-white #{'bg-blue-600 text-white' if I18n.locale.to_s == other}", data: { test: "locale-toggle" }, aria: { label: t("regular_expressions.header.toggle_locale", default: "Toggle language") } do %>
+        <%= label %>
+      <% end %>
+
+      <button type="button"
+        class="bg-transparent border border-blue-500 text-blue-400 text-sm px-3 py-1 rounded transition-colors hover:bg-blue-600/10 hover:text-white"
+        data-action="click->regexp-examples#toggleHeaderDropdown"
+        data-regexp-examples-target="caretButton"
+        aria-label="<%= t("regular_expressions.header.open_examples", default: "Open examples (top-right)") %>">
+        <%= t("regular_expressions.header.button", default: "Regex Examples") %>
+      </button>
+    </div>
   </div>
 </header>

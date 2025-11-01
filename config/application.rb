@@ -38,6 +38,9 @@ module Rubree
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
+    # Available locales for the application. English is the default; add Japanese.
+    config.i18n.available_locales = %i[en ja]
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

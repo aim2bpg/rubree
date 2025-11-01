@@ -7,10 +7,10 @@
     <div class="bg-gray-800 p-4 rounded-lg shadow-inner border border-gray-700 flex flex-col">
       <div class="flex flex-wrap sm:flex-col md:flex-row items-start justify-between mb-1.5">
         <label class="block text-sm font-bold text-white" for="regular_expression_regular_expression">
-          Your regular expression:
+          <%= t("regular_expressions.form.your_regular_expression", default: "Your regular expression:") %>
         </label>
         <div class="flex items-center space-x-2 text-xs text-white">
-          <span class="text-gray-400">Options:</span>
+          <span class="text-gray-400"><%= t("regular_expressions.form.options", default: "Options:") %></span>
           <%= f.text_field :options,
                 id: "regular_expression_options",
                 data: { regexp_examples_target: "options" },
@@ -29,10 +29,10 @@
     <div class="bg-gray-800 p-4 rounded-lg shadow-inner border border-gray-700 flex flex-col">
       <div class="flex flex-wrap sm:flex-col md:flex-row items-start justify-between mb-1.5">
         <label class="block text-sm font-bold text-white" for="regular_expression_test_string">
-          Your test string:
+          <%= t("regular_expressions.form.your_test_string", default: "Your test string:") %>
         </label>
         <div class="flex items-center space-x-2 text-xs text-white">
-          <span class="text-gray-400">Substitution:</span>
+          <span class="text-gray-400"><%= t("regular_expressions.form.substitution", default: "Substitution:") %></span>
           <%= f.text_field :substitution_string,
                   id: "regular_expression_substitution",
                   data: { regexp_examples_target: "substitution" },
