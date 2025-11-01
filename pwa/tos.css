@@ -1,0 +1,63 @@
+/* Styles for the Terms of Service modal (externalized) */
+.tos-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 40; }
+.tos-card {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%);
+  width: min(760px, 92vw); max-height: 80vh; overflow: auto;
+  background: linear-gradient(180deg, #0b1220, #0f1724);
+  color: #e6eef8; border-radius: 12px; padding: 1.25rem 1.25rem 0.75rem 1.25rem;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.8); z-index: 50; border: 1px solid rgba(255,255,255,0.04);
+}
+.tos-card h2 { margin: 0 0 0.5rem 0; font-size: 1.25rem; color: #fff; }
+.tos-body p { margin: 0.5rem 0; color: #cbd5e1; }
+.tos-body ul { margin: 0.5rem 0 1rem 1.2rem; color: #cbd5e1; }
+.tos-note { font-size: 0.9rem; color: #9fb4d8; }
+.tos-actions { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding-top:0.75rem; }
+.tos-buttons { display:flex; gap:0.5rem; }
+.btn-primary { background:#2563eb; color:#fff; border:none; padding:0.5rem 0.9rem; border-radius:8px; cursor:pointer; }
+.btn-secondary { background:transparent; color:#93c5fd; border:1px solid rgba(147,197,253,0.12); padding:0.45rem 0.9rem; border-radius:8px; cursor:pointer; }
+.btn-primary:focus, .btn-secondary:focus { outline: 3px solid rgba(37,99,235,0.18); }
+@media (max-width:480px){
+  .tos-card { padding: 1rem; }
+  .tos-actions { flex-direction:column; align-items:stretch; }
+  .tos-buttons { justify-content:flex-end; }
+}
+
+/* Ensure the modal's Agree button remains compact and doesn't inherit the larger
+   hero/global primary button sizing. This targets the button inside the tos modal
+   and is loaded after main.css, so it reliably overrides the site-wide .btn-primary. */
+.tos-buttons .btn-primary {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.96rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* Stronger, more specific override to prevent main.css (or HMR-injected styles)
+   from accidentally enlarging the modal button. Targets the button inside the
+   tos card/modal. This avoids using !important while providing higher
+   specificity. */
+.tos-card .btn-primary, #tos-modal .btn-primary {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.96rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* Center the textual content inside the tos card while keeping list items
+   readable: the list itself is centered as a block but its items are left-aligned. */
+.tos-card { text-align: center; }
+.tos-body ul { text-align: left; margin: 0.5rem auto 1rem; display: inline-block; }
+.tos-actions { justify-content: center; }
+
+/* Stronger, explicit override targeting the actual Agree button to avoid
+   any cascade from global site styles (e.g. .btn-primary in main.css).
+   This ensures the modal button stays compact regardless of other rules. */
+#tos-agree {
+  padding: 0.48rem 0.9rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  line-height: 1.05 !important;
+  box-sizing: border-box !important;
+  min-width: 120px !important; /* keep a comfortable click target */
+}
