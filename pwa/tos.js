@@ -23,33 +23,25 @@ document.addEventListener('DOMContentLoaded', () => {
     window.open('./', '_blank');
   }
 
-  // Load modal HTML from tos.html then wire up handlers
-  async function loadTos(){
+  // Wire up handlers for the inlined TOS modal (we keep this simple because
+  // tos.html is now inlined into index.html and should not be fetched at runtime)
+  function loadTos(){
     if (!modal) return;
-    try {
-      const res = await fetch('./tos.html');
-      if (!res.ok) throw new Error('Failed to load tos.html');
-      const html = await res.text();
-      modal.innerHTML = html;
+    agreeBtn = document.getElementById('tos-agree');
+    cancelBtn = document.getElementById('tos-cancel');
 
-      // now elements exist
-      agreeBtn = document.getElementById('tos-agree');
-      cancelBtn = document.getElementById('tos-cancel');
+    // attach handlers if buttons exist
+    agreeBtn?.addEventListener('click', function(){
+      hideModal();
+      // Notify the page that TOS was agreed; boot.js will perform registration
+      // and then navigate the current window to the app, with a smooth overlay.
+      window.dispatchEvent(new CustomEvent('rubree:tos-agreed'));
+    });
 
-      agreeBtn?.addEventListener('click', function(){
-        hideModal();
-        // Notify the page that TOS was agreed; boot.js will perform registration
-        // and then navigate the current window to the app, with a smooth overlay.
-        window.dispatchEvent(new CustomEvent('rubree:tos-agreed'));
-      });
-
-      cancelBtn?.addEventListener('click', function(){
-        hideModal();
-        launchBtn?.focus();
-      });
-    } catch (e) {
-      console.warn('Could not load tos.html', e);
-    }
+    cancelBtn?.addEventListener('click', function(){
+      hideModal();
+      launchBtn?.focus();
+    });
   }
 
   // When service worker requests to show TOS
