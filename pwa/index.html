@@ -29,110 +29,58 @@
     <meta name="twitter:image" content="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/logo.png">
 
     <script type="module" src="./boot-entry.js"></script>
-    <style>
-      body {
-        font-family: system-ui, sans-serif;
-        background-color: #111827;
-        color: #ffffff;
-        margin: 0;
-        padding: 2em;
-      }
-
-      main {
-        max-width: 700px;
-        margin: 0 auto;
-        text-align: center;
-      }
-
-      h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5em;
-      }
-
-      p.description {
-        color: #d1d5db;
-        font-size: 1.1rem;
-        margin-bottom: 1.5em;
-      }
-
-      #boot-message {
-        margin-top: 1em;
-        margin-bottom: 0.5em;
-        font-size: 1rem;
-        color: #93c5fd;
-      }
-
-      progress {
-        width: 100%;
-        height: 20px;
-        margin-top: 1em;
-        margin-bottom: 2em;
-      }
-
-      #launch-button {
-        background-color: #2563eb;
-        color: #fff;
-        border: none;
-        padding: 0.75em 2em;
-        font-size: 1rem;
-        border-radius: 0.5em;
-        cursor: pointer;
-      }
-
-      #launch-button:disabled {
-        background-color: #4b5563;
-        cursor: not-allowed;
-      }
-      
-      #site-image {
-        max-width: 100%;
-        width: 600px;
-        height: auto;
-        display: block;
-        margin: 2em auto;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s ease;
-      }
-      
-      #site-image:hover {
-        transform: scale(1.02);
-      }
-      
-      @media (max-width: 600px) {
-        #site-image {
-          width: 90%;
-        }
-      }
-
-      footer {
-        margin-top: 3em;
-        font-size: 0.9rem;
-        color: #9ca3af;
-      }
-    </style>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="./tos.css">
   </head>
   <body>
     <main>
-      <h1>Rubree</h1>
-      <p class="description">
-        A Ruby regular expression editor - inspired by Rubular
-      </p>
       
-      <p class="description">
-        The initial load may take about 10 seconds.<br />
-        Please click the button when it's ready.
-      </p>
+      <section class="hero">
+        <div class="hero-inner">
+          <h1 class="hero-title">Rubree</h1>
+          <p class="hero-subtitle">Ruby regular expression editor — inspired by Rubular</p>
 
-      <div id="boot-message">Preparing Service Worker...</div>
-      <button id="launch-button" disabled>Start Rubree</button>
+          <div class="hero-ctas">
+            <button id="launch-button" class="btn-primary" disabled>Get started</button>
+            <a class="btn-outline" href="https://github.com/aim2bpg/rubree" id="demo-link" target="_blank" rel="noopener" aria-label="Open Rubree repository on GitHub">
+              <span class="icon" aria-hidden="true">
+                <!-- GitHub Mark (inline SVG) -->
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+              </span>
+              <span class="btn-text">GitHub</span>
+            </a>
+          </div>
 
-      <progress id="boot-progress" max="100" value="0"></progress>
+          <div class="hero-preview">
+            <div class="preview-frame">
+              <img id="site-image" src="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/site_view.png" alt="Site View">
+            </div>
+          </div>
 
-      <img id="site-image" src="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/site_view.png" alt="Site View">
+          <div class="boot-row">
+            <div id="boot-message"></div>
+          </div>
+        </div>
+      </section>
 
       <footer>
         © 2025 Rubree. Powered by Wasmify-Rails.
       </footer>
     </main>
+    <div id="tos-modal" aria-hidden="true"></div>
+    <div id="starting-overlay" class="starting-overlay hidden" aria-hidden="true">
+      <div class="starting-panel">
+        <div id="starting-text" class="starting-text" role="status" aria-live="polite">Starting Rubree 🚀 — About 10 seconds</div>
+        <!-- bar + seconds container (bar-mode uses discrete segments). Seconds shown to the right. -->
+        <div id="starting-bar-wrap" class="starting-bar-wrap" aria-hidden="true">
+          <div id="starting-bar" class="starting-bar" aria-hidden="true"></div>
+          <div id="starting-seconds" class="starting-seconds" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./tos.js"></script>
   </body>
 </html>

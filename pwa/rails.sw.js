@@ -59,11 +59,16 @@ const resetVM = () => {
 
 const installApp = async () => {
   const progress = new Progress();
+
   await progress.attach(self);
 
+  // Initialize DB and VM for the app. Progress steps are handled internally
+  // by the Progress instance and currently not broadcast as numeric values.
   await initDB(progress);
   await initVM(progress);
 };
+
+// No get-progress handler: clients currently use the seconds-based overlay.
 
 self.addEventListener("activate", (event) => {
   console.log("[rails-web] Activate Service Worker");

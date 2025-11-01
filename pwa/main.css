@@ -1,0 +1,394 @@
+/* Main page styles aligned with app views */
+body {
+  font-family: "Work Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  background-color: #1f2937; /* Tailwind bg-gray-800 */
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 1.1rem 1.25rem 3.2rem 1.25rem; /* give more breathing room */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 3rem; /* fallback size */
+  margin: 0.25rem 0;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+p.description {
+  color: #9ca3af; /* Tailwind text-gray-400 to match app */
+  font-size: 1.1rem; /* slightly larger for better parity */
+  margin: 0.4rem 0 1rem 0;
+}
+
+#boot-message {
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  color: #7fb3ff;
+}
+
+/* Boot message + inline spinner row */
+.boot-row {
+  display: flex; /* make this a block-level row so controls below won't sit on same line */
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+/* Launch button (primary) - styled as prominent yellow CTA */
+#launch-button {
+  background: linear-gradient(180deg,#f59e0b,#d97706);
+  color: #0b1220;
+  border: none;
+  padding: 0.8rem 1.25rem; /* unified medium frame */
+  font-size: 1.06rem; /* unified text size */
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(217,119,6,0.12);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+}
+
+#launch-button:active { transform: translateY(1px); }
+
+#launch-button:disabled {
+  background: linear-gradient(180deg,#374151,#374151);
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Inline subtle spinner next to Start button */
+.launch-controls {
+  display: flex; /* block-level container below boot-row */
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
+/* Center the launch-controls within the right column regardless of text alignment */
+.launch-controls { align-self: center; }
+
+/* Hero two-column layout to match target image */
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 2.0rem;
+  padding: 2.5rem 0 1.2rem 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 220px);
+  border-radius: 10px;
+}
+
+.hero-inner {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.hero-title {
+  font-size: 3.6rem;
+  line-height: 1.02;
+  margin: 0;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hero-subtitle {
+  color: #e6eefc; /* brighter so it stands out */
+  font-size: 1.25rem; /* larger to be more prominent */
+  font-weight: 600;
+  max-width: 70ch;
+  margin: 0 auto;
+  text-shadow: 0 1px 0 rgba(2,6,23,0.25);
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg,#f59e0b,#d97706); /* yellow gradient */
+  color: #071025;
+  border: none;
+  padding: 0.8rem 1.25rem; /* unified medium frame */
+  font-size: 1.12rem; /* slightly larger for Get started */
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 16px 36px rgba(217,119,6,0.12);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn-primary:disabled { opacity: 0.9; }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 22px 48px rgba(217,119,6,0.16); }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.25rem; /* unified medium frame */
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.02);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.00rem; /* slightly smaller for GitHub */
+  font-weight: 400; /* remove bold */
+}
+
+.btn-outline .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  color: #ffffff;
+}
+.btn-outline svg { display: block; width: 18px; height: 18px; }
+.btn-outline .btn-text { display: inline-block; font-size: 1.06rem; }
+.btn-outline:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.18); }
+
+.hero-preview { width: 100%; display:flex; justify-content:center; }
+.preview-frame {
+  width: 760px;
+  max-width: 88vw;
+  position: relative;
+  border-radius: 12px;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: 0 18px 46px rgba(2,6,23,0.6);
+}
+preview-frame img { display:block; width:100%; height:auto; border-radius:8px; }
+/* soft radial glow behind preview to elevate the visual */
+.preview-frame::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 60%;
+  background: radial-gradient(closest-side, rgba(245,158,11,0.06), transparent 60%);
+  filter: blur(28px);
+  pointer-events: none;
+  z-index: -1;
+}
+.hero-left {
+  /* make the left column take full width so the image centers on the page */
+  flex: 0 0 100%;
+  display: flex;
+  justify-content: center;
+}
+.hero-right {
+  /* place the right column under the image (full width) so it doesn't force a two-column split */
+  flex: 0 0 100%;
+  text-align: center;
+  color: #cbd5e1; /* slightly lighter for body of right column */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.8rem;
+}
+.hero-right .description {
+  text-align: left;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+  /* Prevent wrapping so the initial description stays on a single line */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Legacy duplicate removed - primary #launch-button styles are declared earlier */
+
+@media (max-width: 900px) {
+  .hero { flex-direction: column; }
+  .hero-left, .hero-right { flex: 0 0 auto; width: 100%; }
+  .hero-right { align-items: center; text-align: center; }
+  .hero-right .description { text-align: center; white-space: normal; }
+}
+
+/* inline spinner removed — using bar indicator instead */
+@keyframes spin-small { to { transform: rotate(360deg); } }
+
+/* Preview image styled as a card similar to app panels */
+#site-image {
+  display: block;
+  width: 720px;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto 0 auto;
+  border-radius: 8px;
+  /* remove visible frame by dropping padding/background/border */
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  /* keep a subtle shadow but reduce intensity so the image feels tighter */
+  box-shadow: 0 12px 28px rgba(2,6,23,0.45);
+  /* crop a bit of the screenshot edges to visually trim the browser chrome; tightened to focus on app panel */
+  /* clip-path removed to show the full preview image */
+}
+
+@media (max-width: 900px) {
+  #site-image { width: 92%; }
+}
+
+@media (max-width: 600px) {
+  #site-image { width: 90%; }
+}
+
+footer {
+  margin-top: 3rem;
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+/* Full-screen seamless starting overlay used during same-tab startup */
+.starting-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.8));
+  backdrop-filter: blur(6px);
+  z-index: 1200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+.starting-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.starting-panel {
+  display: flex;
+  flex-direction: column; /* stack spinner/text and bar vertically */
+  align-items: center;
+  gap: 12px;
+  background: rgba(12,16,22,0.75);
+  padding: 18px 24px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.55);
+  border: 1px solid rgba(255,255,255,0.035);
+  max-width: 680px;
+}
+.starting-spinner { display: none; }
+.starting-text {
+  color: #e6eefc;
+  font-weight: 600;
+  font-size: 1.04rem;
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: 0.1px;
+  margin: 0 6px;
+}
+
+/* Larger, bolder welcome styling applied briefly when loading completes */
+.starting-text.welcome {
+  font-size: 1.6rem; /* noticeably larger */
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+/* Secondary English line under the main loading message */
+.starting-text-eng {
+  color: rgba(230,238,252,0.85);
+  font-weight: 400;
+  font-size: 0.92rem;
+  margin-top: 6px;
+  opacity: 0.95;
+}
+
+/* small elapsed timer shown after the main message */
+.starting-seconds {
+  color: rgba(230,238,252,0.92);
+  font-weight: 600;
+  font-size: 0.94rem;
+  min-width: 48px;
+  text-align: right;
+}
+
+/* progress bar for overlay */
+.starting-bar {
+  width: 420px;
+  max-width: 70vw;
+  height: 12px;
+  margin-top: 6px;
+  display: none; /* hidden by default until bar-mode is started */
+  /* use flex with gaps so we can render square ticks */
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start; /* left-align segments to avoid right-side whitespace */
+}
+
+.starting-bar-wrap {
+  display: none; /* hidden until activated */
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: center; /* keep the wrap centered while bar contents align left */
+}
+
+/* image wrapper allows overlaying the start button centered on the preview */
+/* legacy image-overlay removed in favor of centered CTAs */
+
+/* each tick segment */
+.starting-bar-seg {
+  flex: 1 1 0;
+  height: 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  transition: background-color 180ms ease, transform 160ms ease, box-shadow 160ms ease;
+  transform-origin: center;
+}
+.starting-bar-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px; /* emoji size */
+  color: rgba(255,255,255,0.92);
+  line-height: 1;
+}
+
+/* playful pop animation when a segment becomes active */
+.starting-bar-seg.active {
+  animation: pop-seg 360ms cubic-bezier(.2,.9,.3,1) both;
+}
+@keyframes pop-seg {
+  0% { transform: translateY(0) scale(1); filter: brightness(1); }
+  50% { transform: translateY(-6px) scale(1.12); filter: brightness(1.15) drop-shadow(0 6px 14px rgba(0,0,0,0.25)); }
+  100% { transform: translateY(-3px) scale(1.04); filter: brightness(1.05); }
+}
+
+/* small hint next to the bar (short English text) */
+/* starting-hint removed — show short hint text inside the seconds element instead */
+.starting-bar-seg.active {
+  background: linear-gradient(90deg,#60a5fa,#2563eb); /* blue gradient */
+  box-shadow: 0 8px 20px rgba(37,99,235,0.12);
+  transform: translateY(-3px) scale(1.02);
+}
+
+/* when bar is hidden ensure segments don't affect layout */
+.starting-bar[style*="display: none"] .starting-bar-seg { display: none; }
