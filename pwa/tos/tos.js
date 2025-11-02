@@ -54,36 +54,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadTosIfNeeded() {
+    // Dynamic loading removed because TOS is embedded into index.html.
+    // If the modal already exists in the DOM, attach handlers immediately.
     return new Promise((resolve) => {
-      if (loaded) { attachHandlers(); return resolve(); }
-
-      const container = document.getElementById("tos-container") || document.body;
-      // Resolve a stable URL for tos.html so builds (and varying base paths) work.
-      // Prefer import.meta.url (works with bundlers like Vite); fall back to window.location.
-      let tosUrl;
-      try {
-        // When running as an ES module/bundled asset this will resolve to the
-        // correct relative location inside the built output.
-        tosUrl = new URL("./tos/tos.html", import.meta.url).href;
-      } catch (e) {
-        // import.meta may not be available in some runtimes; fall back to
-        // resolving relative to the current page location.
-        tosUrl = new URL("./tos/tos.html", window.location.href).href;
+      if (loaded) {
+        attachHandlers();
+        return resolve();
       }
 
-      fetch(tosUrl).then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch tos.html");
-        return res.text();
-      }).then((html) => {
-        container.insertAdjacentHTML("beforeend", html);
-        modal = document.getElementById("tos-modal");
+      if (modal) {
         loaded = true;
         attachHandlers();
-        resolve();
-      }).catch((err) => {
-        console.warn("Could not load tos.html:", err);
-        resolve();
-      });
+        return resolve();
+      }
+
+      // Modal not present: nothing to load (previously would fetch tos.html).
+      console.warn("TOS modal not found in DOM; dynamic loading disabled.");
+      resolve();
     });
   }
 
