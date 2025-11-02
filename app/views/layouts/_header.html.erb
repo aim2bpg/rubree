@@ -31,10 +31,13 @@
         </span>
 
         <button type="button"
-          class="text-sm text-gray-300 hover:text-white bg-transparent px-1 rounded transition transform hover:scale-110 duration-200"
+          class="text-sm text-gray-300 hover:text-white bg-transparent px-1 rounded transition transform hover:scale-110 duration-200 dice-link relative"
           data-action="click->regexp-examples#tryExample"
           data-regexp-examples-target="diceButton"
-          aria-label="<%= t("regular_expressions.header.try_random", default: "Try a random example") %>">🎲</button>
+          aria-label="<%= t("regular_expressions.header.try_random", default: "Try a random example") %>">
+          🎲
+          <span class="dice-tooltip" role="tooltip"><%= t("regular_expressions.header.try_random_tooltip", default: "Try a random example") %></span>
+        </button>
       </div>
     </div>
   </div>
@@ -59,7 +62,7 @@
             </div>
 
             <!-- items column -->
-            <div class="w-2/3 max-h-80 overflow-auto pl-2">
+              <div data-regexp-examples-target="headerItemsScroll" class="w-2/3 max-h-80 overflow-auto pl-2">
               <% regexp_example_categories.each_with_index do |(cat, data), i| %>
                 <div data-header-category-content="<%= cat.to_s.parameterize %>" class="<%= i.zero? ? "" : "hidden" %>">
                   <div class="mt-0 space-y-1">
@@ -85,25 +88,5 @@
     </div>
   </div>
 
-  <!-- Top-right anchor button (text + border only). On small screens it flows inline under the header
-       to avoid overlapping the logo; on sm+ it becomes absolute in the top-right as before. -->
-  <div class="sm:absolute sm:top-4 sm:right-6 mt-3 sm:mt-0 flex justify-end">
-    <div class="flex items-center gap-2">
-      <!-- Locale switcher: preserve current params and add locale param -->
-      <%# Single locale toggle: show the opposite locale code as the action label (EN <-> JP) %>
-      <% other = I18n.locale.to_s == "ja" ? "en" : "ja" %>
-      <% label = I18n.locale.to_s == "ja" ? "EN" : "JP" %>
-      <%= link_to url_for(params.to_unsafe_h.merge(locale: other)), class: "inline-flex items-center text-sm px-2 py-1 rounded border transition-colors hover:bg-blue-600 hover:text-white #{'bg-blue-600 text-white' if I18n.locale.to_s == other}", data: { test: "locale-toggle" }, aria: { label: t("regular_expressions.header.toggle_locale", default: "Toggle language") } do %>
-        <%= label %>
-      <% end %>
-
-      <button type="button"
-        class="bg-transparent border border-blue-500 text-blue-400 text-sm px-3 py-1 rounded transition-colors hover:bg-blue-600/10 hover:text-white"
-        data-action="click->regexp-examples#toggleHeaderDropdown"
-        data-regexp-examples-target="caretButton"
-        aria-label="<%= t("regular_expressions.header.open_examples", default: "Open examples (top-right)") %>">
-        <%= t("regular_expressions.header.button", default: "Regex Examples") %>
-      </button>
-    </div>
-  </div>
+  <%= render "layouts/header_controls" %>
 </header>

@@ -52,13 +52,125 @@ svg.railroad-diagram rect.group-box {
   opacity: 0;
 }
 
-/* Cursor helper classes (fallback when Tailwind is not used) */
-.cursor-pointer {
-  cursor: pointer;
+/* Header-specific styles: scrollbars and tooltips (moved from layout partial) */
+/* Firefox: apply to both left categories column and right items column */
+[data-regexp-examples-target="headerScroll"],
+[data-header-category-content],
+[data-regexp-examples-target="tabsScroll"],
+[data-regexp-examples-target="headerItemsScroll"] {
+  scrollbar-color: #374151 #111827; /* thumb, track */
+  scrollbar-width: thin;
 }
-.cursor-grab {
-  cursor: grab;
+
+/* WebKit (Chrome, Safari) */
+[data-regexp-examples-target="headerScroll"]::-webkit-scrollbar,
+[data-header-category-content]::-webkit-scrollbar,
+[data-regexp-examples-target="tabsScroll"]::-webkit-scrollbar,
+[data-regexp-examples-target="headerItemsScroll"]::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
-.cursor-grabbing {
-  cursor: grabbing;
+[data-regexp-examples-target="headerScroll"]::-webkit-scrollbar-track,
+[data-header-category-content]::-webkit-scrollbar-track,
+[data-regexp-examples-target="tabsScroll"]::-webkit-scrollbar-track,
+[data-regexp-examples-target="headerItemsScroll"]::-webkit-scrollbar-track {
+  background: #0f1724; /* near slate-900 / page background */
+  border-radius: 6px;
+}
+[data-regexp-examples-target="headerScroll"]::-webkit-scrollbar-thumb,
+[data-header-category-content]::-webkit-scrollbar-thumb,
+[data-regexp-examples-target="tabsScroll"]::-webkit-scrollbar-thumb,
+[data-regexp-examples-target="headerItemsScroll"]::-webkit-scrollbar-thumb {
+  background: #374151; /* visible but close to background */
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+[data-regexp-examples-target="headerScroll"]::-webkit-scrollbar-thumb:hover,
+[data-header-category-content]::-webkit-scrollbar-thumb:hover,
+[data-regexp-examples-target="tabsScroll"]::-webkit-scrollbar-thumb:hover,
+[data-regexp-examples-target="headerItemsScroll"]::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* GitHub icon tooltip */
+.github-link {
+  position: relative;
+}
+.github-tooltip {
+  position: absolute;
+  /* align tooltip to the right edge of the icon so it grows leftwards (won't overflow page right edge) */
+  right: 0;
+  transform: translateY(6px);
+  bottom: 100%;
+  background: rgba(17, 24, 39, 0.95); /* near slate-900 */
+  color: #f8fafc; /* slate-50 */
+  padding: 6px 8px;
+  font-size: 12px;
+  line-height: 1;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+  z-index: 60;
+}
+.github-tooltip::after {
+  content: "";
+  position: absolute;
+  right: 10px; /* position arrow near the icon */
+  top: 100%;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(17, 24, 39, 0.95);
+}
+/* show only on hover (avoid persisting after click/focus) */
+.github-link:hover .github-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: none;
+}
+
+/* Dice button tooltip (centered above the button) */
+.dice-link {
+  position: relative;
+}
+.dice-tooltip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  bottom: 100%;
+  background: rgba(17, 24, 39, 0.95);
+  color: #f8fafc;
+  padding: 6px 8px;
+  font-size: 12px;
+  line-height: 1;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+  z-index: 60;
+}
+.dice-tooltip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 100%;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(17, 24, 39, 0.95);
+}
+/* show only on hover to avoid sticky tooltip after click */
+.dice-link:hover .dice-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: none;
 }
