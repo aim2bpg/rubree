@@ -58,7 +58,20 @@ document.addEventListener("DOMContentLoaded", () => {
       if (loaded) { attachHandlers(); return resolve(); }
 
       const container = document.getElementById("tos-container") || document.body;
-      fetch("./tos/tos.html").then((res) => {
+      // Resolve a stable URL for tos.html so builds (and varying base paths) work.
+      // Prefer import.meta.url (works with bundlers like Vite); fall back to window.location.
+      let tosUrl;
+      try {
+        // When running as an ES module/bundled asset this will resolve to the
+        // correct relative location inside the built output.
+        tosUrl = new URL("./tos/tos.html", import.meta.url).href;
+      } catch (e) {
+        // import.meta may not be available in some runtimes; fall back to
+        // resolving relative to the current page location.
+        tosUrl = new URL("./tos/tos.html", window.location.href).href;
+      }
+
+      fetch(tosUrl).then((res) => {
         if (!res.ok) throw new Error("Failed to fetch tos.html");
         return res.text();
       }).then((html) => {
