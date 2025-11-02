@@ -1,7 +1,65 @@
 import { hideModal, showModal } from "../lib/modal_orchestrator";
 import { trapFocus as sharedTrapFocus } from "../lib/trap_focus";
-import { moveFormIntoModal } from "./modal_form_mover";
-import { createResultObserver } from "./modal_helpers";
+
+function moveFormIntoModal(formEl, contentTarget) {
+  if (!formEl) return null;
+  const parent = formEl.parentElement;
+  const nextSibling = formEl.nextSibling;
+  return {
+    el: formEl,
+    parent,
+    nextSibling,
+    move() {
+      try {
+        contentTarget.appendChild(formEl);
+      } catch (_e) {}
+    },
+    restore() {
+      try {
+        if (nextSibling) parent.insertBefore(formEl, nextSibling);
+        else parent.appendChild(formEl);
+      } catch (_e) {}
+    },
+  };
+}
+
+function createResultObserver(modalTarget, resultTarget) {
+  let observer = null;
+  function update() {
+    try {
+      const frame = document.getElementById("regexp");
+      if (!frame || !resultTarget) return;
+      const clone = frame.cloneNode(true);
+      const ts = Date.now();
+      clone.querySelectorAll("[id]").forEach((el) => {
+        const old = el.getAttribute("id");
+        if (old) el.setAttribute("id", `${old}-modal-${ts}`);
+      });
+      clone.id = `${clone.id || "regexp"}-modal-${ts}`;
+      resultTarget.innerHTML = "";
+      resultTarget.appendChild(clone);
+    } catch (_e) {}
+  }
+  function start() {
+    try {
+      const frame = document.getElementById("regexp");
+      if (!frame) return;
+      observer = new MutationObserver(() => {
+        if (!modalTarget.classList.contains("hidden")) update();
+      });
+      observer.observe(frame, { childList: true, subtree: true });
+    } catch (_e) {}
+  }
+  function stop() {
+    try {
+      if (observer) {
+        observer.disconnect();
+        observer = null;
+      }
+    } catch (_e) {}
+  }
+  return { start, stop, update };
+}
 
 export function openModal(controller, event) {
   event?.preventDefault();

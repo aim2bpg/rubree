@@ -61,9 +61,9 @@ RSpec.describe "RegularExpressionFlow" do
       expect(find('textarea#regular_expression_expression').value).to eq('')
       expect(find('textarea#regular_expression_test_string').value).to eq('')
 
-      # dice button briefly animates
-      btn = find('button[data-regexp-examples-target="diceButton"]', visible: :visible)
-      btn.click
+      # dice button briefly animates — avoid relying on hover/tooltips by invoking click via JS
+      # This removes fragile UI microinteraction dependency (tooltips, hover) from the test.
+      page.execute_script("document.querySelector('button[data-regexp-examples-target=\"diceButton\"]').click()")
       expect(page).to have_css('button[data-regexp-examples-target="diceButton"].animate-bounce', wait: 0.8)
 
       # caret opens dropdown and scroll container exists

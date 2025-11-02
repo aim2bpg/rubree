@@ -15,12 +15,10 @@ export default class extends Controller {
     "modal",
     "modalContent",
     "modalResult",
-    "exampleSelect",
     "caretButton",
     "diceButton",
     "headerDropdown",
     "headerScroll",
-    "hoverCategory",
     "filter",
     "root",
   ];
@@ -36,33 +34,6 @@ export default class extends Controller {
     this._observer = null;
     this._modalResultObserver = null;
     this._movedForm = null;
-
-    this._selectElements = Array.from(
-      document.querySelectorAll(
-        '[data-regexp-examples-target="exampleSelect"]',
-      ),
-    );
-    this._selectHandler = this.selectFromSelect.bind(this);
-    this._selectElements.forEach((sel) => {
-      sel.addEventListener("change", this._selectHandler);
-    });
-    this._primarySelect =
-      document.getElementById("examples-select-header") ||
-      this._selectElements?.[0] ||
-      null;
-
-    this._primarySelectFocusHandler = () => this._setCaretOpen(true);
-    this._primarySelectBlurHandler = () => this._setCaretOpen(false);
-    if (this._primarySelect) {
-      this._primarySelect.addEventListener(
-        "focus",
-        this._primarySelectFocusHandler,
-      );
-      this._primarySelect.addEventListener(
-        "blur",
-        this._primarySelectBlurHandler,
-      );
-    }
     this._diceTimeout = null;
     this._headerOpen = false;
     this._outsideClickHandler = null;
@@ -71,7 +42,7 @@ export default class extends Controller {
     this._headerScrollTop = 0;
     this._lastSelectedElement = null;
     this._lastSelectedIndex = null;
-    this._lastSelectedClass = "border-l-4 border-blue-400 pl-4";
+    this._lastSelectedClass = "bg-gray-700 text-white";
   }
 
   disconnect() {
@@ -137,6 +108,37 @@ export default class extends Controller {
       const match = c.dataset.category === selected;
       c.classList.toggle("hidden", !match);
     });
+
+    try {
+      if (this.hasHeaderDropdownTarget) {
+        const leftBtns = Array.from(
+          this.headerDropdownTarget.querySelectorAll(
+            "[data-header-category]",
+          ) || [],
+        );
+        leftBtns.forEach((btn) => {
+          const is =
+            (btn.dataset.headerCategory || btn.dataset.category) === selected;
+          if (is) {
+            btn.classList.add("bg-gray-700", "text-white");
+            btn.classList.remove("text-gray-300");
+          } else {
+            btn.classList.remove("bg-gray-700", "text-white", "bg-gray-800");
+            btn.classList.add("text-gray-300");
+          }
+        });
+
+        const contents = Array.from(
+          this.headerDropdownTarget.querySelectorAll(
+            "[data-header-category-content]",
+          ) || [],
+        );
+        contents.forEach((c) => {
+          const match = (c.dataset.headerCategoryContent || "") === selected;
+          c.classList.toggle("hidden", !match);
+        });
+      }
+    } catch (_e) {}
   }
 
   selectExample(event) {
@@ -201,6 +203,10 @@ export default class extends Controller {
 
   showExampleCategory(e) {
     return HeaderDropdownCtrl.showExampleCategory(this, e);
+  }
+
+  showHeaderCategory(e) {
+    return HeaderDropdownCtrl.showHeaderCategory(this, e);
   }
 
   clearExampleCategory(_e) {

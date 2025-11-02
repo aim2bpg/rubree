@@ -31,10 +31,13 @@
         </span>
 
         <button type="button"
-          class="text-sm text-gray-300 hover:text-white bg-transparent px-1 rounded transition transform hover:scale-110 duration-200"
+          class="text-sm text-gray-300 hover:text-white bg-transparent px-1 rounded transition transform hover:scale-110 duration-200 dice-link relative"
           data-action="click->regexp-examples#tryExample"
           data-regexp-examples-target="diceButton"
-          aria-label="<%= t("regular_expressions.header.try_random", default: "Try a random example") %>">🎲</button>
+          aria-label="<%= t("regular_expressions.header.try_random", default: "Try a random example") %>">
+          🎲
+          <span class="dice-tooltip" role="tooltip"><%= t("regular_expressions.header.try_random_tooltip", default: "Try a random example") %></span>
+        </button>
       </div>
     </div>
   </div>
@@ -42,59 +45,48 @@
   <!-- Dropdown: kept outside of inline flow so it cannot affect header layout. Controller will portal/position it on open. -->
   <div data-regexp-examples-target="headerDropdown" class="hidden z-50 sm:w-96 w-full max-w-full sm:max-w-sm" role="menu" aria-label="<%= t("regular_expressions.header.examples", default: "Examples") %>">
     <div class="bg-gradient-to-b from-slate-900 to-gray-800 text-gray-100 border border-gray-700 rounded-lg shadow-2xl overflow-hidden ring-1 ring-black/40">
-      <div class="py-3 px-4">
-        <div class="flex items-center justify-between">
-          <div class="text-sm text-gray-200 font-semibold"><%= t("regular_expressions.header.examples", default: "Examples") %></div>
-          <div data-regexp-examples-target="hoverCategory" class="text-sm text-gray-300 ml-2"></div>
-        </div>
-      </div>
-      <div data-regexp-examples-target="headerScroll" class="max-h-80 overflow-auto px-2 py-2 space-y-2">
-        <% idx = 0 %>
-        <% regexp_example_categories.each do |(cat, data)| %>
-          <div class="border-t border-gray-700 px-3 pt-3 pb-2">
-            <div class="text-sm text-gray-300 font-medium px-1"><%= data[:short] %> — <%= cat.to_s.humanize %></div>
-            <div class="mt-2 space-y-2">
-              <% data[:examples].each do |ex| %>
+        <!-- Two-column: left = categories, right = items for selected category -->
+        <div class="px-2 py-1">
+          <div class="flex gap-2">
+            <!-- categories column (independent scroll) -->
+            <div data-regexp-examples-target="headerScroll" class="w-1/3 border-r border-gray-700 pr-1 max-h-80 overflow-auto">
+              <% regexp_example_categories.each_with_index do |(cat, data), i| %>
                 <button type="button"
-                  class="w-full text-left px-3 py-2 hover:bg-gray-700 focus:outline-none transition-colors"
-                  data-regexp-examples-target="example"
-                  data-action="mouseenter->regexp-examples#showExampleCategory mouseleave->regexp-examples#clearExampleCategory click->regexp-examples#selectExample"
-                  data-category="<%= data[:short] %>"
-                  data-pattern="<%= ex[:pattern].gsub("\"", "&quot;") %>"
-                  data-test="<%= ex[:test].gsub("\"", "&quot;") %>"
-                  data-substitution="<%= ex[:substitution] || "" %>"
-                  data-options="<%= ex[:options] || "" %>">
-                  <div class="text-base text-gray-100 leading-snug"><%= (ex[:description].presence || ex[:test]).truncate(120) %></div>
-                  <div class="text-sm text-gray-300 mt-1 truncate"><%= ex[:pattern].truncate(80) %> — <%= ex[:test].truncate(80) %></div>
+                  class="w-full text-left text-sm text-gray-300 py-1 px-1 hover:bg-gray-700 focus:outline-none transition-colors"
+                  data-header-category="<%= cat.to_s.parameterize %>"
+                  data-action="click->regexp-examples#showCategory click->regexp-examples#showHeaderCategory">
+                  <div class="font-medium"><%= data[:short] %></div>
+                  <div class="text-xs text-gray-400"><%= cat.to_s.humanize %></div>
                 </button>
-                <% idx += 1 %>
+              <% end %>
+            </div>
+
+            <!-- items column -->
+              <div data-regexp-examples-target="headerItemsScroll" class="w-2/3 max-h-80 overflow-auto pl-2">
+              <% regexp_example_categories.each_with_index do |(cat, data), i| %>
+                <div data-header-category-content="<%= cat.to_s.parameterize %>" class="<%= i.zero? ? "" : "hidden" %>">
+                  <div class="mt-0 space-y-1">
+                    <% data[:examples].each do |ex| %>
+                      <button type="button"
+                        class="w-full text-left px-2 py-1 hover:bg-gray-700 focus:outline-none transition-colors"
+                        data-regexp-examples-target="example"
+                        data-action="click->regexp-examples#selectExample"
+                        data-pattern="<%= ex[:pattern].gsub("\"", "&quot;") %>"
+                        data-test="<%= ex[:test].gsub("\"", "&quot;") %>"
+                        data-substitution="<%= ex[:substitution] || "" %>"
+                        data-options="<%= ex[:options] || "" %>">
+                        <div class="text-sm text-gray-100 leading-snug"><%= (ex[:description].presence || ex[:test]).truncate(100) %></div>
+                        <div class="text-xs text-gray-300 mt-0 truncate"><%= ex[:pattern].truncate(80) %> — <%= ex[:test].truncate(80) %></div>
+                      </button>
+                    <% end %>
+                  </div>
+                </div>
               <% end %>
             </div>
           </div>
-        <% end %>
-      </div>
+        </div>
     </div>
   </div>
 
-  <!-- Top-right anchor button (text + border only). On small screens it flows inline under the header
-       to avoid overlapping the logo; on sm+ it becomes absolute in the top-right as before. -->
-  <div class="sm:absolute sm:top-4 sm:right-6 mt-3 sm:mt-0 flex justify-end">
-    <div class="flex items-center gap-2">
-      <!-- Locale switcher: preserve current params and add locale param -->
-      <%# Single locale toggle: show the opposite locale code as the action label (EN <-> JP) %>
-      <% other = I18n.locale.to_s == "ja" ? "en" : "ja" %>
-      <% label = I18n.locale.to_s == "ja" ? "EN" : "JP" %>
-      <%= link_to url_for(params.to_unsafe_h.merge(locale: other)), class: "inline-flex items-center text-sm px-2 py-1 rounded border transition-colors hover:bg-blue-600 hover:text-white #{'bg-blue-600 text-white' if I18n.locale.to_s == other}", data: { test: "locale-toggle" }, aria: { label: t("regular_expressions.header.toggle_locale", default: "Toggle language") } do %>
-        <%= label %>
-      <% end %>
-
-      <button type="button"
-        class="bg-transparent border border-blue-500 text-blue-400 text-sm px-3 py-1 rounded transition-colors hover:bg-blue-600/10 hover:text-white"
-        data-action="click->regexp-examples#toggleHeaderDropdown"
-        data-regexp-examples-target="caretButton"
-        aria-label="<%= t("regular_expressions.header.open_examples", default: "Open examples (top-right)") %>">
-        <%= t("regular_expressions.header.button", default: "Regex Examples") %>
-      </button>
-    </div>
-  </div>
+  <%= render "layouts/header_controls" %>
 </header>

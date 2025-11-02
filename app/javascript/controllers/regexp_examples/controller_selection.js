@@ -1,5 +1,3 @@
-import { updateSelectionPersistence } from "./selection_persistence";
-
 export function applyLastSelectedClass(controller, el) {
   if (!el || !controller._lastSelectedClass) return;
   try {
@@ -55,6 +53,116 @@ export function selectExample(controller, event) {
 
   try {
     controller._setLastSelectedIndex(event.currentTarget);
+  } catch (_e) {}
+
+  try {
+    if (controller._lastSelectedElement) {
+      try {
+        removeLastSelectedClass(controller, controller._lastSelectedElement);
+      } catch (_e) {}
+    }
+    const examples = Array.from(
+      document.querySelectorAll('[data-regexp-examples-target="example"]'),
+    );
+    const idx = examples.indexOf(event.currentTarget);
+    controller._lastSelectedElement = event.currentTarget;
+    controller._lastSelectedIndex = idx >= 0 ? idx : null;
+    try {
+      applyLastSelectedClass(controller, event.currentTarget);
+    } catch (_e) {}
+  } catch (_e) {}
+
+  try {
+    const patternVal = event.currentTarget.dataset.pattern || "";
+    const testVal = event.currentTarget.dataset.test || "";
+    const mainExamples = Array.from(
+      document.querySelectorAll('[data-regexp-examples-target="example"]'),
+    );
+    const match = mainExamples.find((el) => {
+      try {
+        return (
+          (el.dataset.pattern || "") === patternVal &&
+          (el.dataset.test || "") === testVal
+        );
+      } catch (_e) {
+        return false;
+      }
+    });
+    if (match) {
+      try {
+        if (
+          controller._mainLastSelectedElement &&
+          controller._mainLastSelectedElement !== match
+        ) {
+          removeLastSelectedClass(
+            controller,
+            controller._mainLastSelectedElement,
+          );
+        }
+      } catch (_e) {}
+      try {
+        applyLastSelectedClass(controller, match);
+        controller._mainLastSelectedElement = match;
+      } catch (_e) {}
+
+      try {
+        const categoryEl = match.closest("[data-category]");
+        const cat = categoryEl ? categoryEl.dataset.category : null;
+        if (cat && controller.tabTargets) {
+          const tab = controller.tabTargets.find(
+            (t) => t.dataset.category === cat,
+          );
+          if (tab && typeof controller.showCategoryByElement === "function") {
+            controller.showCategoryByElement(tab);
+          }
+          try {
+            if (controller.hasHeaderDropdownTarget) {
+              const headerBtn = controller.headerDropdownTarget.querySelector(
+                `[data-header-category="${cat}"]`,
+              );
+              if (
+                headerBtn &&
+                typeof controller.showHeaderCategory === "function"
+              ) {
+                controller.showHeaderCategory({ currentTarget: headerBtn });
+              }
+
+              try {
+                const hdrExamples = Array.from(
+                  controller.headerDropdownTarget.querySelectorAll(
+                    "button[data-pattern]",
+                  ),
+                );
+                const hdrMatch = hdrExamples.find((el) => {
+                  try {
+                    return (
+                      (el.dataset.pattern || "") ===
+                        (event.currentTarget.dataset.pattern || "") &&
+                      (el.dataset.test || "") ===
+                        (event.currentTarget.dataset.test || "")
+                    );
+                  } catch (_e) {
+                    return false;
+                  }
+                });
+                if (hdrMatch) {
+                  try {
+                    removeLastSelectedClass(
+                      controller,
+                      controller._lastSelectedElement,
+                    );
+                  } catch (_e) {}
+                  try {
+                    applyLastSelectedClass(controller, hdrMatch);
+                    controller._lastSelectedElement = hdrMatch;
+                  } catch (_e) {}
+                }
+              } catch (_e) {}
+            }
+          } catch (_e) {}
+        }
+      } catch (_e) {}
+    }
   } catch (_e) {}
 }
 

@@ -36,6 +36,8 @@ class RegularExpression
 
             # Match and captures
             if match = pattern.match(test_string)
+              # Full match
+              puts "Match: \#{match[0]}"
               # Named captures:
               #{named_captures}
             else
@@ -50,6 +52,8 @@ class RegularExpression
 
             # Match and captures
             if match = pattern.match(test_string)
+              # Full match
+              puts "Match: \#{match[0]}"
               # Numbered captures:
               match.captures.each_with_index do |cap, i|
                 puts "\#{i + 1}: \#{cap}"
