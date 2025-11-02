@@ -31,7 +31,7 @@
     <script type="module" src="./boot-entry.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./main.css">
-    <link rel="stylesheet" href="./tos.css">
+  <link rel="stylesheet" href="./tos/tos.css">
   </head>
   <body>
     <main>
@@ -39,7 +39,7 @@
       <section class="hero">
         <div class="hero-inner">
           <h1 class="hero-title">Rubree</h1>
-          <p class="hero-subtitle">Ruby regular expression editor — inspired by Rubular</p>
+          <p class="hero-subtitle">A Ruby regular expression editor — inspired by Rubular</p>
 
           <div class="hero-ctas">
             <button id="launch-button" class="btn-primary" disabled>Get started</button>
@@ -67,49 +67,20 @@
       </section>
 
       <footer>
-        © 2025 Rubree. Powered by Wasmify-Rails.
+        © 2025 Rubree. Powered by Wasmify Rails.
       </footer>
     </main>
-    <div id="tos-modal" aria-hidden="true">
-      <div class="tos-backdrop"></div>
-      <div class="tos-card" role="dialog" aria-modal="true" aria-labelledby="tos-title">
-        <h2 id="tos-title">Terms of Service / 利用規約（同意が必要です）</h2>
-        <div class="tos-body">
-          <p><strong>English</strong></p>
-          <p>Welcome to Rubree. A few quick notes before you start:</p>
-          <ul>
-            <li>This app does not guarantee result accuracy. Use outputs for reference only.</li>
-            <li>The authors are not responsible for any damages resulting from use of this application.</li>
-            <li>Features and UI may change without prior notice.</li>
-          </ul>
-          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.04);margin:0.75rem 0;"/>
-          <p><strong>Japanese</strong></p>
-          <p>Rubreeへようこそ！利用開始にあたり注意事項があります：</p>
-          <ul>
-            <li>本アプリは結果の正確性を保証しません。出力は参考としてご利用ください。</li>
-            <li>当方は本アプリの利用によって生じる如何なる損害についても責任を負いかねます。</li>
-            <li>提供される機能や表示は予告なく変更されることがあります。</li>
-          </ul>
-          <p class="tos-note">Press the button below to agree and start. / 上の内容に同意いただける場合は「同意して開始」ボタンを押してください。</p>
-        </div>
-        <div class="tos-actions">
-          <div class="tos-buttons">
-            <button id="tos-cancel" class="btn-secondary">Cancel / キャンセル</button>
-            <button id="tos-agree" class="btn-primary">Agree and Start / 同意して開始</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- TOS modal is loaded dynamically from tos.html to keep index.html small. -->
+    <div id="tos-container" aria-live="polite"></div>
     <div id="starting-overlay" class="starting-overlay hidden" aria-hidden="true">
       <div class="starting-panel">
         <div id="starting-text" class="starting-text" role="status" aria-live="polite">Starting Rubree 🚀 — About 10 seconds</div>
-        <!-- bar + seconds container (bar-mode uses discrete segments). Seconds shown to the right. -->
         <div id="starting-bar-wrap" class="starting-bar-wrap" aria-hidden="true">
-          <div id="starting-bar" class="starting-bar" aria-hidden="true"></div>
-          <div id="starting-seconds" class="starting-seconds" aria-hidden="true"></div>
+        <div id="starting-bar" class="starting-bar" aria-hidden="true"></div>
+        <div id="starting-seconds" class="starting-seconds" aria-hidden="true"></div>
         </div>
       </div>
     </div>
-    <script type="module" src="./tos.js"></script>
+    <script type="module" src="./tos/tos.js"></script>
   </body>
 </html>

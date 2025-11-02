@@ -1,4 +1,3 @@
-// Shared focus trap utility for modals/dialogs.
 export function trapFocus(modal) {
   if (!modal) return () => {};
   const focusable = modal.querySelectorAll(

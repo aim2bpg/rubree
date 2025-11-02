@@ -1,4 +1,3 @@
-// modal_helpers: trap focus and manage a small result observer used by modal.
 import { trapFocus as sharedTrapFocus } from "../lib/trap_focus";
 
 export function trapFocus(modal) {

@@ -1,4 +1,3 @@
-// Shared tooltip utilities for showing inline/floating copy-to-clipboard feedback.
 export function showInlineTooltip(el, text = "Copied!") {
   if (!el) return;
   try {

@@ -1,7 +1,3 @@
-// dropdown_orchestrator: manages the lifecycle of a header dropdown: opening,
-// closing, outside click handling, reposition subscriptions and key handlers.
-// The controller passes minimal dependencies (elements and callbacks).
-
 export function createDropdownOrchestrator({
   dropdownEl,
   caretEl,
@@ -61,11 +57,8 @@ export function createDropdownOrchestrator({
   function open() {
     try {
       if (!dropdownEl) return;
-      // ensure visible
       dropdownEl.classList.remove("hidden");
-      // initial positioning
       if (typeof onPosition === "function") onPosition();
-      // add handlers
       _addHandlers();
     } catch (_e) {}
   }

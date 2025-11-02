@@ -1,7 +1,5 @@
 import { trapFocus as sharedTrapFocus } from "./trap_focus";
 
-// Minimal modal orchestrator: handles show/hide animation and focus trap.
-// Controllers should manage content insertion and keyboard handlers.
 export function showModal(modalEl) {
   if (!modalEl) return () => {};
   try {

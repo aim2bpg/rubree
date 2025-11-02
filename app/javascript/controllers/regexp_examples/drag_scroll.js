@@ -1,5 +1,3 @@
-// drag_scroll: provides pointer-based drag-to-scroll for a scrollable container.
-// Returns an object with `disable()` and `getScrollTop()` methods.
 export function enableDragScroll(el, initialScroll = 0) {
   if (!el)
     return {
@@ -16,7 +14,6 @@ export function enableDragScroll(el, initialScroll = 0) {
   const state = {
     active: false,
     pointerId: null,
-    // dynamic axis detection: null until user moves ('horizontal'|'vertical')
     axis: null,
     startX: 0,
     startY: 0,
@@ -27,11 +24,8 @@ export function enableDragScroll(el, initialScroll = 0) {
   };
 
   try {
-    // remember previous touch-action so we can restore on disable
     state.previousTouchAction = el.style.touchAction || "";
-    // disable native panning so we can decide axis dynamically
     el.style.touchAction = "none";
-    // set grab cursor so users see draggable affordance
     try {
       state.previousCursor = el.style.cursor || "";
       el.style.cursor = "grab";
@@ -60,7 +54,6 @@ export function enableDragScroll(el, initialScroll = 0) {
     const dx = e.clientX - state.startX;
     const dy = e.clientY - state.startY;
 
-    // decide axis on first meaningful movement
     if (!state.axis) {
       if (Math.abs(dx) < threshold && Math.abs(dy) < threshold) return;
       state.axis = Math.abs(dx) > Math.abs(dy) ? "horizontal" : "vertical";
@@ -95,7 +88,6 @@ export function enableDragScroll(el, initialScroll = 0) {
     } catch (_e) {}
   };
 
-  // capture pointerdown so we get the start even when initiated on child elements
   el.addEventListener("pointerdown", pointerDown, {
     passive: false,
     capture: true,
@@ -104,9 +96,7 @@ export function enableDragScroll(el, initialScroll = 0) {
   el.addEventListener("pointerup", pointerUp);
   el.addEventListener("pointercancel", pointerUp);
 
-  const scrollHandler = () => {
-    // no-op here; controller may query getScrollTop
-  };
+  const scrollHandler = () => {};
   el.addEventListener("scroll", scrollHandler, { passive: true });
 
   return {
@@ -129,7 +119,6 @@ export function enableDragScroll(el, initialScroll = 0) {
       } catch (_e) {}
       el.classList.remove("select-none");
       try {
-        // restore touch-action
         el.style.touchAction = state.previousTouchAction || "";
       } catch (_e) {}
       try {
@@ -138,7 +127,6 @@ export function enableDragScroll(el, initialScroll = 0) {
     },
     getScrollTop() {
       try {
-        // prefer vertical scroll position by default; callers that care about horizontal can query element directly
         return el.scrollTop;
       } catch (_e) {
         return 0;

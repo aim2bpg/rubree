@@ -1,0 +1,16 @@
+root = true
+
+[*.{rb,erb,js,jsx,ts,tsx,css,scss,html,slim,haml,yml,yaml,md}]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+max_line_length = 120
+
+[*.md]
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab
