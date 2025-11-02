@@ -1,4 +1,3 @@
-// Event constants (duplicated here to keep pwa files self-contained)
 const SHOW_TOS = "rubree:show-tos";
 const TOS_AGREED = "rubree:tos-agreed";
 
@@ -23,7 +22,6 @@ async function registerServiceWorker() {
   });
 }
 
-// Inlined overlay helper (moved from pwa/lib/overlay.js)
 let _timerId = null;
 
 function _el(id) { return document.getElementById(id); }
@@ -132,7 +130,6 @@ async function init() {
     if (bootMessage) bootMessage.textContent = "Initializing...";
 
   const START_OVERLAY_MODE = "bar";
-    // show overlay (handles bar/timer internally)
     startOverlay(START_OVERLAY_MODE);
 
     try {
@@ -142,7 +139,6 @@ async function init() {
 
       await new Promise((r) => setTimeout(r, 260));
 
-      // stop overlay and show welcome state
       stopOverlay(true);
       await new Promise((r) => setTimeout(r, 1000));
 
