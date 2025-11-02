@@ -252,3 +252,46 @@ export function _setCaretOpen(controller, open) {
     } catch (_e) {}
   } catch (_e) {}
 }
+
+export function showHeaderCategory(controller, e) {
+  try {
+    if (!controller.hasHeaderDropdownTarget) return;
+    const key =
+      e.currentTarget.dataset.headerCategory ||
+      e.currentTarget.dataset.category ||
+      "";
+
+    // Toggle left column buttons' selected state
+    try {
+      const leftBtns = Array.from(
+        controller.headerDropdownTarget.querySelectorAll(
+          "[data-header-category]",
+        ),
+      );
+      leftBtns.forEach((btn) => {
+        const is = (btn.dataset.headerCategory || btn.dataset.category) === key;
+        if (is) {
+          btn.classList.add("bg-gray-700", "text-white");
+          btn.classList.remove("text-gray-300");
+        } else {
+          // Only the selected button should show a background. Ensure others are plain text.
+          btn.classList.remove("bg-gray-700", "text-white", "bg-gray-800");
+          btn.classList.add("text-gray-300");
+        }
+      });
+    } catch (_e) {}
+
+    // Show matching right-column content, hide others
+    try {
+      const contents = Array.from(
+        controller.headerDropdownTarget.querySelectorAll(
+          "[data-header-category-content]",
+        ),
+      );
+      contents.forEach((c) => {
+        const match = (c.dataset.headerCategoryContent || "") === key;
+        c.classList.toggle("hidden", !match);
+      });
+    } catch (_e) {}
+  } catch (_e) {}
+}

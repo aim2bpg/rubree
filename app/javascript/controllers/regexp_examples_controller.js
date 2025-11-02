@@ -15,12 +15,11 @@ export default class extends Controller {
     "modal",
     "modalContent",
     "modalResult",
-    "exampleSelect",
     "caretButton",
     "diceButton",
     "headerDropdown",
     "headerScroll",
-    "hoverCategory",
+    // hover preview removed
     "filter",
     "root",
   ];
@@ -37,32 +36,7 @@ export default class extends Controller {
     this._modalResultObserver = null;
     this._movedForm = null;
 
-    this._selectElements = Array.from(
-      document.querySelectorAll(
-        '[data-regexp-examples-target="exampleSelect"]',
-      ),
-    );
-    this._selectHandler = this.selectFromSelect.bind(this);
-    this._selectElements.forEach((sel) => {
-      sel.addEventListener("change", this._selectHandler);
-    });
-    this._primarySelect =
-      document.getElementById("examples-select-header") ||
-      this._selectElements?.[0] ||
-      null;
-
-    this._primarySelectFocusHandler = () => this._setCaretOpen(true);
-    this._primarySelectBlurHandler = () => this._setCaretOpen(false);
-    if (this._primarySelect) {
-      this._primarySelect.addEventListener(
-        "focus",
-        this._primarySelectFocusHandler,
-      );
-      this._primarySelect.addEventListener(
-        "blur",
-        this._primarySelectBlurHandler,
-      );
-    }
+    // header select UI removed — no select elements to wire up
     this._diceTimeout = null;
     this._headerOpen = false;
     this._outsideClickHandler = null;
@@ -71,7 +45,8 @@ export default class extends Controller {
     this._headerScrollTop = 0;
     this._lastSelectedElement = null;
     this._lastSelectedIndex = null;
-    this._lastSelectedClass = "border-l-4 border-blue-400 pl-4";
+    // Use a background highlight for selected examples (was a left-border marker)
+    this._lastSelectedClass = "bg-gray-700 text-white";
   }
 
   disconnect() {
@@ -201,6 +176,10 @@ export default class extends Controller {
 
   showExampleCategory(e) {
     return HeaderDropdownCtrl.showExampleCategory(this, e);
+  }
+
+  showHeaderCategory(e) {
+    return HeaderDropdownCtrl.showHeaderCategory(this, e);
   }
 
   clearExampleCategory(_e) {
