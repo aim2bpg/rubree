@@ -19,7 +19,6 @@ export default class extends Controller {
     "diceButton",
     "headerDropdown",
     "headerScroll",
-    // hover preview removed
     "filter",
     "root",
   ];
@@ -35,8 +34,6 @@ export default class extends Controller {
     this._observer = null;
     this._modalResultObserver = null;
     this._movedForm = null;
-
-    // header select UI removed — no select elements to wire up
     this._diceTimeout = null;
     this._headerOpen = false;
     this._outsideClickHandler = null;
@@ -45,7 +42,6 @@ export default class extends Controller {
     this._headerScrollTop = 0;
     this._lastSelectedElement = null;
     this._lastSelectedIndex = null;
-    // Use a background highlight for selected examples (was a left-border marker)
     this._lastSelectedClass = "bg-gray-700 text-white";
   }
 
@@ -112,6 +108,37 @@ export default class extends Controller {
       const match = c.dataset.category === selected;
       c.classList.toggle("hidden", !match);
     });
+
+    try {
+      if (this.hasHeaderDropdownTarget) {
+        const leftBtns = Array.from(
+          this.headerDropdownTarget.querySelectorAll(
+            "[data-header-category]",
+          ) || [],
+        );
+        leftBtns.forEach((btn) => {
+          const is =
+            (btn.dataset.headerCategory || btn.dataset.category) === selected;
+          if (is) {
+            btn.classList.add("bg-gray-700", "text-white");
+            btn.classList.remove("text-gray-300");
+          } else {
+            btn.classList.remove("bg-gray-700", "text-white", "bg-gray-800");
+            btn.classList.add("text-gray-300");
+          }
+        });
+
+        const contents = Array.from(
+          this.headerDropdownTarget.querySelectorAll(
+            "[data-header-category-content]",
+          ) || [],
+        );
+        contents.forEach((c) => {
+          const match = (c.dataset.headerCategoryContent || "") === selected;
+          c.classList.toggle("hidden", !match);
+        });
+      }
+    } catch (_e) {}
   }
 
   selectExample(event) {

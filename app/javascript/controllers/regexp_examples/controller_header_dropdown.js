@@ -1,6 +1,61 @@
 import { enableDragScroll } from "./drag_scroll";
-import { attachDropdownLifecycle } from "./dropdown_helpers";
-import { positionHeaderDropdown } from "./dropdown_positioner";
+
+function positionHeaderDropdown(el, caretEl) {
+  if (!el || !caretEl) return;
+  try {
+    el.style.visibility = "hidden";
+    el.classList.remove("hidden");
+    el.style.position = "absolute";
+    el.style.left = "0px";
+    el.style.top = "0px";
+    const rect = caretEl.getBoundingClientRect();
+    const measuredWidth =
+      el.offsetWidth || el.getBoundingClientRect().width || el.scrollWidth;
+    const ddWidth = measuredWidth || 240;
+    let left = Math.round(rect.right + window.scrollX - ddWidth);
+    const minLeft = window.scrollX + 8;
+    const maxRight = window.scrollX + window.innerWidth - 8;
+    if (left < minLeft) left = minLeft;
+    if (left + ddWidth > maxRight) left = Math.max(minLeft, maxRight - ddWidth);
+    const top = Math.round(rect.bottom + window.scrollY + 6);
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+    el.style.width = "";
+    el.style.visibility = "";
+  } catch (_e) {}
+}
+
+function attachDropdownLifecycle({
+  dropdownEl,
+  caretEl,
+  onClose,
+  onReposition,
+}) {
+  if (!dropdownEl) return { detach() {} };
+  const outsideClick = (ev) => {
+    try {
+      if (!dropdownEl.contains(ev.target) && !caretEl.contains(ev.target))
+        onClose();
+    } catch (_e) {}
+  };
+  const onResize = () => {
+    try {
+      onReposition?.();
+    } catch (_e) {}
+  };
+  document.addEventListener("click", outsideClick, true);
+  window.addEventListener("resize", onResize);
+  window.addEventListener("scroll", onResize, true);
+  return {
+    detach() {
+      try {
+        document.removeEventListener("click", outsideClick, true);
+        window.removeEventListener("resize", onResize);
+        window.removeEventListener("scroll", onResize, true);
+      } catch (_e) {}
+    },
+  };
+}
 
 export function toggleHeaderDropdown(controller, e) {
   e?.preventDefault();
@@ -65,6 +120,20 @@ export function _openHeaderDropdown(controller) {
           const cat = sel.dataset.category || "";
           if (controller.hasHoverCategoryTarget)
             controller.hoverCategoryTarget.textContent = cat;
+
+          try {
+            if (controller.tabTargets?.length) {
+              const tab = controller.tabTargets.find(
+                (t) => t.dataset.category === cat,
+              );
+              if (
+                tab &&
+                typeof controller.showCategoryByElement === "function"
+              ) {
+                controller.showCategoryByElement(tab);
+              }
+            }
+          } catch (_e) {}
         } catch (_e) {}
       } else {
         const first = controller.headerDropdownTarget.querySelector("button");
@@ -261,7 +330,6 @@ export function showHeaderCategory(controller, e) {
       e.currentTarget.dataset.category ||
       "";
 
-    // Toggle left column buttons' selected state
     try {
       const leftBtns = Array.from(
         controller.headerDropdownTarget.querySelectorAll(
@@ -274,14 +342,12 @@ export function showHeaderCategory(controller, e) {
           btn.classList.add("bg-gray-700", "text-white");
           btn.classList.remove("text-gray-300");
         } else {
-          // Only the selected button should show a background. Ensure others are plain text.
           btn.classList.remove("bg-gray-700", "text-white", "bg-gray-800");
           btn.classList.add("text-gray-300");
         }
       });
     } catch (_e) {}
 
-    // Show matching right-column content, hide others
     try {
       const contents = Array.from(
         controller.headerDropdownTarget.querySelectorAll(
@@ -292,6 +358,17 @@ export function showHeaderCategory(controller, e) {
         const match = (c.dataset.headerCategoryContent || "") === key;
         c.classList.toggle("hidden", !match);
       });
+    } catch (_e) {}
+
+    try {
+      if (controller.tabTargets?.length) {
+        const tab = controller.tabTargets.find(
+          (t) => t.dataset.category === key,
+        );
+        if (tab && typeof controller.showCategoryByElement === "function") {
+          controller.showCategoryByElement(tab);
+        }
+      }
     } catch (_e) {}
   } catch (_e) {}
 }
