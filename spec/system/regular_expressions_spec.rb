@@ -9,8 +9,8 @@ RSpec.describe "RegularExpressionFlow" do
     it 'displays the initial view' do
       # Header section
       expect(page).to have_css 'span#example-link', text: 'Rubree'
-  expect(page).to have_css 'p', text: I18n.t('regular_expressions.header.subtitle')
-  expect(page).to have_css 'span#example-link', text: I18n.t('regular_expressions.header.try_example'), class: /text-blue-400/
+      expect(page).to have_css 'p', text: I18n.t('regular_expressions.header.subtitle')
+      expect(page).to have_css 'span#example-link', text: I18n.t('regular_expressions.header.try_example'), class: /text-blue-400/
 
       # Regular expression and options form
       expect(page).to have_css 'label', text: 'Your regular expression:'
@@ -21,7 +21,7 @@ RSpec.describe "RegularExpressionFlow" do
       # Test string and substitution form
       expect(page).to have_css 'label', text: 'Your test string:'
       expect(page).to have_field 'regular_expression[test_string]', with: ''
-  expect(page).to have_css 'span', text: I18n.t('regular_expressions.form.substitution')
+      expect(page).to have_css 'span', text: I18n.t('regular_expressions.form.substitution')
       expect(page).to have_field 'regular_expression[substitution_string]', with: ''
 
       # Output section (results and diagrams)
@@ -33,15 +33,15 @@ RSpec.describe "RegularExpressionFlow" do
       expect(page).to have_button 'Regex Examples', class: /bg-gray-800/
       expect(page).to have_css 'div#reference-panel'
 
-  # Footer section
-  # check for the common fragment to avoid punctuation/quote style mismatches
-  expect(page).to have_text(/Inspired by Michael Lovitt/)
-  expect(page).to have_css 'a', text: 'Rubular', class: /text-blue-700/
+      # Footer section
+      # check for the common fragment to avoid punctuation/quote style mismatches
+      expect(page).to have_text(/Inspired by Michael Lovitt/)
+      expect(page).to have_css 'a', text: 'Rubular', class: /text-blue-700/
     end
 
     it 'applies an example and shows match/substitution results (fast)' do
-  # click Try an example and assert the important outcomes only
-  find('span#example-link', text: I18n.t('regular_expressions.header.try_example'), wait: true).click
+      # click Try an example and assert the important outcomes only
+      find('span#example-link', text: I18n.t('regular_expressions.header.try_example'), wait: true).click
 
       # test string should be populated with today's date fragment
       expect(find('textarea#regular_expression_test_string').value).to include(Date.today.strftime('%-m/%-d/%Y'))
@@ -55,8 +55,8 @@ RSpec.describe "RegularExpressionFlow" do
     end
 
     it 'header interactions: reset, dice, caret and dropdown (fast)' do
-  # clicking Rubree resets inputs
-  find('span#example-link', text: I18n.t('regular_expressions.header.try_example')).click
+      # clicking Rubree resets inputs
+      find('span#example-link', text: I18n.t('regular_expressions.header.try_example')).click
       find('span#example-link', text: 'Rubree').click
       expect(find('textarea#regular_expression_expression').value).to eq('')
       expect(find('textarea#regular_expression_test_string').value).to eq('')
@@ -309,8 +309,8 @@ RSpec.describe "RegularExpressionFlow" do
       # Railroad diagram section
       expect(page).to have_css 'p', text: 'Railroad diagram will appear here'
 
-  # Match result section
-  expect(page).to have_css 'p', text: I18n.t('regular_expressions.results.please_enter')
+      # Match result section
+      expect(page).to have_css 'p', text: I18n.t('regular_expressions.results.please_enter')
     end
   end
 
