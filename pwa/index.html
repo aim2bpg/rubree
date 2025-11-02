@@ -70,8 +70,45 @@
         © 2025 Rubree. Powered by Wasmify Rails.
       </footer>
     </main>
-    <!-- TOS modal is loaded dynamically from tos.html to keep index.html small. -->
-    <div id="tos-container" aria-live="polite"></div>
+    <div id="tos-modal" aria-hidden="true">
+      <div class="tos-backdrop"></div>
+      <div class="tos-card" role="dialog" aria-modal="true" aria-labelledby="tos-title">
+        <h2 id="tos-title">Terms of Service</h2>
+        <div class="translation lead" aria-hidden="true">利用規約（同意が必要です）</div>
+        <div class="tos-body">
+          <p><strong>Welcome to Rubree.</strong></p>
+          <p class="translation lead">Rubreeへようこそ！</p>
+
+          <p><strong>A few quick notes before you start:</strong></p>
+          <p class="translation lead">利用開始にあたり注意事項があります：</p>
+          <ul>
+            <li>
+              <div class="en">This app does not guarantee result accuracy. Use outputs for reference only.</div>
+              <div class="translation">本アプリは結果の正確性を保証しません。出力は参考としてご利用ください。</div>
+            </li>
+            <li>
+              <div class="en">The authors are not responsible for any damages resulting from use of this application.</div>
+              <div class="translation">当方は本アプリの利用によって生じる如何なる損害についても責任を負いかねます。</div>
+            </li>
+            <li>
+              <div class="en">Features and UI may change without prior notice.</div>
+              <div class="translation">提供される機能や表示は予告なく変更されることがあります。</div>
+            </li>
+          </ul>
+
+          <p class="tos-note">
+            <div class="en">Press the button below to agree and start.</div>
+            <div class="translation">上の内容に同意いただける場合は「同意して開始」ボタンを押してください。</div>
+          </p>
+        </div>
+        <div class="tos-actions">
+          <div class="tos-buttons">
+            <button id="tos-cancel" class="btn-secondary">Cancel / キャンセル</button>
+            <button id="tos-agree" class="btn-primary">Agree and Start / 同意して開始</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="starting-overlay" class="starting-overlay hidden" aria-hidden="true">
       <div class="starting-panel">
         <div id="starting-text" class="starting-text" role="status" aria-live="polite">Starting Rubree 🚀 — About 10 seconds</div>
