@@ -46,7 +46,6 @@ p.description {
 }
 
 
-/* Shared button base for primary/launch buttons */
 #launch-button,
 .btn-primary {
   border: none;
