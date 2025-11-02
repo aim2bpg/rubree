@@ -1,6 +1,3 @@
-// positionHeaderDropdown: calculates and applies absolute positioning for the header
-// examples dropdown relative to the caret button. Extracted from the controller
-// so it can be tested independently.
 export function positionHeaderDropdown(el, caret) {
   if (!el || !caret) return;
   try {

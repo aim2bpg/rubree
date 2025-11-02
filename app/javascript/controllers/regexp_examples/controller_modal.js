@@ -44,7 +44,6 @@ export function openModal(controller, event) {
   controller._previousActive = document.activeElement;
   if (controller._primarySelect) controller._primarySelect.focus();
   else controller.modalTarget.focus();
-  // use modal orchestrator to show and trap focus
   try {
     controller._removeModalFocusTrap = showModal(controller.modalTarget);
   } catch (_e) {
@@ -66,7 +65,6 @@ export function closeModal(controller, event) {
   event?.preventDefault();
   if (!controller.hasModalTarget || !controller.hasModalContentTarget) return;
 
-  // hide via modal orchestrator to keep animation and focus handling consistent
   try {
     hideModal(controller.modalTarget, {
       clearContentEl: controller.modalContentTarget,
@@ -83,7 +81,6 @@ export function closeModal(controller, event) {
     ) {
       controller._movedForm.restore();
     } else if (controller._movedForm) {
-      // fallback
       try {
         const { el, parent, nextSibling } = controller._movedForm;
         if (nextSibling) parent.insertBefore(el, nextSibling);
@@ -129,7 +126,6 @@ export function restoreForm(controller) {
 }
 
 export function trapFocus(_controller, modal) {
-  // delegate to modal_helpers.trapFocus but keep compatibility
   try {
     return sharedTrapFocus(modal);
   } catch (_e) {

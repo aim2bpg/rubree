@@ -3,7 +3,6 @@ import * as HeaderDropdownCtrl from "./regexp_examples/controller_header_dropdow
 import * as ModalCtrl from "./regexp_examples/controller_modal";
 import * as SelectionCtrl from "./regexp_examples/controller_selection";
 
-// Connects to data-controller="regexp-examples"
 export default class extends Controller {
   static targets = [
     "tab",
@@ -27,7 +26,6 @@ export default class extends Controller {
   ];
 
   connect() {
-    // initialize tab selection
     if (this.hasTabTarget && this.tabTargets[0]) {
       this.showCategoryByElement(this.tabTargets[0]);
     }
@@ -39,7 +37,6 @@ export default class extends Controller {
     this._modalResultObserver = null;
     this._movedForm = null;
 
-    // wire select change for all exampleSelect elements and choose a primary select (header if present)
     this._selectElements = Array.from(
       document.querySelectorAll(
         '[data-regexp-examples-target="exampleSelect"]',
@@ -54,7 +51,6 @@ export default class extends Controller {
       this._selectElements?.[0] ||
       null;
 
-    // add focus/blur listeners to primary select so we can animate the caret
     this._primarySelectFocusHandler = () => this._setCaretOpen(true);
     this._primarySelectBlurHandler = () => this._setCaretOpen(false);
     if (this._primarySelect) {
@@ -72,18 +68,13 @@ export default class extends Controller {
     this._outsideClickHandler = null;
     this._dropdownKeyHandler = this._onDropdownKeydown.bind(this);
     this._repositionHandler = null;
-    // remember last scroll position inside the header dropdown so we can restore it
     this._headerScrollTop = 0;
-    // remember last selected example element/index so we can re-apply highlight/focus
     this._lastSelectedElement = null;
     this._lastSelectedIndex = null;
-    // persistent selection marker: left-edge border + padding so hover background remains visible
-    // stored as a space-separated list of classes; helpers below will add/remove each class
     this._lastSelectedClass = "border-l-4 border-blue-400 pl-4";
   }
 
   disconnect() {
-    // cleanup
     if (this._observer) this._observer.disconnect();
     document.removeEventListener("keydown", this._boundEsc);
     if (
@@ -95,7 +86,6 @@ export default class extends Controller {
         sel.removeEventListener("change", this._selectHandler);
       });
     }
-    // remove primary select listeners
     try {
       if (this._primarySelect) {
         this._primarySelect.removeEventListener(
@@ -113,7 +103,6 @@ export default class extends Controller {
       this._diceTimeout = null;
     }
 
-    // remove header dropdown listeners if any
     try {
       if (this._outsideClickHandler)
         document.removeEventListener("click", this._outsideClickHandler, true);
@@ -121,7 +110,6 @@ export default class extends Controller {
     } catch (_e) {}
   }
 
-  // helpers to add/remove the persistent set of classes (space-separated)
   _applyLastSelectedClass(el) {
     return SelectionCtrl.applyLastSelectedClass(this, el);
   }
@@ -130,7 +118,6 @@ export default class extends Controller {
     return SelectionCtrl.removeLastSelectedClass(this, el);
   }
 
-  // --- Drag-to-scroll support for header dropdown (mouse drag / touch pointer) ---
   showCategory(event) {
     const tab = event.currentTarget;
     this.showCategoryByElement(tab);
@@ -156,7 +143,6 @@ export default class extends Controller {
     return SelectionCtrl.selectExample(this, event);
   }
 
-  // open modal: move real form into modal and clone examples for readability
   openModal(event) {
     return ModalCtrl.openModal(this, event);
   }
@@ -169,12 +155,10 @@ export default class extends Controller {
     return ModalCtrl.onEsc(this, e);
   }
 
-  // restore moved form back to original place
   _restoreForm() {
     return ModalCtrl.restoreForm(this);
   }
 
-  // select from select element: use server-rendered index mapping
   selectFromSelect(e) {
     return SelectionCtrl.selectFromSelect(this, e);
   }
@@ -195,7 +179,6 @@ export default class extends Controller {
     return SelectionCtrl.focusPrimarySelect(this, e);
   }
 
-  // Toggle header dropdown (opened by caret button)
   toggleHeaderDropdown(e) {
     return HeaderDropdownCtrl.toggleHeaderDropdown(this, e);
   }
@@ -216,7 +199,6 @@ export default class extends Controller {
     return HeaderDropdownCtrl._onDropdownKeydown(this, e);
   }
 
-  // show category name in dropdown header when hovering an example
   showExampleCategory(e) {
     return HeaderDropdownCtrl.showExampleCategory(this, e);
   }
@@ -229,7 +211,6 @@ export default class extends Controller {
     return SelectionCtrl.setLastSelectedIndex(this, itemOrIdx);
   }
 
-  // --- Drag-to-scroll: delegate to helper module ---
   _enableDragScroll() {
     return HeaderDropdownCtrl._enableDragScroll(this);
   }
@@ -250,7 +231,6 @@ export default class extends Controller {
     return ModalCtrl.trapFocus(this, modal);
   }
 
-  // result observer & update
   _startResultObserver() {
     return ModalCtrl.startResultObserver(this);
   }

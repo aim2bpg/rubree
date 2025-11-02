@@ -1,6 +1,3 @@
-// selection_persistence: encapsulates logic to remove/apply a set of classes
-// for a persistent selection marker and to resolve a passed element (possibly
-// a cloned node) to the canonical example element in the document.
 export function updateSelectionPersistence(
   itemOrIdx,
   examplesSelector,
@@ -67,7 +64,6 @@ export function updateSelectionPersistence(
       }
     } catch (_e) {}
 
-    // apply new
     if (newEl) {
       try {
         addClasses(newEl);

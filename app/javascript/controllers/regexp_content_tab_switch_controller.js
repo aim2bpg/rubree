@@ -1,6 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Connects to data-controller="content-tab-switch"
 export default class extends Controller {
   static targets = [
     "tabReference",

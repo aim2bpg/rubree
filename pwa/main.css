@@ -1,7 +1,7 @@
 /* Main page styles aligned with app views */
 body {
   font-family: "Work Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  background-color: #1f2937; /* Tailwind bg-gray-800 */
+  background-color: #1f2937;
   color: #ffffff;
   margin: 0;
   padding: 0;
@@ -11,21 +11,21 @@ main {
   max-width: 1100px;
   margin: 0 auto;
   text-align: center;
-  padding: 1.1rem 1.25rem 3.2rem 1.25rem; /* give more breathing room */
+  padding: 1.1rem 1.25rem 3.2rem 1.25rem;
   min-height: 100vh;
   box-sizing: border-box;
 }
 
 h1 {
-  font-size: 3rem; /* fallback size */
+  font-size: 3rem;
   margin: 0.25rem 0;
   font-weight: 600;
   color: #ffffff;
 }
 
 p.description {
-  color: #9ca3af; /* Tailwind text-gray-400 to match app */
-  font-size: 1.1rem; /* slightly larger for better parity */
+  color: #9ca3af;
+  font-size: 1.1rem;
   margin: 0.4rem 0 1rem 0;
 }
 
@@ -36,9 +36,8 @@ p.description {
   color: #7fb3ff;
 }
 
-/* Boot message + inline spinner row */
 .boot-row {
-  display: flex; /* make this a block-level row so controls below won't sit on same line */
+  display: flex;
   align-items: center;
   gap: 0.6rem;
   justify-content: center;
@@ -46,18 +45,23 @@ p.description {
   width: 100%;
 }
 
-/* Launch button (primary) - styled as prominent yellow CTA */
-#launch-button {
-  background: linear-gradient(180deg,#f59e0b,#d97706);
-  color: #0b1220;
+
+/* Shared button base for primary/launch buttons */
+#launch-button,
+.btn-primary {
   border: none;
-  padding: 0.8rem 1.25rem; /* unified medium frame */
-  font-size: 1.06rem; /* unified text size */
+  padding: 0.8rem 1.25rem;
   font-weight: 600;
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 12px 30px rgba(217,119,6,0.12);
   transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+}
+
+#launch-button {
+  background: linear-gradient(180deg,#f59e0b,#d97706);
+  color: #0b1220;
+  font-size: 1.06rem;
+  box-shadow: 0 12px 30px rgba(217,119,6,0.12);
 }
 
 #launch-button:active { transform: translateY(1px); }
@@ -68,19 +72,16 @@ p.description {
   opacity: 0.65;
 }
 
-/* Inline subtle spinner next to Start button */
-.launch-controls {
-  display: flex; /* block-level container below boot-row */
+.launch-controls,
+.boot-row {
+  display: flex;
   align-items: center;
   gap: 0.6rem;
   justify-content: center;
-  margin-top: 0.25rem;
 }
 
-/* Center the launch-controls within the right column regardless of text alignment */
-.launch-controls { align-self: center; }
+.launch-controls { margin-top: 0.25rem; align-self: center; }
 
-/* Hero two-column layout to match target image */
 .hero {
   display: flex;
   flex-direction: column;
@@ -112,8 +113,8 @@ p.description {
 }
 
 .hero-subtitle {
-  color: #e6eefc; /* brighter so it stands out */
-  font-size: 1.25rem; /* larger to be more prominent */
+  color: #e6eefc;
+  font-size: 1.25rem;
   font-weight: 600;
   max-width: 70ch;
   margin: 0 auto;
@@ -129,16 +130,10 @@ p.description {
 }
 
 .btn-primary {
-  background: linear-gradient(180deg,#f59e0b,#d97706); /* yellow gradient */
+  background: linear-gradient(180deg,#f59e0b,#d97706);
   color: #071025;
-  border: none;
-  padding: 0.8rem 1.25rem; /* unified medium frame */
-  font-size: 1.12rem; /* slightly larger for Get started */
-  font-weight: 600;
-  border-radius: 12px;
-  cursor: pointer;
+  font-size: 1.12rem;
   box-shadow: 0 16px 36px rgba(217,119,6,0.12);
-  transition: transform .12s ease, box-shadow .12s ease;
 }
 .btn-primary:disabled { opacity: 0.9; }
 .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 22px 48px rgba(217,119,6,0.16); }
@@ -147,14 +142,14 @@ p.description {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.8rem 1.25rem; /* unified medium frame */
+  padding: 0.8rem 1.25rem;
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.16);
   background: rgba(255,255,255,0.02);
   color: #ffffff;
   text-decoration: none;
-  font-size: 1.00rem; /* slightly smaller for GitHub */
-  font-weight: 400; /* remove bold */
+  font-size: 1.00rem;
+  font-weight: 400;
 }
 
 .btn-outline .icon {
@@ -179,7 +174,6 @@ p.description {
   box-shadow: 0 18px 46px rgba(2,6,23,0.6);
 }
 preview-frame img { display:block; width:100%; height:auto; border-radius:8px; }
-/* soft radial glow behind preview to elevate the visual */
 .preview-frame::before {
   content: '';
   position: absolute;
@@ -194,16 +188,14 @@ preview-frame img { display:block; width:100%; height:auto; border-radius:8px; }
   z-index: -1;
 }
 .hero-left {
-  /* make the left column take full width so the image centers on the page */
   flex: 0 0 100%;
   display: flex;
   justify-content: center;
 }
 .hero-right {
-  /* place the right column under the image (full width) so it doesn't force a two-column split */
   flex: 0 0 100%;
   text-align: center;
-  color: #cbd5e1; /* slightly lighter for body of right column */
+  color: #cbd5e1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -214,13 +206,10 @@ preview-frame img { display:block; width:100%; height:auto; border-radius:8px; }
   text-align: left;
   color: #cbd5e1;
   margin-bottom: 1rem;
-  /* Prevent wrapping so the initial description stays on a single line */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-/* Legacy duplicate removed - primary #launch-button styles are declared earlier */
 
 @media (max-width: 900px) {
   .hero { flex-direction: column; }
@@ -229,10 +218,6 @@ preview-frame img { display:block; width:100%; height:auto; border-radius:8px; }
   .hero-right .description { text-align: center; white-space: normal; }
 }
 
-/* inline spinner removed — using bar indicator instead */
-@keyframes spin-small { to { transform: rotate(360deg); } }
-
-/* Preview image styled as a card similar to app panels */
 #site-image {
   display: block;
   width: 720px;
@@ -240,14 +225,10 @@ preview-frame img { display:block; width:100%; height:auto; border-radius:8px; }
   height: auto;
   margin: 1.5rem auto 0 auto;
   border-radius: 8px;
-  /* remove visible frame by dropping padding/background/border */
   padding: 0;
   background-color: transparent;
   border: none;
-  /* keep a subtle shadow but reduce intensity so the image feels tighter */
   box-shadow: 0 12px 28px rgba(2,6,23,0.45);
-  /* crop a bit of the screenshot edges to visually trim the browser chrome; tightened to focus on app panel */
-  /* clip-path removed to show the full preview image */
 }
 
 @media (max-width: 900px) {
@@ -264,7 +245,6 @@ footer {
   color: #9ca3af;
 }
 
-/* Full-screen seamless starting overlay used during same-tab startup */
 .starting-overlay {
   position: fixed;
   inset: 0;
@@ -284,7 +264,7 @@ footer {
 }
 .starting-panel {
   display: flex;
-  flex-direction: column; /* stack spinner/text and bar vertically */
+  flex-direction: column;
   align-items: center;
   gap: 12px;
   background: rgba(12,16,22,0.75);
@@ -294,34 +274,15 @@ footer {
   border: 1px solid rgba(255,255,255,0.035);
   max-width: 680px;
 }
-.starting-spinner { display: none; }
-.starting-text {
-  color: #e6eefc;
-  font-weight: 600;
-  font-size: 1.04rem;
-  text-align: center;
-  line-height: 1.25;
-  letter-spacing: 0.1px;
-  margin: 0 6px;
-}
 
-/* Larger, bolder welcome styling applied briefly when loading completes */
 .starting-text.welcome {
-  font-size: 1.6rem; /* noticeably larger */
+  font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: 0.2px;
 }
 
-/* Secondary English line under the main loading message */
-.starting-text-eng {
-  color: rgba(230,238,252,0.85);
-  font-weight: 400;
-  font-size: 0.92rem;
-  margin-top: 6px;
-  opacity: 0.95;
-}
 
-/* small elapsed timer shown after the main message */
+
 .starting-seconds {
   color: rgba(230,238,252,0.92);
   font-weight: 600;
@@ -330,31 +291,25 @@ footer {
   text-align: right;
 }
 
-/* progress bar for overlay */
 .starting-bar {
   width: 420px;
   max-width: 70vw;
   height: 12px;
   margin-top: 6px;
-  display: none; /* hidden by default until bar-mode is started */
-  /* use flex with gaps so we can render square ticks */
+  display: none;
   gap: 8px;
   align-items: center;
-  justify-content: flex-start; /* left-align segments to avoid right-side whitespace */
+  justify-content: flex-start;
 }
 
 .starting-bar-wrap {
-  display: none; /* hidden until activated */
+  display: none;
   align-items: center;
   gap: 10px;
   width: 100%;
-  justify-content: center; /* keep the wrap centered while bar contents align left */
+  justify-content: center;
 }
 
-/* image wrapper allows overlaying the start button centered on the preview */
-/* legacy image-overlay removed in favor of centered CTAs */
-
-/* each tick segment */
 .starting-bar-seg {
   flex: 1 1 0;
   height: 12px;
@@ -362,17 +317,14 @@ footer {
   border-radius: 4px;
   transition: background-color 180ms ease, transform 160ms ease, box-shadow 160ms ease;
   transform-origin: center;
-}
-.starting-bar-seg {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px; /* emoji size */
+  font-size: 14px;
   color: rgba(255,255,255,0.92);
   line-height: 1;
 }
 
-/* playful pop animation when a segment becomes active */
 .starting-bar-seg.active {
   animation: pop-seg 360ms cubic-bezier(.2,.9,.3,1) both;
 }
@@ -382,13 +334,10 @@ footer {
   100% { transform: translateY(-3px) scale(1.04); filter: brightness(1.05); }
 }
 
-/* small hint next to the bar (short English text) */
-/* starting-hint removed — show short hint text inside the seconds element instead */
 .starting-bar-seg.active {
-  background: linear-gradient(90deg,#60a5fa,#2563eb); /* blue gradient */
+  background: linear-gradient(90deg,#60a5fa,#2563eb);
   box-shadow: 0 8px 20px rgba(37,99,235,0.12);
   transform: translateY(-3px) scale(1.02);
 }
 
-/* when bar is hidden ensure segments don't affect layout */
 .starting-bar[style*="display: none"] .starting-bar-seg { display: none; }

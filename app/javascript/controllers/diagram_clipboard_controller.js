@@ -5,7 +5,6 @@ export default class extends Controller {
 
   open(event) {
     event.stopPropagation();
-    // Copy SVG content from source to modal content container
     this.contentTarget.innerHTML = this.sourceTarget.innerHTML;
     this.modalTarget.classList.remove("hidden");
   }
@@ -13,7 +12,6 @@ export default class extends Controller {
   close(event) {
     event.stopPropagation();
     this.modalTarget.classList.add("hidden");
-    // Clear modal content to free memory
     this.contentTarget.innerHTML = "";
   }
 
@@ -22,10 +20,8 @@ export default class extends Controller {
   }
 
   async copyPng(event) {
-    // Get the button that triggered the copy
     const button = event.currentTarget;
 
-    // Find the nearest .flex.flex-col container and locate the SVG
     const flexCol = button.closest(".flex.flex-col");
     let svg = null;
     if (flexCol) {
@@ -41,7 +37,6 @@ export default class extends Controller {
       return;
     }
 
-    // Clone the SVG and inject inline styles
     const svgClone = svg.cloneNode(true);
     const style = document.createElement("style");
     style.textContent = `
@@ -55,7 +50,6 @@ export default class extends Controller {
     `;
     svgClone.insertBefore(style, svgClone.firstChild);
 
-    // --- Add pattern label at the top ---
     const pattern = button.getAttribute("data-pattern") || "";
     if (pattern) {
       const labelText = `Regex: ${pattern}`;
@@ -65,14 +59,12 @@ export default class extends Controller {
         svgClone.viewBox?.baseVal?.width ||
         600;
 
-      // Wrap existing contents in a group to shift downward
       const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
       while (svgClone.childNodes.length > 0) {
         g.appendChild(svgClone.childNodes[0]);
       }
       svgClone.appendChild(g);
 
-      // Add the pattern text label
       const text = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "text",
@@ -86,7 +78,6 @@ export default class extends Controller {
       text.textContent = labelText;
       svgClone.insertBefore(text, g);
 
-      // Adjust height and viewBox to accommodate label and footer
       const origHeight =
         parseFloat(svgClone.getAttribute("height")) ||
         svgClone.viewBox?.baseVal?.height ||
@@ -101,7 +92,6 @@ export default class extends Controller {
       }
       g.setAttribute("transform", "translate(0,32)");
 
-      // --- Add footer attribution below the diagram ---
       const footer = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "text",
@@ -115,7 +105,6 @@ export default class extends Controller {
       svgClone.appendChild(footer);
     }
 
-    // Convert the SVG into a PNG and copy to clipboard
     const svgData = new XMLSerializer().serializeToString(svgClone);
     const svgBlob = new Blob([svgData], { type: "image/svg+xml" });
     const url = URL.createObjectURL(svgBlob);
@@ -133,7 +122,6 @@ export default class extends Controller {
           await navigator.clipboard.write([
             new window.ClipboardItem({ "image/png": blob }),
           ]);
-          // Show tooltip (Copied!)
           const tooltip = button.querySelector(
             '[data-diagram-clipboard-target="tooltip"]',
           );
@@ -158,13 +146,5 @@ export default class extends Controller {
     };
 
     img.src = url;
-  }
-
-  // (Unused) Simple feedback for copy action
-  showCopiedTooltip() {
-    // Simple feedback (not used in current implementation)
-    const btn = this.svgTarget;
-    btn.classList.add("text-green-500");
-    setTimeout(() => btn.classList.remove("text-green-500"), 1000);
   }
 }

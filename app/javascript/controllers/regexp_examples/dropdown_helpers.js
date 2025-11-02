@@ -1,5 +1,3 @@
-// dropdown_helpers: manage outside-click, reposition (resize/scroll) and key handlers
-// for an absolutely-positioned dropdown. Returns a lifecycle object with detach().
 export function attachDropdownLifecycle({
   dropdownEl,
   caretEl,

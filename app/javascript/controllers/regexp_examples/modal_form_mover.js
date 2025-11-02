@@ -1,4 +1,3 @@
-// modal_form_mover: move a given form element into a modal container and restore it later.
 export function moveFormIntoModal(formEl, modalContentEl) {
   if (!formEl || !modalContentEl) return null;
   const state = {
