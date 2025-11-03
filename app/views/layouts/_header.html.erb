@@ -26,7 +26,8 @@
           data-pattern="(?<month>\d{1,2})\/(?<day>\d{1,2})\/(?<year>\d{4})"
           data-test="Today's date is: <%= Time.now.strftime("%-m/%-d/%Y") %>."
           data-options=""
-          data-substitution="\k<year>/\k<month>/\k<day>">
+          data-substitution="\k<year>/\k<month>/\k<day>"
+          data-no-last-selected="true">
           <%= t("regular_expressions.header.try_example", default: "Try an example") %>
         </span>
 

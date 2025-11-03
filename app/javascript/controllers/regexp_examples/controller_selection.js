@@ -1,6 +1,14 @@
 export function applyLastSelectedClass(controller, el) {
   if (!el || !controller._lastSelectedClass) return;
   try {
+    if (
+      el.dataset &&
+      (el.dataset.noLastSelected === "true" ||
+        el.dataset.noLastSelected === "1")
+    )
+      return;
+  } catch (_e) {}
+  try {
     controller._lastSelectedClass.split(" ").forEach((c) => {
       if (c) el.classList.add(c);
     });
@@ -9,6 +17,14 @@ export function applyLastSelectedClass(controller, el) {
 
 export function removeLastSelectedClass(controller, el) {
   if (!el || !controller._lastSelectedClass) return;
+  try {
+    if (
+      el.dataset &&
+      (el.dataset.noLastSelected === "true" ||
+        el.dataset.noLastSelected === "1")
+    )
+      return;
+  } catch (_e) {}
   try {
     controller._lastSelectedClass.split(" ").forEach((c) => {
       if (c) el.classList.remove(c);
