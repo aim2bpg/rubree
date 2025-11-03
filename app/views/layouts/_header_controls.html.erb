@@ -3,7 +3,7 @@
   <!-- Top row: locale toggle + GitHub link -->
   <div class="inline-flex items-center gap-2">
     <% other = I18n.locale.to_s == "ja" ? "en" : "ja" %>
-    <%= link_to root_path(locale: other), class: "inline-flex items-center text-sm rounded-full px-1 py-0.5 bg-transparent focus:outline-none", data: { test: "locale-toggle", turbo: false }, aria: { label: t("regular_expressions.header.toggle_locale", default: "Toggle language") } do %>
+    <%= link_to url_for(params.to_unsafe_h.merge(locale: other)), class: "inline-flex items-center text-sm rounded-full px-1 py-0.5 bg-transparent focus:outline-none", data: { test: "locale-toggle", turbo: false }, aria: { label: t("regular_expressions.header.toggle_locale", default: "Toggle language") } do %>
       <span class="sr-only"><%= t("regular_expressions.header.toggle_locale", default: "Toggle language") %></span>
       <span class="inline-flex items-center gap-2">
         <span class="text-xs text-gray-400">LANG</span>
