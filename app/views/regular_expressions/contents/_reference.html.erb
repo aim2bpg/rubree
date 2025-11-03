@@ -21,24 +21,29 @@
           </div>
         </div>
         <% end %>
-      </div>
-    </div>
 
-    <!-- Options -->
-    <div class="mt-2 pt-2 border-t border-gray-600 text-gray-400 text-sm text-left md:text-center flex flex-col md:flex-row md:items-center justify-center gap-x-4 gap-y-1">
-      <strong class="text-white mr-2 mb-1 md:mb-0 whitespace-nowrap"><%= t("regular_expressions.reference.sections.options_label", default: "Options:") %></strong>
-      <div class="flex flex-col md:flex-row flex-wrap md:flex-nowrap justify-center gap-x-4 gap-y-0.5 md:gap-y-0">
-        <% regex_reference_options.each do |code, label| %>
-          <div class="basis-full md:basis-auto text-left md:text-center">
-            <code
-              data-controller="copy-code"
-              data-copy-code-target="source"
-              data-action="click->copy-code#copy"
-              class="cursor-pointer hover:text-green-400 transition duration-200 mx-2"
-              title="<%= t("common.click_to_copy", default: "Click to copy") %>"><%= code %></code>
-            <%= label %>
+        <!-- Options row inside the same grid so left edges align with reference columns -->
+        <div class="col-span-1 md:col-span-3 mt-2 pt-2 border-t border-gray-600 text-gray-400 text-sm">
+          <div class="flex items-start justify-center gap-x-6">
+            <strong class="text-white mr-2 mb-0 whitespace-nowrap self-start"><%= t("regular_expressions.reference.sections.options_label", default: "Options:") %></strong>
+            <div class="w-full sm:w-auto">
+              <!-- portrait: stack vertically (1 column) so items appear in separate rows; md+: inline centered -->
+              <div class="space-y-0.5 sm:flex sm:items-center sm:space-x-8">
+                <% regex_reference_options.each do |code, label| %>
+                  <div class="flex items-center space-x-2">
+                    <code
+                      data-controller="copy-code"
+                      data-copy-code-target="source"
+                      data-action="click->copy-code#copy"
+                      class="cursor-pointer hover:text-green-400 transition duration-200 px-1"
+                      title="<%= t("common.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                    <span><%= label %></span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
           </div>
-        <% end %>
+        </div>
       </div>
     </div>
 
