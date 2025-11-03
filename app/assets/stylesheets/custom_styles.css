@@ -51,9 +51,7 @@ svg.railroad-diagram rect.group-box {
   display: none;
   opacity: 0;
 }
-
-/* Header-specific styles: scrollbars and tooltips (moved from layout partial) */
-/* Firefox: apply to both left categories column and right items column */
+/* Header scrollbars & tooltips */
 [data-regexp-examples-target="headerScroll"],
 [data-header-category-content],
 [data-regexp-examples-target="tabsScroll"],
@@ -99,9 +97,8 @@ svg.railroad-diagram rect.group-box {
 }
 .github-tooltip {
   position: absolute;
-  /* align tooltip to the right edge of the icon so it grows leftwards (won't overflow page right edge) */
-  right: 0;
-  transform: translateY(6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
   bottom: 100%;
   background: rgba(17, 24, 39, 0.95); /* near slate-900 */
   color: #f8fafc; /* slate-50 */
@@ -121,17 +118,36 @@ svg.railroad-diagram rect.group-box {
 .github-tooltip::after {
   content: "";
   position: absolute;
-  right: 10px; /* position arrow near the icon */
+  left: 50%;
+  transform: translateX(-50%);
   top: 100%;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
   border-top: 6px solid rgba(17, 24, 39, 0.95);
 }
-/* show only on hover (avoid persisting after click/focus) */
 .github-link:hover .github-tooltip {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
   pointer-events: none;
+}
+
+/* Disable wrapper pointer events; enable interactive descendants */
+.header-controls {
+  pointer-events: none;
+}
+.header-controls a,
+.header-controls button,
+.header-controls [role="button"],
+.header-controls .github-link,
+.header-controls [data-action],
+.header-controls input,
+.header-controls select {
+  pointer-events: auto;
+}
+.header-controls [data-action],
+.header-controls input,
+.header-controls select {
+  pointer-events: auto;
 }
 
 /* Dice button tooltip (centered above the button) */
@@ -158,6 +174,47 @@ svg.railroad-diagram rect.group-box {
     transform 120ms ease;
   z-index: 60;
 }
+
+/* Responsive: force 2 columns in landscape orientation for main grids */
+.landscape-2col {
+  grid-template-columns: 1fr;
+}
+
+@media (orientation: landscape) {
+  .landscape-2col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Ensure children don't collapse too small on narrow landscape devices */
+.landscape-2col > * {
+  min-width: 280px;
+}
+
+/* Tablet 2-column utility for narrower tablets */
+@media (min-width: 700px) {
+  /* Allow narrower columns and smaller gap on tight tablet widths */
+  .tablet-2col {
+    display: grid;
+    /* allow columns to shrink to a reasonable minimum but still grow */
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    gap: 0.75rem;
+  }
+  /* allow slightly smaller children when space is tight */
+  .tablet-2col > * {
+    min-width: 260px;
+  }
+
+  /* Reduce gap/min-width on very narrow tablets */
+  @media (max-width: 740px) {
+    .tablet-2col {
+      gap: 0.5rem;
+    }
+    .tablet-2col > * {
+      min-width: 220px;
+    }
+  }
+}
 .dice-tooltip::after {
   content: "";
   position: absolute;
@@ -168,7 +225,7 @@ svg.railroad-diagram rect.group-box {
   border-right: 6px solid transparent;
   border-top: 6px solid rgba(17, 24, 39, 0.95);
 }
-/* show only on hover to avoid sticky tooltip after click */
+/* show on hover only */
 .dice-link:hover .dice-tooltip {
   opacity: 1;
   transform: translateX(-50%) translateY(0);

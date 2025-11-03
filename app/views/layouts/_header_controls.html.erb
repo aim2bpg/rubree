@@ -1,5 +1,5 @@
 <!-- Header right controls: locale toggle, GitHub link, examples button -->
-<div class="sm:absolute sm:top-4 sm:right-6 mt-3 sm:mt-0 flex flex-col items-end gap-2">
+<div class="w-full flex justify-end pr-4 lg:pr-0 lg:absolute lg:top-6 lg:right-8 mt-3 lg:mt-0 items-center gap-2 z-20 header-controls">
   <!-- Top row: locale toggle + GitHub link -->
   <div class="inline-flex items-center gap-2">
     <% other = I18n.locale.to_s == "ja" ? "en" : "ja" %>
@@ -27,7 +27,7 @@
   <!-- Bottom row: Regex Examples button -->
   <div>
     <button type="button"
-      class="inline-flex items-center gap-2 bg-transparent border border-blue-500 text-blue-400 text-sm px-3 py-1 rounded-lg shadow-sm hover:bg-blue-600/5 hover:text-white transition-colors focus:ring-2 focus:ring-blue-500"
+      class="inline-flex items-center gap-2 bg-transparent border border-blue-500 text-blue-400 text-sm px-2 py-0.5 rounded shadow-sm hover:bg-blue-600/5 hover:text-white transition-colors focus:ring-2 focus:ring-blue-500"
       data-action="click->regexp-examples#toggleHeaderDropdown"
       data-regexp-examples-target="caretButton"
       aria-expanded="false"
