@@ -31,9 +31,9 @@ export default class extends Controller {
             })[c],
         );
 
-      labelHtml = `<div class="sticky top-3 z-10 text-base font-mono font-bold text-gray-800 bg-gray-200 rounded px-3 py-1 mb-2 w-full text-center" style="padding-right:48px;">Regex: <span class="break-all">${escapeHtml(pattern)}</span></div>`;
+      labelHtml = `<div class="sticky top-0 z-10 text-base font-mono font-bold text-gray-800 bg-gray-200 rounded px-4 py-1 mb-2 w-full text-center" style="padding-right:48px;">Regex: <span class="break-all">${escapeHtml(pattern)}</span></div>`;
     }
-    const svgContainer = `<div class='overflow-auto w-full grow bg-white rounded p-3 ring-1 ring-gray-200 shadow-sm cursor-grab' style='max-height:calc(80vh-48px);' data-controller="drag-scroll">${svgHtml}</div>`;
+    const svgContainer = `<div class='overflow-auto w-full grow cursor-grab' style='max-height:calc(80vh-48px);' data-controller="drag-scroll">${svgHtml}</div>`;
     this.contentTarget.innerHTML = labelHtml + svgContainer;
 
     this.modalTarget.classList.remove("hidden");

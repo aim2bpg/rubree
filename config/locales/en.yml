@@ -9,6 +9,8 @@ en:
       try_example: "Try this example"
       try_random: "Try a random example"
       examples: "Examples"
+      categories_label: "Categories"
+      examples_label: "Examples"
       open_examples: "Open examples (top-right)"
       button: "Regex Examples"
 

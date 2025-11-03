@@ -1,5 +1,5 @@
 <%= form_with model: @regular_expression,
-              url: root_path,
+              url: regular_expressions_path,
               html: { data: { turbo_frame: "regexp", controller: "regexp-form", action: "input->regexp-form#submit" } } do |f| %>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-900 rounded-lg shadow-lg p-4 mb-4">
 

@@ -9,6 +9,8 @@ ja:
       try_example: 例を試す
       try_random: ランダムな例を試す
       examples: 例
+      categories_label: カテゴリ
+      examples_label: 例
       open_examples: 例を開く（右上）
       button: 正規表現の例
 
