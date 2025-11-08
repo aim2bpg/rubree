@@ -1,0 +1,59 @@
+<div id="reference-panel" class="w-full">
+  <div class="text-center mb-4">
+    <span id="reference-label" class="text-white font-semibold text-lg">
+      <%= t("regular_expressions.reference.quick_reference", default: "Regex Quick Reference") %>
+    </span>
+  </div>
+
+  <div class="bg-gray-900 rounded-lg shadow-lg pt-4 pb-4 text-gray-400 text-sm leading-snug">
+    <div class="text-left w-full px-4">
+
+      <div class="flex justify-center">
+        <div class="grid grid-cols-1 md:grid-cols-[auto_auto_minmax(16rem,1fr)] gap-4 mx-auto max-w-[1100px]">
+          <% RegularExpression::Reference.sections.each do |section| %>
+            <div class="space-y-1 min-w-0">
+            <label class="font-semibold mb-2 text-white"><%= section[:title] %></label>
+            <div class="space-y-0.5">
+              <% section[:items].each do |code, description| %>
+                <div class="grid <%= section[:col_class] %> items-start min-w-0">
+                  <code
+                    data-controller="copy-code"
+                    data-copy-code-target="source"
+                    data-action="click->copy-code#copy"
+                    class="cursor-pointer hover:text-white transition duration-200 whitespace-nowrap"
+                    title="<%= t("common.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                  <span class="break-words"><%= description %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <% end %>
+
+          <!-- Options row inside the same grid so left edges align with reference columns -->
+          <div class="col-span-1 md:col-span-3 mt-2 pt-2 border-t border-gray-600 text-gray-400 text-sm">
+            <div class="flex items-start justify-center gap-x-6">
+              <strong class="text-white mr-2 mb-0 whitespace-nowrap self-start"><%= t("regular_expressions.reference.options.options_label", default: "Options:") %></strong>
+              <div class="w-full sm:w-auto">
+                <!-- portrait: stack vertically (1 column) so items appear in separate rows; md+: inline centered -->
+                <div class="space-y-0.5 sm:flex sm:items-center sm:space-x-8">
+                  <% RegularExpression::Reference.options.each do |code, label| %>
+                    <div class="flex items-center space-x-2">
+                      <code
+                        data-controller="copy-code"
+                        data-copy-code-target="source"
+                        data-action="click->copy-code#copy"
+                        class="cursor-pointer hover:text-white transition duration-200 px-1"
+                        title="<%= t("common.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                      <span><%= label %></span>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

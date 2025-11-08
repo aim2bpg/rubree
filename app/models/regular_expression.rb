@@ -25,7 +25,16 @@ class RegularExpression
       captures_hash = {}
 
       regexp.named_captures.each_key do |name|
-        captures_hash[name] = match[name] if match[name]
+        begin
+          # Accessing MatchData with some multi-byte capture names can raise IndexError
+          val = match[name]
+        rescue IndexError, ArgumentError => e
+          # record a user-facing error specific to diagram/rendering, but don't raise
+          errors.add(:diagram, "Invalid named capture access: #{name}") unless errors.added?(:diagram, "Invalid named capture access: #{name}")
+          val = nil
+        end
+
+        captures_hash[name] = val if val
       end
 
       results << captures_hash unless captures_hash.empty?
@@ -106,7 +115,9 @@ class RegularExpression
 
     @regexp = Regexp.new(regular_expression, parse_options)
   rescue RegexpError => e
-    errors.add(:base, e.message)
+    # treat pattern parse errors as diagram/pattern errors so they can be
+    # displayed near the railroad diagram and not duplicated in the results
+    errors.add(:diagram, e.message) unless errors.added?(:diagram, e.message)
     @regexp = nil
   end
 

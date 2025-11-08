@@ -20,13 +20,6 @@ import DragScrollController from "./drag_scroll_controller";
 
 application.register("drag-scroll", DragScrollController);
 
-import RegexpContentTabSwitchController from "./regexp_content_tab_switch_controller";
-
-application.register(
-  "regexp-content-tab-switch",
-  RegexpContentTabSwitchController,
-);
-
 import RegexpExamplesController from "./regexp_examples_controller";
 
 application.register("regexp-examples", RegexpExamplesController);

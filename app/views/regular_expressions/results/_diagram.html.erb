@@ -1,8 +1,9 @@
 <div data-controller="diagram-modal">
   <div class="flex flex-col space-y-2 rounded border border-gray-700 bg-gray-900 p-4 min-h-[140px] text-white text-left relative">
-    <% if @diagram_error_message.present? %>
+    <% diagram_error = @diagram_error_message.presence || (regular_expression.errors[:diagram].first if regular_expression.errors[:diagram].present?) %>
+    <% if diagram_error.present? %>
       <label class="text-sm font-bold mb-2 text-white"><%= t("regular_expressions.results.railroad_diagram") %></label>
-      <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2"><%= h @diagram_error_message %></div>
+      <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2"><%= h diagram_error.to_s.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?") %></div>
 
     <% elsif @svg_output.present? %>
       <div class="flex justify-between items-center mb-2">
@@ -44,7 +45,7 @@
             <span
               data-diagram-clipboard-target="tooltip"
               class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs leading-none px-2 py-1 rounded
-                     opacity-0 invisible transition-opacity duration-300 pointer-events-none z-10 whitespace-nowrap">
+                opacity-0 invisible transition-opacity duration-300 pointer-events-none z-10 whitespace-nowrap">
               <%= t("regular_expressions.results.copied") %>
             </span>
           </button>

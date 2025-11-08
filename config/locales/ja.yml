@@ -13,13 +13,13 @@ ja:
       examples_label: 例
       open_examples: 例を開く（右上）
       button: 正規表現の例
-
+      toggle_locale: 言語を切り替える
+      lang_label: '言語'
     form:
       your_regular_expression: '正規表現:'
       options: 'オプション:'
       your_test_string: 'テスト文字列:'
       substitution: '置換文字列:'
-
     results:
       railroad_diagram: 'レールロード図:'
       railroad_diagram_placeholder: 'レールロード図がここに表示されます'
@@ -41,15 +41,2280 @@ ja:
       show: '表示する'
       hide: '非表示'
       copy_ruby_code: 'Ruby コードをコピー'
+      avg_of_runs: "（%{count} 回の平均）"
+      wrap_words: '単語を折り返す'
+      show_invisibles: '不可視文字を表示'
+    categories:
+      meta_tokens:
+        pipe: "選択"
+        star: "繰り返し"
+        concatenation: "連結"
+        alternation: "選択"
+        plus: "1回以上"
+        question: "0 または 1 回"
+        range: "回数範囲"
+        dot: "任意の1文字"
+        word_boundary: "単語境界"
+        non_word_boundary: "非単語境界"
+        caret: "先頭"
+        dollar: "末尾"
+        group: "グループ"
+        named_capture: "名前付き捕捉"
+        character_class: "文字クラス"
+        negated_character_class: "否定文字クラス"
+        escape: "エスケープ"
+      pattern-matching-examples:
+        short: パターン
+        description: "実践的なパターン：メタ文字（^, $, \\d, 文字クラス、グループ）と名前付きキャプチャを使った例。メール、URL、IPv4/IPv6、ログ抽出、YAML 抜き出しを示します。"
+        examples:
+          0:
+            pattern: "^(?<local_part>[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+)@(?<domain_name>([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\\.(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))*)$"
+            test: |-
+              test@example.com
+              foo.bar@sub.domain.org
+              bad@.com
+              user@site.co.jp
+              wrong@site,com
+            result: match
+            options: m
+            substitution: ''
+            description: "メール: 文字クラスと + を使い local_part と domain_name を名前付きキャプチャで抽出、有効なアドレスはマッチし不正な形式は除外します。"
+          1:
+            pattern: "^(?<scheme>https?|ftp):\\/\\/(?<host>[a-zA-Z0-9.-]+)(?<path>\\/[^\\s?#]*)?(\\?(?<query>[^#\\s]*))?(#(?<fragment>\\S+))?$"
+            test: |-
+              https://example.com
+              https://example.com/path?arg=1
+              ftp://files.net/path#section
+              http://localhost
+              invalid_url
+            result: match
+            options: m
+            substitution: ''
+            description: "URL: ^ とオプショナルなグループ、名前付きキャプチャで scheme, host, path, query, fragment を抽出します（http/https/ftp 対応）。"
+          2:
+            pattern: "^(?<octet1>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet2>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet3>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet4>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)$"
+            test: |-
+              192.168.0.1
+              255.255.255.255
+              256.100.100.100
+              10.0.0.1
+              0.0.0.0
+            result: match
+            options: m
+            substitution: ''
+            description: "IPv4: オクテットを 0-255 に制限する範囲／選択を使い、4 つのオクテットを名前付きキャプチャで取得します。"
+          3:
+            pattern: "^(?<block1>[0-9a-fA-F]{1,4}):(?<block2>[0-9a-fA-F]{1,4}):(?<block3>[0-9a-fA-F]{1,4}):(?<block4>[0-9a-fA-F]{1,4}):(?<block5>[0-9a-fA-F]{1,4}):(?<block6>[0-9a-fA-F]{1,4}):(?<block7>[0-9a-fA-F]{1,4}):(?<block8>[0-9a-fA-F]{1,4})$|^(?<compressed_address>([0-9a-fA-F]{1,4}:){1,7}:)$"
+            test: |-
+              2001:0db8:85a3:0000:0000:8a2e:0370:7334
+              2001:db8::8a2e:370:7334
+              ::1
+              invalid::ip
+              fe80::1ff:fe23:4567:890a
+            result: match
+            options: m
+            substitution: ''
+            description: "block_one から block_eight の名前付きキャプチャ、または compressed_address を使用して IPv6 アドレスにマッチさせる例。"
+          4:
+            pattern: "^\\[(?<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})\\] \\[(?<level>ERROR)\\] (?<message>.+?)$"
+            test: |-
+              [2025-08-17 12:00:00] [INFO] Start
+              [2025-08-17 12:01:00] [ERROR] Failed
+              [2025-08-17 12:02:00] [WARN] Low
+              [2025-08-17 12:03:00] [ERROR] Crash
+              [2025-08-17 12:04:00] [INFO] Done
+            result: match
+            options: m
+            substitution: ''
+            description: "タイムスタンプ、レベル、メッセージを名前付きキャプチャして、ERROR ログエントリを抽出する例。"
+          5:
+            pattern: "^(?<parent>[a-zA-Z0-9_-]+):\\n(?: {2}(?<key1>[a-zA-Z0-9_-]+): (?<value1>.+)\\n){3}\\s*(?: {2}(?<key2>[a-zA-Z0-9_-]+): (?<value2>.+)\\n){3}?"
+            test: |-
+              parent1:
+                name: Alice
+                age: 30
+                city: Tokyo
+              parent2:
+                hobby: hiking
+                pet: dog
+                food: sushi
+              invalid line
+            result: match
+            options: m
+            substitution: ''
+            description: 親キー配下にそれぞれ3つずつのキー=値ペアを持つ 2 レベルのネストされた YAML をマッチする。
+      alternations:
+        short: 選択
+        description: "選択 (|): 複数の候補のうちいずれかにマッチさせる。サブパターンやリテラルの短い集合に便利です。"
+        examples:
+          0:
+            pattern: cat|dog
+            test: I have a cat
+            result: match
+            options: ''
+            substitution: ''
+            description: "パターン: `cat|dog` — テキスト内で 'cat' または 'dog' が見つかればマッチします（部分一致）。"
+          1:
+            pattern: cat|dog
+            test: I have a dog
+            result: match
+            options: ''
+            substitution: ''
+            description: "同様の確認: `cat|dog` が 'dog' にマッチする例です。"
+          2:
+            pattern: cat|dog
+            test: I have a bird
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "不一致: どの選択肢にも当てはまらない場合はマッチしません。"
+          3:
+            pattern: red|green|blue
+            test: green apple
+            result: match
+            options: ''
+            substitution: ''
+            description: "パターン: `red|green|blue` — 指定した色のリテラルいずれかにマッチ。"
+          4:
+            pattern: red|green|blue
+            test: yellow banana
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "不一致: 'yellow' は選択肢に無いためヒットしません。"
+      basic-operations:
+        short: 基本操作
+        description: "基本操作：連結、選択、繰り返し（構文糖衣を使わない）を示す例。"
+        examples:
+          0:
+            pattern: abc
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "abc — [meta: 連結] 'a' の後に 'b'、続けて 'c' が続く正確な並びに一致する。"
+          1:
+            pattern: ab
+            test: cab
+            result: match
+            options: ''
+            substitution: ''
+            description: "ab — [meta: 連結] 部分一致: 'cab' の中の 'ab' に一致する。"
+          2:
+            pattern: ab
+            test: acb
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "ab — [meta: 連結] 不一致: 'acb' では 'a' の直後に 'b' が来ないためマッチしない。"
+          3:
+            pattern: a|b|c
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "a|b|c — [meta: | (選択)] 'a'/'b'/'c' のいずれかに一致する（ここでは先頭の 'a'）。"
+          4:
+            pattern: a|b*
+            test: bbb
+            result: match
+            options: ''
+            substitution: ''
+            description: "a|b* — [meta: |, *] 選択 + 量指定子: `b*` が連続する 'b' を許容するため 'bbb' に一致する。"
+          5:
+            pattern: a|b*
+            test: aaa
+            result: match
+            options: ''
+            substitution: ''
+            description: "a|b* — [meta: |, *] 選択: 最初の選択肢 'a' があればそれに一致する（'aaa' の先頭が該当）。"
+          6:
+            pattern: a*
+            test: a
+            result: match
+            options: ''
+            substitution: ''
+            description: "a* — [meta: *] Kleene スター: 0 回以上の 'a' に一致する（ここでは 'a' に一致）。"
+          7:
+            pattern: a*
+            test: aaa
+            result: match
+            options: ''
+            substitution: ''
+            description: "a* — [meta: *] 連続する 'a' の列（ここでは 'aaa'）に一致する。"
+          8:
+            pattern: a*
+            test: bbb
+            result: match
+            options: ''
+            substitution: ''
+            description: "a* — [meta: *] テスト文字列に 'a' がない場合は空文字に一致する（'bbb' の例）。"
+          9:
+            pattern: ab|cd
+            test: cd
+            result: match
+            options: ''
+            substitution: ''
+            description: "ab|cd — [meta: |] 'ab' または 'cd' に一致する（ここでは 'cd'）。"
+          10:
+            pattern: a|b*
+            test: a
+            result: match
+            options: ''
+            substitution: ''
+            description: "a|b* — [meta: |, *] 例: 'a' または 'b*' に一致する。"
+          11:
+            pattern: a*bc
+            test: aaabc
+            result: match
+            options: ''
+            substitution: ''
+            description: "a*bc — [meta: *, 連結] 0 回以上の 'a' の後に 'b' と 'c' が続くパターンに一致する（例: 'aaabc'）。"
+      syntax-sugar:
+        short: 糖衣構文
+        description: よく使われる糖衣構文：量指定子、ドット、文字クラス、エスケープ、アンカーなど。
+        examples:
+          0:
+            pattern: a+
+            test: aaab
+            result: match
+            options: ''
+            substitution: ''
+            description: '量指定子 ''+'' : 1回以上の ''a'' にマッチする。'
+          1:
+            pattern: a?
+            test: apple
+            result: match
+            options: ''
+            substitution: ''
+            description: '量指定子 ''?'' : ''a'' があってもなくてもマッチする（任意）。'
+          2:
+            pattern: a{2,4}
+            test: aaabc
+            result: match
+            options: ''
+            substitution: ''
+            description: '量指定子 ''{n,m}'' : 2 回から 4 回の ''a'' にマッチする。'
+          3:
+            pattern: a.c
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: 'ドット ''.'' : 任意の1文字にマッチする。'
+          4:
+            pattern: "[a-z]"
+            test: g
+            result: match
+            options: ''
+            substitution: ''
+            description: '文字クラス: 小文字の英字にマッチする。'
+          5:
+            pattern: "[a-z-]"
+            test: "-"
+            result: match
+            options: ''
+            substitution: ''
+            description: '文字クラス（範囲）: ハイフンを含む範囲にマッチする。'
+          6:
+            pattern: "[^a-z]"
+            test: A
+            result: match
+            options: ''
+            substitution: ''
+            description: '否定クラス: 小文字の英字以外にマッチする。'
+          7:
+            pattern: a\tb
+            test: "a\tb"
+            result: match
+            options: ''
+            substitution: ''
+            description: 'エスケープ: タブ文字 ''\t'' にマッチする。'
+          8:
+            pattern: "^a"
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: 'アンカー ''^'' : 文字列の先頭にマッチする。'
+          9:
+            pattern: c$
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: 'アンカー ''$'' : 文字列の末尾にマッチする。'
+          10:
+            pattern: "\\bword\\b"
+            test: " word "
+            result: match
+            options: ''
+            substitution: ''
+            description: '単語境界 ''\b'' : 単語の境界にマッチする。'
+          11:
+            pattern: "\\Bend"
+            test: bend
+            result: match
+            options: ''
+            substitution: ''
+            description: '非単語境界 ''\B'' : 単語境界でない位置にマッチする。'
+      anchors:
+        short: アンカー
+        description: アンカーを使って文字列内の位置（先頭・末尾・単語境界など）をマッチさせる方法を示します。
+        examples:
+          0:
+            pattern: "^start"
+            test: start here
+            result: match
+            options: ''
+            substitution: ''
+            description: "文字列の先頭にある 'start' にマッチする例。"
+          1:
+            pattern: "^start"
+            test: this is start
+            result: no-match
+            options: ''
+            substitution: ''
+            description: 先頭にないためマッチしない。
+          2:
+            pattern: end$
+            test: This is the end
+            result: match
+            options: ''
+            substitution: ''
+            description: 文字列の末尾にある 'end' にマッチする。
+          3:
+            pattern: end$
+            test: end somewhere
+            result: no-match
+            options: ''
+            substitution: ''
+            description: 末尾にないためマッチしない。
+          4:
+            pattern: "\\bword\\b"
+            test: The word is here
+            result: match
+            options: ''
+            substitution: ''
+            description: 単語として独立した 'word' にマッチする。
+          5:
+            pattern: "\\bhello\\b"
+            test: helloworld
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "単語境界で分離されていない 'hello' はマッチしない例。"
+          6:
+            pattern: "\\Aabc"
+            test: abc anywhere
+            result: match
+            options: ''
+            substitution: ''
+            description: 先頭の 'abc' にマッチする。
+          7:
+            pattern: "\\Aabc"
+            test: this abc anywhere
+            result: no-match
+            options: ''
+            substitution: ''
+            description: 先頭でないためマッチしない。
+          8:
+            pattern: xyz\b
+            test: xyzxyz
+            result: match
+            options: ''
+            substitution: ''
+            description: 単語境界に続く 'xyz' にマッチする。
+          9:
+            pattern: xyz\b
+            test: xyz is here
+            result: match
+            options: ''
+            substitution: ''
+            description: 単語境界上の 'xyz' にマッチする。
+          10:
+            pattern: start\Z
+            test: start
+            result: match
+            options: ''
+            substitution: ''
+            description: "文字列末尾の 'start' にマッチする例。"
+          11:
+            pattern: start\Z
+            test: test start
+            result: match
+            options: ''
+            substitution: ''
+            description: "文字列末尾の 'start' にマッチする例（重複）。"
+      character-classes:
+        short: 文字クラス
+        description: "文字クラス [..]: 文字の集合／範囲を指定して 1 文字にマッチ。先頭に ^ を置くと否定クラスになります。"
+        examples:
+          0:
+            pattern: "[abc]"
+            test: a1bc
+            result: match
+            options: ''
+            substitution: ''
+            description: "パターン: `[abc]` — 'a','b','c' のいずれかにマッチ。'1' はマッチしません。"
+          1:
+            pattern: "[^abc]"
+            test: a1bc
+            result: match
+            options: ''
+            substitution: ''
+            description: "パターン: `[^abc]` — 否定クラス。'1' はマッチし、'a' はマッチしません。"
+          2:
+            pattern: "[0-9]"
+            test: abc123
+            result: match
+            options: ''
+            substitution: ''
+            description: "[0-9] の範囲により '1','2','3' のような数字にマッチする。'a' はマッチしない。"
+          3:
+            pattern: "[a-z]"
+            test: abc123
+            result: match
+            options: ''
+            substitution: ''
+            description: "[a-z] の範囲により小文字の英字にマッチする。'1' はマッチしない。"
+          4:
+            pattern: "[A-Z]"
+            test: abc123XYZ
+            result: match
+            options: ''
+            substitution: ''
+            description: "[A-Z] により大文字の英字（X,Y,Zなど）にマッチする。小文字や数字はマッチしない。"
+          5:
+            pattern: "[^\\\\]"
+            test: hello\world
+            result: match
+            options: ''
+            substitution: ''
+            description: "[^\\] のようにバックスラッシュを除外したクラスは '\\' をマッチさせない（他の文字はマッチ）。"
+          6:
+            pattern: "[a-d&&aeiou]"
+            test: abcd123
+            result: match
+            options: ''
+            substitution: ''
+            description: "[a-d] の範囲で 'a' が母音の条件を満たすためマッチする。"
+          7:
+            pattern: "[a-d&&[^aeiou]]"
+            test: abcd123
+            result: match
+            options: ''
+            substitution: ''
+            description: "[a-d] 範囲で 'b' が母音でないためマッチする（'a','c','d' はマッチせず）。"
+          8:
+            pattern: "[a=e=b]"
+            test: a
+            result: match
+            options: ''
+            substitution: ''
+            description: クラス内での同値記述により 'a' が 'e' と 'b' と同様に扱われる例。
+      character-types:
+        short: 文字タイプ
+        description: 数字や空白など、特定の文字タイプ（\d, \s, \w 等）にマッチさせる例。
+        examples:
+          0:
+            pattern: "\\d"
+            test: hello123
+            result: match
+            options: ''
+            substitution: ''
+            description: 数字や空白などの文字タイプを扱う基本例。
+          1:
+            pattern: "\\d"
+            test: helloworld
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "'1','2','3' のような数字にマッチする例（\\d に相当）。"
+          2:
+            pattern: "\\H"
+            test: hello world
+            result: match
+            options: ''
+            substitution: ''
+            description: "'hello world' の全ての文字が非空白であるのでマッチする例。"
+          3:
+            pattern: "\\s"
+            test: hello world
+            result: match
+            options: ''
+            substitution: ''
+            description: "'hello world' の空白文字（スペース）にマッチする例。"
+          4:
+            pattern: "\\S"
+            test: hello world
+            result: match
+            options: ''
+            substitution: ''
+            description: "'hello' と 'world' の間の空白文字（スペース）にマッチする例。"
+          5:
+            pattern: "\\w"
+            test: helloworld123
+            result: match
+            options: ''
+            substitution: ''
+            description: 単語文字（'h','e','l','l','o','w','o','r','l','d','1','2','3'）にマッチする例。
+          6:
+            pattern: "\\w"
+            test: hello@world
+            result: match
+            options: ''
+            substitution: ''
+            description: 単語文字（\w）により英数字がマッチする例（'1','2','3' を含む）。
+          7:
+            pattern: "\\W"
+            test: hello@world
+            result: match
+            options: ''
+            substitution: ''
+            description: 単語文字にマッチする例。'@' は単語文字ではないため不一致。
+          8:
+            pattern: "\\W"
+            test: helloworld
+            result: no-match
+            options: ''
+            substitution: ''
+            description: 非単語文字（'@' など）にマッチする例。
+          # 9:
+          #   description: すべてが単語文字であるためマッチしない例。
+      cluster-types:
+        short: クラスタ（グラフェム）
+        description: グラフェム（表示単位）や改行などのクラスタを \R や \X で扱う例。
+        examples:
+          0:
+            pattern: "\\R"
+            test: |-
+              abc
+              123
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\R/\\X を使ったグラフェムクラスタの基本例。"
+          1:
+            pattern: "\\R"
+            test: "hello\rworld"
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' と '123' の間の改行文字にマッチする例。"
+          2:
+            pattern: "\\X"
+            test: "\U0001F44B"
+            result: match
+            options: ''
+            substitution: ''
+            description: "絵文字（例: \U0001F44B）を 1 つのグラフェムクラスタとして扱う例。"
+          3:
+            pattern: "\\X"
+            test: "abc\U0001F44B123"
+            result: match
+            options: ''
+            substitution: ''
+            description: "文字列全体を絵文字を含めて単一のグラフェムクラスタとして扱う例。"
+          4:
+            pattern: "\\X"
+            test: abć
+            result: match
+            options: ''
+            substitution: ''
+            description: 絵文字を含めて文字列全体を単一のグラフェムクラスタとして扱う例。
+          # 5:
+          #   description: 合字や結合文字を1つの表示単位として扱う例（アクセント付き文字）。
+      conditional-expressions:
+        short: 条件式
+        description: '条件式: (?(cond)yes-subexp|no-subexp) のような条件付きサブパターンにマッチする例。'
+        examples:
+          0:
+            pattern: "(?<A>a)(?(<A>)T|F)"
+            test: aT
+            result: match
+            options: ''
+            substitution: ''
+            description: 条件によって処理を分岐する条件式の基本例。
+          1:
+            pattern: "(?<A>a)(?(<A>)T|)"
+            test: aT
+            result: match
+            options: ''
+            substitution: ''
+            description: 条件 (<A>) が真であるため 'T' にマッチする例。
+          2:
+            pattern: "(a)(?(001)T)"
+            test: aT
+            result: match
+            options: ''
+            substitution: ''
+            description: 条件が真で空の分岐が無視される場合のマッチ例。
+          3:
+            pattern: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z"
+            test: set x=32
+            result: match
+            options: ''
+            substitution: ''
+            description: 条件 (001) が有効なため 'T' にマッチする例。
+          4:
+            pattern: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z"
+            test: print x
+            result: match
+            options: ''
+            substitution: ''
+            description: 条件が真の場合に 'set x=32' のような構造をグループで取得する例。
+          5:
+            pattern: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z"
+            test: set y
+            result: no-match
+            options: ''
+            substitution: ''
+            description: 条件が偽の場合に 'print x' のように別分岐が適用される例。
+          # 6:
+          #   description: 条件を満たさないためマッチしない例（数値が続くべき場所に非数値がある等）。
+      escape-sequences:
+        short: エスケープシーケンス
+        description: エスケープシーケンス：\t, \n+                , \d などのエスケープ表現で文字を表す例。
+        examples:
+          0:
+            pattern: "\\t"
+            test: "a\t"
+            result: match
+            options: ''
+            substitution: ''
+            description: エスケープで特殊文字を表現する基本例（\t, \n+                , \d など）。
+          1:
+            pattern: "\\n"
+            test: 'a
 
-    content:
-      quick_reference: "クイックリファレンス"
-      examples_tab: "例一覧"
-
+              '
+            result: match
+            options: ''
+            substitution: ''
+            description: タブ文字（\t）にマッチする例。
+          2:
+            pattern: "\\d"
+            test: '5'
+            result: match
+            options: ''
+            substitution: ''
+            description: 改行文字（\n）にマッチする例。
+          3:
+            pattern: "\\d"
+            test: a
+            result: no-match
+            options: ''
+            substitution: ''
+            description: '数字（例: ''5''）にマッチする例（\d）。'
+          4:
+            pattern: "\\s"
+            test: 'a '
+            result: match
+            options: ''
+            substitution: ''
+            description: "'a' は数字ではないため不一致の例。"
+          5:
+            pattern: "\\S"
+            test: a
+            result: match
+            options: ''
+            substitution: ''
+            description: スペースなどの空白文字にマッチする例。
+          6:
+            pattern: "\\w"
+            test: a
+            result: match
+            options: ''
+            substitution: ''
+            description: 非空白文字にマッチする例。
+          7:
+            pattern: "\\W"
+            test: "$"
+            result: match
+            options: ''
+            substitution: ''
+            description: '単語文字（例: ''a''）にマッチする例（\w）。'
+          8:
+            pattern: "\\b"
+            test: word
+            result: match
+            options: ''
+            substitution: ''
+            description: '非単語文字（例: ''$''）にマッチする例。'
+          9:
+            pattern: "\\B"
+            test: word
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "'word' の前の単語境界にマッチする例（\\b）。"
+          10:
+            pattern: "\\f"
+            test: "a\f"
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\B を使って単語境界でない位置を示す例（'word' は一致しない）。"
+          11:
+            pattern: "\\r"
+            test: "a\r"
+            result: match
+            options: ''
+            substitution: ''
+            description: フォームフィード文字にマッチする例。
+          12:
+            pattern: "\\0"
+            test: "a\0"
+            result: match
+            options: ''
+            substitution: ''
+            description: キャリッジリターン文字にマッチする例。
+          13:
+            pattern: "\\x41"
+            test: A
+            result: match
+            options: ''
+            substitution: ''
+            description: ヌル文字にマッチする例。
+          14:
+            pattern: "\\\\+"
+            test: a\
+            result: match
+            options: ''
+            substitution: ''
+            description: 16進エスケープで 'A' を表現する例。
+          15:
+            pattern: "\\?"
+            test: "?"
+            result: match
+            options: ''
+            substitution: ''
+            description: 1 つ以上のバックスラッシュにマッチする例。
+          # 16:
+          #   description: 疑問符を文字としてマッチさせる例（リテラル問符）。
+      free-space:
+        short: フリースペース
+        description: x 修飾子を使って空白やコメントを無視する（可読性向上のためのモード）の例。
+        examples:
+          0:
+            pattern: "a  # comment \nb"
+            test: ab
+            result: match
+            options: x
+            substitution: ''
+            description: x モードで空白やコメントを無視する基本例。
+          1:
+            pattern: |2-
+                a  # word
+                b
+            test: ab
+            result: match
+            options: x
+            substitution: ''
+            description: 空白とコメントが無視されるため、'a' と 'b' がマッチする例。
+          2:
+            pattern: "  a #word \nb"
+            test: ab
+            result: match
+            options: x
+            substitution: ''
+            description: 空白とコメントが無視されるため、'ab' にマッチする例。
+          3:
+            pattern: |2-
+                 a   # starting
+                 b
+            test: ab
+            result: match
+            options: x
+            substitution: ''
+            description: 同様に空白を無視して 'ab' にマッチする別例。
+          # 4:
+          #   description: 空白とコメントが除外され、'ab' がマッチする例。
+      group-assertions:
+        short: グループアサーション
+        description: 先読み・後読みのように文字を消費せずに位置をマッチさせるアサーションの例。
+        examples:
+          0:
+            pattern: "(?=abc)"
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: 先読み・後読みを使った位置マッチの基本例。
+          1:
+            pattern: "(?=\\w+)"
+            test: hello world
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' の直前の位置にマッチする先読みの例。"
+          2:
+            pattern: "(?!abc)"
+            test: xyz
+            result: match
+            options: ''
+            substitution: ''
+            description: 単語境界のため 'hello' の直前にマッチする例。
+          3:
+            pattern: "(?<=abc)"
+            test: abcxyz
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' が存在しない位置を検出する例（否定の先読み）。"
+          4:
+            pattern: "(?<=\\d{3})"
+            test: 123abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' の直後の位置にマッチする後読みの例。"
+          5:
+            pattern: "(?<=\\b)"
+            test: hello
+            result: match
+            options: ''
+            substitution: ''
+            description: 3 桁の連続する数字の直後の位置にマッチする例。
+          6:
+            pattern: "(?<!abc)"
+            test: xyzabc
+            result: match
+            options: ''
+            substitution: ''
+            description: 単語境界の直後に位置がある場合のマッチ例（'hello' の前など）。
+          7:
+            pattern: "(?<!\\d)"
+            test: abc123
+            result: match
+            options: ''
+            substitution: ''
+            description: 前方位置マッチの別例（'abc' の直前）。
+          8:
+            pattern: "(?<!\\d{2})"
+            test: abc123
+            result: match
+            options: ''
+            substitution: ''
+            description: 数字が前にない場合に 'abc' の直前にマッチする例。
+          # 9:
+          #   description: 2 桁の数字が前にない場合に 'abc' の直前にマッチする例。
+      group-atomic:
+        short: アトミックグループ
+        description: アトミックグループ (?>...) はグループ内でバックトラックを許可せず部分パターンをマッチさせます。全体が失敗してもグループ内の別経路は試されません。これにより不要なバックトラックを減らせます。
+        examples:
+          0:
+            pattern: a(bc|b)c
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: アトミックグループの基本例：グループ内でバックトラックしない動作を示す。
+          1:
+            pattern: a(?>bc|b)c
+            test: abc
+            result: no-match
+            options: ''
+            substitution: ''
+            description: '非アトミック: ''b'' を試して失敗し、バックトラックして ''bc'' をマッチする例。'
+          2:
+            pattern: "(\\w+)\\d{3}"
+            test: user123
+            result: match
+            options: ''
+            substitution: ''
+            description: 'アトミック: ''bc'' にマッチするが ''c'' が失敗した場合に ''b'' へはバックトラックしない例。'
+          3:
+            pattern: "(?>\\w+)\\d{3}"
+            test: user123
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "'user123' をマッチして 'user' をグループ1で取得し、'123' は別扱いにする例。"
+          4:
+            pattern: Start(A+|A*B)End
+            test: StartABEnd
+            result: match
+            options: ''
+            substitution: ''
+            description: "(?>\\w+) が貪欲に 'user123' を消費してしまい、\\d{3} がマッチする余地がなくなるため不一致となる例。"
+          5:
+            pattern: Start(?>A+|A*B)End
+            test: StartABEnd
+            result: no-match
+            options: ''
+            substitution: ''
+            description: '非アトミック: ''A+'' を試して失敗し、バックトラックして ''A*B'' を試す例。'
+          # 6:
+          #   description: 'アトミック: ''A+'' を貪欲にマッチさせて失敗した場合、''A*B'' を試さない例。'
+      group-absence:
+        short: グループ不在
+        description: "グループ不在: 不在演算子 (?~pattern) は、パターンを含まない部分列にマッチします。文字列全体に対しては、パターンがどこかに存在すれば失敗しますが、部分文字列に対する部分一致は発生します。"
+        examples:
+          0:
+            pattern: "(?~abc)"
+            test: ab
+            result: match
+            options: ''
+            substitution: ''
+            description: "文字列全体に対してマッチ（'abc' が存在しない）。"
+          1:
+            pattern: "(?~abc)"
+            test: aab
+            result: match
+            options: ''
+            substitution: ''
+            description: "文字列全体に対してマッチ（'abc' が存在しない）。"
+          2:
+            pattern: "(?~abc)"
+            test: abb
+            result: match
+            options: ''
+            substitution: ''
+            description: "文字列全体に対してマッチ（'abc' が存在しない）。"
+          3:
+            pattern: "(?~abc)"
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' を含まない文字列の部分（例: 'ab', 'bc', 空）にマッチする。全体一致はできない。"
+          4:
+            pattern: "^(?~abc)$"
+            test: abc
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "文字列全体に 'abc' が含まれるため不一致。"
+          5:
+            pattern: "(?~abc)"
+            test: aabc
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' を除いた部分で部分一致が見つかるが、全体一致は失敗する。"
+          6:
+            pattern: "(?~abc)"
+            test: ccabcdd
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' を除く部分列に対する部分一致でマッチが見つかる。"
+          7:
+            pattern: "/\\*(?~\\*/)*\\*/"
+            test: "/**/"
+            result: match
+            options: ''
+            substitution: ''
+            description: "C 風の空コメントにマッチする例。"
+          8:
+            pattern: "/\\*(?~\\*/)*\\*/"
+            test: "/* foo bar */"
+            result: match
+            options: ''
+            substitution: ''
+            description: "内容を持つ C 風のコメントにマッチする例。"
+      group-back-references:
+        short: グループ参照
+        description: "グループ参照: 以前にキャプチャしたテキストと同じ内容をバックリファレンスでマッチさせます。"
+        examples:
+          0:
+            pattern: "(\\d)\\1"
+            test: '11'
+            result: match
+            options: ''
+            substitution: ''
+            description: "両方の桁が同じなので '11' にマッチする。"
+          1:
+            pattern: "(?<word>\\w+)\\s\\k<word>"
+            test: hello hello
+            result: match
+            options: ''
+            substitution: ''
+            description: "名前付きバックリファレンスを使って 'hello hello' にマッチする。"
+          2:
+            pattern: "(\\d+)\\k<1>"
+            test: '123123'
+            result: match
+            options: ''
+            substitution: ''
+            description: "番号付きバックリファレンスで '123123' にマッチする。"
+          3:
+            pattern: "(\\w+)\\s\\1"
+            test: hello hello
+            result: match
+            options: ''
+            substitution: ''
+            description: "両単語が同じなので 'hello hello' にマッチする。"
+          4:
+            pattern: "(\\d{3})-(\\d{2})-(\\d{4})\\k<1>"
+            test: 123-45-6789123
+            result: match
+            options: ''
+            substitution: ''
+            description: "入れ子のバックリファレンスを使って '123-45-6789123' にマッチする例。"
+          5:
+            pattern: "(\\w+)-(\\w+)\\k<2>"
+            test: apple-orangeorange
+            result: match
+            options: ''
+            substitution: ''
+            description: "2 番目のグループが繰り返されるため 'apple-orangeorange' にマッチする例（k<2> を使用）。"
+          6:
+            pattern: "(\\d{3})-(\\d{2})-(\\d{4})\\k<2>"
+            test: 123-45-678945
+            result: match
+            options: ''
+            substitution: ''
+            description: "グループ2への番号付きバックリファレンスで '123-45-678945' にマッチする。"
+          7:
+            pattern: "(\\d+)\\1"
+            test: '12345'
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "桁が繰り返されないため '12345' は不一致。"
+          8:
+            pattern: "(.)(.)\\k<-2>\\k<-1>"
+            test: xyzyz
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\k<-2> と \\k<-1> がそれぞれ直前の 2 つと 1 つのキャプチャを参照する例（'yzyz' にマッチ）。"
+      group-capturing:
+        short: グループキャプチャ
+        description: "グループキャプチャ: マッチした部分をキャプチャして、番号付きや名前付きグループで後から参照できます。ローカル変数へ格納する例も含みます。"
+        examples:
+          0:
+            pattern: "(abc)"
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "最初のキャプチャグループで 'abc' を取得する例。"
+          1:
+            pattern: "(\\d{2})-(\\d{2})-(\\d{4})"
+            test: 12-34-5678
+            result: match
+            options: ''
+            substitution: ''
+            description: "日付の各部分を 3 つのグループ（'12','34','5678'）に分けてキャプチャする例。"
+          2:
+            pattern: "(\\w+)@(\\w+\\.\\w+)"
+            test: alice@example.com
+            result: match
+            options: ''
+            substitution: ''
+            description: "ユーザー名 'alice' とドメイン 'example.com' を 2 つのグループでキャプチャする例。"
+          3:
+            pattern: "(\\d+)-(\\d+)"
+            test: 123-456
+            result: match
+            options: ''
+            substitution: ''
+            description: "最初のグループで '123'、二番目のグループで '456' をキャプチャする例。"
+          4:
+            pattern: "(\\w{3})-(\\w{3})"
+            test: abc-def
+            result: match
+            options: ''
+            substitution: ''
+            description: "最初のグループで 'abc'、二番目で 'def' をキャプチャする例。"
+          5:
+            pattern: "(\\d{4})(\\d{2})(\\d{2})"
+            test: '20211225'
+            result: match
+            options: ''
+            substitution: ''
+            description: "'2021','12','25' をそれぞれ別のグループでキャプチャする例。"
+          6:
+            pattern: "(\\w+)\\s(\\w+)"
+            test: hello world
+            result: match
+            options: ''
+            substitution: ''
+            description: "最初のグループで 'hello'、二番目で 'world' をキャプチャする例。"
+          7:
+            pattern: "(\\w+)\\s+\\1"
+            test: hello hello
+            result: match
+            options: ''
+            substitution: ''
+            description: "同じキャプチャグループを使って 'hello' をキャプチャし再度マッチさせる例。"
+      group-comments:
+        short: グループ内コメント
+        description: "グループ内コメント: 正規表現内に (?# comment ) のようにコメントを含める例。コメントはマッチに影響しません。"
+        examples:
+          0:
+            pattern: "(?# This is a comment)abc"
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "コメントを無視して 'abc' にマッチする。"
+          1:
+            pattern: a(?# matches 'a')b
+            test: ab
+            result: match
+            options: ''
+            substitution: ''
+            description: "括弧内のコメントを無視して 'ab' にマッチする。"
+          2:
+            pattern: "(?#Start of string)^abc(?#End of string)$"
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "先頭と末尾で 'abc' にマッチするが、コメントは無視される。"
+          3:
+            pattern: "(?# a comment in the middle )ab(?# another comment)"
+            test: ab
+            result: match
+            options: ''
+            substitution: ''
+            description: "途中のコメントを無視して 'ab' にマッチする。"
+          4:
+            pattern: "(?# This pattern matches digits )\\d+"
+            test: '12345'
+            result: match
+            options: ''
+            substitution: ''
+            description: "桁に関するコメントを無視して 1 個以上の数字にマッチする。"
+          5:
+            pattern: "(?# matches a space )\\s"
+            test: " "
+            result: match
+            options: ''
+            substitution: ''
+            description: "コメントを無視して空白 1 文字にマッチする。"
+          6:
+            pattern: "(?# comment before and after )\\w{3,}"
+            test: word
+            result: match
+            options: ''
+            substitution: ''
+            description: "3 文字以上の単語として 'word' にマッチする例（コメントは無視）。"
+      group-named:
+        short: 名前付きグループ
+        description: "名前付きグループ: 特定の名前を付けたグループでマッチを取得し、参照を簡単にします。"
+        examples:
+          0:
+            pattern: "(?<name>Alice)"
+            test: Alice
+            result: match
+            options: ''
+            substitution: ''
+            description: "名前 'name' のグループで 'abc' をキャプチャする例。"
+          1:
+            pattern: "(?'name'Alice)"
+            test: Alice
+            result: match
+            options: ''
+            substitution: ''
+            description: "名前 'name' のグループで 'abc' をキャプチャする例（重複）。"
+          2:
+            pattern: "(?P<name>Alice)"
+            test: Alice
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "Python 風の '(?P<name>...)' 構文は Ruby ではサポートされないため不一致の例。"
+          3:
+            pattern: "(?<year>\\d{4})-(?'month'\\d{2})-(?'day'\\d{2})"
+            test: '2023-07-25'
+            result: match
+            options: ''
+            substitution: ''
+            description: "年・月・日を名前付きグループにキャプチャする例。"
+          4:
+            pattern: "(?<hour>\\d{2}):(?'minute'\\d{2})"
+            test: '14:30'
+            result: match
+            options: ''
+            substitution: ''
+            description: "時・分を名前付きグループにキャプチャする例。"
+          5:
+            pattern: "(?<user>\\w+)@(?<domain>\\w+\\.\\w+)"
+            test: alice@example.com
+            result: match
+            options: ''
+            substitution: ''
+            description: "'alice' を名前付きグループ 'alice' に、'example.com' を名前付きグループ 'domain' にキャプチャする例。"
+          6:
+            pattern: "\\$(?<dollars>\\d+)\\.(?<cents>\\d+)"
+            test: "$3.67"
+            result: match
+            options: ''
+            substitution: ''
+            description: "'dollars' と 'cents' の名前付きグループに金額をキャプチャし、MatchData のシンボルキーで参照する例。"
+          7:
+            pattern: "(?<vowel>[aeiou]).\\k<vowel>.\\k<vowel>"
+            test: ototomy
+            result: match
+            options: ''
+            substitution: ''
+            description: "名前付きキャプチャとバックリファレンスを使って繰り返す母音をマッチする例。"
+          8:
+            pattern: "(?<name>\\w+)(\\d{3})"
+            test: user123
+            result: match
+            options: ''
+            substitution: ''
+            description: "成功例：名前付きキャプチャ 'name' と番号付きキャプチャが共存するが、MatchData は主に名前付きキャプチャを公開する。"
+      group-options:
+        short: グループ内オプション
+        description: "グループ内オプション: (?i) や (?m) のようなインラインオプションで正規表現の動作を変更する例。"
+        examples:
+          0:
+            pattern: "(?i)abc"
+            test: ABC
+            result: match
+            options: ''
+            substitution: ''
+            description: "(?i) オプションにより 'ABC' が大文字小文字を区別せずにマッチする。"
+          1:
+            pattern: "(?m)^abc"
+            test: |-
+              abc
+              abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "(?m) マルチラインオプションにより各行の先頭で 'abc' がマッチする。"
+          2:
+            pattern: |-
+              (?x) a # space is ignored
+              b
+            test: ab
+            result: match
+            options: ''
+            substitution: ''
+            description: "(?x) 拡張オプションにより空白とコメントを無視して 'ab' にマッチする。"
+          3:
+            pattern: "(?i)hello(?-i)world"
+            test: HELLOworld
+            result: match
+            options: ''
+            substitution: ''
+            description: "インラインオプションにより 'HELLO' は大文字小文字を区別せず、'world' は区別してマッチする例。"
+          4:
+            pattern: "(?i)(abc)(?-i)def"
+            test: ABCdef
+            result: match
+            options: ''
+            substitution: ''
+            description: "'ABC' は大文字小文字を区別せずに、'def' は区別してマッチする例。"
+          5:
+            pattern: "(?m)\\bstart\\b"
+            test: |-
+              start
+              start
+            result: match
+            options: ''
+            substitution: ''
+            description: "(?m) により各行の先頭で 'start' がマッチする。"
+          6:
+            pattern: |-
+              (?x) a # space is ignored
+              c
+            test: ac
+            result: match
+            options: ''
+            substitution: ''
+            description: "(?x) によりコメントと空白を無視して 'ac' にマッチする例。"
+      group-passive:
+        short: パッシブグループ
+        description: "パッシブグループ: マッチを保持しない非キャプチャグループを作る例。"
+        examples:
+          0:
+            pattern: "(?:abc)"
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' に対する非キャプチャグループの例。"
+          1:
+            pattern: "(?:\\d{2})-(?:\\d{2})-(?:\\d{4})"
+            test: 12-34-5678
+            result: match
+            options: ''
+            substitution: ''
+            description: "日付パターンでの非キャプチャグループの例。"
+          2:
+            pattern: "(?:\\w+)@(\\w+\\.\\w+)"
+            test: alice@example.com
+            result: match
+            options: ''
+            substitution: ''
+            description: "ドメインはキャプチャするがユーザー名は無視する非キャプチャグループの例。"
+      group-subexpression-calls:
+        short: サブ式呼び出し
+        description: "サブ式呼び出し: 以前定義した部分式を名前またはインデックスで呼び出す例。"
+        examples:
+          0:
+            pattern: "(abc)\\g<1>"
+            test: abcabc
+            result: match
+            options: ''
+            substitution: ''
+            description: "最初のキャプチャグループを参照する例。"
+          1:
+            pattern: "(?<name>\\w+)\\g<name>"
+            test: useruser
+            result: match
+            options: ''
+            substitution: ''
+            description: "名前 'name' のグループを参照する例。"
+          2:
+            pattern: "(abc)(def)\\g<1>\\g<2>"
+            test: abcdefabcdef
+            result: match
+            options: ''
+            substitution: ''
+            description: "インデックスで 2 つのキャプチャグループを参照する例。"
+      keep:
+        short: 保持
+        description: "Keep: 現在のマッチを保持し、\\K を使ってそれ以降のマッチを続行する例。"
+        examples:
+          0:
+            pattern: ab\Kcd
+            test: abcdef
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\K を使って 'ab' を破棄した後に 'cd' にマッチする例。"
+          1:
+            pattern: a\Kb
+            test: abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\K により 'a' を破棄した後に 'b' にマッチする例。"
+          2:
+            pattern: foo\Kbar
+            test: foobar
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\K により 'foo' を破棄して 'bar' にマッチする例。"
+          3:
+            pattern: xyz\Kabc
+            test: xyzabc
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\K によって 'xyz' を破棄し 'abc' にマッチさせる例。"
+          4:
+            pattern: start\Kend
+            test: startend
+            result: match
+            options: ''
+            substitution: ''
+            description: "'start' を破棄して 'end' にマッチする例。"
+          5:
+            pattern: one\Ktwo
+            test: one two
+            result: match
+            options: ''
+            substitution: ''
+            description: "'one' を破棄して 'two' にマッチする例。"
+          6:
+            pattern: aaa\Kbbb
+            test: aaabbb
+            result: match
+            options: ''
+            substitution: ''
+            description: "'aaa' を破棄して 'bbb' にマッチする例。"
+          7:
+            pattern: 1\K2
+            test: '12'
+            result: match
+            options: ''
+            substitution: ''
+            description: "'1' を破棄して '2' にマッチする例。"
+          8:
+            pattern: abc\Kxyz
+            test: abcxyz
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' を破棄して 'xyz' にマッチする例。"
+          9:
+            pattern: quick\Kbrown
+            test: quickbrown
+            result: match
+            options: ''
+            substitution: ''
+            description: "'quick' を破棄して 'brown' にマッチする例。"
+      literals:
+        short: リテラル
+        description: "リテラル: Unicode を含む特定の文字列をそのままマッチさせる例。"
+        examples:
+          0:
+            pattern: Ruby
+            test: Ruby
+            result: match
+            options: ''
+            substitution: ''
+            description: "'Ruby' を正確にマッチする。"
+          1:
+            pattern: apple
+            test: apple pie
+            result: match
+            options: ''
+            substitution: ''
+            description: "'apple pie' の中で 'apple' を正確にマッチする。"
+          2:
+            pattern: dog
+            test: doghouse
+            result: match
+            options: ''
+            substitution: ''
+            description: "'doghouse' の中で 'dog' を正確にマッチする。"
+          3:
+            pattern: '123'
+            test: '1234'
+            result: match
+            options: ''
+            substitution: ''
+            description: "'1234' の中で '123' を正確にマッチする。"
+          4:
+            pattern: abc
+            test: abcdef
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abcdef' の中で 'abc' を正確にマッチする。"
+          5:
+            pattern: "\U0001F603"
+            test: "I am happy \U0001F603"
+            result: match
+            options: ''
+            substitution: ''
+            description: "絵文字（例: '😍'）などの正確な Unicode をマッチする例。"
+          6:
+            pattern: ルビー
+            test: 私はルビーが好きです
+            result: match
+            options: ''
+            substitution: ''
+            description: "日本語の単語 'ルビー' を正確にマッチする。"
+          7:
+            pattern: روبي
+            test: اسمي روبي
+            result: match
+            options: ''
+            substitution: ''
+            description: "アラビア語の単語 'روبي' を正確にマッチする。"
+          8:
+            pattern: apple
+            test: applepie
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "単語が 'pie' に付随しているため 'apple' はマッチしない例。"
+          9:
+            pattern: dog
+            test: god
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "文字の順序が異なるため 'dog' はマッチしない例。"
+          10:
+            pattern: "\U0001F30D"
+            test: "world \U0001F30D"
+            result: match
+            options: ''
+            substitution: ''
+            description: "別の絵文字（例: '🌍'）を正確にマッチする例。"
+      posix-classes:
+        short: POSIX クラス
+        description: "POSIX クラス: [:alpha:], [:digit:] 等の POSIX 文字クラスにマッチさせる例。否定も使用できます（例: [:^alpha:]）。"
+        examples:
+          0:
+            pattern: "[[:alpha:]]+"
+            test: abc123XYZ
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' や 'XYZ' にマッチし、数字は除外する例。"
+          1:
+            pattern: "[[:^alpha:]]+"
+            test: abc123XYZ
+            result: match
+            options: ''
+            substitution: ''
+            description: "'123' のような数字にマッチし、英字は除外する例。"
+          2:
+            pattern: "[[:digit:]]+"
+            test: abc123.45def
+            result: match
+            options: ''
+            substitution: ''
+            description: "'123' や '45' のような数字列にマッチする例。"
+          3:
+            pattern: "[[:punct:]]+"
+            test: hello!?
+            result: match
+            options: ''
+            substitution: ''
+            description: "句読点 '!?' にマッチする例。"
+          4:
+            pattern: "[[:space:]]+"
+            test: "a b\tc\n"
+            result: match
+            options: ''
+            substitution: ''
+            description: "スペース、タブ、改行にマッチする例。"
+          5:
+            pattern: "[[:lower:]]+"
+            test: AbC
+            result: match
+            options: ''
+            substitution: ''
+            description: "小文字の 'b' のみをマッチする例。"
+          6:
+            pattern: "[[:upper:]]+"
+            test: AbC
+            result: match
+            options: ''
+            substitution: ''
+            description: "大文字の 'A' と 'C' にマッチする例。"
+      quantifiers-greedy:
+        short: 貪欲な量指定子
+        description: "貪欲な量指定子: 可能な限り多くマッチさせる量指定子の例。"
+        examples:
+          0:
+            pattern: a*
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "0 回以上の 'a' を貪欲にマッチする（先頭で空文字か 'a'）。"
+          1:
+            pattern: a*
+            test: aaaabc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "先頭の連続する 'a' をすべて貪欲にマッチする。"
+          2:
+            pattern: a+
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "1 回以上の 'a' を貪欲にマッチし、最初の 'a' にマッチする例。"
+          3:
+            pattern: a{2}
+            test: abc123!
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "不一致（ちょうど 2 回の 'a' が必要）。"
+          4:
+            pattern: "(abc)*"
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "0 回以上の 'abc' を貪欲にマッチし、1 個の 'abc' にマッチする例。"
+          5:
+            pattern: "(abc)+"
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "1 回以上の 'abc' を貪欲にマッチする例。"
+          6:
+            pattern: "(abc)?"
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "0 または 1 個の 'abc' を貪欲にマッチする例。"
+          7:
+            pattern: "(abc){2}"
+            test: abcabc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "ちょうど 2 個の 'abc' を貪欲にマッチする例。"
+          8:
+            pattern: "(abc){2,3}"
+            test: abcabc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "2〜3 個の 'abc' を貪欲にマッチ（2 個にマッチ）。"
+          9:
+            pattern: "(abc){2,3}"
+            test: abcabcabc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "2〜3 個の 'abc' を貪欲にマッチ（3 個にマッチ）。"
+      quantifiers-reluctant-lazy:
+        short: 遅延（レイジー）量指定子
+        description: "遅延（レイジー）量指定子: 可能な限り少なくマッチさせる量指定子の例。注意: レールロード図は `regexp_parser` で描画されます。Onigmo（Ruby の正規表現エンジン）は `??`, `*?`, `+?`, `{n,m}?` 等をサポートしますが、`{n}?` のような形式は一般的に不要でサポートされない場合があります。"
+        examples:
+          0:
+            pattern: a*?
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "0 回以上の 'a' をレイジーにマッチし、空文字を優先する例。"
+          1:
+            pattern: a*?
+            test: aaaabc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "先頭で 0 回の 'a' をレイジーにマッチする例。"
+          2:
+            pattern: a+?
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "1 回以上の 'a' をレイジーにマッチし、1 個の 'a' にマッチする例。"
+          3:
+            pattern: a{2}?
+            test: abc123!
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "不一致（ちょうど 2 回の 'a' が必要）。Onigmo では `{n}?` はサポートされないことが多い。"
+          4:
+            pattern: "(abc)*?"
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "先頭で 0 個の 'abc' をレイジーにマッチする例。"
+          5:
+            pattern: "(abc)+?"
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "1 個の 'abc' をレイジーにマッチする例。"
+          6:
+            pattern: "(abc)?"
+            test: abc123!
+            result: match
+            options: ''
+            substitution: '' 
+            description: "0 または 1 個の 'abc' をレイジーにマッチする例。"
+          7:
+            pattern: "(abc){2}?"
+            test: abcabc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "ちょうど 2 個の 'abc' をレイジーにマッチする例（図は `regexp_parser` により描画不可）。"
+          8:
+            pattern: "(abc){2,3}?"
+            test: abcabc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "2 個の 'abc' をレイジーにマッチする例（図は描画不可）。"
+          9:
+            pattern: "(abc){2,3}?"
+            test: abcabcabc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "2 個の 'abc' をレイジーにマッチし途中で止まる例（図は描画不可）。"
+      quantifiers-possessive:
+        short: 所有的量指定子
+        description: "所有的量指定子: バックトラックを許さず可能な限り多くマッチさせる量指定子の例。注意: レールロード図は `regexp_parser` で描画されます。範囲構文 `{n,m}+` 等はデフォルトの Onigmo ではサポートされない場合があります。"
+        examples:
+          0:
+            pattern: a*+
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "0 回以上の 'a' を所有的にマッチ（バックトラックなし）。"
+          1:
+            pattern: a*+
+            test: aaaabc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "先頭の 'a' を所有的にすべてマッチする。"
+          2:
+            pattern: a++
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "1 回以上の 'a' を所有的にマッチする。"
+          3:
+            pattern: "(abc)*+"
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "0 回以上の 'abc' を所有的にマッチする。"
+          4:
+            pattern: "(abc)++"
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "1 回以上の 'abc' を所有的にマッチする。"
+          5:
+            pattern: "(abc)?+"
+            test: abc123!
+            result: match
+            options: ''
+            substitution: ''
+            description: "0 または 1 個の 'abc' を所有的にマッチする。"
+      string-escapes:
+        short: 文字列エスケープ
+        description: "文字列エスケープ: \\d や \\w などのエスケープで特殊文字を表す例。"
+        examples:
+          0:
+            pattern: "\\d"
+            test: 123abc
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\d が数字にマッチするため '1' にマッチする例。"
+          1:
+            pattern: "\\d"
+            test: abc123
+            result: no-match
+            options: ''
+            substitution: ''
+            description: "先頭に数字がないため不一致の例。"
+          2:
+            pattern: "\\w"
+            test: abc123
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\w が単語文字にマッチするため 'a' にマッチする例。"
+          3:
+            pattern: "\\w"
+            test: 123!@#
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\w が数字にもマッチするため '1' にマッチする例。"
+          4:
+            pattern: "\\W"
+            test: "!@#"
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\W により非単語文字（例: '!'）にマッチする例。"
+          5:
+            pattern: "\\s"
+            test: abc def
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\s が空白にマッチするためスペースにマッチする例。"
+          6:
+            pattern: "\\S"
+            test: abc def
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\S が非空白にマッチするため 'a' にマッチする例。"
+          7:
+            pattern: "\\b"
+            test: hello world
+            result: match
+            options: ''
+            substitution: ''
+            description: "'hello' と 'world' の境界にマッチする例。"
+          8:
+            pattern: "\\B"
+            test: abc123
+            result: match
+            options: ''
+            substitution: ''
+            description: "\\B によって単語境界でない位置（'a' と 'b' の間）にマッチする例。"
+          9:
+            pattern: "\\x20"
+            test: abc 123
+            result: match
+            options: ''
+            substitution: ''
+            description: "'\\x20'（スペースの 16 進コード）にマッチする例。"
+          10:
+            pattern: "\\u{1F60D}"
+            test: "I love emojis \U0001F60D"
+            result: match
+            options: ''
+            substitution: ''
+            description: "Unicode エスケープで絵文字（例: '\\U0001F60D'）をマッチする例。"
+      unicode-age:
+        short: Unicode 世代
+        description: "Unicode のバージョン（Age）ごとに文字をマッチさせる例。\\p{Age}、\\P{Age}、およびキャレット (^) による否定をサポートします。"
+        examples:
+          0:
+            pattern: "\\p{Age=5.2}+"
+            test: "\U0001F929☆あ"
+            result: match
+            options: ''
+            substitution: ''
+            description: "Age 5.2 の絵文字（\U0001F929）にマッチし、星 '☆' の手前で止まる例。"
+          1:
+            pattern: "\\P{Age=6.1}+"
+            test: "Aあ\U0001F914"
+            result: match
+            options: ''
+            substitution: ''
+            description: "Age 6.1 に含まれない文字にマッチし、絵文字の手前で止まる例。"
+          2:
+            pattern: "\\p{Age=3.0}+"
+            test: "Dあ"
+            result: match
+            options: ''
+            substitution: ''
+            description: "Age 3.0 の句読点にマッチし、'D' の手前で止まる例。"
+          3:
+            pattern: "\\P{Age=5.2}+"
+            test: "ABC\U0001F929"
+            result: match
+            options: ''
+            substitution: ''
+            description: "'ABC' にマッチし、Age 5.2 の絵文字 \U0001F929 の手前で止まる例。"
+          4:
+            pattern: "\\p{Age=7.0}+"
+            test: "\U0001D11EC"
+            result: match
+            options: ''
+            substitution: ''
+            description: "Age 7.0 の音楽記号にマッチし、'C' の手前で止まる例。"
+          5:
+            pattern: "\\P{Age=8.0}+"
+            test: "abc\U0001F9ED"
+            result: match
+            options: ''
+            substitution: ''
+            description: "'abc' にマッチし、Age 8.0 のコンパス絵文字 \U0001F9ED の手前で止まる例。"
+      unicode-blocks:
+        short: Unicode ブロック
+        description: "Unicode ブロックでマッチさせる例。\\p{In…}, \\P{In…}、キャレットでの否定が使えます。"
+        examples:
+          0:
+            pattern: "\\p{InKatakana}+"
+            test: カタカナあA
+            result: match
+            options: ''
+            substitution: ''
+            description: "カタカナ文字にマッチし、ひらがな 'あ' の手前で止まる例。"
+          1:
+            pattern: "\\p{InArmenian}+"
+            test: ԱԲԳՖabc
+            result: match
+            options: ''
+            substitution: ''
+            description: "アルメニア文字にマッチし、ラテン 'abc' の手前で止まる例。"
+          2:
+            pattern: "\\P{InThai}+"
+            test: Helloกส
+            result: match
+            options: ''
+            substitution: ''
+            description: "タイ以外の文字 'Hello' にマッチし、タイ文字の手前で止まる例。"
+          3:
+            pattern: "\\p{^InKhmer}+"
+            test: xyzខ
+            result: match
+            options: ''
+            substitution: ''
+            description: "クメール以外の文字にマッチし、クメール文字で止まる例。"
+          4:
+            pattern: "\\p{InCyrillic}+"
+            test: ПриветX
+            result: match
+            options: ''
+            substitution: ''
+            description: "キリル文字にマッチし、ラテン 'X' の手前で止まる例。"
+          5:
+            pattern: "\\P{InHebrew}+"
+            test: ABCשלום
+            result: match
+            options: ''
+            substitution: ''
+            description: "ヘブライ文字以外にマッチし、ヘブライ文字の手前で止まる例。"
+      unicode-classes:
+        short: Unicode クラス
+        description: "Unicode クラス: Alpha, Space, Alnum のようなバイナリプロパティやその否定を扱います。"
+        examples:
+          0:
+            pattern: "\\p{Alpha}+"
+            test: Hi1!
+            result: match
+            options: ''
+            substitution: ''
+            description: "英字にマッチし、数字の手前で止まる例。"
+          1:
+            pattern: "\\P{Space}+"
+            test: Az BC
+            result: match
+            options: ''
+            substitution: ''
+            description: "非空白文字（例: 'Az'）にマッチし、空白の手前で止まる例。"
+          2:
+            pattern: "\\p{^Alnum}+"
+            test: abc-123?
+            result: match
+            options: ''
+            substitution: ''
+            description: "英数字でない文字にマッチし、英字や数字の手前で止まる例。"
+          3:
+            pattern: "\\p{Digit}+"
+            test: 123a
+            result: match
+            options: ''
+            substitution: ''
+            description: "数字のみをマッチし、英字の手前で止まる例。"
+          4:
+            pattern: "\\P{Alpha}+"
+            test: 123A
+            result: match
+            options: ''
+            substitution: ''
+            description: "英字以外の文字にマッチし、'A' の手前で止まる例。"
+          5:
+            pattern: "\\p{Space}+"
+            test: a b
+            result: match
+            options: ''
+            substitution: ''
+            description: "空白のみをマッチし、'b' の手前で止まる例。"
+      unicode-derived:
+        short: Unicode 派生プロパティ
+        description: "派生プロパティ（Math, Lowercase, Cased など）を扱う例。"
+        examples:
+          0:
+            pattern: "\\p{Math}+"
+            test: "+×= x"
+            result: match
+            options: ''
+            substitution: ''
+            description: "数学記号にマッチし、空白の手前で止まる例。"
+          1:
+            pattern: "\\P{Lowercase}+"
+            test: ABCdef
+            result: match
+            options: ''
+            substitution: ''
+            description: "小文字でない文字にマッチし、'd' の手前で止まる例。"
+          2:
+            pattern: "\\p{^Cased}+"
+            test: 123_a
+            result: match
+            options: ''
+            substitution: ''
+            description: "ケースを持たない文字にマッチし、'a' の手前で止まる例。"
+          3:
+            pattern: "\\p{Lowercase}+"
+            test: abcD
+            result: match
+            options: ''
+            substitution: ''
+            description: "小文字にマッチし、大文字の手前で止まる例。"
+          4:
+            pattern: "\\P{Math}+"
+            test: abc+=
+            result: match
+            options: ''
+            substitution: ''
+            description: "数学記号以外にマッチし、数学記号の手前で止まる例。"
+          5:
+            pattern: "\\p{Alphabetic}+"
+            test: ab1
+            result: match
+            options: ''
+            substitution: ''
+            description: "英字にマッチし、数字の手前で止まる例。"
+      unicode-general-categories:
+        short: Unicode 一般カテゴリ
+        description: "Unicode の一般カテゴリ（Lu, Cs など）やスクリプトの否定を扱う例。"
+        examples:
+          0:
+            pattern: "\\p{LU}+"
+            test: ABCd
+            result: match
+            options: ''
+            substitution: ''
+            description: "大文字略記 'LU' が大文字にマッチする例。"
+          1:
+            pattern: "\\p{lu}+"
+            test: ABCd
+            result: match
+            options: ''
+            substitution: ''
+            description: "小文字略記 'lu' が大文字にマッチする例（略記の違いの説明）。"
+          2:
+            pattern: "\\p{Uppercase Letter}+"
+            test: ABCd
+            result: match
+            options: ''
+            substitution: ''
+            description: "スペースを含む完全なプロパティ名が大文字にマッチする例。"
+          3:
+            pattern: "\\p{Uppercase_Letter}+"
+            test: ABCd
+            result: match
+            options: ''
+            substitution: ''
+            description: "アンダースコアを含む完全なプロパティ名が大文字にマッチする例。"
+          4:
+            pattern: "\\p{UPPERCASE-LETTER}+"
+            test: ABCd
+            result: match
+            options: ''
+            substitution: ''
+            description: "ハイフンを含むプロパティ名が大文字にマッチする例。"
+          5:
+            pattern: "\\P{Lu}+"
+            test: ABCd
+            result: match
+            options: ''
+            substitution: ''
+            description: "大文字でない文字にマッチし、大文字の手前で止まる例。"
+          6:
+            pattern: "\\p{^sc}+"
+            test: 123Λ
+            result: match
+            options: ''
+            substitution: ''
+            description: "スクリプトを持たない文字にマッチし、ギリシャ文字の手前で止まる例。"
+          7:
+            pattern: "\\p{Cc}+"
+            test: "\x01A"
+            result: match
+            options: ''
+            substitution: ''
+            description: "制御文字にマッチし、'A' の手前で止まる例。"
+          8:
+            pattern: "\\p{Cf}+"
+            test: "‍A"
+            result: match
+            options: ''
+            substitution: ''
+            description: "フォーマット文字にマッチし、'A' の手前で止まる例。"
+      unicode-scripts:
+        short: Unicode スクリプト
+        description: "スクリプトプロパティに基づくマッチ（否定含む）の例。"
+        examples:
+          0:
+            pattern: "\\p{Arabic}+"
+            test: سلامHello
+            result: match
+            options: ''
+            substitution: ''
+            description: "アラビア文字スクリプトにマッチし、ラテン文字の手前で止まる例。"
+          1:
+            pattern: "\\P{Hiragana}+"
+            test: ABCあいう
+            result: match
+            options: ''
+            substitution: ''
+            description: "ひらがな以外の文字にマッチし、ひらがなの手前で止まる例。"
+          2:
+            pattern: "\\p{^Greek}+"
+            test: ABCΩΔ
+            result: match
+            options: ''
+            substitution: ''
+            description: "ギリシャ文字以外にマッチし、ギリシャの手前で止まる例。"
+          3:
+            pattern: "\\p{Katakana}+"
+            test: カタカナB
+            result: match
+            options: ''
+            substitution: ''
+            description: "カタカナにマッチし、ラテン文字の手前で止まる例。"
+          4:
+            pattern: "\\p{Cyrillic}+"
+            test: ПриветX
+            result: match
+            options: ''
+            substitution: ''
+            description: "キリル文字にマッチし、ラテン文字の手前で止まる例。"
+          5:
+            pattern: "\\P{Devanagari}+"
+            test: Helloनमस्ते
+            result: match
+            options: ''
+            substitution: ''
+            description: "デーヴァナーガリー以外にマッチし、デーヴァナーガリーの手前で止まる例。"
+      unicode-simple-props:
+        short: Unicode 単純プロパティ
+        description: "Dash や Extender のような単純な二値プロパティとその否定の例。"
+        examples:
+          0:
+            pattern: "\\p{Dash}+"
+            test: "–‑—A"
+            result: match
+            options: ''
+            substitution: ''
+            description: "ダッシュ文字にマッチし、'A' の手前で止まる例。"
+          1:
+            pattern: "\\p{Extender}+"
+            test: ːX
+            result: match
+            options: ''
+            substitution: ''
+            description: "伸長記号（ː）にマッチし、'X' の手前で止まる例。"
+          2:
+            pattern: "\\p{^Hyphen}+"
+            test: word-word
+            result: match
+            options: ''
+            substitution: ''
+            description: "ハイフン以外の文字にマッチし、ハイフンで止まる例。"
+          3:
+            pattern: "\\P{Dash}+"
+            test: ABC–
+            result: match
+            options: ''
+            substitution: ''
+            description: "ダッシュでない文字にマッチし、ダッシュの手前で止まる例。"
+          4:
+            pattern: "\\p{Hyphen}+"
+            test: "-B"
+            result: match
+            options: ''
+            substitution: ''
+            description: "ハイフン文字にマッチし、'B' の手前で止まる例。"
+          5:
+            pattern: "\\p{Emoji}+"
+            test: "\U0001F468‍\U0001F469‍\U0001F467‍\U0001F466abc"
+            result: match
+            options: ''
+            substitution: ''
+            description: "絵文字ファミリーにマッチし、'abc' の手前で止まる例。"
+      posix-classes-vs-unicode-properties:
+        short: POSIX と Unicode の比較
+        description: "POSIX 文字クラスと Unicode プロパティの構文を比較し、マッチ境界がどう変わるかを示します。"
+        examples:
+          0:
+            pattern: "[[:alpha:]]+"
+            test: abc123XYZ
+            result: match
+            options: ''
+            substitution: ''
+            description: "POSIX の [:alpha:] は 'abc' と 'XYZ' にマッチし、'123' はスキップします。"
+          1:
+            pattern: "\\p{Alpha}+"
+            test: abc123XYZ
+            result: match
+            options: ''
+            substitution: ''
+            description: "Unicode の \\p{Alpha} は 'abc' と 'XYZ' にマッチし、'123' をスキップします。"
+          2:
+            pattern: "[[:^alpha:]]+"
+            test: abc123XYZ
+            result: match
+            options: ''
+            substitution: ''
+            description: "否定された POSIX の [:alpha:] は '123' にマッチし、英字をスキップします。"
+          3:
+            pattern: "\\P{Alpha}+"
+            test: abc123XYZ
+            result: match
+            options: ''
+            substitution: ''
+            description: "Unicode の非 Alpha は '123' にマッチし、英字をスキップします。"
+          4:
+            pattern: "[[:digit:]]+"
+            test: abc123.45def
+            result: match
+            options: ''
+            substitution: ''
+            description: "POSIX の [:digit:] は '123' と '45' にマッチします。"
+          5:
+            pattern: "\\p{Digit}+"
+            test: abc123.45def
+            result: match
+            options: ''
+            substitution: ''
+            description: "Unicode の Digit プロパティは '123' と '45' にマッチします。"
+          6:
+            pattern: "[[:punct:]]+"
+            test: hello!?
+            result: match
+            options: ''
+            substitution: ''
+            description: "POSIX の句読点クラスは '!?' のような句読点にマッチします。"
+          7:
+            pattern: "\\p{Punct}+"
+            test: hello!?
+            result: match
+            options: ''
+            substitution: ''
+            description: "Unicode の句読点 (Punct) も '!?' のような句読点にマッチします。"
+          8:
+            pattern: "[[:space:]]+"
+            test: "a b\tc\n"
+            result: match
+            options: ''
+            substitution: ''
+            description: "POSIX のスペースクラスはスペース、タブ、改行にマッチします。"
+          9:
+            pattern: "\\p{Space}+"
+            test: "a b\tc\n"
+            result: match
+            options: ''
+            substitution: ''
+            description: "Unicode の Space プロパティはスペース、タブ、改行にマッチします。"
+          10:
+            pattern: "[[:lower:]]+"
+            test: AbC
+            result: match
+            options: ''
+            substitution: ''
+            description: "POSIX の lower クラスは 'b' にマッチします。"
+          11:
+            pattern: "\\p{Lower}+"
+            test: AbC
+            result: match
+            options: ''
+            substitution: ''
+            description: "Unicode の Lower プロパティは 'b' にマッチします。"
+          12:
+            pattern: "[[:upper:]]+"
+            test: AbC
+            result: match
+            options: ''
+            substitution: ''
+            description: "POSIX の upper クラスは 'A' と 'C' にマッチします。"
+          13:
+            pattern: "\\p{Upper}+"
+            test: AbC
+            result: match
+            options: ''
+            substitution: ''
+            description: "Unicode の Upper プロパティは 'A' と 'C' にマッチします。"
     reference:
+      quick_reference: "クイックリファレンス"
       sections:
         character-classes-anchors:
           title: 文字クラスとアンカー
+          patterns:
+            0: "[abc]"
+            1: "[^abc]"
+            2: "[a-z]"
+            3: "[a-zA-Z]"
+            4: "^"
+            5: "$"
+            6: "\\A"
+            7: "\\z"
           items:
             0: 単一の文字（a、b、または c）
             1: 指定した文字以外の単一文字
@@ -61,6 +2326,15 @@ ja:
             7: 文字列の末尾
         common-patterns:
           title: よく使うパターン
+          patterns:
+            0: "."
+            1: "\\s"
+            2: "\\S"
+            3: "\\d"
+            4: "\\D"
+            5: "\\w"
+            6: "\\W"
+            7: "\\b"
           items:
             0: 任意の一文字
             1: 空白文字
@@ -72,6 +2346,15 @@ ja:
             7: 単語境界
         groups-quantifiers:
           title: グループと量指定子
+          patterns:
+            0: "(...)"
+            1: "(a|b)"
+            2: "a?"
+            3: "a*"
+            4: "a+"
+            5: "a{3}"
+            6: "a{3,}"
+            7: "a{3,6}"
           items:
             0: キャプチャグループの使い方
             1: 非キャプチャグループ (?:...)
@@ -81,760 +2364,15 @@ ja:
             5: インラインオプションと局所的なモディファイア
             6: "3 個以上の 'a' にマッチする例"
             7: "3 から 6 個の 'a' にマッチする例"
-        options:
-          options_label: "オプション:"
-          i: 大文字小文字を区別しない
-          m: ドットが改行にもマッチするようにする
-          x: 正規表現の空白とコメントを無視する（拡張モード）
-    categories:
-      basic-operations:
-        short: 基本操作
-        description: "基本操作：連結、選択、繰り返し（構文糖衣を使わない）を示す例。"
-        examples:
-          0:
-            description: 基本操作：連結、選択、繰り返し（構文糖衣を使わない例）。
-          1:
-            description: 連結：'a' + 'b' + 'c' にマッチする例。
-          2:
-            description: 連結：文字列の中間に 'ab' が現れる場合にマッチ。
-          3:
-            description: 連結：'a' の後に 'b' が続かない場合にマッチ。
-          4:
-            description: 選択：'a', 'b', 'c' のいずれかにマッチ。
-          5:
-            description: 選択：'a' または繰り返される 'b' のどちらかにマッチ。
-          6:
-            description: '繰り返し: 1 回の ''a'' にマッチする。'
-          7:
-            description: 範囲指定 [a-d] で 'a' が含まれる例（母音か否かの例示）。
-          8:
-            description: 範囲指定で 'b' が含まれる別例。
-          9:
-            description: 複数の文字を組み合わせた文字クラスの等価表現の例。
-          10:
-            description: '選択と繰り返し: ''a'' にマッチする。'
-          11:
-            description: '連結と繰り返し: ''a*'' + ''b'' + ''c'' にマッチする。'
-      syntax-sugar:
-        short: 糖衣構文
-        description: よく使われる糖衣構文：量指定子、ドット、文字クラス、エスケープ、アンカーなど。
-        examples:
-          0:
-            description: '量指定子 ''+'' : 1回以上の ''a'' にマッチする。'
-          1:
-            description: '量指定子 ''?'' : ''a'' があってもなくてもマッチする（任意）。'
-          2:
-            description: '量指定子 ''{n,m}'' : 2 回から 4 回の ''a'' にマッチする。'
-          3:
-            description: 'ドット ''.'' : 任意の1文字にマッチする。'
-          4:
-            description: '文字クラス: 小文字の英字にマッチする。'
-          5:
-            description: '文字クラス（範囲）: ハイフンを含む範囲にマッチする。'
-          6:
-            description: '否定クラス: 小文字の英字以外にマッチする。'
-          7:
-            description: 'エスケープ: タブ文字 ''\t'' にマッチする。'
-          8:
-            description: 'アンカー ''^'' : 文字列の先頭にマッチする。'
-          9:
-            description: 'アンカー ''$'' : 文字列の末尾にマッチする。'
-          10:
-            description: '単語境界 ''\b'' : 単語の境界にマッチする。'
-          11:
-            description: '非単語境界 ''\B'' : 単語境界でない位置にマッチする。'
-      pattern-matching-examples:
-        short: パターン
-        description: 名前付きキャプチャやマルチライン入力を使った実践的なパターン例。URLやログ、IPアドレスなどの抜き出しを示します。
-        examples:
-          0:
-            description: "名前付きキャプチャ local_part と domain_name を使ってメールアドレスにマッチさせる例。"
-          1:
-            description: スキーム、ホスト、オプションのパス、クエリ、フラグメントを含む有効なURLにマッチする。
-          2:
-            description: "octet_one から octet_four の名前付きキャプチャを使って IPv4 アドレスにマッチさせる例。"
-          3:
-            description: "名前付きキャプチャ local_part と domain_name を使ってメールアドレスにマッチさせる例。"
-          4:
-            description: スキーム、ホスト、オプションのパス、クエリ、フラグメントを含む有効なURLにマッチする。
-          5:
-            description: "octet_one から octet_four の名前付きキャプチャを使って IPv4 アドレスにマッチさせる例。"
-          6:
-            description: "block_one から block_eight の名前付きキャプチャ、または compressed_address を使用して IPv6 アドレスにマッチさせる例。"
-          7:
-            description: "タイムスタンプ、レベル、メッセージを名前付きキャプチャして、ERROR ログエントリを抽出する例。"
-          8:
-            description: 親キー配下にそれぞれ3つずつのキー=値ペアを持つ 2 レベルのネストされた YAML をマッチする。
-      alternations:
-        short: 選択
-        description: 複数の選択肢のいずれかにマッチさせる '|' 演算子の使い方を示します。
-        examples:
-          0:
-            description: "'cat' または 'dog' のいずれかにマッチする。"
-          1:
-            description: "'cat' または 'dog' のいずれかにマッチする（重複例）。"
-          2:
-            description: 該当する選択肢がないためマッチしない。
-          3:
-            description: リストされた色のいずれかにマッチする。
-          4:
-            description: "'yellow' が選択肢にないためマッチしない。"
-      anchors:
-        short: アンカー
-        description: アンカーを使って文字列内の位置（先頭・末尾・単語境界など）をマッチさせる方法を示します。
-        examples:
-          0:
-            description: "文字列の先頭にある 'start' にマッチする例。"
-          1:
-            description: 先頭にないためマッチしない。
-          2:
-            description: 文字列の末尾にある 'end' にマッチする。
-          3:
-            description: 末尾にないためマッチしない。
-          4:
-            description: 単語として独立した 'word' にマッチする。
-          5:
-            description: "単語境界で分離されていない 'hello' はマッチしない例。"
-          6:
-            description: 先頭の 'abc' にマッチする。
-          7:
-            description: 先頭でないためマッチしない。
-          8:
-            description: 単語境界に続く 'xyz' にマッチする。
-          9:
-            description: 単語境界上の 'xyz' にマッチする。
-          10:
-            description: "文字列末尾の 'start' にマッチする例。"
-          11:
-            description: "文字列末尾の 'start' にマッチする例（重複）。"
-      character-classes:
-        short: 文字クラス
-        description: 角括弧で囲んだ文字集合にマッチさせる方法（範囲、否定、エスケープなど）。
-        examples:
-          0:
-            description: "[abc] の中にあるため 'a'、'b'、'c' にマッチする。'1' はマッチしない。"
-          1:
-            description: "[^abc] のため '1' にマッチする。'a'、'b'、'c' はマッチしない。"
-          2:
-            description: "[0-9] の範囲により '1','2','3' のような数字にマッチする。'a' はマッチしない。"
-          3:
-            description: "[a-z] の範囲により小文字の英字にマッチする。'1' はマッチしない。"
-          4:
-            description: "[A-Z] により大文字の英字（X,Y,Zなど）にマッチする。小文字や数字はマッチしない。"
-          5:
-            description: "[^\\] のようにバックスラッシュを除外したクラスは '\\' をマッチさせない（他の文字はマッチ）。"
-          6:
-            description: "[a-d] の範囲で 'a' が母音の条件を満たすためマッチする。"
-          7:
-            description: "[a-d] 範囲で 'b' が母音でないためマッチする（'a','c','d' はマッチせず）。"
-          8:
-            description: クラス内での同値記述により 'a' が 'e' と 'b' と同様に扱われる例。
-      character-types:
-        short: 文字タイプ
-        description: 数字や空白など、特定の文字タイプ（\d, \s, \w 等）にマッチさせる例。
-        examples:
-          0:
-            description: 数字や空白などの文字タイプを扱う基本例。
-          1:
-            description: "'1','2','3' のような数字にマッチする例（\\d に相当）。"
-          2:
-            description: "'hello world' の全ての文字が非空白であるのでマッチする例。"
-          3:
-            description: "'hello world' の空白文字（スペース）にマッチする例。"
-          4:
-            description: "'hello' と 'world' の間の空白文字（スペース）にマッチする例。"
-          5:
-            description: 単語文字（'h','e','l','l','o','w','o','r','l','d','1','2','3'）にマッチする例。
-          6:
-            description: 単語文字（\w）により英数字がマッチする例（'1','2','3' を含む）。
-          7:
-            description: 単語文字にマッチする例。'@' は単語文字ではないため不一致。
-          8:
-            description: 非単語文字（'@' など）にマッチする例。
-          9:
-            description: すべてが単語文字であるためマッチしない例。
-      cluster-types:
-        short: クラスタ（グラフェム）
-        description: グラフェム（表示単位）や改行などのクラスタを \R や \X で扱う例。
-        examples:
-          0:
-            description: "\\R/\\X を使ったグラフェムクラスタの基本例。"
-          1:
-            description: "'abc' と '123' の間の改行文字にマッチする例。"
-          2:
-            description: "絵文字（例: \U0001F44B）を 1 つのグラフェムクラスタとして扱う例。"
-          3:
-            description: "文字列全体を絵文字を含めて単一のグラフェムクラスタとして扱う例。"
-          4:
-            description: 絵文字を含めて文字列全体を単一のグラフェムクラスタとして扱う例。
-          5:
-            description: 合字や結合文字を1つの表示単位として扱う例（アクセント付き文字）。
-      conditional-expressions:
-        short: 条件式
-        description: '条件式: (?(cond)yes-subexp|no-subexp) のような条件付きサブパターンにマッチする例。'
-        examples:
-          0:
-            description: 条件によって処理を分岐する条件式の基本例。
-          1:
-            description: 条件 (<A>) が真であるため 'T' にマッチする例。
-          2:
-            description: 条件が真で空の分岐が無視される場合のマッチ例。
-          3:
-            description: 条件 (001) が有効なため 'T' にマッチする例。
-          4:
-            description: 条件が真の場合に 'set x=32' のような構造をグループで取得する例。
-          5:
-            description: 条件が偽の場合に 'print x' のように別分岐が適用される例。
-          6:
-            description: 条件を満たさないためマッチしない例（数値が続くべき場所に非数値がある等）。
-      escape-sequences:
-        short: エスケープシーケンス
-        description: エスケープシーケンス：\t, \n+                , \d などのエスケープ表現で文字を表す例。
-        examples:
-          0:
-            description: エスケープで特殊文字を表現する基本例（\t, \n+                , \d など）。
-          1:
-            description: タブ文字（\t）にマッチする例。
-          2:
-            description: 改行文字（\n）にマッチする例。
-          3:
-            description: '数字（例: ''5''）にマッチする例（\d）。'
-          4:
-            description: "'a' は数字ではないため不一致の例。"
-          5:
-            description: スペースなどの空白文字にマッチする例。
-          6:
-            description: 非空白文字にマッチする例。
-          7:
-            description: '単語文字（例: ''a''）にマッチする例（\w）。'
-          8:
-            description: '非単語文字（例: ''$''）にマッチする例。'
-          9:
-            description: "'word' の前の単語境界にマッチする例（\\b）。"
-          10:
-            description: "\\B を使って単語境界でない位置を示す例（'word' は一致しない）。"
-          11:
-            description: フォームフィード文字にマッチする例。
-          12:
-            description: キャリッジリターン文字にマッチする例。
-          13:
-            description: ヌル文字にマッチする例。
-          14:
-            description: 16進エスケープで 'A' を表現する例。
-          15:
-            description: 1 つ以上のバックスラッシュにマッチする例。
-          16:
-            description: 疑問符を文字としてマッチさせる例（リテラル問符）。
-      free-space:
-        short: フリースペース
-        description: x 修飾子を使って空白やコメントを無視する（可読性向上のためのモード）の例。
-        examples:
-          0:
-            description: x モードで空白やコメントを無視する基本例。
-          1:
-            description: 空白とコメントが無視されるため、'a' と 'b' がマッチする例。
-          2:
-            description: 空白とコメントが無視されるため、'ab' にマッチする例。
-          3:
-            description: 同様に空白を無視して 'ab' にマッチする別例。
-          4:
-            description: 空白とコメントが除外され、'ab' がマッチする例。
-      group-assertions:
-        short: グループアサーション
-        description: 先読み・後読みのように文字を消費せずに位置をマッチさせるアサーションの例。
-        examples:
-          0:
-            description: 先読み・後読みを使った位置マッチの基本例。
-          1:
-            description: "'abc' の直前の位置にマッチする先読みの例。"
-          2:
-            description: 単語境界のため 'hello' の直前にマッチする例。
-          3:
-            description: "'abc' が存在しない位置を検出する例（否定の先読み）。"
-          4:
-            description: "'abc' の直後の位置にマッチする後読みの例。"
-          5:
-            description: 3 桁の連続する数字の直後の位置にマッチする例。
-          6:
-            description: 単語境界の直後に位置がある場合のマッチ例（'hello' の前など）。
-          7:
-            description: 前方位置マッチの別例（'abc' の直前）。
-          8:
-            description: 数字が前にない場合に 'abc' の直前にマッチする例。
-          9:
-            description: 2 桁の数字が前にない場合に 'abc' の直前にマッチする例。
-      group-atomic:
-        short: アトミックグループ
-        description: アトミックグループ (?>...) はグループ内でバックトラックを許可せず部分パターンをマッチさせます。全体が失敗してもグループ内の別経路は試されません。これにより不要なバックトラックを減らせます。
-        examples:
-          0:
-            description: アトミックグループの基本例：グループ内でバックトラックしない動作を示す。
-          1:
-            description: '非アトミック: ''b'' を試して失敗し、バックトラックして ''bc'' をマッチする例。'
-          2:
-            description: 'アトミック: ''bc'' にマッチするが ''c'' が失敗した場合に ''b'' へはバックトラックしない例。'
-          3:
-            description: "'user123' をマッチして 'user' をグループ1で取得し、'123' は別扱いにする例。"
-          4:
-            description: "(?>\\w+) が貪欲に 'user123' を消費してしまい、\\d{3} がマッチする余地がなくなるため不一致となる例。"
-          5:
-            description: '非アトミック: ''A+'' を試して失敗し、バックトラックして ''A*B'' を試す例。'
-          6:
-            description: 'アトミック: ''A+'' を貪欲にマッチさせて失敗した場合、''A*B'' を試さない例。'
-      group-absence:
-        short: グループ不在
-        description: "グループ不在: 不在演算子 (?~pattern) は、パターンを含まない部分列にマッチします。文字列全体に対しては、パターンがどこかに存在すれば失敗しますが、部分文字列に対する部分一致は発生します。"
-        examples:
-          0:
-            description: "文字列全体に対してマッチ（'abc' が存在しない）。"
-          1:
-            description: "文字列全体に対してマッチ（'abc' が存在しない）。"
-          2:
-            description: "文字列全体に対してマッチ（'abc' が存在しない）。"
-          3:
-            description: "'abc' を含まない文字列の部分（例: 'ab', 'bc', 空）にマッチする。全体一致はできない。"
-          4:
-            description: "文字列全体に 'abc' が含まれるため不一致。"
-          5:
-            description: "'abc' を除いた部分で部分一致が見つかるが、全体一致は失敗する。"
-          6:
-            description: "'abc' を除く部分列に対する部分一致でマッチが見つかる。"
-          7:
-            description: "C 風の空コメントにマッチする例。"
-          8:
-            description: "内容を持つ C 風のコメントにマッチする例。"
-      group-back-references:
-        short: グループ参照
-        description: "グループ参照: 以前にキャプチャしたテキストと同じ内容をバックリファレンスでマッチさせます。"
-        examples:
-          0:
-            description: "両方の桁が同じなので '11' にマッチする。"
-          1:
-            description: "名前付きバックリファレンスを使って 'hello hello' にマッチする。"
-          2:
-            description: "番号付きバックリファレンスで '123123' にマッチする。"
-          3:
-            description: "両単語が同じなので 'hello hello' にマッチする。"
-          4:
-            description: "入れ子のバックリファレンスを使って '123-45-6789123' にマッチする例。"
-          5:
-            description: "2 番目のグループが繰り返されるため 'apple-orangeorange' にマッチする例（k<2> を使用）。"
-          6:
-            description: "グループ2への番号付きバックリファレンスで '123-45-678945' にマッチする。"
-          7:
-            description: "桁が繰り返されないため '12345' は不一致。"
-          8:
-            description: "\\k<-2> と \\k<-1> がそれぞれ直前の 2 つと 1 つのキャプチャを参照する例（'yzyz' にマッチ）。"
-      group-capturing:
-        short: グループキャプチャ
-        description: "グループキャプチャ: マッチした部分をキャプチャして、番号付きや名前付きグループで後から参照できます。ローカル変数へ格納する例も含みます。"
-        examples:
-          0:
-            description: "最初のキャプチャグループで 'abc' を取得する例。"
-          1:
-            description: "日付の各部分を 3 つのグループ（'12','34','5678'）に分けてキャプチャする例。"
-          2:
-            description: "ユーザー名 'alice' とドメイン 'example.com' を 2 つのグループでキャプチャする例。"
-          3:
-            description: "最初のグループで '123'、二番目のグループで '456' をキャプチャする例。"
-          4:
-            description: "最初のグループで 'abc'、二番目で 'def' をキャプチャする例。"
-          5:
-            description: "'2021','12','25' をそれぞれ別のグループでキャプチャする例。"
-          6:
-            description: "最初のグループで 'hello'、二番目で 'world' をキャプチャする例。"
-          7:
-            description: "同じキャプチャグループを使って 'hello' をキャプチャし再度マッチさせる例。"
-      group-comments:
-        short: グループ内コメント
-        description: "グループ内コメント: 正規表現内に (?# comment ) のようにコメントを含める例。コメントはマッチに影響しません。"
-        examples:
-          0:
-            description: "コメントを無視して 'abc' にマッチする。"
-          1:
-            description: "括弧内のコメントを無視して 'ab' にマッチする。"
-          2:
-            description: "先頭と末尾で 'abc' にマッチするが、コメントは無視される。"
-          3:
-            description: "途中のコメントを無視して 'ab' にマッチする。"
-          4:
-            description: "桁に関するコメントを無視して 1 個以上の数字にマッチする。"
-          5:
-            description: "コメントを無視して空白 1 文字にマッチする。"
-          6:
-            description: "3 文字以上の単語として 'word' にマッチする例（コメントは無視）。"
-      group-named:
-        short: 名前付きグループ
-        description: "名前付きグループ: 特定の名前を付けたグループでマッチを取得し、参照を簡単にします。"
-        examples:
-          0:
-            description: "名前 'name' のグループで 'abc' をキャプチャする例。"
-          1:
-            description: "名前 'name' のグループで 'abc' をキャプチャする例（重複）。"
-          2:
-            description: "Python 風の '(?P<name>...)' 構文は Ruby ではサポートされないため不一致の例。"
-          3:
-            description: "年・月・日を名前付きグループにキャプチャする例。"
-          4:
-            description: "時・分を名前付きグループにキャプチャする例。"
-          5:
-            description: "'alice' を名前付きグループ 'alice' に、'example.com' を名前付きグループ 'domain' にキャプチャする例。"
-          6:
-            description: "'dollars' と 'cents' の名前付きグループに金額をキャプチャし、MatchData のシンボルキーで参照する例。"
-          7:
-            description: "名前付きキャプチャとバックリファレンスを使って繰り返す母音をマッチする例。"
-          8:
-            description: "成功例：名前付きキャプチャ 'name' と番号付きキャプチャが共存するが、MatchData は主に名前付きキャプチャを公開する。"
-      group-options:
-        short: グループ内オプション
-        description: "グループ内オプション: (?i) や (?m) のようなインラインオプションで正規表現の動作を変更する例。"
-        examples:
-          0:
-            description: "(?i) オプションにより 'ABC' が大文字小文字を区別せずにマッチする。"
-          1:
-            description: "(?m) マルチラインオプションにより各行の先頭で 'abc' がマッチする。"
-          2:
-            description: "(?x) 拡張オプションにより空白とコメントを無視して 'ab' にマッチする。"
-          3:
-            description: "インラインオプションにより 'HELLO' は大文字小文字を区別せず、'world' は区別してマッチする例。"
-          4:
-            description: "'ABC' は大文字小文字を区別せずに、'def' は区別してマッチする例。"
-          5:
-            description: "(?m) により各行の先頭で 'start' がマッチする。"
-          6:
-            description: "(?x) によりコメントと空白を無視して 'ac' にマッチする例。"
-      group-passive:
-        short: パッシブグループ
-        description: "パッシブグループ: マッチを保持しない非キャプチャグループを作る例。"
-        examples:
-          0:
-            description: "'abc' に対する非キャプチャグループの例。"
-          1:
-            description: "日付パターンでの非キャプチャグループの例。"
-          2:
-            description: "ドメインはキャプチャするがユーザー名は無視する非キャプチャグループの例。"
-      group-subexpression-calls:
-        short: サブ式呼び出し
-        description: "サブ式呼び出し: 以前定義した部分式を名前またはインデックスで呼び出す例。"
-        examples:
-          0:
-            description: "最初のキャプチャグループを参照する例。"
-          1:
-            description: "名前 'name' のグループを参照する例。"
-          2:
-            description: "インデックスで 2 つのキャプチャグループを参照する例。"
-      keep:
-        short: 保持
-        description: "Keep: 現在のマッチを保持し、\\K を使ってそれ以降のマッチを続行する例。"
-        examples:
-          0:
-            description: "\\K を使って 'ab' を破棄した後に 'cd' にマッチする例。"
-          1:
-            description: "\\K により 'a' を破棄した後に 'b' にマッチする例。"
-          2:
-            description: "\\K により 'foo' を破棄して 'bar' にマッチする例。"
-          3:
-            description: "\\K によって 'xyz' を破棄し 'abc' にマッチさせる例。"
-          4:
-            description: "'start' を破棄して 'end' にマッチする例。"
-          5:
-            description: "'one' を破棄して 'two' にマッチする例。"
-          6:
-            description: "'aaa' を破棄して 'bbb' にマッチする例。"
-          7:
-            description: "'1' を破棄して '2' にマッチする例。"
-          8:
-            description: "'abc' を破棄して 'xyz' にマッチする例。"
-          9:
-            description: "'quick' を破棄して 'brown' にマッチする例。"
-      literals:
-        short: リテラル
-        description: "リテラル: Unicode を含む特定の文字列をそのままマッチさせる例。"
-        examples:
-          0:
-            description: "'Ruby' を正確にマッチする。"
-          1:
-            description: "'apple pie' の中で 'apple' を正確にマッチする。"
-          2:
-            description: "'doghouse' の中で 'dog' を正確にマッチする。"
-          3:
-            description: "'1234' の中で '123' を正確にマッチする。"
-          4:
-            description: "'abcdef' の中で 'abc' を正確にマッチする。"
-          5:
-            description: "絵文字（例: '😍'）などの正確な Unicode をマッチする例。"
-          6:
-            description: "日本語の単語 'ルビー' を正確にマッチする。"
-          7:
-            description: "アラビア語の単語 'روبي' を正確にマッチする。"
-          8:
-            description: "単語が 'pie' に付随しているため 'apple' はマッチしない例。"
-          9:
-            description: "文字の順序が異なるため 'dog' はマッチしない例。"
-          10:
-            description: "別の絵文字（例: '🌍'）を正確にマッチする例。"
-      posix-classes:
-        short: POSIX クラス
-        description: "POSIX クラス: [:alpha:], [:digit:] 等の POSIX 文字クラスにマッチさせる例。否定も使用できます（例: [:^alpha:]）。"
-        examples:
-          0:
-            description: "'abc' や 'XYZ' にマッチし、数字は除外する例。"
-          1:
-            description: "'123' のような数字にマッチし、英字は除外する例。"
-          2:
-            description: "'123' や '45' のような数字列にマッチする例。"
-          3:
-            description: "句読点 '!?' にマッチする例。"
-          4:
-            description: "スペース、タブ、改行にマッチする例。"
-          5:
-            description: "小文字の 'b' のみをマッチする例。"
-          6:
-            description: "大文字の 'A' と 'C' にマッチする例。"
-      quantifiers-greedy:
-        short: 貪欲な量指定子
-        description: "貪欲な量指定子: 可能な限り多くマッチさせる量指定子の例。"
-        examples:
-          0:
-            description: "0 回以上の 'a' を貪欲にマッチする（先頭で空文字か 'a'）。"
-          1:
-            description: "先頭の連続する 'a' をすべて貪欲にマッチする。"
-          2:
-            description: "1 回以上の 'a' を貪欲にマッチし、最初の 'a' にマッチする例。"
-          3:
-            description: "不一致（ちょうど 2 回の 'a' が必要）。"
-          4:
-            description: "0 回以上の 'abc' を貪欲にマッチし、1 個の 'abc' にマッチする例。"
-          5:
-            description: "1 回以上の 'abc' を貪欲にマッチする例。"
-          6:
-            description: "0 または 1 個の 'abc' を貪欲にマッチする例。"
-          7:
-            description: "ちょうど 2 個の 'abc' を貪欲にマッチする例。"
-          8:
-            description: "2〜3 個の 'abc' を貪欲にマッチ（2 個にマッチ）。"
-          9:
-            description: "2〜3 個の 'abc' を貪欲にマッチ（3 個にマッチ）。"
-      quantifiers-reluctant-lazy:
-        short: 遅延（レイジー）量指定子
-        description: "遅延（レイジー）量指定子: 可能な限り少なくマッチさせる量指定子の例。注意: レールロード図は `regexp_parser` で描画されます。Onigmo（Ruby の正規表現エンジン）は `??`, `*?`, `+?`, `{n,m}?` 等をサポートしますが、`{n}?` のような形式は一般的に不要でサポートされない場合があります。"
-        examples:
-          0:
-            description: "0 回以上の 'a' をレイジーにマッチし、空文字を優先する例。"
-          1:
-            description: "先頭で 0 回の 'a' をレイジーにマッチする例。"
-          2:
-            description: "1 回以上の 'a' をレイジーにマッチし、1 個の 'a' にマッチする例。"
-          3:
-            description: "不一致（ちょうど 2 回の 'a' が必要）。Onigmo では `{n}?` はサポートされないことが多い。"
-          4:
-            description: "先頭で 0 個の 'abc' をレイジーにマッチする例。"
-          5:
-            description: "1 個の 'abc' をレイジーにマッチする例。"
-          6:
-            description: "0 または 1 個の 'abc' をレイジーにマッチする例。"
-          7:
-            description: "ちょうど 2 個の 'abc' をレイジーにマッチする例（図は `regexp_parser` により描画不可）。"
-          8:
-            description: "2 個の 'abc' をレイジーにマッチする例（図は描画不可）。"
-          9:
-            description: "2 個の 'abc' をレイジーにマッチし途中で止まる例（図は描画不可）。"
-      quantifiers-possessive:
-        short: 所有的量指定子
-        description: "所有的量指定子: バックトラックを許さず可能な限り多くマッチさせる量指定子の例。注意: レールロード図は `regexp_parser` で描画されます。範囲構文 `{n,m}+` 等はデフォルトの Onigmo ではサポートされない場合があります。"
-        examples:
-          0:
-            description: "0 回以上の 'a' を所有的にマッチ（バックトラックなし）。"
-          1:
-            description: "先頭の 'a' を所有的にすべてマッチする。"
-          2:
-            description: "1 回以上の 'a' を所有的にマッチする。"
-          3:
-            description: "0 回以上の 'abc' を所有的にマッチする。"
-          4:
-            description: "1 回以上の 'abc' を所有的にマッチする。"
-          5:
-            description: "0 または 1 個の 'abc' を所有的にマッチする。"
-      string-escapes:
-        short: 文字列エスケープ
-        description: "文字列エスケープ: \\d や \\w などのエスケープで特殊文字を表す例。"
-        examples:
-          0:
-            description: "\\d が数字にマッチするため '1' にマッチする例。"
-          1:
-            description: "先頭に数字がないため不一致の例。"
-          2:
-            description: "\\w が単語文字にマッチするため 'a' にマッチする例。"
-          3:
-            description: "\\w が数字にもマッチするため '1' にマッチする例。"
-          4:
-            description: "\\W により非単語文字（例: '!'）にマッチする例。"
-          5:
-            description: "\\s が空白にマッチするためスペースにマッチする例。"
-          6:
-            description: "\\S が非空白にマッチするため 'a' にマッチする例。"
-          7:
-            description: "'hello' と 'world' の境界にマッチする例。"
-          8:
-            description: "\\B によって単語境界でない位置（'a' と 'b' の間）にマッチする例。"
-          9:
-            description: "'\\x20'（スペースの 16 進コード）にマッチする例。"
-          10:
-            description: "Unicode エスケープで絵文字（例: '\\U0001F60D'）をマッチする例。"
-      unicode-age:
-        short: Unicode 世代
-        description: "Unicode のバージョン（Age）ごとに文字をマッチさせる例。\\p{Age}、\\P{Age}、およびキャレット (^) による否定をサポートします。"
-        examples:
-          0:
-            description: "Age 5.2 の絵文字（\U0001F929）にマッチし、星 '☆' の手前で止まる例。"
-          1:
-            description: "Age 6.1 に含まれない文字にマッチし、絵文字の手前で止まる例。"
-          2:
-            description: "Age 3.0 の句読点にマッチし、'D' の手前で止まる例。"
-          3:
-            description: "'ABC' にマッチし、Age 5.2 の絵文字 \U0001F929 の手前で止まる例。"
-          4:
-            description: "Age 7.0 の音楽記号にマッチし、'C' の手前で止まる例。"
-          5:
-            description: "'abc' にマッチし、Age 8.0 のコンパス絵文字 \U0001F9ED の手前で止まる例。"
-      unicode-blocks:
-        short: Unicode ブロック
-        description: "Unicode ブロックでマッチさせる例。\\p{In…}, \\P{In…}、キャレットでの否定が使えます。"
-        examples:
-          0:
-            description: "カタカナ文字にマッチし、ひらがな 'あ' の手前で止まる例。"
-          1:
-            description: "アルメニア文字にマッチし、ラテン 'abc' の手前で止まる例。"
-          2:
-            description: "タイ以外の文字 'Hello' にマッチし、タイ文字の手前で止まる例。"
-          3:
-            description: "クメール以外の文字にマッチし、クメール文字で止まる例。"
-          4:
-            description: "キリル文字にマッチし、ラテン 'X' の手前で止まる例。"
-          5:
-            description: "ヘブライ文字以外にマッチし、ヘブライ文字の手前で止まる例。"
-      unicode-classes:
-        short: Unicode クラス
-        description: "Unicode クラス: Alpha, Space, Alnum のようなバイナリプロパティやその否定を扱います。"
-        examples:
-          0:
-            description: "英字にマッチし、数字の手前で止まる例。"
-          1:
-            description: "非空白文字（例: 'Az'）にマッチし、空白の手前で止まる例。"
-          2:
-            description: "英数字でない文字にマッチし、英字や数字の手前で止まる例。"
-          3:
-            description: "数字のみをマッチし、英字の手前で止まる例。"
-          4:
-            description: "英字以外の文字にマッチし、'A' の手前で止まる例。"
-          5:
-            description: "空白のみをマッチし、'b' の手前で止まる例。"
-      unicode-derived:
-        short: Unicode 派生プロパティ
-        description: "派生プロパティ（Math, Lowercase, Cased など）を扱う例。"
-        examples:
-          0:
-            description: "数学記号にマッチし、空白の手前で止まる例。"
-          1:
-            description: "小文字でない文字にマッチし、'd' の手前で止まる例。"
-          2:
-            description: "ケースを持たない文字にマッチし、'a' の手前で止まる例。"
-          3:
-            description: "小文字にマッチし、大文字の手前で止まる例。"
-          4:
-            description: "数学記号以外にマッチし、数学記号の手前で止まる例。"
-          5:
-            description: "英字にマッチし、数字の手前で止まる例。"
-      unicode-general-categories:
-        short: Unicode 一般カテゴリ
-        description: "Unicode の一般カテゴリ（Lu, Cs など）やスクリプトの否定を扱う例。"
-        examples:
-          0:
-            description: "大文字略記 'LU' が大文字にマッチする例。"
-          1:
-            description: "小文字略記 'lu' が大文字にマッチする例（略記の違いの説明）。"
-          2:
-            description: "スペースを含む完全なプロパティ名が大文字にマッチする例。"
-          3:
-            description: "アンダースコアを含む完全なプロパティ名が大文字にマッチする例。"
-          4:
-            description: "ハイフンを含むプロパティ名が大文字にマッチする例。"
-          5:
-            description: "大文字でない文字にマッチし、大文字の手前で止まる例。"
-          6:
-            description: "スクリプトを持たない文字にマッチし、ギリシャ文字の手前で止まる例。"
-          7:
-            description: "制御文字にマッチし、'A' の手前で止まる例。"
-          8:
-            description: "フォーマット文字にマッチし、'A' の手前で止まる例。"
-      unicode-scripts:
-        short: Unicode スクリプト
-        description: "スクリプトプロパティに基づくマッチ（否定含む）の例。"
-        examples:
-          0:
-            description: "アラビア文字スクリプトにマッチし、ラテン文字の手前で止まる例。"
-          1:
-            description: "ひらがな以外の文字にマッチし、ひらがなの手前で止まる例。"
-          2:
-            description: "ギリシャ文字以外にマッチし、ギリシャの手前で止まる例。"
-          3:
-            description: "カタカナにマッチし、ラテン文字の手前で止まる例。"
-          4:
-            description: "キリル文字にマッチし、ラテン文字の手前で止まる例。"
-          5:
-            description: "デーヴァナーガリー以外にマッチし、デーヴァナーガリーの手前で止まる例。"
-      unicode-simple-props:
-        short: Unicode 単純プロパティ
-        description: "Dash や Extender のような単純な二値プロパティとその否定の例。"
-        examples:
-          0:
-            description: "ダッシュ文字にマッチし、'A' の手前で止まる例。"
-          1:
-            description: "伸長記号（ː）にマッチし、'X' の手前で止まる例。"
-          2:
-            description: "ハイフン以外の文字にマッチし、ハイフンで止まる例。"
-          3:
-            description: "ダッシュでない文字にマッチし、ダッシュの手前で止まる例。"
-          4:
-            description: "ハイフン文字にマッチし、'B' の手前で止まる例。"
-          5:
-            description: "絵文字ファミリーにマッチし、'abc' の手前で止まる例。"
-      posix-classes-vs-unicode-properties:
-        short: POSIX と Unicode の比較
-        description: "POSIX 文字クラスと Unicode プロパティの構文を比較し、マッチ境界がどう変わるかを示します。"
-        examples:
-          0:
-            description: "POSIX の [:alpha:] は 'abc' と 'XYZ' にマッチし、'123' はスキップします。"
-          1:
-            description: "Unicode の \\p{Alpha} は 'abc' と 'XYZ' にマッチし、'123' をスキップします。"
-          2:
-            description: "否定された POSIX の [:alpha:] は '123' にマッチし、英字をスキップします。"
-          3:
-            description: "Unicode の非 Alpha は '123' にマッチし、英字をスキップします。"
-          4:
-            description: "POSIX の [:digit:] は '123' と '45' にマッチします。"
-          5:
-            description: "Unicode の Digit プロパティは '123' と '45' にマッチします。"
-          6:
-            description: "POSIX の句読点クラスは '!?' のような句読点にマッチします。"
-          7:
-            description: "Unicode の句読点 (Punct) も '!?' のような句読点にマッチします。"
-          8:
-            description: "POSIX のスペースクラスはスペース、タブ、改行にマッチします。"
-          9:
-            description: "Unicode の Space プロパティはスペース、タブ、改行にマッチします。"
-          10:
-            description: "POSIX の lower クラスは 'b' にマッチします。"
-          11:
-            description: "Unicode の Lower プロパティは 'b' にマッチします。"
-          12:
-            description: "POSIX の upper クラスは 'A' と 'C' にマッチします。"
-          13:
-            description: "Unicode の Upper プロパティは 'A' と 'C' にマッチします。"
+      options:
+        options_label: "オプション:"
+        i: 大文字小文字を区別しない
+        m: ドットが改行にもマッチするようにする
+        x: 正規表現の空白とコメントを無視する（拡張モード）
     footer:
-      inspired_by: Michael Lovitt の素晴らしい作品に触発
-      rubree_uses_ruby: Rubree は Ruby %{version} を使用しています。
-      issues_text: 問題
-      issues_handle: "@rubree"
-      made_by: "作成者: %{name}"
+      inspired_by: Michael Lovitt 氏の素晴らしい作品に触発されて作られました
+      rubree_uses_ruby: Rubree は Ruby %{version} を使用しています
+      issues_text: 問題報告やフィードバックは GitHub で歓迎します
+      issues_handle: "rubree"
+      made_by: "作成者: Takashi Shimokawa"
       made_by_handle: "@aim2bpg"
