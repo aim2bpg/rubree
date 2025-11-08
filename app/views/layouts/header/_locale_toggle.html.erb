@@ -1,0 +1,12 @@
+<%# Locale toggle button (header) - moved into layouts/header/ %>
+<% other = I18n.locale.to_s == "ja" ? "en" : "ja" %>
+<%= link_to url_for(params.to_unsafe_h.merge(locale: other)), class: "inline-flex items-center text-sm rounded-full px-1 py-0.5 bg-transparent focus:outline-none", data: { test: "locale-toggle", turbo: false }, aria: { label: t("regular_expressions.header.toggle_locale", default: "Toggle language") } do %>
+  <span class="sr-only"><%= t("regular_expressions.header.toggle_locale", default: "Toggle language") %></span>
+  <span class="inline-flex items-center gap-2">
+    <span class="text-xs text-gray-400"><%= t("regular_expressions.header.lang_label", default: "LANG") %></span>
+    <span class="inline-flex items-center bg-gray-900/50 rounded-full p-0.5">
+      <span class="text-xs font-medium px-2 py-0.5 rounded-full <%= I18n.locale.to_s == "en" ? "bg-gray-700 text-white" : "text-gray-300 opacity-60" %>">EN</span>
+      <span class="text-xs font-medium px-2 py-0.5 rounded-full <%= I18n.locale.to_s == "ja" ? "bg-gray-700 text-white" : "text-gray-300 opacity-60" %>">JP</span>
+    </span>
+  </span>
+<% end %>

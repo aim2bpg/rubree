@@ -4,7 +4,7 @@
       <div class="mb-2 flex sm:flex-col md:flex-row justify-between gap-2">
         <label class="text-sm font-bold text-white whitespace-nowrap">
           <%= t("regular_expressions.results.ruby_code_label") %>
-          <span class="ml-1 text-sm font-bold text-white">(<button x-on:click="show = !show" class="text-xs text-blue-400 hover:underline whitespace-nowrap align-baseline p-0 m-0" type="button"><span x-text="show ? $el.dataset.hideText : $el.dataset.showText" data-hide-text="<%= t("regular_expressions.results.hide") %>" data-show-text="<%= t("regular_expressions.results.show") %>"></span></button>):</span>
+          <span class="ml-1 text-sm font-bold text-white">(<button role="button" :aria-expanded="show" x-on:click="show = !show" class="text-xs text-blue-400 hover:underline whitespace-nowrap align-baseline p-0 m-0" type="button"><span x-text="show ? $el.dataset.hideText : $el.dataset.showText" data-hide-text="<%= t("regular_expressions.results.hide") %>" data-show-text="<%= t("regular_expressions.results.show") %>"></span></button>):</span>
         </label>
 
         <div class="flex items-center gap-2">

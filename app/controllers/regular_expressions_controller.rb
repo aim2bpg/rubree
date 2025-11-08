@@ -6,16 +6,26 @@ class RegularExpressionsController < ApplicationController
   end
 
   def create
-    @regular_expression = RegularExpression.new(regular_expression_params)
+    begin
+      @regular_expression = RegularExpression.new(regular_expression_params)
 
-    @svg_output = @regular_expression.diagram_svg
-    @diagram_error_message = @regular_expression.diagram_error_message
+      @regular_expression.display_captures
 
-    if params[:regular_expression][:substitution_string].present?
-      @regular_expression.substitute
+      @svg_output = @regular_expression.diagram_svg
+      @diagram_error_message = @regular_expression.diagram_error_message
+
+      if params[:regular_expression][:substitution_string].present?
+        @regular_expression.substitute
+      end
+
+      render :index
+    rescue StandardError => e
+      @regular_expression ||= RegularExpression.new(regular_expression_params)
+      @regular_expression.errors.add(:base, e.message)
+      @svg_output = nil
+      @diagram_error_message = nil
+      render :index
     end
-
-    render :index
   end
 
   private

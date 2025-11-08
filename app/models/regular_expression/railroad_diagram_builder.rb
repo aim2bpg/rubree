@@ -83,7 +83,8 @@ class RegularExpression
 
       when Regexp::Expression::Group::Named
         group_content = ast_to_railroad_sequence(ast.expressions)
-        label = ast.name ? "group: #{ast.name}" : "named group"
+        safe_name = sanitize_group_name(ast.name)
+        label = safe_name ? "group: #{safe_name}" : "unknown group"
         wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label), ast.quantifier)
 
       when Regexp::Expression::Group::Capture
@@ -149,7 +150,10 @@ class RegularExpression
         label = BACKREFERENCE_CLASSES[klass]
         label += ast.respond_to?(:number) ? " \\g<#{ast.number}>" : ""
         label += ast.respond_to?(:token)  ? " \\g<#{ast.token}>"  : ""
-        label += ast.respond_to?(:name)   ? " \\k<#{ast.name}>"   : ""
+        if ast.respond_to?(:name)
+          safe_name = sanitize_group_name(ast.name)
+          label += " \\k<#{safe_name}>" if safe_name
+        end
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label.strip), ast.quantifier)
 
       when *CHARACTER_TYPE_LABELS.keys
@@ -311,6 +315,23 @@ class RegularExpression
       parts << "negate modifiers: #{negated.chars.join(', ')}" unless negated.empty?
 
       parts.join(" / ")
+    end
+
+    # Returns a sanitized group name if it's safe to display/use in labels and
+    # backreferences. Unsafe names (e.g. containing non-word characters or
+    # invalid byte sequences) will return nil.
+    def sanitize_group_name(name)
+      return nil if name.nil?
+
+      # Ensure a UTF-8 string and replace invalid/undef sequences.
+      safe = name.to_s.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")
+
+      # Only allow ASCII word-style names (letters, digits, underscore),
+      # starting with a letter or underscore. This matches typical Ruby
+      # named-capture expectations and avoids MatchData lookup issues.
+      return safe if safe.match?(/\A[A-Za-z_][A-Za-z0-9_]*\z/)
+
+      nil
     end
   end
 end

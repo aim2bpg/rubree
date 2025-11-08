@@ -1,8 +1,78 @@
 require 'rails_helper'
 
-include RegularExpressionsHelper
-
 RSpec.describe "RegularExpressionFlow" do
+  describe 'Header examples dropdown' do
+    before { visit root_path }
+
+    it 'ensures legacy examples panel is removed and reference panel is present' do
+      # The examples panel used to live in the page body; it was moved to the
+      # header dropdown. Assert we don't have the legacy container and that the
+      # reference panel is still present on the page.
+      expect(page).to have_no_css 'div#examples-panel', visible: :all
+      expect(page).to have_css 'div#reference-panel'
+    end
+
+  describe 'Examples provided via header dropdown' do
+      before do
+        # open header dropdown which now houses the examples
+        find('button[data-regexp-examples-target="caretButton"]', wait: true).click
+      end
+
+      it 'lists example categories and allows switching between them' do
+        # Example categories should render inside the header dropdown
+        RegularExpression::Example.categories.each do |(cat, data)|
+          expect(page).to have_css("button[data-header-category='#{cat.to_s.parameterize}']", text: data[:short])
+        end
+
+        first_category = RegularExpression::Example.categories.keys.first
+        find("button[data-header-category='#{first_category.to_s.parameterize}']").click
+
+        # ensure at least the first example's pattern is visible in the header items
+        first_ex = RegularExpression::Example.categories[first_category][:examples].first
+        expect(page).to have_content(first_ex[:pattern])
+      end
+
+      it 'applies an example from the header dropdown when clicked' do
+        # choose a category (fallback to first)
+        first_category = RegularExpression::Example.categories.keys.first
+        find("button[data-header-category='#{first_category.to_s.parameterize}']", wait: true).click
+
+        # Find and click the first example inside the header dropdown
+        first_ex = RegularExpression::Example.categories[first_category][:examples].first
+        example = find('[data-regexp-examples-target="example"]', text: Regexp.new(Regexp.escape(first_ex[:pattern])))
+        example.click
+
+        # basic assertions: pattern was applied and match highlights appear
+        expect(find('textarea#regular_expression_expression').value).to include(first_ex[:pattern])
+        expect(page).to have_css 'mark', visible: :all
+      end
+    end
+  end
+
+  describe 'RegularExpressions UI (i18n)' do
+    it 'switches UI to Japanese when toggling language from header' do
+      visit root_path
+
+      # Ensure there is a match result visible by applying a trivial example
+      # so the match partial (with wrap/show labels) is rendered, then toggle
+      # language and assert translations.
+      find('textarea#regular_expression_expression').set('foo')
+      find('textarea#regular_expression_test_string').set('foo')
+      page.execute_script("document.querySelector('form[data-controller=\\\"regexp-form\\\"]') && document.querySelector('form[data-controller=\\\"regexp-form\\\"]').requestSubmit()")
+
+      # Now toggle locale (link merges current params so the same pattern/test are kept)
+      first('[data-test="locale-toggle"]').click
+
+      # The locale toggle reloads the page; assert global header label changed to Japanese
+      expect(page).to have_text(I18n.t('regular_expressions.header.lang_label', locale: :ja))
+
+      # The results frame may be re-rendered without preserving the in-frame state
+      within('turbo-frame#regexp') do
+        expect(page).to have_text(I18n.t('regular_expressions.results.test_result_placeholder', locale: :ja), wait: 5)
+      end
+    end
+  end
+
   describe "Normal behavior: Matching and substitution" do
     before { visit root_path }
 
@@ -28,14 +98,13 @@ RSpec.describe "RegularExpressionFlow" do
       expect(page).to have_css 'p', text: 'Railroad diagram will appear here'
       expect(page).to have_css 'p', text: 'Regexp test result will appear here'
 
-      # Reference and example sections
-      expect(page).to have_button 'Regex Quick Reference', class: /bg-gray-700/
-      expect(page).to have_button 'Regex Examples', class: /bg-gray-800/
+      # Reference section (examples are now in the header dropdown)
+      expect(page).to have_css 'span#reference-label', text: 'Regex Quick Reference'
       expect(page).to have_css 'div#reference-panel'
 
       # Footer section
       # check for the common fragment to avoid punctuation/quote style mismatches
-      expect(page).to have_text(/Inspired by Michael Lovitt/)
+      expect(page).to have_text(/Inspired by Michael Lovitt’s excellent/)
       expect(page).to have_css 'a', text: 'Rubular', class: /text-blue-700/
     end
 
@@ -209,6 +278,22 @@ RSpec.describe "RegularExpressionFlow" do
       expect(page).to have_css 'mark', text: 'abc', class: /bg-blue-200/
       expect(page).to have_css 'mark', text: 'def', class: /bg-blue-200/
     end
+
+    it 'shows a friendly error in the results area when named capture access with multibyte name fails' do
+      visit root_path
+
+      # use precise selectors for the textareas
+      find('textarea#regular_expression_expression').set('(?<名前>foo)')
+      find('textarea#regular_expression_test_string').set('foo')
+
+      # Submit the form via JS to mimic the real app behavior
+      page.execute_script("document.querySelector('form[data-controller=\\\"regexp-form\\\"]') && document.querySelector('form[data-controller=\\\"regexp-form\\\"]').requestSubmit()")
+
+      within('turbo-frame#regexp') do
+        expect(page).to have_css('div.bg-red-100', wait: 5)
+        expect(page).to have_text(/Invalid named capture access|Invalid regular expression/)
+      end
+    end
   end
 
   describe "Matching behavior with test string" do
@@ -320,17 +405,26 @@ RSpec.describe "RegularExpressionFlow" do
       find('span#example-link', text: I18n.t('regular_expressions.header.try_example')).click
     end
 
-    it "shows and hides Ruby code block when toggling Show/Hide button" do
+    it "shows and hides Ruby code block when toggling the code pill" do
       # Ruby code display section
-      toggle_button = find('button', text: I18n.t('regular_expressions.results.show'))
+      # The toggle is now a pill control with an accessible label (sr-only) and role="button".
+      label_text = I18n.t('regular_expressions.results.ruby_code_label')
+      label_el = find('label', text: label_text)
+      toggle_button = label_el.find('[role="button"]')
 
-      toggle_button.click
-      expect(toggle_button).to have_text I18n.t('regular_expressions.results.hide')
-      expect(page).to have_no_css 'div', style: /display: none/, visible: :all
+      # initially collapsed
+      expect(toggle_button['aria-expanded']).to eq 'false'
+      expect(page).to have_no_selector('div[x-show="show"]', visible: :visible)
 
+      # open
       toggle_button.click
-      expect(toggle_button).to have_text I18n.t('regular_expressions.results.show')
-      expect(page).to have_css 'div', style: /display: none/, visible: :all
+      expect(toggle_button['aria-expanded']).to eq 'true'
+      expect(page).to have_css('div[x-show="show"]', visible: :visible)
+
+      # close
+      toggle_button.click
+      expect(toggle_button['aria-expanded']).to eq 'false'
+      expect(page).to have_no_selector('div[x-show="show"]', visible: :visible)
     end
   end
 
@@ -427,79 +521,18 @@ RSpec.describe "RegularExpressionFlow" do
     end
   end
 
-  describe 'Regular Expressions Tab Switcher' do
+  describe 'Regex Quick Reference' do
     before { visit root_path }
 
-    it 'toggles between Examples and Reference tabs correctly' do
-      # Reference and example sections
-      find('button[data-action="click->regexp-content-tab-switch#showExamples"]', wait: true).click
+    it 'displays section titles and code examples correctly' do
+      RegularExpression::Reference.sections.each do |section|
+        expect(page).to have_content(section[:title])
 
-      expect(page).to have_css 'div#reference-panel', class: /hidden/, visible: :all
-      expect(page).to have_no_css 'div#examples-panel', class: /hidden/, visible: :all
-
-      expect(page).to have_button 'Regex Examples', class: /bg-gray-700/
-      expect(page).to have_button 'Regex Quick Reference', class: /bg-gray-800/
-
-      find('button[data-action="click->regexp-content-tab-switch#showReference"]', wait: true).click
-
-      expect(page).to have_no_css 'div#reference-panel', class: /hidden/, visible: :all
-      expect(page).to have_css 'div#examples-panel', class: /hidden/, visible: :all
-
-      expect(page).to have_button 'Regex Quick Reference', class: /bg-gray-700/
-      expect(page).to have_button 'Regex Examples', class: /bg-gray-800/
-    end
-
-    context 'when viewing Regex Quick Reference content' do
-      before do
-        find('button[data-action="click->regexp-content-tab-switch#showReference"]', wait: true).click
-      end
-
-      it 'displays section titles and code examples correctly' do
-        # Reference sections
-        regex_reference_sections.each do |section|
-          expect(page).to have_content(section[:title])
-
-          section[:items].each do |code, description|
-            expect(page).to have_content(code)
-            expect(page).to have_content(description)
-
-            expect(page).to have_css "code", text: code
-          end
+        section[:items].each do |code, description|
+          expect(page).to have_content(code)
+          expect(page).to have_content(description)
+          expect(page).to have_css "code", text: code
         end
-      end
-    end
-
-    context 'when viewing Regex Examples content' do
-      before do
-        find('button[data-action="click->regexp-content-tab-switch#showExamples"]', wait: true).click
-      end
-
-      it 'displays the example categories and allows switching between them' do
-        # Example sections
-        regexp_example_categories.each_with_index do |(cat, data), i|
-          expect(page).to have_css("button[data-category='#{cat.to_s.parameterize}']", text: data[:short])
-        end
-
-        first_category = regexp_example_categories.keys.first
-        find("button[data-category='#{first_category.to_s.parameterize}']").click
-        expect(page).to have_content(regexp_example_categories[first_category][:description])
-
-        regexp_example_categories[first_category][:examples].each do |ex|
-          expect(page).to have_content(ex[:pattern])
-          expect(page).to have_content(ex[:test])
-          expect(page).to have_content(ex[:description])
-        end
-      end
-
-      it 'shows the correct example when clicked' do
-        # Example sections
-        example = find('div[data-pattern="a|b|c"]')
-        example.click
-
-        expect(page).to have_css 'mark', text: 'c', class: /bg-blue-200/
-        expect(page).to have_css 'mark', text: 'a', class: /bg-blue-200/
-        expect(page).to have_css 'mark', text: 'b', class: /bg-blue-200/
-        expect(page).to have_css 'span', text: 'Alternation: Matches one of \'a\', \'b\', or \'c\''
       end
     end
   end

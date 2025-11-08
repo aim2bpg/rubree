@@ -231,3 +231,46 @@ svg.railroad-diagram rect.group-box {
   transform: translateX(-50%) translateY(0);
   pointer-events: none;
 }
+
+/* Header dropdown: show full description text and allow wrapping
+   We intentionally do NOT clamp here so the description is readable in full.
+   Use word-break to avoid overflow on long words. */
+.header-example-desc {
+  display: block;
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+  text-overflow: clip;
+  max-height: none;
+  line-height: 1.35;
+  margin: 0.125rem 0;
+}
+
+/* Header example sub-elements: pattern / meta / explanation chips */
+.header-example-pattern {
+  color: #f8fafc; /* slate-50 */
+}
+.header-example-meta {
+  color: #d1d5db; /* slate-300 */
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+.header-example-text {
+  color: #c7ccd1; /* slightly muted */
+}
+
+/* Toggle caret icons in header examples button by aria-expanded on the button */
+[data-regexp-examples-target="caretButton"][aria-expanded="true"] .caret-open {
+  display: inline-block;
+}
+[data-regexp-examples-target="caretButton"][aria-expanded="true"]
+  .caret-closed {
+  display: none;
+}
+[data-regexp-examples-target="caretButton"][aria-expanded="false"] .caret-open {
+  display: none;
+}
+[data-regexp-examples-target="caretButton"][aria-expanded="false"]
+  .caret-closed {
+  display: inline-block;
+}
