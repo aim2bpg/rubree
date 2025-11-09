@@ -15,7 +15,7 @@ en:
       examples: Examples
       categories_label: Categories
       examples_label: Examples
-      open_examples: Open examples (top-right)
+      open_examples: "Select a category on the left to view examples."
       button: Regex Examples
       toggle_locale: Toggle language
       lang_label: LANG

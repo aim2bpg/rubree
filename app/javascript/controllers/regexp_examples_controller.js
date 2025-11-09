@@ -19,6 +19,7 @@ export default class extends Controller {
     "diceButton",
     "headerDropdown",
     "headerScroll",
+    "headerItemsScroll",
     "filter",
     "root",
   ];
