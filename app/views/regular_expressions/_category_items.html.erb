@@ -1,0 +1,43 @@
+<div data-header-category-content="<%= category_key %>">
+  <div class="mt-0 space-y-1">
+    <% examples.each do |ex| %>
+      <button type="button"
+        class="w-full text-left px-2 py-1 hover:bg-gray-700 focus:outline-none transition-colors"
+        data-regexp-examples-target="example"
+        data-action="click->regexp-examples#selectExample"
+        data-pattern="<%= (ex[:pattern] || ex["pattern"]).to_s.gsub('"', "&quot;") %>"
+        data-test="<%= (ex[:test] || ex["test"]).to_s.gsub('"', "&quot;") %>"
+        data-substitution="<%= (ex[:substitution] || ex["substitution"] || "").to_s %>"
+        data-options="<%= (ex[:options] || ex["options"] || "").to_s %>">
+        <% desc = (ex[:description].presence || ex[:test]) %>
+        <div class="header-example-desc">
+          <% if desc =~ /^(.*?)\s*—\s*\[meta:\s*([^\]]+)\]\s*(.*)$/m %>
+            <div class="text-sm text-gray-100 leading-snug flex items-baseline gap-2">
+              <span class="header-example-pattern font-medium text-gray-100"><%= $1 %></span>
+              <% meta_raw = $2 %>
+              <% meta_display = meta_raw.split(",").map(&:strip).map do |tok|
+                label = case tok
+                when "|"
+                  I18n.t("regular_expressions.meta_tokens.pipe", default: "alternation")
+                when "*"
+                  I18n.t("regular_expressions.meta_tokens.star", default: "repetition")
+                else
+                  I18n.t("regular_expressions.meta_tokens.#{tok.parameterize(separator: '_')}", default: tok)
+                end
+                if tok == label
+                  label
+                else
+                  "#{tok} (#{label})"
+                end
+              end.join(", ") %>
+              <span class="header-example-meta text-xs text-gray-300 bg-gray-800 px-2 py-0.5 rounded-md"><%= meta_display %></span>
+            </div>
+            <div class="header-example-text text-xs text-gray-300 mt-0.5"><%= $3 %></div>
+          <% else %>
+            <div class="text-sm text-gray-100 leading-snug"><%= desc %></div>
+          <% end %>
+        </div>
+      </button>
+    <% end %>
+  </div>
+</div>

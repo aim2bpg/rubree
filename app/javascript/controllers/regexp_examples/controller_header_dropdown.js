@@ -329,6 +329,80 @@ export function showHeaderCategory(controller, e) {
       e.currentTarget.dataset.headerCategory ||
       e.currentTarget.dataset.category ||
       "";
+    // Remove the static initial prompt (if present) once a category is selected
+    try {
+      if (controller.hasHeaderItemsScrollTarget) {
+        const init = controller.headerItemsScrollTarget.querySelector(
+          "[data-header-initial-prompt]",
+        );
+        if (init)
+          try {
+            init.remove();
+          } catch (_e) {}
+      }
+    } catch (_e) {}
+
+    // If content for this category hasn't been loaded yet, fetch it lazily
+    try {
+      const existing = controller.headerDropdownTarget.querySelector(
+        `[data-header-category-content="${key}"]`,
+      );
+      if (!existing && controller.hasHeaderItemsScrollTarget) {
+        // show a small loading placeholder
+        const placeholder = document.createElement("div");
+        placeholder.className = "p-3 text-sm text-gray-400";
+        placeholder.textContent = "Loading…";
+        controller.headerItemsScrollTarget.appendChild(placeholder);
+
+        fetch(
+          `/regular_expressions/examples?category=${encodeURIComponent(key)}`,
+          {
+            headers: { Accept: "text/html" },
+            credentials: "same-origin",
+          },
+        )
+          .then((resp) => {
+            if (!resp.ok) throw new Error("Fetch failed");
+            return resp.text();
+          })
+          .then((html) => {
+            try {
+              const wrapper = document.createElement("div");
+              wrapper.innerHTML = html || "";
+              const node = wrapper.firstElementChild;
+              if (node) {
+                // insert before placeholder
+                controller.headerItemsScrollTarget.insertBefore(
+                  node,
+                  placeholder,
+                );
+                // ensure newly inserted node is visible and other contents hidden
+                try {
+                  const contents = Array.from(
+                    controller.headerDropdownTarget.querySelectorAll(
+                      "[data-header-category-content]",
+                    ) || [],
+                  );
+                  contents.forEach((c) => {
+                    const match =
+                      (c.dataset.headerCategoryContent || "") === key;
+                    c.classList.toggle("hidden", !match);
+                  });
+                } catch (_e) {}
+              }
+            } catch (_e) {}
+          })
+          .catch((_err) => {
+            // ignore errors; leave placeholder text
+            placeholder.textContent = "";
+          })
+          .finally(() => {
+            try {
+              placeholder.remove();
+            } catch (_e) {}
+          });
+      }
+    } catch (_e) {}
 
     try {
       const leftBtns = Array.from(

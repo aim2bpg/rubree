@@ -235,6 +235,50 @@ export function tryExample(controller, _event) {
       if (examples.length) {
         const idx = Math.floor(Math.random() * examples.length);
         examples[idx].dispatchEvent(new Event("click", { bubbles: true }));
+      } else {
+        // No examples in DOM (eg. lazy-loaded header). Fetch a random example from server.
+        try {
+          fetch("/regular_expressions/examples?random=1", {
+            headers: { Accept: "application/json" },
+            credentials: "same-origin",
+          })
+            .then((resp) => {
+              if (!resp.ok) throw new Error("Fetch failed");
+              return resp.json();
+            })
+            .then((data) => {
+              try {
+                const patternEl =
+                  document.querySelector(
+                    "input#regular_expression_expression",
+                  ) || controller.patternTarget;
+                const testEl =
+                  document.querySelector(
+                    "textarea#regular_expression_test_string",
+                  ) || controller.testTarget;
+                if (patternEl) {
+                  patternEl.value = data.pattern || "";
+                  patternEl.dispatchEvent(
+                    new Event("input", { bubbles: true }),
+                  );
+                }
+                if (testEl) {
+                  testEl.value = data.test || "";
+                  testEl.dispatchEvent(new Event("input", { bubbles: true }));
+                }
+                if (controller.hasOptionsTarget && data.options !== undefined) {
+                  controller.optionsTarget.value = data.options || "";
+                }
+                if (
+                  controller.hasSubstitutionTarget &&
+                  data.substitution !== undefined
+                ) {
+                  controller.substitutionTarget.value = data.substitution || "";
+                }
+              } catch (_e) {}
+            })
+            .catch((_err) => {});
+        } catch (_e) {}
       }
     } catch (_e) {}
   }

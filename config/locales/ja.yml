@@ -13,7 +13,7 @@ ja:
       examples: 例
       categories_label: カテゴリ
       examples_label: 例
-      open_examples: 例を開く（右上）
+      open_examples: 'カテゴリを選択してください（左の一覧からカテゴリを選ぶと、ここに例が表示されます）'
       button: 正規表現の例
       toggle_locale: 言語を切り替える
       lang_label: '言語'
