@@ -4,7 +4,7 @@
       <div class="mb-2 flex sm:flex-col md:flex-row justify-between gap-2">
         <label class="text-sm font-bold text-white whitespace-nowrap">
           <%= t("regular_expressions.results.ruby_code_label") %>
-          <span class="ml-1 text-sm font-bold text-white">(<button role="button" :aria-expanded="show" x-on:click="show = !show" class="text-xs text-blue-400 hover:underline whitespace-nowrap align-baseline p-0 m-0" type="button"><span x-text="show ? $el.dataset.hideText : $el.dataset.showText" data-hide-text="<%= t("regular_expressions.results.hide") %>" data-show-text="<%= t("regular_expressions.results.show") %>"></span></button>):</span>
+          <span class="ml-1 text-sm font-bold text-white"> <button role="button" :aria-expanded="show" x-on:click="show = !show" class="text-xs text-blue-400 hover:underline whitespace-nowrap align-baseline p-0 m-0" type="button"><span x-text="show ? $el.dataset.hideText : $el.dataset.showText" data-hide-text="<%= t("regular_expressions.results.hide") %>" data-show-text="<%= t("regular_expressions.results.show") %>"></span></button></span>
         </label>
 
         <div class="flex items-center gap-2">
@@ -17,8 +17,9 @@
         class="relative bg-gray-800 border border-gray-700 rounded font-mono text-sm text-green-200 text-left leading-tight overflow-visible">
         <button
           type="button"
-          class="absolute top-2 right-2 inline-flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-gray-200 p-2 rounded-lg focus:outline-none z-20"
+          class="absolute top-2 right-2 inline-flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-gray-200 p-2 rounded-lg focus:outline-none z-20 overflow-visible"
           data-action="click->copy-code#copy"
+          data-copied-text="<%= j t("regular_expressions.results.copied") %>"
           title="<%= t("regular_expressions.results.copy_ruby_code") %>">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -29,7 +30,7 @@
 
           <span
             data-copy-code-target="tooltip"
-            class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs leading-none px-2 py-1 rounded
+            class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[11px] leading-none px-2 py-1 rounded
                    opacity-0 invisible transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap">
             <%= t("regular_expressions.results.copied") %>
           </span>

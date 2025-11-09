@@ -19,9 +19,7 @@
 
     <% elsif !regular_expression.valid? %>
       <label class="text-sm font-bold text-white"><%= t("regular_expressions.results.match_result_label", default: "Match result:") %></label>
-      <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2">
-        <%= t("regular_expressions.results.invalid_regex", default: "Invalid regular expression.") %>
-      </div>
+      <div class="bg-red-100 border-4 border-double border-red-600 text-red-800 p-4 rounded-md font-semibold whitespace-pre-wrap mb-2"><%= t("regular_expressions.results.invalid_regex", default: "Invalid regular expression.") %></div>
 
     <% elsif regular_expression.match_success %>
       <%= render "regular_expressions/results/match", regular_expression: regular_expression %>

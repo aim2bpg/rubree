@@ -30,7 +30,7 @@
           <!-- Clipboard PNG button -->
           <button
             type="button"
-            class="relative inline-flex items-center justify-center text-gray-400 hover:text-white transition w-5 h-5"
+            class="relative inline-flex items-center justify-center text-gray-400 hover:text-white transition w-5 h-5 overflow-visible"
             aria-label="<%= t("regular_expressions.results.copy_diagram_png") %>"
             data-controller="diagram-clipboard"
             data-action="click->diagram-clipboard#copyPng"
@@ -44,8 +44,8 @@
             </svg>
             <span
               data-diagram-clipboard-target="tooltip"
-              class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs leading-none px-2 py-1 rounded
-                opacity-0 invisible transition-opacity duration-300 pointer-events-none z-10 whitespace-nowrap">
+              class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[11px] leading-none px-2 py-1 rounded
+                opacity-0 invisible transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap">
               <%= t("regular_expressions.results.copied") %>
             </span>
           </button>

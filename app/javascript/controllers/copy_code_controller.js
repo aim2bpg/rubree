@@ -4,7 +4,7 @@ import { showFloatingTooltip, showInlineTooltip } from "./lib/tooltip";
 export default class extends Controller {
   static targets = ["source", "tooltip"];
 
-  copy() {
+  copy(event) {
     const text = this.sourceTarget.textContent.trim();
 
     if (!navigator.clipboard) {
@@ -18,7 +18,9 @@ export default class extends Controller {
         if (this.hasTooltipTarget) {
           showInlineTooltip(this.tooltipTarget);
         } else {
-          showFloatingTooltip(this.element);
+          const triggerButton = event?.currentTarget || this.element;
+          const copiedText = triggerButton?.dataset?.copiedText;
+          showFloatingTooltip(triggerButton, copiedText);
         }
       })
       .catch(() => {

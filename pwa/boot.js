@@ -181,12 +181,32 @@ async function init() {
 
     try {
       await registerServiceWorker();
-      // ask the service worker for its current progress in case some values
-      // were emitted before the page attached its listener. SW will reply with
-      // {type:'progress', value: <0-100>} if available.
-      // Do not query the SW for numeric progress — user requested seconds-only UI.
       if (bootMessage) bootMessage.textContent = 'Starting Rubree...';
-      await navigator.serviceWorker.ready;
+      const registration = await navigator.serviceWorker.ready;
+
+      // Send a start-rails message to the service worker and wait for reply.
+      const controller = navigator.serviceWorker.controller || registration.active;
+      if (controller) {
+        const msgChannel = new MessageChannel();
+        const reply = new Promise((resolve) => {
+          msgChannel.port1.onmessage = (e) => {
+            const data = e.data || {};
+            if (data.type === 'rails-started') resolve({ ok: true });
+            else if (data.type === 'rails-start-failed') resolve({ ok: false, error: data.error });
+          };
+        });
+
+        // send port to SW so it can reply directly
+        controller.postMessage({ type: 'start-rails' }, [msgChannel.port2]);
+
+        const res = await Promise.race([reply, new Promise((r) => setTimeout(() => r({ ok: false, timeout: true }), 30000))]);
+        if (!res.ok) {
+          throw new Error(res.error || (res.timeout ? 'timeout waiting for SW' : 'unknown'));
+        }
+      } else {
+        // No active controller — still continue and let SW init happen later.
+        console.warn('No active service worker controller to start rails');
+      }
 
       // Small delay so the overlay fade-in can be perceived as smooth
       await new Promise((r) => setTimeout(r, 260));
