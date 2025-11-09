@@ -20,8 +20,9 @@
                     data-controller="copy-code"
                     data-copy-code-target="source"
                     data-action="click->copy-code#copy"
+                    data-copied-text="<%= j t("regular_expressions.results.copied") %>"
                     class="cursor-pointer hover:text-white transition duration-200 whitespace-nowrap"
-                    title="<%= t("common.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                    title="<%= t("regular_expressions.click_to_copy", default: "Click to copy") %>"><%= code %></code>
                   <span class="break-words"><%= description %></span>
                 </div>
               <% end %>
@@ -42,8 +43,9 @@
                         data-controller="copy-code"
                         data-copy-code-target="source"
                         data-action="click->copy-code#copy"
+                        data-copied-text="<%= j t("regular_expressions.results.copied") %>"
                         class="cursor-pointer hover:text-white transition duration-200 px-1"
-                        title="<%= t("common.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                        title="<%= t("regular_expressions.reference.click_to_copy", default: "Click to copy") %>"><%= code %></code>
                       <span><%= label %></span>
                     </div>
                   <% end %>
