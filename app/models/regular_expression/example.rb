@@ -54,30 +54,7 @@ class RegularExpression
         end
       end
 
-      begin
-        desired = [
-            "Pattern Matching Examples",
-            "Alternations",
-            "Character Classes",
-            "Character Types",
-            "Basic Operations",
-            "Syntax Sugar",
-            "Anchors",
-            "Literals",
-            "POSIX Classes"
-          ]
-
-        ordered = {}
-        desired.each do |k|
-          if orig.key?(k)
-            ordered[k] = orig.delete(k)
-          end
-        end
-        ordered.merge!(orig)
-        orig = ordered
-      rescue => e
-        Rails.logger.debug("regexp helper reorder skipped: ") if defined?(Rails)
-      end
+      # Keep the loaded order from the YAML (do not apply a hard-coded priority order).
 
       translated = {}
       orig.each do |cat, data|
@@ -132,31 +109,7 @@ class RegularExpression
         Rails.logger.debug("regexp helper category_list skipped: #{e.message}") if defined?(Rails)
       end
 
-      # preserve same ordering logic as categories
-      begin
-        desired = [
-            "Pattern Matching Examples",
-            "Alternations",
-            "Character Classes",
-            "Character Types",
-            "Basic Operations",
-            "Syntax Sugar",
-            "Anchors",
-            "Literals",
-            "POSIX Classes"
-          ]
-
-        ordered = {}
-        desired.each do |k|
-          if list.key?(k)
-            ordered[k] = list.delete(k)
-          end
-        end
-        ordered.merge!(list)
-        list = ordered
-      rescue => e
-        Rails.logger.debug("regexp helper reorder skipped: #{e.message}") if defined?(Rails)
-      end
+      # Return list in the order provided by the YAML file.
 
       list
     end

@@ -9,7 +9,7 @@
     <div class="text-left w-full px-4">
 
       <div class="flex justify-center">
-        <div class="grid grid-cols-1 md:grid-cols-[auto_auto_minmax(16rem,1fr)] gap-4 mx-auto max-w-[1100px]">
+        <div class="grid grid-cols-1 md:grid-cols-[auto_auto_minmax(16rem,1fr)] gap-x-12 gap-y-4 mx-auto max-w-[1600px]">
           <% RegularExpression::Reference.sections.each do |section| %>
             <div class="space-y-1 min-w-0">
             <label class="font-semibold mb-2 text-white"><%= section[:title] %></label>
@@ -31,7 +31,7 @@
           <% end %>
 
           <!-- Options row inside the same grid so left edges align with reference columns -->
-          <div class="col-span-1 md:col-span-3 mt-2 pt-2 border-t border-gray-600 text-gray-400 text-sm">
+          <div class="col-span-1 md:col-span-3 mt-0 pt-2 border-t border-gray-600 text-gray-400 text-sm">
             <div class="flex items-start justify-center gap-x-6">
               <strong class="text-white mr-2 mb-0 whitespace-nowrap self-start"><%= t("regular_expressions.reference.options.options_label", default: "Options:") %></strong>
               <div class="w-full sm:w-auto">
