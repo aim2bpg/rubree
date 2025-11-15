@@ -1,29 +1,50 @@
-<div data-regexp-examples-target="headerDropdown" class="hidden z-50 sm:w-96 w-full max-w-full sm:max-w-sm" role="menu" aria-label="<%= t("regular_expressions.header.examples", default: "Examples") %>">
+<div data-regexp-examples-target="headerDropdown" class="hidden z-50 w-full sm:w-96 md:w-[26rem] lg:w-[30rem] max-w-full sm:max-w-sm md:max-w-[26rem] lg:max-w-[30rem]" role="menu" aria-label="<%= t("regular_expressions.header.examples", default: "Examples") %>">
   <div class="bg-gradient-to-b from-slate-900 to-gray-800 text-gray-100 border border-gray-700 rounded-lg shadow-2xl overflow-hidden ring-1 ring-black/40">
       <!-- Two-column: left = categories, right = items for selected category -->
       <div class="px-2 py-1">
-        <div class="flex gap-2">
-          <!-- categories column (independent scroll) -->
-          <div data-regexp-examples-target="headerScroll" class="w-1/3 border-r border-gray-700 pl-1 pr-3 max-h-80 overflow-auto" style="scrollbar-gutter: stable;">
-            <div class="sticky top-0 z-10 bg-slate-900/90 text-xs font-semibold text-gray-400 pl-1 pr-3 border-b border-gray-700 py-1"><%= t("regular_expressions.header.categories_label", default: "Categories") %></div>
+        <!-- categories on top (horizontal scroll if needed) -->
+        <div class="mb-2">
+          <%# Categories: vertical list with its own vertical scroll to avoid horizontal wrapping %>
+          <%# Show approximately 2 categories (fixed-height rows) %>
+          <!-- show header title + 3 category rows (responsive) -->
+          <div data-regexp-examples-target="headerScroll" class="max-h-[10rem] sm:max-h-[11rem] md:max-h-[12.5rem] lg:max-h-[14rem] overflow-auto pl-1 pr-3" style="scrollbar-gutter: stable;">
+            <div class="sticky top-0 z-20 bg-slate-900/90 px-3 py-2">
+              <div class="dropdown-section-label text-sm font-semibold text-gray-300"><%= t("regular_expressions.header.categories_label", default: "Categories") %></div>
+            </div>
             <%# Use lightweight category list to avoid constructing examples on initial render %>
             <% RegularExpression::Example.category_list.each_with_index do |(cat, data), i| %>
+              <%# Fixed-height category row with one-line truncated description under title %>
+              <% desc_for_title = (data[:description].present? && data[:description].to_s.strip.downcase != data[:short].to_s.strip.downcase && data[:description].to_s.strip.downcase != cat.to_s.humanize.to_s.strip.downcase) ? data[:description] : nil %>
               <button type="button"
-                class="w-full text-left text-sm text-gray-300 py-1 px-1 hover:bg-gray-700 focus:outline-none transition-colors"
+                class="w-full text-left text-sm text-gray-300 h-10 sm:h-12 md:h-14 lg:h-16 overflow-hidden px-2 md:px-3 hover:bg-gray-700 focus:outline-none transition-colors flex flex-col justify-start pt-2 pb-0.5 sm:pt-2 sm:pb-1 md:pt-3 md:pb-1 leading-tight sm:leading-normal md:leading-relaxed lg:leading-loose"
                 data-header-category="<%= cat.to_s.parameterize %>"
                 data-action="click->regexp-examples#showCategory click->regexp-examples#showHeaderCategory">
-                <div class="font-medium"><%= data[:short] %></div>
-                <div class="text-xs text-gray-400"><%= cat.to_s.humanize %></div>
+                <div class="flex items-baseline justify-between w-full">
+                  <div class="flex items-baseline gap-2 truncate">
+                    <span class="font-medium truncate leading-tight text-gray-100"><%= data[:short] %></span>
+                  </div>
+                </div>
+                <% if desc_for_title %>
+                  <div class="text-xs text-gray-400 truncate mt-0 leading-tight sm:leading-normal md:leading-relaxed lg:leading-loose md:text-sm lg:text-base"><%= desc_for_title %></div>
+                <% end %>
               </button>
             <% end %>
           </div>
+        </div>
 
-          <!-- items column -->
-            <div data-regexp-examples-target="headerItemsScroll" class="w-2/3 max-h-80 overflow-auto pl-1 pr-3" style="scrollbar-gutter: stable;">
-              <div class="sticky top-0 z-10 bg-slate-900/90 text-xs font-semibold text-gray-400 pl-1 pr-3 border-b border-gray-700 py-1"><%= t("regular_expressions.header.examples_label", default: "Examples") %></div>
-              <%# Items will be loaded on demand via AJAX when a category is selected. Show an initial prompt. %>
-              <div data-header-initial-prompt="true" class="p-3 text-sm text-gray-400"><%= t("regular_expressions.header.open_examples", default: "Open examples (top-right)") %></div>
-            </div>
+        <!-- divider between categories and examples -->
+        <div class="w-full px-1">
+          <div class="border-t border-gray-700 my-2"></div>
+        </div>
+
+        <!-- examples below (single column scroll). Show ~3 examples and let the rest scroll -->
+        <!-- examples: allow up to 10 rows (h-7 each) before scrolling on md+ -->
+        <div data-regexp-examples-target="headerItemsScroll" class="max-h-28 sm:max-h-44 md:max-h-[19rem] lg:max-h-[21rem] overflow-auto pl-1 pr-3" style="scrollbar-gutter: stable;">
+          <div class="sticky top-0 z-20 bg-slate-900/90 px-3 py-2">
+            <div class="dropdown-section-label text-sm font-semibold text-gray-300"><%= t("regular_expressions.header.examples_label", default: "Examples") %></div>
+          </div>
+          <%# Items will be loaded on demand via AJAX when a category is selected. Show an initial prompt. %>
+          <div data-header-initial-prompt="true" class="p-2 sm:p-3 md:p-4 lg:p-6 text-sm sm:text-sm md:text-base lg:text-lg text-gray-400 leading-tight sm:leading-normal md:leading-relaxed lg:leading-loose"><%= t("regular_expressions.header.open_examples", default: "Open examples (top-right)") %></div>
         </div>
       </div>
   </div>

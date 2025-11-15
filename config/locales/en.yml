@@ -1,6 +1,6 @@
 en:
   application:
-    title: "Rubree - A Ruby regular expression editor inspired by Rubular"
+    title: Rubree - A Ruby regular expression editor inspired by Rubular
     description: >-
       Rubree is a Ruby regular expression editor inspired by Rubular. Quickly test and
       visualize your regex patterns in an intuitive interface.
@@ -10,12 +10,12 @@ en:
       subtitle: Ruby regular expression editor
       try_example: Try this example
       try_random_tooltip: Try a random example
-      open_github: "Open Rubree repository on GitHub"
-      github_star: "If you like Rubree, please star ☆"
+      open_github: Open Rubree repository on GitHub
+      github_star: If you like Rubree, please star ☆
       examples: Examples
       categories_label: Categories
       examples_label: Examples
-      open_examples: "Select a category on the left to view examples."
+      open_examples: Select a category from the list above to view examples.
       button: Regex Examples
       toggle_locale: Toggle language
       lang_label: LANG
@@ -26,12 +26,12 @@ en:
       substitution: 'Substitution:'
     results:
       railroad_diagram: 'Railroad diagram:'
-      railroad_diagram_placeholder: Railroad diagram will appear here
+      railroad_diagram_placeholder: Railroad diagram will appear here.
       view_full_diagram: View full diagram
       copy_diagram_png: Copy diagram as PNG
       close: Close
       copied: Copied!
-      test_result_placeholder: Regexp test result will appear here
+      test_result_placeholder: Regexp test result will appear here.
       please_enter: Please enter a regular expression pattern and a test string.
       match_result_label: 'Match result:'
       invalid_regex: Invalid regular expression.
@@ -45,13 +45,13 @@ en:
       show: Show
       hide: Hide
       copy_ruby_code: Copy Ruby code
-      avg_of_runs: "(avg of %{count} runs)"
+      avg_of_runs: (avg of %{count} runs)
       wrap_words: Wrap words
       show_invisibles: Show invisibles
     categories:
-      pattern-matching-examples:
-        short: Patterns
-        description: Named capture patterns with multiline input, including query and fragment for URL, and non-greedy capture for log and YAML lines.
+      practical-patterns:
+        short: Practical Patterns
+        description: Match emails, URLs, IPv4/IPv6, and log entries.
         examples:
           0:
             pattern: "^(?<local_part>[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+)@(?<domain_name>([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\\.(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))*)$"
@@ -64,7 +64,7 @@ en:
             result: match
             options: m
             substitution: ''
-            description: "^(?<local_part>[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+)@(?<domain_name>([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\\.(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))*)$ — [meta: character class, alternation, quantifier (*, +, ?, {n,m}), ^, $, named captures, non-capturing (?:...)] matches at the start and end of the string."
+            description: Email — Matches valid email addresses.
           1:
             pattern: "^(?<scheme>https?|ftp):\\/\\/(?<host>[a-zA-Z0-9.-]+)(?<path>\\/[^\\s?#]*)?(\\?(?<query>[^#\\s]*))?(#(?<fragment>\\S+))?$"
             test: |-
@@ -76,7 +76,7 @@ en:
             result: match
             options: m
             substitution: ''
-            description: "^(?<scheme>https?|ftp):\\/\\/(?<host>[a-zA-Z0-9.-]+)(?<path>\\/[^\\s?#]*)?(\\?(?<query>[^#\\s]*))?(#(?<fragment>\\S+))?$ — [meta: negated class [^...], character class, alternation, quantifier (*, +, ?, {n,m}), ^, $, \\s (whitespace), named captures] matches at the start and end of the string."
+            description: URL — Captures scheme, host, and path.
           2:
             pattern: "^(?<octet1>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet2>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet3>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet4>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)$"
             test: |-
@@ -88,7 +88,7 @@ en:
             result: match
             options: m
             substitution: ''
-            description: "^(?<octet1>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet2>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet3>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(?<octet4>25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)$ — [meta: character class, alternation, quantifier (*, +, ?, {n,m}), ^, $, \\d (digit), named captures] matches at the start and end of the string."
+            description: IPv4 — Captures 0-255 octets.
           3:
             pattern: "^(?<block1>[0-9a-fA-F]{1,4}):(?<block2>[0-9a-fA-F]{1,4}):(?<block3>[0-9a-fA-F]{1,4}):(?<block4>[0-9a-fA-F]{1,4}):(?<block5>[0-9a-fA-F]{1,4}):(?<block6>[0-9a-fA-F]{1,4}):(?<block7>[0-9a-fA-F]{1,4}):(?<block8>[0-9a-fA-F]{1,4})$|^(?<compressed_address>([0-9a-fA-F]{1,4}:){1,7}:)$"
             test: |-
@@ -100,7 +100,7 @@ en:
             result: match
             options: m
             substitution: ''
-            description: "^(?<block1>[0-9a-fA-F]{1,4}):(?<block2>[0-9a-fA-F]{1,4}):(?<block3>[0-9a-fA-F]{1,4}):(?<block4>[0-9a-fA-F]{1,4}):(?<block5>[0-9a-fA-F]{1,4}):(?<block6>[0-9a-fA-F]{1,4}):(?<block7>[0-9a-fA-F]{1,4}):(?<block8>[0-9a-fA-F]{1,4})$|^(?<compressed_address>([0-9a-fA-F]{1,4}:){1,7}:)$ — [meta: character class, alternation, quantifier (*, +, ?, {n,m}), ^, $, named captures] matches at the start and end of the string."
+            description: IPv6 — Captures blocks and compressed forms.
           4:
             pattern: "^\\[(?<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})\\] \\[(?<level>ERROR)\\] (?<message>.+?)$"
             test: |-
@@ -112,65 +112,10 @@ en:
             result: match
             options: m
             substitution: ''
-            description: "^\\[(?<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})\\] \\[(?<level>ERROR)\\] (?<message>.+?)$ — [meta: character class, quantifier (*, +, ?, {n,m}), ^, $, \\d (digit), named captures] matches at the start and end of the string."
-          5:
-            pattern: "^(?<parent>[a-zA-Z0-9_-]+):\\n(?: {2}(?<key1>[a-zA-Z0-9_-]+): (?<value1>.+)\\n){3}\\s*(?: {2}(?<key2>[a-zA-Z0-9_-]+): (?<value2>.+)\\n){3}?"
-            test: |-
-              parent1:
-                name: Alice
-                age: 30
-                city: Tokyo
-              parent2:
-                hobby: hiking
-                pet: dog
-                food: sushi
-              invalid line
-            result: match
-            options: m
-            substitution: ''
-            description: "^(?<parent>[a-zA-Z0-9_-]+):\\n(?: {2}(?<key1>[a-zA-Z0-9_-]+): (?<value1>.+)\\n){3}\\s*(?: {2}(?<key2>[a-zA-Z0-9_-]+): (?<value2>.+)\\n){3}? — [meta: character class, quantifier (*, +, ?, {n,m}), ^, \\s (whitespace), named captures, non-capturing (?:...)] matches at the start of the string."
-      alternations:
-        short: Alternations
-        description: 'Alternations: Match one of several alternatives using the | operator.'
-        examples:
-          0:
-            pattern: cat|dog
-            test: I have a cat
-            result: match
-            options: ''
-            substitution: ''
-            description: 'cat|dog — [meta: alternation] matches one of the alternatives in the pattern.'
-          1:
-            pattern: cat|dog
-            test: I have a dog
-            result: match
-            options: ''
-            substitution: ''
-            description: 'cat|dog — [meta: alternation] matches one of the alternatives in the pattern.'
-          2:
-            pattern: cat|dog
-            test: I have a bird
-            result: no-match
-            options: ''
-            substitution: ''
-            description: 'cat|dog — [meta: alternation] matches one of the alternatives in the pattern.'
-          3:
-            pattern: red|green|blue
-            test: green apple
-            result: match
-            options: ''
-            substitution: ''
-            description: 'red|green|blue — [meta: alternation] matches one of the alternatives in the pattern.'
-          4:
-            pattern: red|green|blue
-            test: yellow banana
-            result: no-match
-            options: ''
-            substitution: ''
-            description: 'red|green|blue — [meta: alternation] matches one of the alternatives in the pattern.'
-      basic-operations:
-        short: Basics
-        description: 'Basic operations: Concatenation, Alternation, Repeat (no syntax sugar).'
+            description: ERROR log — Extracts message via named capture.
+      basic-patterns:
+        short: Basic Patterns
+        description: Concatenation, alternation, and repetition.
         examples:
           0:
             pattern: abc
@@ -178,87 +123,80 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: 'abc — [meta: concatenation] matches the exact sequence ''a'' then ''b'' then ''c''.'
+            description: Concatenation abc — Matches 'a' followed by 'b' then 'c'.
           1:
             pattern: ab
             test: cab
             result: match
             options: ''
             substitution: ''
-            description: 'ab — [meta: concatenation] matches the exact sequence ''a'' then ''b''.'
+            description: Concatenation ab — Matches 'ab' in 'cab'.
           2:
             pattern: ab
             test: acb
-            result: no match
+            result: no-match
             options: ''
             substitution: ''
-            description: 'ab — [meta: concatenation] matches the exact sequence ''a'' then ''b''.'
+            description: Concatenation ab — No match as 'b' does not follow 'a'.
           3:
             pattern: a|b|c
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: 'a|b|c — [meta: alternation] matches one of the alternatives in the pattern.'
+            description: Alternation a|b|c — Matches 'a', 'b', or 'c'.
           4:
-            pattern: a|b*
-            test: bbb
-            result: match
-            options: ''
-            substitution: ''
-            description: 'a|b* — [meta: alternation, quantifier (*, +, ?, {n,m})] matches one of the alternatives in the pattern.'
-          5:
             pattern: a|b*
             test: aaa
             result: match
             options: ''
             substitution: ''
-            description: 'a|b* — [meta: alternation, quantifier (*, +, ?, {n,m})] matches one of the alternatives in the pattern.'
+            description: Alternation+Repetition a|b* — Matches first option 'a'.
+          5:
+            pattern: a|b*
+            test: bbb
+            result: match
+            options: ''
+            substitution: ''
+            description: Alternation+Repetition a|b* — Matches sequence of 'b'.
           6:
             pattern: a*
             test: a
             result: match
             options: ''
             substitution: ''
-            description: 'a* — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: Kleene star a* — Matches 0 or more 'a'.
           7:
             pattern: a*
             test: aaa
             result: match
             options: ''
             substitution: ''
-            description: 'a* — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: Kleene star a* — Matches consecutive 'a's.
           8:
             pattern: a*
             test: bbb
             result: match
             options: ''
             substitution: ''
-            description: 'a* — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: Kleene star a* — Matches empty if 'a' absent.
           9:
             pattern: ab|cd
             test: cd
             result: match
             options: ''
             substitution: ''
-            description: 'ab|cd — [meta: alternation] matches one of the alternatives in the pattern.'
+            description: Concatenation+Alternation ab|cd — Matches 'ab' or 'cd'.
           10:
-            pattern: a|b*
-            test: a
-            result: match
-            options: ''
-            substitution: ''
-            description: 'a|b* — [meta: alternation, quantifier (*, +, ?, {n,m})] matches one of the alternatives in the pattern.'
-          11:
             pattern: a*bc
             test: aaabc
             result: match
             options: ''
             substitution: ''
-            description: 'a*bc — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: Concatenation+Repetition a*bc — Matches 'a's followed by 'bc'.
       syntax-sugar:
-        short: Sugar
-        description: 'Common syntax sugar features: quantifiers, dot, character classes, escapes, anchors.'
+        short: Syntax Sugar
+        description: Quantifiers, dot, char classes, and anchors.
         examples:
           0:
             pattern: a+
@@ -266,175 +204,214 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: 'a+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: Quantifier a+ — Matches 1 or more 'a'.
           1:
             pattern: a?
             test: apple
             result: match
             options: ''
             substitution: ''
-            description: 'a? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: Quantifier a? — Matches 'a' if present.
           2:
             pattern: a{2,4}
             test: aaabc
             result: match
             options: ''
             substitution: ''
-            description: 'a{2,4} — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: Quantifier a{2,4} — Matches 2 to 4 'a's.
           3:
             pattern: a.c
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: 'a.c — [meta: concatenation] matches the exact sequence ''a.c''.'
+            description: Dot . — Matches any single character.
           4:
             pattern: "[a-z]"
-            test: g
+            test: Hello World
             result: match
             options: ''
             substitution: ''
-            description: "[a-z] — [meta: character class] matches any single character from the character class."
+            description: Char class [a-z] — Matches lowercase letters.
           5:
             pattern: "[a-z-]"
-            test: "-"
+            test: Hello-World
             result: match
             options: ''
             substitution: ''
-            description: "[a-z-] — [meta: character class] matches any single character from the character class."
+            description: Char class [a-z-] — Matches letters or hyphen.
           6:
             pattern: "[^a-z]"
-            test: A
+            test: Hello World
             result: match
             options: ''
             substitution: ''
-            description: "[^a-z] — [meta: negated class [^...], character class, ^] matches at the start of the string."
+            description: Negated class [^a-z] — Matches non-lowercase.
           7:
-            pattern: a\tb
-            test: "a\tb"
+            pattern: \t
+            test: a	b
             result: match
             options: ''
             substitution: ''
-            description: 'a\tb — [meta: concatenation] matches the exact sequence ''a\tb''.'
+            description: Escape \t — Matches tab character.
           8:
-            pattern: "^a"
+            pattern: ^
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: "^a — [meta: ^] matches at the start of the string."
+            description: Anchor ^ — Matches start of string.
           9:
-            pattern: c$
+            pattern: $
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: 'c$ — [meta: $] matches at the end of the string.'
+            description: Anchor $ — Matches end of string.
           10:
-            pattern: "\\bword\\b"
-            test: " word "
+            pattern: \b
+            test: Hello-World
             result: match
             options: ''
             substitution: ''
-            description: "\\bword\\b — [meta: concatenation] matches the exact sequence '\\bword\\b'."
+            description: Word boundary \b — Matches word edges.
           11:
-            pattern: "\\Bend"
+            pattern: \B
             test: bend
             result: match
             options: ''
             substitution: ''
-            description: "\\Bend — [meta: concatenation] matches the exact sequence '\\Bend'."
-      anchors:
-        short: Anchors
-        description: "Anchors: Match positions in the string using anchors like ^, $, A, \b."
+            description: Non-word boundary \B — Matches non-word edges.
+      alternations:
+        short: Alternations
+        description: Match one of several options.
         examples:
           0:
-            pattern: "^start"
+            pattern: cat|dog
+            test: I have a cat
+            result: match
+            options: ''
+            substitution: ''
+            description: cat|dog — Matches one option (cat example).
+          1:
+            pattern: cat|dog
+            test: I have a dog
+            result: match
+            options: ''
+            substitution: ''
+            description: cat|dog — Matches one option (dog example).
+          2:
+            pattern: cat|dog
+            test: I have a bird
+            result: no-match
+            options: ''
+            substitution: ''
+            description: cat|dog — No match if none fit.
+          3:
+            pattern: red|green|blue
+            test: green apple
+            result: match
+            options: ''
+            substitution: ''
+            description: red|green|blue — Matches one of the colors.
+          4:
+            pattern: red|green|blue
+            test: yellow banana
+            result: no-match
+            options: ''
+            substitution: ''
+            description: red|green|blue — No match if color absent.
+      anchors:
+        short: Anchors
+        description: Match positions using ^, $, \A, \b, etc.
+        examples:
+          0:
+            pattern: ^start
             test: start here
             result: match
             options: ''
             substitution: ''
-            description: "^start — [meta: ^] matches at the start of the string."
+            description: ^start — Matches start of string.
           1:
-            pattern: "^start"
+            pattern: ^start
             test: this is start
             result: no-match
             options: ''
             substitution: ''
-            description: "^start — [meta: ^] matches at the start of the string."
+            description: ^start — No match; not at start.
           2:
             pattern: end$
             test: This is the end
             result: match
             options: ''
             substitution: ''
-            description: 'end$ — [meta: $] matches at the end of the string.'
+            description: end$ — Matches end of string.
           3:
             pattern: end$
             test: end somewhere
             result: no-match
             options: ''
             substitution: ''
-            description: 'end$ — [meta: $] matches at the end of the string.'
+            description: end$ — No match; not at end.
           4:
-            pattern: "\\bword\\b"
+            pattern: \bword\b
             test: The word is here
             result: match
             options: ''
             substitution: ''
-            description: "\\bword\\b — [meta: concatenation] matches the exact sequence '\\bword\\b'."
+            description: \bword\b — Matches 'word' at word edges.
           5:
-            pattern: "\\bhello\\b"
+            pattern: \bhello\b
             test: helloworld
             result: no-match
             options: ''
             substitution: ''
-            description: "\\bhello\\b — [meta: concatenation] matches the exact sequence '\\bhello\\b'."
+            description: \bhello\b — No match; not separate.
           6:
-            pattern: "\\Aabc"
+            pattern: \Aabc
             test: abc anywhere
             result: match
             options: ''
             substitution: ''
-            description: "\\Aabc — [meta: ^] matches at the start of the string."
+            description: \Aabc — Matches string start.
           7:
-            pattern: "\\Aabc"
+            pattern: \Aabc
             test: this abc anywhere
             result: no-match
             options: ''
             substitution: ''
-            description: "\\Aabc — [meta: ^] matches at the start of the string."
+            description: \Aabc — No match; not at start.
           8:
             pattern: xyz\b
             test: xyzxyz
             result: match
             options: ''
             substitution: ''
-            description: 'xyz\b — [meta: concatenation] matches the exact sequence ''xyz\b''.'
+            description: xyz\b — Matches 'xyz' at word boundary.
           9:
             pattern: xyz\b
             test: xyz is here
             result: match
             options: ''
             substitution: ''
-            description: 'xyz\b — [meta: concatenation] matches the exact sequence ''xyz\b''.'
+            description: xyz\b — Matches 'xyz' at word boundary.
           10:
             pattern: start\Z
             test: start
             result: match
             options: ''
             substitution: ''
-            description: 'start\Z — [meta: $] matches at the end of the string.'
+            description: start\Z — Matches end of string.
           11:
             pattern: start\Z
             test: test start
             result: match
             options: ''
             substitution: ''
-            description: 'start\Z — [meta: $] matches at the end of the string.'
+            description: start\Z — Matches string end.
       character-classes:
         short: Character Classes
-        description: 'Character Classes: Match specific sets of characters inside square brackets.'
+        description: Match one char from [] sets or ranges; ^ negates.
         examples:
           0:
             pattern: "[abc]"
@@ -442,338 +419,296 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: "[abc] — [meta: character class] matches any single character from the character class."
+            description: "[abc] — Matches 'a','b', or 'c'."
           1:
             pattern: "[^abc]"
             test: a1bc
             result: match
             options: ''
             substitution: ''
-            description: "[^abc] — [meta: negated class [^...], character class, ^] matches at the start of the string."
+            description: "[^abc] — Matches any char not listed."
           2:
             pattern: "[0-9]"
             test: abc123
             result: match
             options: ''
             substitution: ''
-            description: "[0-9] — [meta: character class] matches any single character from the character class."
+            description: "[0-9] — Matches digits."
           3:
             pattern: "[a-z]"
             test: abc123
             result: match
             options: ''
             substitution: ''
-            description: "[a-z] — [meta: character class] matches any single character from the character class."
+            description: "[a-z] — Matches lowercase letters."
           4:
             pattern: "[A-Z]"
             test: abc123XYZ
             result: match
             options: ''
             substitution: ''
-            description: "[A-Z] — [meta: character class] matches any single character from the character class."
+            description: "[A-Z] — Matches uppercase letters."
           5:
             pattern: "[^\\\\]"
             test: hello\world
             result: match
             options: ''
             substitution: ''
-            description: "[^\\\\] — [meta: negated class [^...], character class, ^] matches at the start of the string."
+            description: "[^\\] — Matches any char except backslash."
           6:
             pattern: "[a-d&&aeiou]"
             test: abcd123
             result: match
             options: ''
             substitution: ''
-            description: "[a-d&&aeiou] — [meta: character class] matches any single character from the character class."
+            description: "[a-d&&aeiou] — Matches letters in both sets."
           7:
             pattern: "[a-d&&[^aeiou]]"
             test: abcd123
             result: match
             options: ''
             substitution: ''
-            description: "[a-d&&[^aeiou]] — [meta: negated class [^...], character class, ^] matches at the start of the string."
-          8:
-            pattern: "[a=e=b]"
-            test: a
-            result: match
-            options: ''
-            substitution: ''
-            description: "[a=e=b] — [meta: character class] matches any single character from the character class."
+            description: "[a-d&&[^aeiou]] — Matches letters in range but not vowels."
       character-types:
         short: Character Types
-        description: 'Character Types: Match specific character types like digits, whitespaces, etc.'
+        description: Match types like \d, \s, \w, etc.
         examples:
           0:
-            pattern: "\\d"
+            pattern: \d
             test: hello123
             result: match
             options: ''
             substitution: ''
-            description: "\\d — [meta: \\d (digit)] matches pattern '\\d'."
+            description: \d — Matches digits.
           1:
-            pattern: "\\d"
+            pattern: \d
             test: helloworld
             result: no-match
             options: ''
             substitution: ''
-            description: "\\d — [meta: \\d (digit)] matches pattern '\\d'."
+            description: \d — No match without digits.
           2:
-            pattern: "\\H"
+            pattern: \H
             test: hello world
             result: match
             options: ''
             substitution: ''
-            description: "\\H — [meta: concatenation] matches the exact sequence '\\H'."
+            description: \H — Matches non-hex characters.
           3:
-            pattern: "\\s"
+            pattern: \s
             test: hello world
             result: match
             options: ''
             substitution: ''
-            description: "\\s — [meta: \\s (whitespace)] matches pattern '\\s'."
+            description: \s — Matches whitespace.
           4:
-            pattern: "\\S"
+            pattern: \S
             test: hello world
             result: match
             options: ''
             substitution: ''
-            description: "\\S — [meta: concatenation] matches the exact sequence '\\S'."
+            description: \S — Matches non-whitespace.
           5:
-            pattern: "\\w"
-            test: helloworld123
+            pattern: \w
+            test: hello-world_123
             result: match
             options: ''
             substitution: ''
-            description: "\\w — [meta: \\w (word char)] matches pattern '\\w'."
+            description: \w — Matches word characters.
           6:
-            pattern: "\\w"
+            pattern: \w
             test: hello@world
             result: match
             options: ''
             substitution: ''
-            description: "\\w — [meta: \\w (word char)] matches pattern '\\w'."
+            description: \w — Matches letters/numbers/_ only.
           7:
-            pattern: "\\W"
+            pattern: \W
             test: hello@world
             result: match
             options: ''
             substitution: ''
-            description: "\\W — [meta: concatenation] matches the exact sequence '\\W'."
-          8:
-            pattern: "\\W"
-            test: hello@world
-            result: no-match
-            options: ''
-            substitution: ''
-            description: "\\W — [meta: concatenation] matches the exact sequence '\\W'."
+            description: \W — Matches non-word characters.
       cluster-types:
         short: Cluster Types
-        description: 'Cluster Types: Match grapheme clusters using R or X.'
+        description: Handles newlines (\R) and grapheme clusters (\X).
         examples:
           0:
-            pattern: "\\R"
+            pattern: \R
             test: |-
               abc
               123
             result: match
             options: ''
             substitution: ''
-            description: "\\R — [meta: \\R (newline cluster)] matches pattern '\\R'."
+            description: \R — Matches newline clusters.
           1:
-            pattern: "\\R"
-            test: "hello\rworld"
-            result: match
-            options: ''
-            substitution: ''
-            description: "\\R — [meta: \\R (newline cluster)] matches pattern '\\R'."
-          2:
-            pattern: "\\X"
+            pattern: \X
             test: "\U0001F44B"
             result: match
             options: ''
             substitution: ''
-            description: "\\X — [meta: \\X (grapheme cluster)] matches pattern '\\X'."
-          3:
-            pattern: "\\X"
+            description: \X — Matches graphemes (emoji example).
+          2:
+            pattern: \X
             test: "abc\U0001F44B123"
             result: match
             options: ''
             substitution: ''
-            description: "\\X — [meta: \\X (grapheme cluster)] matches pattern '\\X'."
-          4:
-            pattern: "\\X"
+            description: \X — Matches graphemes in a string with emoji.
+          3:
+            pattern: \X
             test: abć
             result: match
             options: ''
             substitution: ''
-            description: "\\X — [meta: \\X (grapheme cluster)] matches pattern '\\X'."
+            description: \X — Matches graphemes (composed or combining chars).
       conditional-expressions:
         short: Conditional Expressions
-        description: 'Conditional Expressions: Match conditional patterns using (?(cond)yes-subexp|no-subexp).'
+        description: Branches subpatterns based on captures or conditions.
         examples:
           0:
-            pattern: "(?<A>a)(?(<A>)T|F)"
+            pattern: (?<A>a)(?(<A>)T|F)
             test: aT
             result: match
             options: ''
             substitution: ''
-            description: "(?<A>a)(?(<A>)T|F) — [meta: alternation, quantifier (*, +, ?, {n,m}), named captures] captures parts of the match using named groups."
+            description: (?<A>a)(?(<A>)T|F) — Chooses T or F using group A.
           1:
-            pattern: "(?<A>a)(?(<A>)T|)"
+            pattern: (?<A>a)(?(<A>)T|)
             test: aT
             result: match
             options: ''
             substitution: ''
-            description: "(?<A>a)(?(<A>)T|) — [meta: alternation, quantifier (*, +, ?, {n,m}), named captures] captures parts of the match using named groups."
+            description: Named group existence triggers branching.
           2:
-            pattern: "(a)(?(001)T)"
+            pattern: (a)(?(001)T)
             test: aT
             result: match
             options: ''
             substitution: ''
-            description: "(a)(?(001)T) — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: Branches using a numeric condition.
           3:
             pattern: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z"
             test: set x=32
             result: match
             options: ''
             substitution: ''
-            description: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z — [meta: alternation, quantifier (*, +, ?, {n,m}), ^, \\d (digit), \\w (word char), \\s (whitespace), non-capturing (?:...)] matches at the start of the string."
+            description: "'=' and number expected if 'set' matches."
           4:
             pattern: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z"
             test: print x
             result: match
             options: ''
             substitution: ''
-            description: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z — [meta: alternation, quantifier (*, +, ?, {n,m}), ^, \\d (digit), \\w (word char), \\s (whitespace), non-capturing (?:...)] matches at the start of the string."
+            description: Branching example for the 'print' case.
           5:
             pattern: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z"
             test: set y
             result: no-match
             options: ''
             substitution: ''
-            description: "\\A(?:(set)|(print))\\s+(\\w+)(?(1)=(\\d+))\\z — [meta: alternation, quantifier (*, +, ?, {n,m}), ^, \\d (digit), \\w (word char), \\s (whitespace), non-capturing (?:...)] matches at the start of the string."
+            description: Does not match when required conditions are missing.
       escape-sequences:
         short: Escape Sequences
-        description: 'Escape Sequences: Match characters using escape sequences like \t, \n, \d, etc.'
+        description: Examples using \t, \n, \d, etc.
         examples:
           0:
-            pattern: "\\t"
-            test: "a\t"
+            pattern: \t
+            test: a	b
             result: match
             options: ''
             substitution: ''
-            description: "\\t — [meta: concatenation] matches the exact sequence '\\t'."
+            description: \t — Matches a tab character.
           1:
-            pattern: "\\n"
-            test: 'a
+            pattern: \n
+            test: a
 
-              '
+              b
             result: match
             options: ''
             substitution: ''
-            description: "\\n — [meta: concatenation] matches the exact sequence '\\n'."
+            description: \n — Matches a newline.
           2:
-            pattern: "\\d"
-            test: '5'
+            pattern: \d
+            test: 5
             result: match
             options: ''
             substitution: ''
-            description: "\\d — [meta: \\d (digit)] matches pattern '\\d'."
+            description: \d — Matches a digit.
           3:
-            pattern: "\\d"
+            pattern: \d
             test: a
             result: no-match
             options: ''
             substitution: ''
-            description: "\\d — [meta: \\d (digit)] matches pattern '\\d'."
+            description: \d — Does not match if no digit.
           4:
-            pattern: "\\s"
+            pattern: \s
             test: 'a '
             result: match
             options: ''
             substitution: ''
-            description: "\\s — [meta: \\s (whitespace)] matches pattern '\\s'."
+            description: \s — Matches whitespace.
           5:
-            pattern: "\\S"
+            pattern: \S
             test: a
             result: match
             options: ''
             substitution: ''
-            description: "\\S — [meta: concatenation] matches the exact sequence '\\S'."
+            description: \S — Matches non-whitespace.
           6:
-            pattern: "\\w"
-            test: a
+            pattern: \w
+            test: word word-word word_word
             result: match
             options: ''
             substitution: ''
-            description: "\\w — [meta: \\w (word char)] matches pattern '\\w'."
+            description: \w — Matches word characters.
           7:
-            pattern: "\\W"
-            test: "$"
+            pattern: \W
+            test: word word-word word_word
             result: match
             options: ''
             substitution: ''
-            description: "\\W — [meta: concatenation] matches the exact sequence '\\W'."
+            description: \W — Matches non-word characters.
           8:
-            pattern: "\\b"
-            test: word
+            pattern: \b
+            test: word word-word word_word
             result: match
             options: ''
             substitution: ''
-            description: "\\b — [meta: concatenation] matches the exact sequence '\\b'."
+            description: \b — Matches word boundaries.
           9:
-            pattern: "\\B"
-            test: word
+            pattern: \B
+            test: word word-word word_word
             result: no-match
             options: ''
             substitution: ''
-            description: "\\B — [meta: concatenation] matches the exact sequence '\\B'."
+            description: \B — Matches non-word-boundary.
           10:
-            pattern: "\\f"
-            test: "a\f"
-            result: match
-            options: ''
-            substitution: ''
-            description: "\\f — [meta: concatenation] matches the exact sequence '\\f'."
-          11:
-            pattern: "\\r"
-            test: "a\r"
-            result: match
-            options: ''
-            substitution: ''
-            description: "\\r — [meta: concatenation] matches the exact sequence '\\r'."
-          12:
-            pattern: "\\0"
-            test: "a\0"
-            result: match
-            options: ''
-            substitution: ''
-            description: "\\0 — [meta: back-reference] matches repeated text using back-references."
-          13:
-            pattern: "\\x41"
+            pattern: \x41
             test: A
             result: match
             options: ''
             substitution: ''
-            description: "\\x41 — [meta: concatenation] matches the exact sequence '\\x41'."
-          14:
-            pattern: "\\\\+"
-            test: a\
+            description: \x41 — Hex escape for 'A'.
+          11:
+            pattern: \\+
+            test: a\\\b
             result: match
             options: ''
             substitution: ''
-            description: "\\\\+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
-          15:
-            pattern: "\\?"
-            test: "?"
+            description: \\+ — Matches repeated backslashes.
+          12:
+            pattern: \?
+            test: '?'
             result: match
             options: ''
             substitution: ''
-            description: "\\? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \? — Matches literal question mark.
       free-space:
         short: Free Space
-        description: 'Free Space: Match whitespace and comments using the x modifier.'
+        description: Ignores spaces and comments to improve readability.
         examples:
           0:
             pattern: "a  # comment \nb"
@@ -781,7 +716,7 @@ en:
             result: match
             options: x
             substitution: ''
-            description: "a  # comment \nb — [meta: concatenation] matches the exact sequence 'a  # comment \nb'."
+            description: Ignores spaces/comments to match 'ab'.
           1:
             pattern: |2-
                 a  # word
@@ -790,17 +725,14 @@ en:
             result: match
             options: x
             substitution: ''
-            description: |2-
-                a  # word
-                b — [meta: concatenation] matches the exact sequence '  a  # word
-                b'.
+            description: Heredoc ignoring spaces/comments matches 'ab'.
           2:
             pattern: "  a #word \nb"
             test: ab
             result: match
             options: x
             substitution: ''
-            description: "  a #word \nb — [meta: concatenation] matches the exact sequence '  a #word \nb'."
+            description: Ignores spaces/comments to match 'ab'.
           3:
             pattern: |2-
                  a   # starting
@@ -809,80 +741,77 @@ en:
             result: match
             options: x
             substitution: ''
-            description: |2-
-                 a   # starting
-                 b — [meta: concatenation] matches the exact sequence '   a   # starting
-                 b'.
+            description: Ignores spaces/comments to match 'ab' (alt).
       group-assertions:
         short: Group Assertions
-        description: 'Group assertions: Match positions without consuming characters using lookahead and lookbehind.'
+        description: Positive/negative lookahead and lookbehind (zero-width).
         examples:
           0:
-            pattern: "(?=abc)"
+            pattern: (?=abc)
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: "(?=abc) — [meta: quantifier (*, +, ?, {n,m}), lookaround (lookahead/lookbehind)] matches a position using lookahead/lookbehind in the pattern."
+            description: (?=abc) — Position followed by 'abc' (positive lookahead).
           1:
-            pattern: "(?=\\w+)"
+            pattern: (?=\w+)
             test: hello world
             result: match
             options: ''
             substitution: ''
-            description: "(?=\\w+) — [meta: quantifier (*, +, ?, {n,m}), \\w (word char), lookaround (lookahead/lookbehind)] matches a position using lookahead/lookbehind in the pattern."
+            description: (?=\w+) — Positive lookahead asserting word characters ahead.
           2:
-            pattern: "(?!abc)"
+            pattern: (?!abc)
             test: xyz
             result: match
             options: ''
             substitution: ''
-            description: "(?!abc) — [meta: quantifier (*, +, ?, {n,m}), lookaround (lookahead/lookbehind)] matches a position using lookahead/lookbehind in the pattern."
+            description: (?!abc) — Negative lookahead asserting 'abc' does not follow.
           3:
-            pattern: "(?<=abc)"
+            pattern: (?<=abc)
             test: abcxyz
             result: match
             options: ''
             substitution: ''
-            description: "(?<=abc) — [meta: quantifier (*, +, ?, {n,m}), named captures, lookaround (lookahead/lookbehind)] matches a position using lookahead/lookbehind in the pattern."
+            description: (?<=abc) — Positive lookbehind asserting it is preceded by 'abc'.
           4:
-            pattern: "(?<=\\d{3})"
+            pattern: (?<=\d{3})
             test: 123abc
             result: match
             options: ''
             substitution: ''
-            description: "(?<=\\d{3}) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), named captures, lookaround (lookahead/lookbehind)] matches a position using lookahead/lookbehind in the pattern."
+            description: (?<=\d{3}) — Lookbehind asserting three digits precede.
           5:
-            pattern: "(?<=\\b)"
+            pattern: (?<=\b)
             test: hello
             result: match
             options: ''
             substitution: ''
-            description: "(?<=\\b) — [meta: quantifier (*, +, ?, {n,m}), named captures, lookaround (lookahead/lookbehind)] matches a position using lookahead/lookbehind in the pattern."
+            description: (?<=\b) — Lookbehind asserting a word boundary precedes.
           6:
-            pattern: "(?<!abc)"
+            pattern: (?<!abc)
             test: xyzabc
             result: match
             options: ''
             substitution: ''
-            description: "(?<!abc) — [meta: quantifier (*, +, ?, {n,m}), named captures, lookaround (lookahead/lookbehind)] matches a position using lookahead/lookbehind in the pattern."
+            description: (?<!abc) — Negative lookbehind asserting not preceded by 'abc'.
           7:
-            pattern: "(?<!\\d)"
+            pattern: (?<!\d)
             test: abc123
             result: match
             options: ''
             substitution: ''
-            description: "(?<!\\d) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), named captures, lookaround (lookahead/lookbehind)] matches a position using lookahead/lookbehind in the pattern."
+            description: (?<!\d) — Negative lookbehind, previous char is not a digit.
           8:
-            pattern: "(?<!\\d{2})"
+            pattern: (?<!\d{2})
             test: abc123
             result: match
             options: ''
             substitution: ''
-            description: "(?<!\\d{2}) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), named captures, lookaround (lookahead/lookbehind)] matches a position using lookahead/lookbehind in the pattern."
+            description: (?<!\d{2}) — Asserts that two digits do not precede.
       group-atomic:
-        short: Group Atomic
-        description: 'Group Atomic: Atomic groups (?>...) match a subpattern without allowing backtracking within the group. If the overall match fails, the engine will not retry alternative paths inside the atomic group. This can reduce unnecessary backtracking and improve performance.'
+        short: Atomic Groups
+        description: Prevents backtracking inside (?>...) groups.
         examples:
           0:
             pattern: a(bc|b)c
@@ -890,376 +819,376 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: 'a(bc|b)c — [meta: alternation] matches one of the alternatives in the pattern.'
+            description: a(bc|b)c — Example of choice behavior of c-branch.
           1:
             pattern: a(?>bc|b)c
             test: abc
             result: no-match
             options: ''
             substitution: ''
-            description: 'a(?>bc|b)c — [meta: alternation, quantifier (*, +, ?, {n,m})] matches one of the alternatives in the pattern.'
+            description: a(?>bc|b)c — Atomic group blocks backtracking between options.
           2:
-            pattern: "(\\w+)\\d{3}"
+            pattern: (\w+)\d{3}
             test: user123
             result: match
             options: ''
             substitution: ''
-            description: "(\\w+)\\d{3} — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), \\w (word char)] matches occurrences according to the quantifier in the pattern."
+            description: (\w+)\d{3} — Captures word followed by three digits.
           3:
-            pattern: "(?>\\w+)\\d{3}"
+            pattern: (?>\w+)\d{3}
             test: user123
             result: no-match
             options: ''
             substitution: ''
-            description: "(?>\\w+)\\d{3} — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), \\w (word char)] matches occurrences according to the quantifier in the pattern."
+            description: (?>\w+) — Greedy atomic match blocks digits after.
           4:
             pattern: Start(A+|A*B)End
             test: StartABEnd
             result: match
             options: ''
             substitution: ''
-            description: 'Start(A+|A*B)End — [meta: alternation, quantifier (*, +, ?, {n,m})] matches one of the alternatives in the pattern.'
+            description: Start(A+|A*B)End — Example of repetition inside alternation.
           5:
             pattern: Start(?>A+|A*B)End
             test: StartABEnd
             result: no-match
             options: ''
             substitution: ''
-            description: 'Start(?>A+|A*B)End — [meta: alternation, quantifier (*, +, ?, {n,m})] matches one of the alternatives in the pattern.'
+            description: Start(?>A+|A*B)End — Atomic alternation changes match.
       group-absence:
         short: Group Absence
-        description: 'Group Absence: Absence operator (?~pattern) matches substrings that do NOT contain the pattern. When matching the entire string, it fails if the pattern exists anywhere. However, partial matches may occur on substrings excluding the pattern.'
+        description: (?~) — Match substrings that do not contain the specified pattern.
         examples:
           0:
-            pattern: "(?~abc)"
+            pattern: (?~abc)
             test: ab
             result: match
             options: ''
             substitution: ''
-            description: "(?~abc) — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: Matches when 'abc' is not present.
           1:
-            pattern: "(?~abc)"
+            pattern: (?~abc)
             test: aab
             result: match
             options: ''
             substitution: ''
-            description: "(?~abc) — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: Matches when 'abc' is absent.
           2:
-            pattern: "(?~abc)"
+            pattern: (?~abc)
             test: abb
             result: match
             options: ''
             substitution: ''
-            description: "(?~abc) — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: Matches when 'abc' is absent.
           3:
-            pattern: "(?~abc)"
+            pattern: (?~abc)
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: "(?~abc) — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: Matches if substring does not contain 'abc'.
           4:
-            pattern: "^(?~abc)$"
+            pattern: ^(?~abc)$
             test: abc
             result: no-match
             options: ''
             substitution: ''
-            description: "^(?~abc)$ — [meta: quantifier (*, +, ?, {n,m}), ^, $] matches at the start and end of the string."
+            description: Does not match if full string contains 'abc'.
           5:
-            pattern: "(?~abc)"
+            pattern: (?~abc)
             test: aabc
             result: match
             options: ''
             substitution: ''
-            description: "(?~abc) — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: Matches when substring does not contain 'abc'.
           6:
-            pattern: "(?~abc)"
+            pattern: (?~abc)
             test: ccabcdd
             result: match
             options: ''
             substitution: ''
-            description: "(?~abc) — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: Matches if any part excludes 'abc'.
           7:
-            pattern: "/\\*(?~\\*/)*\\*/"
-            test: "/**/"
+            pattern: /\*(?~\*/)*\*/
+            test: /**/
             result: match
             options: ''
             substitution: ''
-            description: "/\\*(?~\\*/)*\\*/ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: Matches empty C-style comment.
           8:
-            pattern: "/\\*(?~\\*/)*\\*/"
-            test: "/* foo bar */"
+            pattern: /\*(?~\*/)*\*/
+            test: /* foo bar */
             result: match
             options: ''
             substitution: ''
-            description: "/\\*(?~\\*/)*\\*/ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: Matches C-style comment with content.
       group-back-references:
-        short: Group Back-references
-        description: 'Group Back-references: Match the same text as previously captured using back-references.'
+        short: Group Back-References
+        description: Matches text already captured in groups.
         examples:
           0:
-            pattern: "(\\d)\\1"
-            test: '11'
+            pattern: (\d)\1
+            test: 11
             result: match
             options: ''
             substitution: ''
-            description: "(\\d)\\1 — [meta: \\d (digit), back-reference] matches repeated text using back-references."
+            description: (\d)\1 — Matches repeated digit '11'.
           1:
-            pattern: "(?<word>\\w+)\\s\\k<word>"
+            pattern: (?<word>\w+)\s\k<word>
             test: hello hello
             result: match
             options: ''
             substitution: ''
-            description: "(?<word>\\w+)\\s\\k<word> — [meta: quantifier (*, +, ?, {n,m}), \\w (word char), \\s (whitespace), back-reference, named captures] captures parts of the match using named groups."
+            description: Named backreference example.
           2:
-            pattern: "(\\d+)\\k<1>"
-            test: '123123'
+            pattern: (\d+)\k<1>
+            test: 123123
             result: match
             options: ''
             substitution: ''
-            description: "(\\d+)\\k<1> — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), back-reference] matches repeated text using back-references."
+            description: Numbered backreference repetition.
           3:
-            pattern: "(\\w+)\\s\\1"
+            pattern: (\w+)\s\1
             test: hello hello
             result: match
             options: ''
             substitution: ''
-            description: "(\\w+)\\s\\1 — [meta: quantifier (*, +, ?, {n,m}), \\w (word char), \\s (whitespace), back-reference] matches repeated text using back-references."
+            description: Repeats same word using group number.
           4:
-            pattern: "(\\d{3})-(\\d{2})-(\\d{4})\\k<1>"
+            pattern: (\d{3})-(\d{2})-(\d{4})\k<1>
             test: 123-45-6789123
             result: match
             options: ''
             substitution: ''
-            description: "(\\d{3})-(\\d{2})-(\\d{4})\\k<1> — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), back-reference] matches repeated text using back-references."
+            description: Reuses captured part.
           5:
-            pattern: "(\\w+)-(\\w+)\\k<2>"
+            pattern: (\w+)-(\w+)\k<2>
             test: apple-orangeorange
             result: match
             options: ''
             substitution: ''
-            description: "(\\w+)-(\\w+)\\k<2> — [meta: quantifier (*, +, ?, {n,m}), \\w (word char), back-reference] matches repeated text using back-references."
+            description: Matches using 2nd group's repetition.
           6:
-            pattern: "(\\d{3})-(\\d{2})-(\\d{4})\\k<2>"
+            pattern: (\d{3})-(\d{2})-(\d{4})\k<2>
             test: 123-45-678945
             result: match
             options: ''
             substitution: ''
-            description: "(\\d{3})-(\\d{2})-(\\d{4})\\k<2> — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), back-reference] matches repeated text using back-references."
+            description: References the 2nd captured group.
           7:
-            pattern: "(\\d+)\\1"
+            pattern: (\d+)\1
             test: '12345'
             result: no-match
             options: ''
             substitution: ''
-            description: "(\\d+)\\1 — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), back-reference] matches repeated text using back-references."
+            description: No match if no repetition.
           8:
-            pattern: "(.)(.)\\k<-2>\\k<-1>"
+            pattern: (.)(.)\k<-2>\k<-1>
             test: xyzyz
             result: match
             options: ''
             substitution: ''
-            description: "(.)(.)\\k<-2>\\k<-1> — [meta: back-reference] matches repeated text using back-references."
+            description: Relative reference to previous captures.
       group-capturing:
         short: Group Capturing
-        description: 'Group Capturing: Capture matched groups for later reference, accessible via numbered or named groups, including local variables after matching.'
+        description: Capture matches by number or name.
         examples:
           0:
-            pattern: "(abc)"
+            pattern: (abc)
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: "(abc) — [meta: concatenation] matches the exact sequence '(abc)'."
+            description: (abc) — Capture 'abc' in group 1.
           1:
-            pattern: "(\\d{2})-(\\d{2})-(\\d{4})"
+            pattern: (\d{2})-(\d{2})-(\d{4})
             test: 12-34-5678
             result: match
             options: ''
             substitution: ''
-            description: "(\\d{2})-(\\d{2})-(\\d{4}) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit)] matches occurrences according to the quantifier in the pattern."
+            description: (\d{2})-(\d{2})-(\d{4}) — Capture each date part.
           2:
-            pattern: "(\\w+)@(\\w+\\.\\w+)"
+            pattern: (\w+)@(\w+\.\w+)
             test: alice@example.com
             result: match
             options: ''
             substitution: ''
-            description: "(\\w+)@(\\w+\\.\\w+) — [meta: quantifier (*, +, ?, {n,m}), \\w (word char)] matches occurrences according to the quantifier in the pattern."
+            description: (\w+)@(\w+\.\w+) — Capture email user and domain.
           3:
-            pattern: "(\\d+)-(\\d+)"
+            pattern: (\d+)-(\d+)
             test: 123-456
             result: match
             options: ''
             substitution: ''
-            description: "(\\d+)-(\\d+) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit)] matches occurrences according to the quantifier in the pattern."
+            description: (\d+)-(\d+) — Capture two numbers separated by '-'.
           4:
-            pattern: "(\\w{3})-(\\w{3})"
+            pattern: (\w{3})-(\w{3})
             test: abc-def
             result: match
             options: ''
             substitution: ''
-            description: "(\\w{3})-(\\w{3}) — [meta: quantifier (*, +, ?, {n,m}), \\w (word char)] matches occurrences according to the quantifier in the pattern."
+            description: (\w{3})-(\w{3}) — Capture two 3-letter groups.
           5:
-            pattern: "(\\d{4})(\\d{2})(\\d{2})"
-            test: '20211225'
+            pattern: (\d{4})(\d{2})(\d{2})
+            test: 20211225
             result: match
             options: ''
             substitution: ''
-            description: "(\\d{4})(\\d{2})(\\d{2}) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit)] matches occurrences according to the quantifier in the pattern."
+            description: (\d{4})(\d{2})(\d{2}) — Capture consecutive year/month/day.
           6:
-            pattern: "(\\w+)\\s(\\w+)"
+            pattern: (\w+)\s(\w+)
             test: hello world
             result: match
             options: ''
             substitution: ''
-            description: "(\\w+)\\s(\\w+) — [meta: quantifier (*, +, ?, {n,m}), \\w (word char), \\s (whitespace)] matches occurrences according to the quantifier in the pattern."
+            description: (\w+)\s(\w+) — Capture two words separated by space.
           7:
-            pattern: "(\\w+)\\s+\\1"
+            pattern: (\w+)\s+\1
             test: hello hello
             result: match
             options: ''
             substitution: ''
-            description: "(\\w+)\\s+\\1 — [meta: quantifier (*, +, ?, {n,m}), \\w (word char), \\s (whitespace), back-reference] matches repeated text using back-references."
+            description: (\w+)\s+\1 — Example of repeating a captured word.
       group-comments:
         short: Group Comments
-        description: 'Group Comments: Include comments inside regular expressions using (?# comment ).'
+        description: Inline comments that do not affect matching.
         examples:
           0:
-            pattern: "(?# This is a comment)abc"
+            pattern: (?# This is a comment)abc
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: "(?# This is a comment)abc — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (?# ... )abc — Matches 'abc'.
           1:
             pattern: a(?# matches 'a')b
             test: ab
             result: match
             options: ''
             substitution: ''
-            description: 'a(?# matches ''a'')b — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a(?# ... )b — Matches 'ab'.
           2:
-            pattern: "(?#Start of string)^abc(?#End of string)$"
+            pattern: (?#Start of string)^abc(?#End of string)$
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: "(?#Start of string)^abc(?#End of string)$ — [meta: quantifier (*, +, ?, {n,m}), ^, $] matches at the start and end of the string."
+            description: (?# ... )^abc(?# ... )$ — Matches '^abc$'.
           3:
-            pattern: "(?# a comment in the middle )ab(?# another comment)"
+            pattern: (?# a comment in the middle )ab(?# another comment)
             test: ab
             result: match
             options: ''
             substitution: ''
-            description: "(?# a comment in the middle )ab(?# another comment) — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (?# ... )ab(?# ... ) — Matches 'ab'.
           4:
-            pattern: "(?# This pattern matches digits )\\d+"
-            test: '12345'
+            pattern: (?# This pattern matches digits )\d+
+            test: 12345
             result: match
             options: ''
             substitution: ''
-            description: "(?# This pattern matches digits )\\d+ — [meta: quantifier (*, +, ?, {n,m}), \\d (digit)] matches occurrences according to the quantifier in the pattern."
+            description: (?# ... )\d+ — Matches one or more digits.
           5:
-            pattern: "(?# matches a space )\\s"
-            test: " "
+            pattern: (?# matches a space )\s
+            test: " a"
             result: match
             options: ''
             substitution: ''
-            description: "(?# matches a space )\\s — [meta: quantifier (*, +, ?, {n,m}), \\s (whitespace)] matches occurrences according to the quantifier in the pattern."
+            description: (?# ... )\s — Matches one whitespace.
           6:
-            pattern: "(?# comment before and after )\\w{3,}"
+            pattern: (?# comment before and after )\w{3,}
             test: word
             result: match
             options: ''
             substitution: ''
-            description: "(?# comment before and after )\\w{3,} — [meta: quantifier (*, +, ?, {n,m}), \\w (word char)] matches occurrences according to the quantifier in the pattern."
+            description: (?# ... )\w{3,} — Matches word with 3+ letters.
       group-named:
-        short: Group Named
-        description: 'Group Named: Capture groups with a specific name for easier reference.'
+        short: Named Groups
+        description: Assign names to groups for reference.
         examples:
           0:
-            pattern: "(?<name>Alice)"
+            pattern: (?<name>Alice)
             test: Alice
             result: match
             options: ''
             substitution: ''
-            description: "(?<name>Alice) — [meta: quantifier (*, +, ?, {n,m}), named captures] captures parts of the match using named groups."
+            description: (?<name>Alice) — Capture 'Alice' as 'name'.
           1:
-            pattern: "(?'name'Alice)"
+            pattern: (?'name'Alice)
             test: Alice
             result: match
             options: ''
             substitution: ''
-            description: "(?'name'Alice) — [meta: quantifier (*, +, ?, {n,m}), named captures] captures parts of the match using named groups."
+            description: (?'name'Alice) — Alternate syntax to capture 'Alice'.
           2:
-            pattern: "(?P<name>Alice)"
+            pattern: (?P<name>Alice)
             test: Alice
             result: no-match
             options: ''
             substitution: ''
-            description: "(?P<name>Alice) — [meta: quantifier (*, +, ?, {n,m}), named captures] captures parts of the match using named groups."
+            description: (?P<name>Alice) — Unsupported in Ruby; no match.
           3:
-            pattern: "(?<year>\\d{4})-(?'month'\\d{2})-(?'day'\\d{2})"
-            test: '2023-07-25'
+            pattern: (?<year>\d{4})-(?'month'\d{2})-(?'day'\d{2})
+            test: 2023-07-25
             result: match
             options: ''
             substitution: ''
-            description: "(?<year>\\d{4})-(?'month'\\d{2})-(?'day'\\d{2}) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), named captures] captures parts of the match using named groups."
+            description: (?<year>\d{4})-(?'month'\d{2})-(?'day'\d{2}) — Date example.
           4:
-            pattern: "(?<hour>\\d{2}):(?'minute'\\d{2})"
+            pattern: (?<hour>\d{2}):(?'minute'\d{2})
             test: '14:30'
             result: match
             options: ''
             substitution: ''
-            description: "(?<hour>\\d{2}):(?'minute'\\d{2}) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), named captures] captures parts of the match using named groups."
+            description: (?<hour>\d{2}):(?'minute'\d{2}) — Time example.
           5:
-            pattern: "(?<user>\\w+)@(?<domain>\\w+\\.\\w+)"
+            pattern: (?<user>\w+)@(?<domain>\w+\.\w+)
             test: alice@example.com
             result: match
             options: ''
             substitution: ''
-            description: "(?<user>\\w+)@(?<domain>\\w+\\.\\w+) — [meta: quantifier (*, +, ?, {n,m}), \\w (word char), named captures] captures parts of the match using named groups."
+            description: (?<user>\w+)@(?<domain>\w+\.\w+) — User/domain example.
           6:
-            pattern: "\\$(?<dollars>\\d+)\\.(?<cents>\\d+)"
+            pattern: \$(?<dollars>\d+)\.(?<cents>\d+)
             test: "$3.67"
             result: match
             options: ''
             substitution: ''
-            description: "\\$(?<dollars>\\d+)\\.(?<cents>\\d+) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), named captures] captures parts of the match using named groups."
+            description: \$(?<dollars>\d+)\.(?<cents>\d+) — Money example.
           7:
-            pattern: "(?<vowel>[aeiou]).\\k<vowel>.\\k<vowel>"
+            pattern: (?<vowel>[aeiou]).\k<vowel>.\k<vowel>
             test: ototomy
             result: match
             options: ''
             substitution: ''
-            description: "(?<vowel>[aeiou]).\\k<vowel>.\\k<vowel> — [meta: character class, quantifier (*, +, ?, {n,m}), back-reference, named captures] captures parts of the match using named groups."
+            description: (?<vowel>[aeiou]).\k<vowel>.\k<vowel> — Backreference example.
           8:
-            pattern: "(?<name>\\w+)(\\d{3})"
+            pattern: (?<name>\w+)(\d{3})
             test: user123
             result: match
             options: ''
             substitution: ''
-            description: "(?<name>\\w+)(\\d{3}) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), \\w (word char), named captures] captures parts of the match using named groups."
+            description: (?<name>\w+)(\d{3}) — Capture with numbered group example.
       group-options:
         short: Group Options
-        description: 'Group Options: Modify regex behavior using inline options like (?i), (?m), etc.'
+        description: Examples of inline modifiers in regex groups.
         examples:
           0:
-            pattern: "(?i)abc"
+            pattern: (?i)abc
             test: ABC
             result: match
             options: ''
             substitution: ''
-            description: "(?i)abc — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (?i)abc — Matches 'abc' ignoring case.
           1:
-            pattern: "(?m)^abc"
+            pattern: (?m)^abc
             test: |-
               abc
               abc
             result: match
             options: ''
             substitution: ''
-            description: "(?m)^abc — [meta: quantifier (*, +, ?, {n,m}), ^] matches at the start of the string."
+            description: (?m)^abc — Matches line start in multiline mode.
           2:
             pattern: |-
               (?x) a # space is ignored
@@ -1268,32 +1197,30 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: |-
-              (?x) a # space is ignored
-              b — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.
+            description: (?x) a b — Ignores spaces and comments.
           3:
-            pattern: "(?i)hello(?-i)world"
+            pattern: (?i)hello(?-i)world
             test: HELLOworld
             result: match
             options: ''
             substitution: ''
-            description: "(?i)hello(?-i)world — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (?i)hello(?-i)world — Switches case sensitivity mid-pattern.
           4:
-            pattern: "(?i)(abc)(?-i)def"
+            pattern: (?i)(abc)(?-i)def
             test: ABCdef
             result: match
             options: ''
             substitution: ''
-            description: "(?i)(abc)(?-i)def — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (?i)(abc)(?-i)def — Partially modifies case sensitivity.
           5:
-            pattern: "(?m)\\bstart\\b"
+            pattern: (?m)\bstart\b
             test: |-
               start
               start
             result: match
             options: ''
             substitution: ''
-            description: "(?m)\\bstart\\b — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (?m)\bstart\b — Matches 'start' at word boundaries per line.
           6:
             pattern: |-
               (?x) a # space is ignored
@@ -1302,62 +1229,67 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: |-
-              (?x) a # space is ignored
-              c — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.
+            description: (?x) a c — Ignores spaces and comments.
       group-passive:
-        short: Group Passive
-        description: 'Group Passive: Create a non-capturing group that doesn''t store matches.'
+        short: Passive Groups
+        description: Groups that do not create capturing groups.
         examples:
           0:
-            pattern: "(?:abc)"
+            pattern: (?:abc)
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: "(?:abc) — [meta: quantifier (*, +, ?, {n,m}), non-capturing (?:...)] matches occurrences according to the quantifier in the pattern."
+            description: (?:abc) — Matches 'abc' without capturing.
           1:
-            pattern: "(?:\\d{2})-(?:\\d{2})-(?:\\d{4})"
+            pattern: (?:\d{2})-(?:\d{2})-(?:\d{4})
             test: 12-34-5678
             result: match
             options: ''
             substitution: ''
-            description: "(?:\\d{2})-(?:\\d{2})-(?:\\d{4}) — [meta: quantifier (*, +, ?, {n,m}), \\d (digit), non-capturing (?:...)] matches occurrences according to the quantifier in the pattern."
+            description: (?:\d{2})-(?:\d{2})-(?:\d{4}) — Date pattern example.
           2:
-            pattern: "(?:\\w+)@(\\w+\\.\\w+)"
+            pattern: (?:\w+)@(\w+\.\w+)
             test: alice@example.com
             result: match
             options: ''
             substitution: ''
-            description: "(?:\\w+)@(\\w+\\.\\w+) — [meta: quantifier (*, +, ?, {n,m}), \\w (word char), non-capturing (?:...)] matches occurrences according to the quantifier in the pattern."
+            description: (?:\w+)@(\w+\.\w+) — Non-capturing user name example.
       group-subexpression-calls:
-        short: Group Subexp. Calls
-        description: 'Group Subexp. Calls: Call a previously defined subexpression (either by name or index).'
+        short: Subexpression Calls
+        description: Reuse groups via \g<name> or \g<number>.
         examples:
           0:
-            pattern: "(abc)\\g<1>"
+            pattern: (abc)\g<1>
             test: abcabc
             result: match
             options: ''
             substitution: ''
-            description: "(abc)\\g<1> — [meta: back-reference] matches repeated text using back-references."
+            description: (abc)\g<1> — Repeat first captured group.
           1:
-            pattern: "(?<name>hello)\\g<name>"
-            test: hellohello
+            pattern: (?<name>\w+)\g<name>
+            test: useruser
             result: match
             options: ''
             substitution: ''
-            description: "(?<name>hello)\\g<name> — [meta: quantifier (*, +, ?, {n,m}), back-reference, named captures] captures parts of the match using named groups."
+            description: (?<name>\w+)\g<name> — Reuse named group.
           2:
-            pattern: "(abc)(def)\\g<1>\\g<2>"
+            pattern: (abc)(def)\g<1>\g<2>
             test: abcdefabcdef
             result: match
             options: ''
             substitution: ''
-            description: "(abc)(def)\\g<1>\\g<2> — [meta: back-reference] matches repeated text using back-references."
+            description: (abc)(def)\g<1>\g<2> — Repeat multiple groups.
+          3:
+            pattern: (?<word>\w+)\g<word>
+            test: hellohello
+            result: match
+            options: ''
+            substitution: ''
+            description: (?<word>\w+)\g<word> — Reuse named group example.
       keep:
         short: Keep
-        description: 'Keep: Keep the current match and resume matching after it using \K.'
+        description: \K discards text matched so far.
         examples:
           0:
             pattern: ab\Kcd
@@ -1365,73 +1297,73 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: 'ab\Kcd — [meta: concatenation] matches the exact sequence ''ab\Kcd''.'
+            description: ab\Kcd — Matches 'cd' after discarding 'ab'.
           1:
             pattern: a\Kb
             test: abc
             result: match
             options: ''
             substitution: ''
-            description: 'a\Kb — [meta: concatenation] matches the exact sequence ''a\Kb''.'
+            description: a\Kb — Matches 'b' after discarding 'a'.
           2:
             pattern: foo\Kbar
             test: foobar
             result: match
             options: ''
             substitution: ''
-            description: 'foo\Kbar — [meta: concatenation] matches the exact sequence ''foo\Kbar''.'
+            description: foo\Kbar — Matches 'bar' after discarding 'foo'.
           3:
             pattern: xyz\Kabc
             test: xyzabc
             result: match
             options: ''
             substitution: ''
-            description: 'xyz\Kabc — [meta: concatenation] matches the exact sequence ''xyz\Kabc''.'
+            description: xyz\Kabc — Matches 'abc' after discarding 'xyz'.
           4:
             pattern: start\Kend
             test: startend
             result: match
             options: ''
             substitution: ''
-            description: 'start\Kend — [meta: concatenation] matches the exact sequence ''start\Kend''.'
+            description: start\Kend — Matches 'end' after discarding 'start'.
           5:
             pattern: one\Ktwo
             test: one two
             result: match
             options: ''
             substitution: ''
-            description: 'one\Ktwo — [meta: concatenation] matches the exact sequence ''one\Ktwo''.'
+            description: one\Ktwo — Matches 'two' after discarding 'one'.
           6:
             pattern: aaa\Kbbb
             test: aaabbb
             result: match
             options: ''
             substitution: ''
-            description: 'aaa\Kbbb — [meta: concatenation] matches the exact sequence ''aaa\Kbbb''.'
+            description: aaa\Kbbb — Matches 'bbb' after discarding 'aaa'.
           7:
             pattern: 1\K2
             test: '12'
             result: match
             options: ''
             substitution: ''
-            description: '1\K2 — [meta: concatenation] matches the exact sequence ''1\K2''.'
+            description: 1\K2 — Matches '2' after discarding '1'.
           8:
             pattern: abc\Kxyz
             test: abcxyz
             result: match
             options: ''
             substitution: ''
-            description: 'abc\Kxyz — [meta: concatenation] matches the exact sequence ''abc\Kxyz''.'
+            description: abc\Kxyz — Matches 'xyz' after discarding 'abc'.
           9:
             pattern: quick\Kbrown
             test: quickbrown
             result: match
             options: ''
             substitution: ''
-            description: 'quick\Kbrown — [meta: concatenation] matches the exact sequence ''quick\Kbrown''.'
+            description: quick\Kbrown — Matches 'brown' after discarding 'quick'.
       literals:
         short: Literals
-        description: 'Literals: Match specific literal characters including Unicode characters.'
+        description: Match strings literally, including Unicode.
         examples:
           0:
             pattern: Ruby
@@ -1439,133 +1371,126 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: 'Ruby — [meta: concatenation] matches the exact sequence ''R'' then ''u'' then ''b'' then ''y''.'
+            description: Ruby — Matches 'Ruby' literally.
           1:
             pattern: apple
             test: apple pie
             result: match
             options: ''
             substitution: ''
-            description: 'apple — [meta: concatenation] matches the exact sequence ''a'' then ''p'' then ''p'' then ''l'' then ''e''.'
+            description: apple — Matches 'apple' literally.
           2:
             pattern: dog
             test: doghouse
             result: match
             options: ''
             substitution: ''
-            description: 'dog — [meta: concatenation] matches the exact sequence ''d'' then ''o'' then ''g''.'
+            description: dog — Matches 'dog' literally.
           3:
-            pattern: '123'
-            test: '1234'
+            pattern: 123
+            test: 1234
             result: match
             options: ''
             substitution: ''
-            description: '123 — [meta: concatenation] matches the exact sequence ''1'' then ''2'' then ''3''.'
+            description: 123 — Matches '123' literally.
           4:
             pattern: abc
             test: abcdef
             result: match
             options: ''
             substitution: ''
-            description: 'abc — [meta: concatenation] matches the exact sequence ''a'' then ''b'' then ''c''.'
+            description: abc — Matches 'abc' literally.
           5:
-            pattern: "\U0001F603"
-            test: "I am happy \U0001F603"
+            pattern: \U0001F603
+            test: I am happy \U0001F603
             result: match
             options: ''
             substitution: ''
-            description: "\U0001F603 — [meta: concatenation] matches the exact sequence '\U0001F603'."
+            description: Matches Unicode emoji U+1F603.
           6:
             pattern: ルビー
             test: 私はルビーが好きです
             result: match
             options: ''
             substitution: ''
-            description: 'ルビー — [meta: concatenation] matches the exact sequence ''ルビー''.'
+            description: ルビー — Matches Japanese literal 'ルビー'.
           7:
             pattern: روبي
             test: اسمي روبي
             result: match
             options: ''
             substitution: ''
-            description: 'روبي — [meta: concatenation] matches the exact sequence ''روبي''.'
+            description: روبي — Matches Arabic literal 'روبي'.
           8:
-            pattern: apple
-            test: applepie
-            result: no-match
-            options: ''
-            substitution: ''
-            description: 'apple — [meta: concatenation] matches the exact sequence ''a'' then ''p'' then ''p'' then ''l'' then ''e''.'
-          9:
             pattern: dog
             test: god
             result: no-match
             options: ''
             substitution: ''
-            description: 'dog — [meta: concatenation] matches the exact sequence ''d'' then ''o'' then ''g''.'
-          10:
+            description: dog — Does not match when order differs.
+          9:
             pattern: "\U0001F30D"
             test: "world \U0001F30D"
             result: match
             options: ''
             substitution: ''
-            description: "\U0001F30D — [meta: concatenation] matches the exact sequence '\U0001F30D'."
+            description: Matches Unicode emoji U+1F30D.
       posix-classes:
         short: POSIX Classes
-        description: 'POSIX Classes: Match POSIX character classes like [:alpha:], [:digit:], etc. Can also use negation (e.g., [:^alpha:]) to match non-characters.'
+        description: POSIX character classes and their negations.
         examples:
           0:
-            pattern: "[[:alpha:]]+"
+            pattern: "[[:alpha:]]"
             test: abc123XYZ
             result: match
             options: ''
             substitution: ''
-            description: "[[:alpha:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:alpha:]] — Matches letters."
           1:
-            pattern: "[[:^alpha:]]+"
+            pattern: "[[:^alpha:]]"
             test: abc123XYZ
             result: match
             options: ''
             substitution: ''
-            description: "[[:^alpha:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m}), ^] matches at the start of the string."
+            description: "[[:^alpha:]] — Matches non-letters."
           2:
-            pattern: "[[:digit:]]+"
+            pattern: "[[:digit:]]"
             test: abc123.45def
             result: match
             options: ''
             substitution: ''
-            description: "[[:digit:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:digit:]] — Matches digits."
           3:
-            pattern: "[[:punct:]]+"
+            pattern: "[[:punct:]]"
             test: hello!?
             result: match
             options: ''
             substitution: ''
-            description: "[[:punct:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:punct:]] — Matches punctuation."
           4:
             pattern: "[[:space:]]+"
             test: "a b\tc\n"
             result: match
             options: ''
             substitution: ''
-            description: "[[:space:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:space:]] — Matches whitespace characters."
           5:
             pattern: "[[:lower:]]+"
             test: AbC
             result: match
             options: ''
             substitution: ''
-            description: "[[:lower:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:lower:]] — Matches lowercase letters."
           6:
             pattern: "[[:upper:]]+"
             test: AbC
             result: match
             options: ''
             substitution: ''
-            description: "[[:upper:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:upper:]] — Matches uppercase letters."
       quantifiers-greedy:
-        short: Quantifiers Greedy
-        description: 'Greedy quantifiers: Match as many times as possible.'
+        short: Greedy Quantifiers
+        description: Matches as much as possible
         examples:
           0:
             pattern: a*
@@ -1573,73 +1498,73 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: 'a* — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a* — Matches 0 or more 'a's.
           1:
             pattern: a*
             test: aaaabc123!
             result: match
             options: ''
             substitution: ''
-            description: 'a* — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a* — Matches 0 or more 'a's.
           2:
             pattern: a+
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: 'a+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a+ — Matches 1 or more 'a's.
           3:
             pattern: a{2}
-            test: abc123!
+            test: aaaabc123!
             result: no-match
             options: ''
             substitution: ''
-            description: 'a{2} — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a{2} — Matches exactly 2 'a's.
           4:
             pattern: "(abc)*"
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc)* — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc)* — Matches 0 or more 'abc's.
           5:
             pattern: "(abc)+"
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc)+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc)+ — Matches 1 or more 'abc's.
           6:
             pattern: "(abc)?"
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc)? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc)? — Matches 0 or 1 'abc'.
           7:
             pattern: "(abc){2}"
             test: abcabc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc){2} — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc){2} — Matches 2 'abc's.
           8:
             pattern: "(abc){2,3}"
             test: abcabc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc){2,3} — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc){2,3} — Matches 2–3 'abc's.
           9:
             pattern: "(abc){2,3}"
             test: abcabcabc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc){2,3} — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc){2,3} — Matches 2–3 'abc's.
       quantifiers-reluctant-lazy:
-        short: Quantifiers Reluctant (Lazy)
-        description: 'Reluctant (Lazy) quantifiers: Match as few times as possible.                      Note: Railroad diagrams are rendered using the `regexp_parser` library.                      Ruby''s regular expression engine (Onigmo) supports lazy quantifiers like `??`, `*?`, `+?`, `{n,m}?`, `{n,}?`, `{,n}?` as specified,                      but some specific forms like `{n}?` are not supported and generally unnecessary because lazy behavior with exact counts is redundant.'
+        short: Reluctant (Lazy) Quantifiers
+        description: Matches as little as possible; some visuals unsupported
         examples:
           0:
             pattern: a*?
@@ -1647,73 +1572,66 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: 'a*? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a*? — Matches 0 or more 'a's (lazy).
           1:
             pattern: a*?
             test: aaaabc123!
             result: match
             options: ''
             substitution: ''
-            description: 'a*? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a*? — Matches 0 or more 'a's (lazy).
           2:
             pattern: a+?
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: 'a+? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a+? — Matches 1 or more 'a's (lazy).
           3:
             pattern: a{2}?
-            test: abc123!
+            test: aaaabc123!
             result: no-match
             options: ''
             substitution: ''
-            description: 'a{2}? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a{2}? — Matches 2 'a's (visual unsupported).
           4:
             pattern: "(abc)*?"
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc)*? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc)*? — Matches 0 or more 'abc's (lazy).
           5:
             pattern: "(abc)+?"
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc)+? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc)+? — Matches 1 or more 'abc's (lazy).
           6:
             pattern: "(abc)?"
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc)? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc)? — Matches 0 or 1 'abc'.
           7:
             pattern: "(abc){2}?"
             test: abcabc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc){2}? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc){2}? — Matches 2 'abc's (visual unsupported).
           8:
-            pattern: "(abc){2,3}?"
-            test: abcabc123!
-            result: match
-            options: ''
-            substitution: ''
-            description: "(abc){2,3}? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
-          9:
             pattern: "(abc){2,3}?"
             test: abcabcabc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc){2,3}? — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc){2,3}? — Matches 2–3 'abc's (visual unsupported).
       quantifiers-possessive:
-        short: Quantifiers Possessive
-        description: 'Possessive quantifiers: Match as many times as possible without backtracking.                      Note: Railroad diagrams are rendered using the `regexp_parser` library.                      Possessive quantifiers using range syntax like `{n,m}+`, `{n,}+`, and `{n}+` are not supported by Ruby''s regular expression engine (Onigmo) by default.                      These are only supported in Onigmo when using specific syntaxes such as `ONIG_SYNTAX_JAVA` or `ONIG_SYNTAX_PERL`.'
+        short: Possessive Quantifiers
+        description: Matches without backtracking
         examples:
           0:
             pattern: a*+
@@ -1721,641 +1639,641 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: 'a*+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a*+ — Matches 0 or more 'a's.
           1:
             pattern: a*+
             test: aaaabc123!
             result: match
             options: ''
             substitution: ''
-            description: 'a*+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a*+ — Matches 0 or more 'a's.
           2:
             pattern: a++
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: 'a++ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern.'
+            description: a++ — Matches 1 or more 'a's.
           3:
             pattern: "(abc)*+"
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc)*+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc)*+ — Matches 0 or more 'abc's.
           4:
             pattern: "(abc)++"
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc)++ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc)++ — Matches 1 or more 'abc's.
           5:
             pattern: "(abc)?+"
             test: abc123!
             result: match
             options: ''
             substitution: ''
-            description: "(abc)?+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: (abc)?+ — Matches 0 or 1 'abc'.
       string-escapes:
         short: String Escapes
-        description: 'String Escapes: Match special characters using escape sequences like d, w,  , etc.'
+        description: Uses escapes like \d or \w for special chars
         examples:
           0:
-            pattern: "\\d"
+            pattern: \d
             test: 123abc
             result: match
             options: ''
             substitution: ''
-            description: "\\d — [meta: \\d (digit)] matches pattern '\\d'."
+            description: \d — Matches a digit.
           1:
-            pattern: "\\d"
+            pattern: \d
             test: abc123
             result: no-match
             options: ''
             substitution: ''
-            description: "\\d — [meta: \\d (digit)] matches pattern '\\d'."
+            description: \d — No match if string does not start with digit.
           2:
-            pattern: "\\w"
+            pattern: \w
             test: abc123
             result: match
             options: ''
             substitution: ''
-            description: "\\w — [meta: \\w (word char)] matches pattern '\\w'."
+            description: \w — Matches a word character.
           3:
-            pattern: "\\w"
+            pattern: \w
             test: 123!@#
             result: match
             options: ''
             substitution: ''
-            description: "\\w — [meta: \\w (word char)] matches pattern '\\w'."
+            description: \w — Matches letter or digit.
           4:
-            pattern: "\\W"
+            pattern: \W
             test: "!@#"
             result: match
             options: ''
             substitution: ''
-            description: "\\W — [meta: concatenation] matches the exact sequence '\\W'."
+            description: \W — Matches a non-word character.
           5:
-            pattern: "\\s"
+            pattern: \s
             test: abc def
             result: match
             options: ''
             substitution: ''
-            description: "\\s — [meta: \\s (whitespace)] matches pattern '\\s'."
+            description: \s — Matches a whitespace character.
           6:
-            pattern: "\\S"
+            pattern: \S
             test: abc def
             result: match
             options: ''
             substitution: ''
-            description: "\\S — [meta: concatenation] matches the exact sequence '\\S'."
+            description: \S — Matches a non-whitespace character.
           7:
-            pattern: "\\b"
+            pattern: \b
             test: hello world
             result: match
             options: ''
             substitution: ''
-            description: "\\b — [meta: concatenation] matches the exact sequence '\\b'."
+            description: \b — Matches a word boundary.
           8:
-            pattern: "\\B"
+            pattern: \B
             test: abc123
             result: match
             options: ''
             substitution: ''
-            description: "\\B — [meta: concatenation] matches the exact sequence '\\B'."
+            description: \B — Matches a non-word boundary.
           9:
-            pattern: "\\x20"
+            pattern: \x20
             test: abc 123
             result: match
             options: ''
             substitution: ''
-            description: "\\x20 — [meta: concatenation] matches the exact sequence '\\x20'."
+            description: \x20 — Matches a space character (hex 20).
           10:
-            pattern: "\\u{1F60D}"
+            pattern: \u{1F60D}
             test: "I love emojis \U0001F60D"
             result: match
             options: ''
             substitution: ''
-            description: "\\u{1F60D} — [meta: concatenation] matches the exact sequence '\\u{1F60D}'."
+            description: \u{1F60D} — Matches emoji using Unicode escape.
       unicode-age:
         short: Unicode Age
-        description: Match characters by Unicode version (Age). Supports \p{Age}, \P{Age}, and caret negation.
+        description: Matches characters by Unicode version
         examples:
           0:
-            pattern: "\\p{Age=5.2}+"
+            pattern: \p{Age=5.2}
             test: "\U0001F929☆あ"
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Age=5.2}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Age=5.2} — Matches Age 5.2 characters.
           1:
-            pattern: "\\P{Age=6.1}+"
+            pattern: \P{Age=6.1}
             test: "Aあ\U0001F914"
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Age=6.1}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Age=6.1} — Matches characters not in Age 6.1.
           2:
-            pattern: "\\p{Age=3.0}+"
+            pattern: \p{Age=3.0}
             test: "¡¿D"
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Age=3.0}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Age=3.0} — Matches Age 3.0 characters.
           3:
-            pattern: "\\P{Age=5.2}+"
+            pattern: \P{Age=5.2}
             test: "ABC\U0001F929"
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Age=5.2}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Age=5.2} — Matches characters not in Age 5.2.
           4:
-            pattern: "\\p{Age=7.0}+"
+            pattern: \p{Age=7.0}
             test: "\U0001D11EC"
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Age=7.0}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Age=7.0} — Matches Age 7.0 characters.
           5:
-            pattern: "\\P{Age=8.0}+"
+            pattern: \P{Age=8.0}
             test: "abc\U0001F9ED"
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Age=8.0}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Age=8.0} — Matches characters not in Age 8.0.
       unicode-blocks:
         short: Unicode Blocks
-        description: Match by Unicode block. Use \p{In…}, \P{In…}, or caret negation.
+        description: Matches characters by Unicode block
         examples:
           0:
-            pattern: "\\p{InKatakana}+"
+            pattern: \p{InKatakana}
             test: カタカナあA
             result: match
             options: ''
             substitution: ''
-            description: "\\p{InKatakana}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{InKatakana} — Matches Katakana characters.
           1:
-            pattern: "\\p{InArmenian}+"
+            pattern: \p{InArmenian}
             test: ԱԲԳՖabc
             result: match
             options: ''
             substitution: ''
-            description: "\\p{InArmenian}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{InArmenian} — Matches Armenian characters.
           2:
-            pattern: "\\P{InThai}+"
+            pattern: \P{InThai}
             test: Helloกส
             result: match
             options: ''
             substitution: ''
-            description: "\\P{InThai}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{InThai} — Matches characters outside Thai.
           3:
-            pattern: "\\p{^InKhmer}+"
+            pattern: \p{^InKhmer}
             test: xyzខ
             result: match
             options: ''
             substitution: ''
-            description: "\\p{^InKhmer}+ — [meta: quantifier (*, +, ?, {n,m}), ^] matches at the start of the string."
+            description: \p{^InKhmer} — Matches characters not in Khmer.
           4:
-            pattern: "\\p{InCyrillic}+"
+            pattern: \p{InCyrillic}
             test: ПриветX
             result: match
             options: ''
             substitution: ''
-            description: "\\p{InCyrillic}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{InCyrillic} — Matches Cyrillic characters.
           5:
-            pattern: "\\P{InHebrew}+"
+            pattern: \P{InHebrew}
             test: ABCשלום
             result: match
             options: ''
             substitution: ''
-            description: "\\P{InHebrew}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{InHebrew} — Matches characters not in Hebrew.
       unicode-classes:
         short: Unicode Classes
-        description: Binary and negated properties like Alpha, Space, Alnum.
+        description: Matches properties like Alpha, Space, Alnum, etc.
         examples:
           0:
-            pattern: "\\p{Alpha}+"
+            pattern: \p{Alpha}
             test: Hi1!
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Alpha}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Alpha} — Matches alphabetic characters.
           1:
-            pattern: "\\P{Space}+"
+            pattern: \P{Space}
             test: Az BC
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Space}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Space} — Matches non-space characters.
           2:
-            pattern: "\\p{^Alnum}+"
+            pattern: \p{^Alnum}
             test: abc-123?
             result: match
             options: ''
             substitution: ''
-            description: "\\p{^Alnum}+ — [meta: quantifier (*, +, ?, {n,m}), ^] matches at the start of the string."
+            description: \p{^Alnum} — Matches non-alphanumeric characters.
           3:
-            pattern: "\\p{Digit}+"
+            pattern: \p{Digit}
             test: 123a
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Digit}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Digit} — Matches digits.
           4:
-            pattern: "\\P{Alpha}+"
+            pattern: \P{Alpha}
             test: 123A
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Alpha}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Alpha} — Matches non-alphabetic characters.
           5:
-            pattern: "\\p{Space}+"
+            pattern: \p{Space}
             test: a b
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Space}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Space} — Matches spaces.
       unicode-derived:
-        short: Unicode Derived
-        description: Derived properties such as Math, Lowercase, Cased.
+        short: Unicode Derived Properties
+        description: Matches derived properties like Lowercase, etc.
         examples:
           0:
-            pattern: "\\p{Math}+"
+            pattern: \p{Math}
             test: "+×= x"
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Math}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Math} — Matches mathematical symbols.
           1:
-            pattern: "\\P{Lowercase}+"
+            pattern: \P{Lowercase}
             test: ABCdef
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Lowercase}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Lowercase} — Matches non-lowercase letters.
           2:
-            pattern: "\\p{^Cased}+"
+            pattern: \p{^Cased}
             test: 123_a
             result: match
             options: ''
             substitution: ''
-            description: "\\p{^Cased}+ — [meta: quantifier (*, +, ?, {n,m}), ^] matches at the start of the string."
+            description: \p{^Cased} — Matches uncased characters.
           3:
-            pattern: "\\p{Lowercase}+"
+            pattern: \p{Lowercase}
             test: abcD
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Lowercase}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Lowercase} — Matches lowercase letters.
           4:
-            pattern: "\\P{Math}+"
+            pattern: \P{Math}
             test: abc+=
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Math}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Math} — Matches non-math characters.
           5:
-            pattern: "\\p{Alphabetic}+"
+            pattern: \p{Alphabetic}
             test: ab1
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Alphabetic}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Alphabetic} — Matches alphabetic letters.
       unicode-general-categories:
         short: Unicode General Categories
-        description: Categories like Lu, Cs, and negated script (sc).
+        description: Handles Unicode general categories like Lu and their negations.
         examples:
           0:
-            pattern: "\\p{LU}+"
+            pattern: \p{LU}
             test: ABCd
             result: match
             options: ''
             substitution: ''
-            description: "\\p{LU}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{LU} — Matches uppercase letters (Lu).
           1:
-            pattern: "\\p{lu}+"
+            pattern: \p{lu}
             test: ABCd
             result: match
             options: ''
             substitution: ''
-            description: "\\p{lu}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{lu} — Matches uppercase letters (abbreviated).
           2:
-            pattern: "\\p{Uppercase Letter}+"
+            pattern: \p{Uppercase Letter}
             test: ABCd
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Uppercase Letter}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Uppercase Letter} — Matches uppercase letters.
           3:
-            pattern: "\\p{Uppercase_Letter}+"
+            pattern: \p{Uppercase_Letter}
             test: ABCd
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Uppercase_Letter}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Uppercase_Letter} — Matches uppercase letters with _.
           4:
-            pattern: "\\p{UPPERCASE-LETTER}+"
+            pattern: \p{UPPERCASE-LETTER}
             test: ABCd
             result: match
             options: ''
             substitution: ''
-            description: "\\p{UPPERCASE-LETTER}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{UPPERCASE-LETTER} — Matches uppercase letters with -.
           5:
-            pattern: "\\P{Lu}+"
+            pattern: \P{Lu}
             test: ABCd
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Lu}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Lu} — Matches non-uppercase letters.
           6:
-            pattern: "\\p{^sc}+"
+            pattern: \p{^sc}
             test: 123Λ
             result: match
             options: ''
             substitution: ''
-            description: "\\p{^sc}+ — [meta: quantifier (*, +, ?, {n,m}), ^] matches at the start of the string."
+            description: \p{^sc} — Matches characters without a script.
           7:
-            pattern: "\\p{Cc}+"
+            pattern: \p{Cc}
             test: "\x01A"
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Cc}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Cc} — Matches control characters.
           8:
-            pattern: "\\p{Cf}+"
+            pattern: \p{Cf}
             test: "‍A"
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Cf}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Cf} — Matches format characters.
       unicode-scripts:
         short: Unicode Scripts
-        description: Script property match, with negation.
+        description: Matches characters by Unicode script property, including negations.
         examples:
           0:
-            pattern: "\\p{Arabic}+"
+            pattern: \p{Arabic}
             test: سلامHello
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Arabic}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Arabic} — Matches Arabic script characters.
           1:
-            pattern: "\\P{Hiragana}+"
+            pattern: \P{Hiragana}
             test: ABCあいう
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Hiragana}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Hiragana} — Matches non-Hiragana characters.
           2:
-            pattern: "\\p{^Greek}+"
+            pattern: \p{^Greek}
             test: ABCΩΔ
             result: match
             options: ''
             substitution: ''
-            description: "\\p{^Greek}+ — [meta: quantifier (*, +, ?, {n,m}), ^] matches at the start of the string."
+            description: \p{^Greek} — Matches non-Greek characters.
           3:
-            pattern: "\\p{Katakana}+"
+            pattern: \p{Katakana}
             test: カタカナB
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Katakana}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Katakana} — Matches Katakana characters.
           4:
-            pattern: "\\p{Cyrillic}+"
+            pattern: \p{Cyrillic}
             test: ПриветX
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Cyrillic}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Cyrillic} — Matches Cyrillic script characters.
           5:
-            pattern: "\\P{Devanagari}+"
+            pattern: \P{Devanagari}
             test: Helloनमस्ते
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Devanagari}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Devanagari} — Matches non-Devanagari characters.
       unicode-simple-props:
-        short: Unicode Simple Props
-        description: Simple binary properties like Dash, Extender, and negation.
+        short: Unicode Simple Properties
+        description: Examples of simple binary properties like Dash and their negation.
         examples:
           0:
-            pattern: "\\p{Dash}+"
-            test: "–‑—A"
+            pattern: \p{Dash}
+            test: –‑—A
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Dash}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Dash} — Matches dash characters.
           1:
-            pattern: "\\p{Extender}+"
+            pattern: \p{Extender}
             test: ːX
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Extender}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Extender} — Matches extender characters.
           2:
-            pattern: "\\p{^Hyphen}+"
+            pattern: \p{^Hyphen}
             test: word-word
             result: match
             options: ''
             substitution: ''
-            description: "\\p{^Hyphen}+ — [meta: quantifier (*, +, ?, {n,m}), ^] matches at the start of the string."
+            description: \p{^Hyphen} — Matches non-hyphen characters.
           3:
-            pattern: "\\P{Dash}+"
+            pattern: \P{Dash}
             test: ABC–
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Dash}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Dash} — Matches non-dash characters.
           4:
-            pattern: "\\p{Hyphen}+"
-            test: "-B"
+            pattern: \p{Hyphen}
+            test: -B
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Hyphen}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Hyphen} — Matches hyphens.
           5:
-            pattern: "\\p{Emoji}+"
+            pattern: \p{Emoji}
             test: "\U0001F468‍\U0001F469‍\U0001F467‍\U0001F466abc"
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Emoji}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Emoji} — Matches emoji sequences.
       posix-classes-vs-unicode-properties:
         short: POSIX vs Unicode
-        description: Compare POSIX character classes and Unicode property constructs with clear match boundaries.
+        description: Compares POSIX and Unicode property syntax.
         examples:
           0:
-            pattern: "[[:alpha:]]+"
+            pattern: "[[:alpha:]]"
             test: abc123XYZ
             result: match
             options: ''
             substitution: ''
-            description: "[[:alpha:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:alpha:]] — Matches letters in POSIX."
           1:
-            pattern: "\\p{Alpha}+"
+            pattern: \p{Alpha}
             test: abc123XYZ
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Alpha}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Alpha} — Matches letters in Unicode.
           2:
-            pattern: "[[:^alpha:]]+"
+            pattern: "[[:^alpha:]]"
             test: abc123XYZ
             result: match
             options: ''
             substitution: ''
-            description: "[[:^alpha:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m}), ^] matches at the start of the string."
+            description: "[[:^alpha:]] — Matches non-letter characters."
           3:
-            pattern: "\\P{Alpha}+"
+            pattern: \P{Alpha}
             test: abc123XYZ
             result: match
             options: ''
             substitution: ''
-            description: "\\P{Alpha}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \P{Alpha} — Matches non-letter characters.
           4:
-            pattern: "[[:digit:]]+"
+            pattern: "[[:digit:]]"
             test: abc123.45def
             result: match
             options: ''
             substitution: ''
-            description: "[[:digit:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:digit:]] — Matches digits."
           5:
-            pattern: "\\p{Digit}+"
+            pattern: \p{Digit}
             test: abc123.45def
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Digit}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Digit} — Matches digits.
           6:
-            pattern: "[[:punct:]]+"
+            pattern: "[[:punct:]]"
             test: hello!?
             result: match
             options: ''
             substitution: ''
-            description: "[[:punct:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:punct:]] — Matches punctuation."
           7:
-            pattern: "\\p{Punct}+"
+            pattern: \p{Punct}
             test: hello!?
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Punct}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Punct} — Matches punctuation.
           8:
-            pattern: "[[:space:]]+"
-            test: "a b\tc\n"
+            pattern: "[[:space:]]"
+            test: a b\tc\n
             result: match
             options: ''
             substitution: ''
-            description: "[[:space:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:space:]] — Matches whitespace."
           9:
-            pattern: "\\p{Space}+"
-            test: "a b\tc\n"
+            pattern: \p{Space}
+            test: a b\tc\n
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Space}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Space} — Matches whitespace.
           10:
-            pattern: "[[:lower:]]+"
+            pattern: "[[:lower:]]"
             test: AbC
             result: match
             options: ''
             substitution: ''
-            description: "[[:lower:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:lower:]] — Matches lowercase letters."
           11:
-            pattern: "\\p{Lower}+"
+            pattern: \p{Lower}
             test: AbC
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Lower}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Lower} — Matches lowercase letters.
           12:
-            pattern: "[[:upper:]]+"
+            pattern: "[[:upper:]]"
             test: AbC
             result: match
             options: ''
             substitution: ''
-            description: "[[:upper:]]+ — [meta: POSIX [:...:], quantifier (*, +, ?, {n,m})] matches any single character from the character class."
+            description: "[[:upper:]] — Matches uppercase letters."
           13:
-            pattern: "\\p{Upper}+"
+            pattern: \p{Upper}
             test: AbC
             result: match
             options: ''
             substitution: ''
-            description: "\\p{Upper}+ — [meta: quantifier (*, +, ?, {n,m})] matches occurrences according to the quantifier in the pattern."
+            description: \p{Upper} — Matches uppercase letters.
     reference:
-      click_to_copy: "Click to copy"
+      click_to_copy: Click to copy
       quick_reference: Regex Quick Reference
       sections:
         character-classes-anchors:
-          title: "Character Classes & Anchors"
+          title: Character Classes & Anchors
           patterns:
             0: "[abc]"
             1: "[^abc]"
             2: "[a-z]"
             3: "[a-zA-Z]"
-            4: "^"
-            5: "$"
-            6: "\\A"
-            7: "\\z"
+            4: ^
+            5: $
+            6: \A
+            7: \z
           items:
             0: "A single character of: a, b, or c"
             1: "Any single character except: a, b, or c"
-            2: "Any single character in the range a-z"
-            3: "Any single character in the range a-z or A-Z"
-            4: "Start of line"
-            5: "End of line"
-            6: "Start of string"
-            7: "End of string"
+            2: Any single character in the range a-z
+            3: Any single character in the range a-z or A-Z
+            4: Start of line
+            5: End of line
+            6: Start of string
+            7: End of string
         common-patterns:
-          title: "Common Patterns"
+          title: Common Patterns
           patterns:
-            0: "."
-            1: "\\s"
-            2: "\\S"
-            3: "\\d"
-            4: "\\D"
-            5: "\\w"
-            6: "\\W"
-            7: "\\b"
+            0: .
+            1: \s
+            2: \S
+            3: \d
+            4: \D
+            5: \w
+            6: \W
+            7: \b
           items:
-            0: "Any single character"
-            1: "Any whitespace character"
-            2: "Any non-whitespace character"
-            3: "Any digit"
-            4: "Any non-digit"
-            5: "Any word character (letter, number, underscore)"
-            6: "Any non-word character"
-            7: "Any word boundary"
+            0: Any single character
+            1: Any whitespace character
+            2: Any non-whitespace character
+            3: Any digit
+            4: Any non-digit
+            5: Any word character (letter, number, underscore)
+            6: Any non-word character
+            7: Any word boundary
         groups-quantifiers:
-          title: "Groups & Quantifiers"
+          title: Groups & Quantifiers
           patterns:
-            0: "(...)"
-            1: "(a|b)"
-            2: "a?"
-            3: "a*"
-            4: "a+"
-            5: "a{3}"
-            6: "a{3,}"
-            7: "a{3,6}"
+            0: (...)
+            1: (a|b)
+            2: a?
+            3: a*
+            4: a+
+            5: a{3}
+            6: a{3,}
+            7: a{3,6}
           items:
-            0: "Capture everything enclosed"
-            1: "a or b"
-            2: "Zero or one of a"
-            3: "Zero or more of a"
-            4: "One or more of a"
-            5: "Exactly 3 of a"
-            6: "3 or more of a"
-            7: "Between 3 and 6 of a"
+            0: Capture everything enclosed
+            1: a or b
+            2: Zero or one of a
+            3: Zero or more of a
+            4: One or more of a
+            5: Exactly 3 of a
+            6: 3 or more of a
+            7: Between 3 and 6 of a
       options:
         options_label: "Options:"
-        i: "case insensitive"
-        m: "make dot match newlines"
-        x: "ignore whitespace in regex"
+        i: case insensitive
+        m: make dot match newlines
+        x: ignore whitespace in regex
     footer:
       inspired_by: Inspired by Michael Lovitt’s excellent
-      rubree_uses_ruby: "Rubree uses Ruby %{version}"
-      issues_text: "Issues"
-      issues_handle: "rubree"
-      made_by: "Made by Takashi Shimokawa"
+      rubree_uses_ruby: Rubree uses Ruby %{version}
+      issues_text: Issues
+      issues_handle: rubree
+      made_by: Made by Takashi Shimokawa
       made_by_handle: "@aim2bpg"
