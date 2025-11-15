@@ -10,15 +10,25 @@
         data-test="<%= (ex[:test] || ex["test"]).to_s.gsub('"', "&quot;") %>"
         data-substitution="<%= (ex[:substitution] || ex["substitution"] || "").to_s %>"
         data-options="<%= (ex[:options] || ex["options"] || "").to_s %>">
-        <% desc = (ex[:description].presence || ex[:test]) %>
-        <div class="w-full truncate text-sm text-gray-100 leading-tight">
-          <% if desc =~ /^(.*?)\s*—\s*\[meta:\s*([^\]]+)\]\s*(.*)$/m %>
-            <span class="header-example-pattern font-medium text-gray-100"><%= $1 %></span>
-            <span class="text-xs text-gray-300 ml-2 inline-block truncate"><%= $3 %></span>
-          <% else %>
-            <span class="truncate"><%= desc %></span>
-          <% end %>
-        </div>
+        <% display_pattern = (ex[:pattern] || ex["pattern"]).to_s.presence %>
+        <% desc = (ex[:description].presence || ex[:test]).to_s.presence %>
+          <div class="w-full truncate text-sm text-gray-100 leading-tight">
+            <%# Always show the pattern if present, and show a short description beside/after it when available %>
+            <% if display_pattern %>
+              <span class="header-example-pattern font-medium text-gray-100"><%= display_pattern %></span>
+              <% if desc && !desc.include?(display_pattern) %>
+                <span class="text-xs text-gray-300 ml-2 inline-block truncate"><%= desc %></span>
+              <% end %>
+            <% else %>
+              <%# Fallback: when no pattern is present, render the description as before %>
+              <% if desc =~ /^(.*?)\s*—\s*\[meta:\s*([^\]]+)\]\s*(.*)$/m %>
+                <span class="header-example-pattern font-medium text-gray-100"><%= $1 %></span>
+                <span class="text-xs text-gray-300 ml-2 inline-block truncate"><%= $3 %></span>
+              <% else %>
+                <span class="truncate"><%= desc %></span>
+              <% end %>
+            <% end %>
+          </div>
       </button>
     <% end %>
   </div>
