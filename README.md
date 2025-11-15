@@ -4,7 +4,7 @@
 ![Code to Test Ratio](https://raw.githubusercontent.com/aim2bpg/octocovs/main/badges/aim2bpg/rubree/ratio.svg)
 ![Test Execution Time](https://raw.githubusercontent.com/aim2bpg/octocovs/main/badges/aim2bpg/rubree/time.svg)
 
-# [WIP] Rubree
+# Rubree
 
 A Ruby-based regular expression editor.
 

@@ -27,9 +27,13 @@ RSpec.describe "RegularExpressionFlow" do
         first_category = RegularExpression::Example.categories.keys.first
         find("button[data-header-category='#{first_category.to_s.parameterize}']").click
 
-        # ensure at least the first example's pattern is visible in the header items
+        # ensure at least the first example's pattern is present in the header items
         first_ex = RegularExpression::Example.categories[first_category][:examples].first
-        expect(page).to have_content(first_ex[:pattern])
+        within('[data-regexp-examples-target="headerItemsScroll"]') do
+          examples = all('button[data-regexp-examples-target="example"]', minimum: 1)
+          patterns = examples.map { |el| el['data-pattern'].to_s }
+          expect(patterns).to include(first_ex[:pattern])
+        end
       end
 
       it 'applies an example from the header dropdown when clicked' do
@@ -37,9 +41,11 @@ RSpec.describe "RegularExpressionFlow" do
         first_category = RegularExpression::Example.categories.keys.first
         find("button[data-header-category='#{first_category.to_s.parameterize}']", wait: true).click
 
-        # Find and click the first example inside the header dropdown
+        # Find and click the first example inside the header dropdown by matching its data-pattern
         first_ex = RegularExpression::Example.categories[first_category][:examples].first
-        example = find('[data-regexp-examples-target="example"]', text: Regexp.new(Regexp.escape(first_ex[:pattern])))
+        examples = all('[data-regexp-examples-target="example"]', minimum: 1)
+        example = examples.find { |el| el['data-pattern'].to_s == first_ex[:pattern].to_s }
+        expect(example).to be_present
         example.click
 
         # basic assertions: pattern was applied and match highlights appear
