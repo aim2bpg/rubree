@@ -1,17 +1,17 @@
 coverage:
   paths:
     - coverage/.resultset.json
-  acceptable: current >= 80% && diff >= -1%
+  acceptable: current >= 95% && diff >= -1%
 testExecutionTime:
   steps:
     - Run tests
-  acceptable: current <= 10min && diff <= 5min
+  acceptable: current <= 3min && diff <= 2.5min
 codeToTestRatio:
   code:
     - "app/**/*.rb"
   test:
     - "spec/**/*_spec.rb"
-  acceptable: current >= 1:1 && diff >= -0.1
+  acceptable: current >= 1:1.5 && diff >= -0.1
 comment:
   if: is_pull_request
   hideFooterLink: false
