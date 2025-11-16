@@ -2260,7 +2260,7 @@ ja:
         m: ドット（.）を改行も含めてマッチさせる
         x: 空白とコメントを無視する（拡張モード）
     footer:
-      inspired_by: Michael Lovitt 氏の素晴らしい作品に着想されて作りました
+      inspired_by: Michael Lovitt 氏の素晴らしい作品に触発されて作りました
       rubree_uses_ruby: Rubree は Ruby %{version} を使用しています
       issues_text: 問題報告やフィードバックは GitHub で歓迎します
       issues_handle: rubree
