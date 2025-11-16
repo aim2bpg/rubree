@@ -3,7 +3,7 @@
     <% examples.each do |ex| %>
       <%# Even more compact example row: fixed height h-8, minimal padding to fit more items %>
       <button type="button"
-        class="w-full text-left px-1 h-7 hover:bg-gray-700 focus:outline-none transition-colors flex items-center overflow-hidden"
+        class="w-full text-left px-1 hover:bg-gray-700 focus:outline-none transition-colors flex items-start py-1.5"
         data-regexp-examples-target="example"
         data-action="click->regexp-examples#selectExample"
         data-pattern="<%= (ex[:pattern] || ex["pattern"]).to_s.gsub('"', "&quot;") %>"

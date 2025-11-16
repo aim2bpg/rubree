@@ -38,8 +38,8 @@
         </div>
 
         <!-- examples below (single column scroll). Show ~3 examples and let the rest scroll -->
-        <!-- examples: allow up to 10 rows (h-7 each) before scrolling on md+ -->
-        <div data-regexp-examples-target="headerItemsScroll" class="max-h-28 sm:max-h-44 md:max-h-[19rem] lg:max-h-[21rem] overflow-auto pl-1 pr-3" style="scrollbar-gutter: stable;">
+        <!-- examples: increase mobile height ~1.5x so wrapped lines have room; keep md+/lg unchanged -->
+        <div data-regexp-examples-target="headerItemsScroll" class="max-h-[10rem] sm:max-h-[11rem] md:max-h-[12.5rem] lg:max-h-[28rem] overflow-auto pl-1 pr-3" style="scrollbar-gutter: stable;">
           <div class="sticky top-0 z-20 bg-slate-900/90 px-3 py-2">
             <div class="dropdown-section-label text-sm font-semibold text-gray-300"><%= t("regular_expressions.header.examples_label", default: "Examples") %></div>
           </div>

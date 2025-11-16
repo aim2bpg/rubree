@@ -1,7 +1,7 @@
 ja:
   application:
-    title: Rubree — Rubular に触発された Ruby 用の正規表現エディタ
-    description: Rubree は Rubular に触発された Ruby 用の正規表現エディタです。直感的な操作で正規表現を素早く試し、視覚的に確認できます。
+    title: Rubree — Ruby 用の正規表現エディタ
+    description: Rubree は Ruby 用の正規表現エディタです。直感的な操作で正規表現を素早く試し、視覚的に確認できます。
     site_name: Rubree
   regular_expressions:
     header:
@@ -1179,15 +1179,38 @@ ja:
             substitution: ''
             description: (?i)abc — 大文字小文字を区別せずに 'abc' にマッチする。
           1:
-            pattern: (?m)^abc
-            test: |-
-              abc
-              abc
+            pattern: (?i)hello(?-i)world
+            test: HELLOworld
             result: match
             options: ''
             substitution: ''
-            description: (?m)^abc — マルチラインで各行の先頭にマッチする。
+            description: (?i)hello(?-i)world — 部分的にオプションを切替えてマッチする。
           2:
+            pattern: (?i)(abc)(?-i)def
+            test: ABCdef
+            result: match
+            options: ''
+            substitution: ''
+            description: (?i)(abc)(?-i)def — 部分的にオプションを切替えてマッチする。
+          3:
+            pattern: (?m)a.*c
+            test: |-
+              a
+              c
+            result: match
+            options: m
+            substitution: ''
+            description: (?m)a.*c — m有効で '.' が改行にもマッチし一致する
+          4:
+            pattern: a.*c
+            test: |-
+              a
+              c
+            result: no-match
+            options: ''
+            substitution: ''
+            description: a.*c — m無しでは '.' が改行にマッチせず不一致
+          5:
             pattern: |-
               (?x) a # space is ignored
               b
@@ -1196,38 +1219,6 @@ ja:
             options: ''
             substitution: ''
             description: (?x) a b — 空白とコメントを無視して 'ab' にマッチする。
-          3:
-            pattern: (?i)hello(?-i)world
-            test: HELLOworld
-            result: match
-            options: ''
-            substitution: ''
-            description: (?i)hello(?-i)world — 部分的にオプションを切替えてマッチする。
-          4:
-            pattern: (?i)(abc)(?-i)def
-            test: ABCdef
-            result: match
-            options: ''
-            substitution: ''
-            description: (?i)(abc)(?-i)def — 部分的にオプションを切替えてマッチする。
-          5:
-            pattern: (?m)\bstart\b
-            test: |-
-              start
-              start
-            result: match
-            options: ''
-            substitution: ''
-            description: (?m)\bstart\b — 各行で単語境界の 'start' にマッチする。
-          6:
-            pattern: |-
-              (?x) a # space is ignored
-              c
-            test: ac
-            result: match
-            options: ''
-            substitution: ''
-            description: (?x) a c — コメントと空白を無視して 'ac' にマッチする。
       group-passive:
         short: パッシブグループ Passive Groups
         description: キャプチャを作らないグループ。
@@ -2201,7 +2192,7 @@ ja:
             description: \p{Upper} — 大文字にマッチする。
     reference:
       click_to_copy: クリックしてコピー
-      quick_reference: クイックリファレンス
+      quick_reference: 正規表現クイックリファレンス
       sections:
         character-classes-anchors:
           title: 文字クラスとアンカー
@@ -2215,16 +2206,16 @@ ja:
             6: \A
             7: \z
           items:
-            0: 単一の文字（a、b、または c）
-            1: 指定した文字以外の単一文字
-            2: a-z の範囲の単一文字
-            3: a-z または A-Z の単一文字
+            0: a、b、または c のいずれか 1 文字
+            1: a、b、c を除く任意の 1 文字
+            2: a〜z の範囲の任意の 1 文字
+            3: a〜z または A〜Z の任意の 1 文字
             4: 行の先頭
             5: 行の末尾
             6: 文字列の先頭
             7: 文字列の末尾
         common-patterns:
-          title: よく使うパターン
+          title: よく使われるパターン
           patterns:
             0: .
             1: \s
@@ -2235,14 +2226,14 @@ ja:
             6: \W
             7: \b
           items:
-            0: 任意の一文字
-            1: 空白文字
-            2: 空白以外の文字
-            3: 数字
-            4: 数字以外
-            5: 単語文字（英数字またはアンダースコア）
+            0: 任意の 1 文字
+            1: 任意の空白文字
+            2: 任意の非空白文字
+            3: 任意の数字
+            4: 任意の非数字
+            5: 単語文字（英字・数字・アンダースコア）
             6: 単語文字以外
-            7: 単語境界
+            7: 単語の境界
         groups-quantifiers:
           title: グループと量指定子
           patterns:
@@ -2255,23 +2246,23 @@ ja:
             6: a{3,}
             7: a{3,6}
           items:
-            0: キャプチャグループの使い方
-            1: 非キャプチャグループ (?:...)
-            2: 名前付きグループとその利点
-            3: 以前のキャプチャへのバックリファレンス
-            4: 貪欲・遅延（レイジー）・所有的量指定子の違い
-            5: インラインオプションと局所的なモディファイア
-            6: 3 個以上の 'a' にマッチする例
-            7: 3 から 6 個の 'a' にマッチする例
+            0: 括弧で囲まれた部分をキャプチャする
+            1: a または b
+            2: a が 0 回または 1 回（?）
+            3: a が 0 回以上（*）
+            4: a が 1 回以上（+）
+            5: a が ちょうど 3 個（{3}）
+            6: a が 3 回以上（{3,}）
+            7: a が 3〜6 回（{3,6}）
       options:
         options_label: "オプション:"
         i: 大文字小文字を区別しない
-        m: ドットが改行にもマッチするようにする
-        x: 正規表現の空白とコメントを無視する（拡張モード）
+        m: ドット（.）を改行も含めてマッチさせる
+        x: 空白とコメントを無視する（拡張モード）
     footer:
-      inspired_by: Michael Lovitt 氏の素晴らしい作品に触発されて作られました
+      inspired_by: Michael Lovitt 氏の素晴らしい作品に着想されて作りました
       rubree_uses_ruby: Rubree は Ruby %{version} を使用しています
       issues_text: 問題報告やフィードバックは GitHub で歓迎します
       issues_handle: rubree
-      made_by: "作成者: Takashi Shimokawa"
+      made_by: "作者: Takashi Shimokawa"
       made_by_handle: "@aim2bpg"
