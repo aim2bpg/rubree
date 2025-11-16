@@ -1,9 +1,7 @@
 en:
   application:
     title: Rubree - A Ruby regular expression editor inspired by Rubular
-    description: >-
-      Rubree is a Ruby regular expression editor inspired by Rubular. Quickly test and
-      visualize your regex patterns in an intuitive interface.
+    description: Rubree is a Ruby regular expression editor. Quickly test and visualize your regex patterns in an intuitive interface.
     site_name: Rubree
   regular_expressions:
     header:
@@ -1181,15 +1179,38 @@ en:
             substitution: ''
             description: (?i)abc — Matches 'abc' ignoring case.
           1:
-            pattern: (?m)^abc
-            test: |-
-              abc
-              abc
+            pattern: (?i)hello(?-i)world
+            test: HELLOworld
             result: match
             options: ''
             substitution: ''
-            description: (?m)^abc — Matches line start in multiline mode.
+            description: (?i)hello(?-i)world — Switches case sensitivity mid-pattern.
           2:
+            pattern: (?i)(abc)(?-i)def
+            test: ABCdef
+            result: match
+            options: ''
+            substitution: ''
+            description: (?i)(abc)(?-i)def — Partially modifies case sensitivity.
+          3:
+            pattern: (?m)a.*c
+            test: |-
+              a
+              c
+            result: match
+            options: ''
+            substitution: ''
+            description: (?m)a.*c — '.' matches newline with m (match)
+          4:
+            pattern: a.*c
+            test: |-
+              a
+              c
+            result: no-match
+            options: ''
+            substitution: ''
+            description: a.*c — '.' does not match newline without m (no match)
+          5:
             pattern: |-
               (?x) a # space is ignored
               b
@@ -1198,38 +1219,6 @@ en:
             options: ''
             substitution: ''
             description: (?x) a b — Ignores spaces and comments.
-          3:
-            pattern: (?i)hello(?-i)world
-            test: HELLOworld
-            result: match
-            options: ''
-            substitution: ''
-            description: (?i)hello(?-i)world — Switches case sensitivity mid-pattern.
-          4:
-            pattern: (?i)(abc)(?-i)def
-            test: ABCdef
-            result: match
-            options: ''
-            substitution: ''
-            description: (?i)(abc)(?-i)def — Partially modifies case sensitivity.
-          5:
-            pattern: (?m)\bstart\b
-            test: |-
-              start
-              start
-            result: match
-            options: ''
-            substitution: ''
-            description: (?m)\bstart\b — Matches 'start' at word boundaries per line.
-          6:
-            pattern: |-
-              (?x) a # space is ignored
-              c
-            test: ac
-            result: match
-            options: ''
-            substitution: ''
-            description: (?x) a c — Ignores spaces and comments.
       group-passive:
         short: Passive Groups
         description: Groups that do not create capturing groups.
