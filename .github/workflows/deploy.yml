@@ -87,6 +87,11 @@ jobs:
           yarn install
           yarn build
 
+      - name: Install ImageMagick (for favicon generation)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+
       - name: Prepare static files (sitemap, robots, icons)
         run: |
           chmod +x ./scripts/prepare_static_files.sh
