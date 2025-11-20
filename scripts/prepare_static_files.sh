@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Generate a minimal sitemap using the last git commit that touched site-relevant paths
-# but avoid updating lastmod when the current HEAD commit does not touch site content.
-# Copy robots.txt into pwa/dist when present.
+# Prepare static files for GitHub Pages deployment:
+# - Generate sitemap.xml with lastmod based on git history
+# - Copy robots.txt, icon files from public/ to pwa/dist/
+# Avoids updating lastmod when the current HEAD commit does not touch site content.
 
 mkdir -p ./pwa/dist
 
@@ -75,6 +76,14 @@ EOF
 # Copy robots if present
 if [ -f public/robots.txt ]; then
   cp public/robots.txt ./pwa/dist/robots.txt
+fi
+
+# Copy icon files if present
+if [ -f public/icon.svg ]; then
+  cp public/icon.svg ./pwa/dist/icon.svg
+fi
+if [ -f public/icon.png ]; then
+  cp public/icon.png ./pwa/dist/icon.png
 fi
 
 exit 0
