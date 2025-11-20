@@ -112,4 +112,9 @@ if [ -d public/icons ]; then
   cp public/icons/* ./pwa/dist/icons/ || true
 fi
 
+# Copy web app manifest from pwa/ if present so it is deployed
+if [ -f pwa/manifest.json ]; then
+  cp pwa/manifest.json ./pwa/dist/manifest.json
+fi
+
 exit 0
