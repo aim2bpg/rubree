@@ -78,12 +78,38 @@ if [ -f public/robots.txt ]; then
   cp public/robots.txt ./pwa/dist/robots.txt
 fi
 
-# Copy icon files if present
+# Generate and copy icons
+# If ImageMagick `convert` is available and `public/icon.png` exists, generate multiple sizes.
+if [ -f public/icon.png ]; then
+  mkdir -p public/icons
+  if command -v convert >/dev/null 2>&1; then
+    echo "[prepare_static_files] Generating favicon PNGs from public/icon.png"
+    sizes=(16 32 96 192 512 180)
+    for s in "${sizes[@]}"; do
+      out=public/icons/favicon-${s}x${s}.png
+      convert public/icon.png -resize ${s}x${s} "$out" || true
+    done
+    # Create multi-resolution ICO (best-effort)
+    if [ -f public/icons/favicon-16x16.png ] || [ -f public/icons/favicon-32x32.png ]; then
+      echo "[prepare_static_files] Creating favicon.ico"
+      convert public/icons/favicon-16x16.png public/icons/favicon-32x32.png public/icons/favicon-96x96.png public/icons/favicon.ico || true
+    fi
+  else
+    echo "[prepare_static_files] ImageMagick 'convert' not found; skipping PNG generation"
+  fi
+fi
+
+# Copy any icons from public/ (including icon.svg, icon.png, and generated icons)
 if [ -f public/icon.svg ]; then
   cp public/icon.svg ./pwa/dist/icon.svg
 fi
 if [ -f public/icon.png ]; then
   cp public/icon.png ./pwa/dist/icon.png
+fi
+
+if [ -d public/icons ]; then
+  mkdir -p ./pwa/dist/icons
+  cp public/icons/* ./pwa/dist/icons/ || true
 fi
 
 exit 0
