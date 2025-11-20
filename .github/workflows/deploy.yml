@@ -87,10 +87,10 @@ jobs:
           yarn install
           yarn build
 
-      - name: Generate sitemap and copy robots
+      - name: Prepare static files (sitemap, robots, icons)
         run: |
-          chmod +x ./scripts/generate_sitemap.sh
-          ./scripts/generate_sitemap.sh
+          chmod +x ./scripts/prepare_static_files.sh
+          ./scripts/prepare_static_files.sh
 
       - name: Add .nojekyll to prevent GitHub Pages Jekyll build
         run: echo "" > ./pwa/dist/.nojekyll
