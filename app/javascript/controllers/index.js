@@ -20,6 +20,10 @@ import DragScrollController from "./drag_scroll_controller";
 
 application.register("drag-scroll", DragScrollController);
 
+import PermalinkController from "./permalink_controller";
+
+application.register("permalink", PermalinkController);
+
 import RegexpExamplesController from "./regexp_examples_controller";
 
 application.register("regexp-examples", RegexpExamplesController);
