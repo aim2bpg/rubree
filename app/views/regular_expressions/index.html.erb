@@ -1,9 +1,14 @@
 <div class="max-w-6xl mx-auto px-4">
   <%= render "form" %>
 
-  <%= turbo_frame_tag "regexp" do %>
-    <%= render partial: "result", locals: { regular_expression: @regular_expression } %>
-  <% end %>
+  <div class="relative">
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="loading-spinner"></div>
+    </div>
+    <%= turbo_frame_tag "regexp" do %>
+      <%= render partial: "result", locals: { regular_expression: @regular_expression } %>
+    <% end %>
+  </div>
 
   <%= render "reference" %>
 </div>
