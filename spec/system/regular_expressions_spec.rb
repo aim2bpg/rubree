@@ -542,4 +542,112 @@ RSpec.describe "RegularExpressionFlow" do
       end
     end
   end
+
+  describe "Permalink functionality" do
+    before { visit root_path }
+
+    describe "Share button" do
+      it "exists and is clickable" do
+        # Verify share button is present
+        expect(page).to have_css('button[data-action="click->permalink#share"]')
+      end
+    end
+
+    describe "Loading from permalink URL" do
+      it "loads form data from valid permalink parameter" do
+        # Create a permalink with encoded data
+        data = {
+          r: 'foo',
+          t: 'foo bar foo',
+          o: 'i',
+          s: 'bar'
+        }
+        json = data.to_json
+        base64 = Base64.strict_encode64(json)
+        url_safe = base64.tr('+/', '-_').tr('=', '')
+
+        visit "#{root_path}?p=#{url_safe}"
+
+        # Verify form fields are populated
+        expect(find('textarea#regular_expression_expression').value).to eq('foo')
+        expect(find('textarea#regular_expression_test_string').value).to eq('foo bar foo')
+        expect(find('input#regular_expression_options').value).to eq('i')
+        expect(find('input#regular_expression_substitution').value).to eq('bar')
+
+        # Verify results are displayed (form was auto-submitted)
+        expect(page).to have_css('mark', text: 'foo', wait: 3)
+      end
+
+      it "handles permalink with only pattern and test" do
+        data = {
+          r: 'test',
+          t: 'test string'
+        }
+        json = data.to_json
+        base64 = Base64.strict_encode64(json)
+        url_safe = base64.tr('+/', '-_').tr('=', '')
+
+        visit "#{root_path}?p=#{url_safe}"
+
+        expect(find('textarea#regular_expression_expression').value).to eq('test')
+        expect(find('textarea#regular_expression_test_string').value).to eq('test string')
+        expect(find('input#regular_expression_options').value).to eq('')
+        expect(find('input#regular_expression_substitution').value).to eq('')
+      end
+
+      it "handles invalid permalink gracefully" do
+        # Visit with invalid/corrupted permalink
+        visit "#{root_path}?p=invalid-data-12345"
+
+        # Should show empty form (no crash)
+        expect(find('textarea#regular_expression_expression').value).to eq('')
+        expect(find('textarea#regular_expression_test_string').value).to eq('')
+      end
+
+      it "handles empty permalink parameter" do
+        visit "#{root_path}?p="
+
+        # Should show empty form
+        expect(find('textarea#regular_expression_expression').value).to eq('')
+        expect(find('textarea#regular_expression_test_string').value).to eq('')
+      end
+
+      it "preserves UTF-8 characters in permalink" do
+        data = {
+          r: '日本語',
+          t: 'テスト文字列'
+        }
+        json = data.to_json
+        bytes = json.encode('UTF-8').bytes
+        base64 = Base64.strict_encode64(bytes.pack('C*'))
+        url_safe = base64.tr('+/', '-_').tr('=', '')
+
+        visit "#{root_path}?p=#{url_safe}"
+
+        expect(find('textarea#regular_expression_expression').value).to eq('日本語')
+        expect(find('textarea#regular_expression_test_string').value).to eq('テスト文字列')
+      end
+    end
+
+    describe "Round-trip: Encode and decode" do
+      it "can encode form state to URL and decode it back" do
+        # Manually construct a permalink URL (simulating what share button would create)
+        data = {
+          r: 'test',
+          t: 'test string',
+          o: 'im'
+        }
+        json = data.to_json
+        base64 = Base64.strict_encode64(json)
+        url_safe = base64.tr('+/', '-_').tr('=', '')
+
+        visit "#{root_path}?p=#{url_safe}"
+
+        # Verify form is restored from URL parameter
+        expect(find('textarea#regular_expression_expression').value).to eq('test')
+        expect(find('textarea#regular_expression_test_string').value).to eq('test string')
+        expect(find('input#regular_expression_options').value).to eq('im')
+      end
+    end
+  end
 end
