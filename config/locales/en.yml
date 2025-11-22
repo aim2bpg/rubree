@@ -10,6 +10,8 @@ en:
       try_random_tooltip: Try a random example
       open_github: Open Rubree repository on GitHub
       github_star: If you like Rubree, please star ☆
+      share_tooltip: Share permalink
+      permalink_copied: 'Permalink copied to clipboard:'
       examples: Examples
       categories_label: Categories
       examples_label: Examples

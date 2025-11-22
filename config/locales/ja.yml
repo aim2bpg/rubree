@@ -10,6 +10,8 @@ ja:
       try_random_tooltip: ランダムな例を試す
       open_github: Rubree リポジトリを GitHub で開く
       github_star: 気に入っていただけたら、☆をお願いします
+      share_tooltip: パーマリンクを共有
+      permalink_copied: 'パーマリンクをクリップボードにコピーしました:'
       examples: 例
       categories_label: カテゴリ
       examples_label: 例
