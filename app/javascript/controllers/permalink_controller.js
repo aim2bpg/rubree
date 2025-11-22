@@ -137,9 +137,9 @@ export default class extends Controller {
     }
 
     const tooltip = document.createElement("div");
-    tooltip.innerHTML = `Your regex is available at:<br><span class="font-mono text-xs">${displayUrl}</span>`;
+    tooltip.innerHTML = `Permalink copied to clipboard:<br><span class="font-mono text-xs">${displayUrl}</span>`;
     tooltip.className =
-      "absolute -top-16 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-3 py-2 rounded whitespace-nowrap pointer-events-none shadow-lg border border-gray-700";
+      "absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-3 py-2 rounded whitespace-nowrap pointer-events-none shadow-lg border border-gray-700";
 
     this.buttonTarget.style.position = "relative";
     this.buttonTarget.appendChild(tooltip);
