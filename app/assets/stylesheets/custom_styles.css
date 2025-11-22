@@ -303,8 +303,10 @@ svg.railroad-diagram rect.group-box {
   justify-content: center;
   border-radius: 0.5rem;
   z-index: 10;
+  pointer-events: none;
 }
 
 .loading-overlay:not(.hidden) {
   display: flex;
+  pointer-events: auto;
 }

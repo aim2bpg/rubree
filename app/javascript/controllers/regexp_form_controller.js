@@ -5,6 +5,7 @@ export default class extends Controller {
     this.boundShowLoading = this.showLoading.bind(this);
     this.boundHideLoading = this.hideLoading.bind(this);
     this.boundHideLoadingOnRender = this.hideLoadingOnRender.bind(this);
+    this.loadingTimeout = null;
 
     this.element.addEventListener("turbo:submit-start", this.boundShowLoading);
     this.element.addEventListener("turbo:submit-end", this.boundHideLoading);
@@ -26,6 +27,9 @@ export default class extends Controller {
       "turbo:frame-render",
       this.boundHideLoadingOnRender,
     );
+    if (this.loadingTimeout) {
+      clearTimeout(this.loadingTimeout);
+    }
   }
 
   submit() {
@@ -37,13 +41,23 @@ export default class extends Controller {
   }
 
   showLoading() {
-    const overlay = document.getElementById("loading-overlay");
-    if (overlay) {
-      overlay.classList.remove("hidden");
-    }
+    // Delay showing the loading spinner by 300ms
+    // to avoid flickering on fast responses
+    this.loadingTimeout = setTimeout(() => {
+      const overlay = document.getElementById("loading-overlay");
+      if (overlay) {
+        overlay.classList.remove("hidden");
+      }
+    }, 300);
   }
 
   hideLoading() {
+    // Cancel the delayed show if it hasn't fired yet
+    if (this.loadingTimeout) {
+      clearTimeout(this.loadingTimeout);
+      this.loadingTimeout = null;
+    }
+
     const overlay = document.getElementById("loading-overlay");
     if (overlay) {
       overlay.classList.add("hidden");
