@@ -34,7 +34,8 @@ if git rev-parse --git-dir >/dev/null 2>&1; then
       if [ -f public/robots.txt ]; then
         cp public/robots.txt ./pwa/dist/robots.txt
       fi
-      exit 0
+      # Don't exit early - still need to copy icons and images below
+      should_generate=0
     fi
     # If no public sitemap exists, we will fall back to computing lastmod from git history.
   fi
@@ -62,8 +63,9 @@ PY
   fi
 fi
 
-# Write minimal sitemap with the computed date
-cat > ./pwa/dist/sitemap.xml <<EOF
+# Write minimal sitemap with the computed date (only if should_generate=1)
+if [ "$should_generate" = "1" ]; then
+  cat > ./pwa/dist/sitemap.xml <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -73,9 +75,10 @@ cat > ./pwa/dist/sitemap.xml <<EOF
 </urlset>
 EOF
 
-# Copy robots if present
-if [ -f public/robots.txt ]; then
-  cp public/robots.txt ./pwa/dist/robots.txt
+  # Copy robots if present
+  if [ -f public/robots.txt ]; then
+    cp public/robots.txt ./pwa/dist/robots.txt
+  fi
 fi
 
 # Generate and copy icons
