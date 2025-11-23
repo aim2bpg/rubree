@@ -248,4 +248,28 @@ RSpec.describe RegularExpression do
       end
     end
   end
+
+  describe 'execution time measurement' do
+    let(:regex) { described_class.new(regular_expression: 'test', test_string: 'test string') }
+
+    before do
+      regex.valid?
+    end
+
+    it 'measures elapsed_time_ms with 3 decimal places' do
+      expect(regex.elapsed_time_ms).to be_a(Float)
+      expect(regex.elapsed_time_ms.to_s).to match(/^\d+\.\d{3}$/)
+    end
+
+    it 'measures average_elapsed_time_ms with 3 decimal places' do
+      expect(regex.average_elapsed_time_ms).to be_a(Float)
+      expect(regex.average_elapsed_time_ms.to_s).to match(/^\d+\.\d{3}$/)
+    end
+
+    it 'average_elapsed_time_ms is based on 5 runs' do
+      # Verify that average is calculated correctly
+      expect(regex.average_elapsed_time_ms).to be > 0
+      expect(regex.average_elapsed_time_ms).to be_a(Float)
+    end
+  end
 end

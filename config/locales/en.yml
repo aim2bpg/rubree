@@ -165,21 +165,21 @@ en:
             result: match
             options: ''
             substitution: ''
-            description: Kleene star a* — Matches 0 or more 'a'.
+            description: Repetition a* — Matches 0 or more 'a'.
           7:
             pattern: a*
             test: aaa
             result: match
             options: ''
             substitution: ''
-            description: Kleene star a* — Matches consecutive 'a's.
+            description: Repetition a* — Matches consecutive 'a's.
           8:
             pattern: a*
             test: bbb
             result: match
             options: ''
             substitution: ''
-            description: Kleene star a* — Matches empty if 'a' absent.
+            description: Repetition a* — Matches empty if 'a' absent.
           9:
             pattern: ab|cd
             test: cd
