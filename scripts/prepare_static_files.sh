@@ -121,4 +121,10 @@ if [ -f pwa/manifest.json ]; then
   cp pwa/manifest.json ./pwa/dist/manifest.json
 fi
 
+# Copy optimized images for hero section
+if [ -d public/images ]; then
+  mkdir -p ./pwa/dist/images
+  cp public/images/* ./pwa/dist/images/ || true
+fi
+
 exit 0
