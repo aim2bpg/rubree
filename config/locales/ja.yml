@@ -15,7 +15,7 @@ ja:
       examples: 例
       categories_label: カテゴリ
       examples_label: 例
-      open_examples: カテゴリを選択してください（上の一覧からカテゴリを選ぶと、ここに例が表示されます）'
+      open_examples: カテゴリを選択してください（上の一覧からカテゴリを選ぶと、ここに例が表示されます）
       button: 正規表現の例
       toggle_locale: 言語を切り替える
       lang_label: 言語
@@ -165,21 +165,21 @@ ja:
             result: match
             options: ''
             substitution: ''
-            description: Kleene スター a* — 0 回以上の 'a' にマッチする。
+            description: 繰り返し a* — 0 回以上の 'a' にマッチする。
           7:
             pattern: a*
             test: aaa
             result: match
             options: ''
             substitution: ''
-            description: Kleene スター a* — 連続する 'a' の列にマッチする。
+            description: 繰り返し a* — 連続する 'a' の列にマッチする。
           8:
             pattern: a*
             test: bbb
             result: match
             options: ''
             substitution: ''
-            description: Kleene スター a* — 'a' がない場合は空文字にマッチする。
+            description: 繰り返し a* — 'a' がない場合は空文字にマッチする。
           9:
             pattern: ab|cd
             test: cd
@@ -2253,7 +2253,7 @@ ja:
             2: a が 0 回または 1 回（?）
             3: a が 0 回以上（*）
             4: a が 1 回以上（+）
-            5: a が ちょうど 3 個（{3}）
+            5: a が ちょうど 3 回（{3}）
             6: a が 3 回以上（{3,}）
             7: a が 3〜6 回（{3,6}）
       options:
