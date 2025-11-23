@@ -136,12 +136,9 @@ export default class extends Controller {
       displayUrl = `${start}...${end}`;
     }
 
-    // Get localized message from data attribute or use default
-    const message =
-      this.buttonTarget.dataset.copiedMessage ||
-      (document.documentElement.lang === "ja"
-        ? "パーマリンクをクリップボードにコピーしました:"
-        : "Permalink copied to clipboard:");
+    // Get localized message from data attribute
+    const message = this.buttonTarget.dataset.copiedMessage;
+    if (!message) return;
 
     const tooltip = document.createElement("div");
     tooltip.innerHTML = `${message}<br><span class="font-mono text-xs">${displayUrl}</span>`;
