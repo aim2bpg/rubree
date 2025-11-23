@@ -6,7 +6,7 @@
       <label class="flex items-center space-x-1 text-xs text-gray-300 hover:text-white transition-colors duration-200 whitespace-nowrap cursor-pointer"><input type="checkbox" x-model="showInvisibles" class="form-checkbox h-3 w-3 text-blue-500 rounded hover:ring-2 hover:ring-blue-400"><span><%= t("regular_expressions.results.show_invisibles", default: "Show invisibles") %></span></label>
     </div>
     <% if regular_expression.elapsed_time_ms && regular_expression.average_elapsed_time_ms %>
-      <div class="text-xs text-gray-400 whitespace-nowrap mt-1 sm:mt-0">🕒 <%= regular_expression.elapsed_time_ms %> ms <%= t("regular_expressions.results.avg_of_runs", count: 5, default: "(avg of %{count} runs)") %></div>
+      <div class="text-xs text-gray-400 whitespace-nowrap mt-1 sm:mt-0">🕒 <%= regular_expression.average_elapsed_time_ms %> ms <%= t("regular_expressions.results.avg_of_runs", count: 5, default: "(avg of %{count} runs)") %></div>
     <% end %>
   </div>
 
