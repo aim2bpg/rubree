@@ -84,15 +84,16 @@ if [ -f public/icon.png ]; then
   mkdir -p public/icons
   if command -v convert >/dev/null 2>&1; then
     echo "[prepare_static_files] Generating favicon PNGs from public/icon.png"
-    sizes=(16 32 96 192 512 180)
+    sizes=(16 32 48 96 192 512 180)
     for s in "${sizes[@]}"; do
       out=public/icons/favicon-${s}x${s}.png
       convert public/icon.png -resize ${s}x${s} "$out" || true
     done
-    # Create multi-resolution ICO (best-effort)
-    if [ -f public/icons/favicon-16x16.png ] || [ -f public/icons/favicon-32x32.png ]; then
+    # Create multi-resolution ICO with 16, 32, 48 (standard sizes)
+    if [ -f public/icons/favicon-16x16.png ] && [ -f public/icons/favicon-32x32.png ] && [ -f public/icons/favicon-48x48.png ]; then
       echo "[prepare_static_files] Creating favicon.ico"
-      convert public/icons/favicon-16x16.png public/icons/favicon-32x32.png public/icons/favicon-96x96.png public/icons/favicon.ico || true
+      convert public/icon.png -define icon:auto-resize=48,32,16 public/icons/favicon.ico || true
+    fi
     fi
   else
     echo "[prepare_static_files] ImageMagick 'convert' not found; skipping PNG generation"
