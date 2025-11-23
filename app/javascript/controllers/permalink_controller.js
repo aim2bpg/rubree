@@ -136,8 +136,12 @@ export default class extends Controller {
       displayUrl = `${start}...${end}`;
     }
 
+    // Get localized message from data attribute
+    const message = this.buttonTarget.dataset.copiedMessage;
+    if (!message) return;
+
     const tooltip = document.createElement("div");
-    tooltip.innerHTML = `Permalink copied to clipboard:<br><span class="font-mono text-xs">${displayUrl}</span>`;
+    tooltip.innerHTML = `${message}<br><span class="font-mono text-xs">${displayUrl}</span>`;
     tooltip.className =
       "absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-3 py-2 rounded whitespace-nowrap pointer-events-none shadow-lg border border-gray-700";
 
