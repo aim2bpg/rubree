@@ -110,6 +110,10 @@ fi
 if [ -d public/icons ]; then
   mkdir -p ./pwa/dist/icons
   cp public/icons/* ./pwa/dist/icons/ || true
+  # Copy favicon.ico to root for legacy browsers
+  if [ -f public/icons/favicon.ico ]; then
+    cp public/icons/favicon.ico ./pwa/dist/favicon.ico
+  fi
 fi
 
 # Copy web app manifest from pwa/ if present so it is deployed
