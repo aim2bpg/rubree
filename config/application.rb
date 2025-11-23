@@ -56,13 +56,5 @@ module Rubree
 
     # Don't generate system test files.
     config.generators.system_tests = nil
-
-    # Security headers
-    config.action_dispatch.default_headers = {
-      "X-Frame-Options" => "SAMEORIGIN",
-      "X-Content-Type-Options" => "nosniff",
-      "X-XSS-Protection" => "0",
-      "Referrer-Policy" => "strict-origin-when-cross-origin"
-    }
   end
 end

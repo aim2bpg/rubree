@@ -39,7 +39,4 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
-
-  # Disable CSP in test environment to avoid issues with system tests
-  config.content_security_policy_report_only = true
 end
