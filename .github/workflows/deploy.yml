@@ -87,7 +87,6 @@ jobs:
           yarn install
           yarn build
 
-
       - name: Prepare static files (sitemap, robots, icons)
         run: |
           chmod +x ./scripts/prepare_static_files.sh
