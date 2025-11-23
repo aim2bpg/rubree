@@ -9,7 +9,7 @@
     <meta name="mobile-web-app-capable" content="yes">
 
     <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; font-src 'self' https: data: fonts.googleapis.com fonts.gstatic.com; img-src 'self' https: data: raw.githubusercontent.com; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' https: 'unsafe-inline' fonts.googleapis.com; connect-src 'self' https:; frame-ancestors 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 
@@ -86,7 +86,7 @@
 
           <div class="hero-preview">
             <div class="preview-frame">
-              <img id="site-image" src="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/site_view.png" alt="Site View" width="720" height="516" loading="lazy" decoding="async">
+              <img id="site-image" src="https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/site_view.png" alt="Site View" width="720" height="516" fetchpriority="high" decoding="async">
             </div>
           </div>
 
