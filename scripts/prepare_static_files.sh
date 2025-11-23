@@ -94,7 +94,6 @@ if [ -f public/icon.png ]; then
       echo "[prepare_static_files] Creating favicon.ico"
       convert public/icon.png -define icon:auto-resize=48,32,16 public/icons/favicon.ico || true
     fi
-    fi
   else
     echo "[prepare_static_files] ImageMagick 'convert' not found; skipping PNG generation"
   fi
