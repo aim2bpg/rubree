@@ -20,7 +20,7 @@ Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: false
 
 RSpec/ExampleLength:
-  Max: 20
+  Max: 25
 
 RSpec/MultipleExpectations:
   Enabled: false

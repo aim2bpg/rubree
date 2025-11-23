@@ -14,8 +14,10 @@ RSpec.describe RegularExpression::RubyCode do
         code = generator.generate
         expect(code).to include('pattern = /h(e)llo/')
         expect(code).to include('test_string = "hello"')
+        expect(code).to include('puts "Pattern: #{pattern.inspect}"')
+        expect(code).to include('puts "Test string: #{test_string}"')
         expect(code).to include('if match = pattern.match(test_string)')
-        expect(code).to include('puts "#{i + 1}: #{cap}"')
+        expect(code).to include('puts "Match result:"')
       end
 
       it 'matches the expected generated Ruby code' do
@@ -24,13 +26,19 @@ RSpec.describe RegularExpression::RubyCode do
           pattern = /h(e)llo/
           test_string = "hello"
 
+          puts "Pattern: \#{pattern.inspect}"
+          puts "Test string: \#{test_string}"
+          puts
+
           # Match and captures
           if match = pattern.match(test_string)
-            # Full match
-            puts "Match: \#{match[0]}"
-            # Numbered captures:
-            match.captures.each_with_index do |cap, i|
-              puts "\#{i + 1}: \#{cap}"
+            puts "Match result:"
+            puts "  Full match: \#{match[0]}"
+            if match.captures.any?
+              puts "  Numbered captures:"
+              match.captures.each_with_index do |cap, i|
+                puts "    \#{i + 1}: \#{cap}"
+              end
             end
           else
             puts "No match."
@@ -50,21 +58,42 @@ RSpec.describe RegularExpression::RubyCode do
         )
       }
 
-      it 'generates ruby code with substitution' do
+      it 'generates ruby code with both match/captures and substitution' do
         code = generator.generate
+        expect(code).to include('# Match and captures')
+        expect(code).to include('if match = pattern.match(test_string)')
+        expect(code).to include('# With substitution')
         expect(code).to include('result = test_string.gsub(pattern, "X\\\\1Y")')
-        expect(code).to include('puts result')
+        expect(code).to include('puts "Substitution result: #{result}"')
       end
 
       it 'matches the expected generated Ruby code with substitution' do
-        expected_code = <<~RUBY
+        expected_code = <<~RUBY.chomp
           # Ruby code for testing the regex
           pattern = /h(e)llo/
           test_string = "hello"
 
+          puts "Pattern: \#{pattern.inspect}"
+          puts "Test string: \#{test_string}"
+          puts
+
+          # Match and captures
+          if match = pattern.match(test_string)
+            puts "Match result:"
+            puts "  Full match: \#{match[0]}"
+            if match.captures.any?
+              puts "  Numbered captures:"
+              match.captures.each_with_index do |cap, i|
+                puts "    \#{i + 1}: \#{cap}"
+              end
+            end
+          else
+            puts "No match."
+          end
+
           # With substitution
           result = test_string.gsub(pattern, "X\\\\1Y")
-          puts result
+          puts "Substitution result: \#{result}"
         RUBY
         code = generator.generate
         expect(code).to eq(expected_code)
@@ -110,13 +139,19 @@ RSpec.describe RegularExpression::RubyCode do
           pattern = /goodbye/
           test_string = "hello"
 
+          puts "Pattern: \#{pattern.inspect}"
+          puts "Test string: \#{test_string}"
+          puts
+
           # Match and captures
           if match = pattern.match(test_string)
-            # Full match
-            puts "Match: \#{match[0]}"
-            # Numbered captures:
-            match.captures.each_with_index do |cap, i|
-              puts "\#{i + 1}: \#{cap}"
+            puts "Match result:"
+            puts "  Full match: \#{match[0]}"
+            if match.captures.any?
+              puts "  Numbered captures:"
+              match.captures.each_with_index do |cap, i|
+                puts "    \#{i + 1}: \#{cap}"
+              end
             end
           else
             puts "No match."
@@ -137,8 +172,8 @@ RSpec.describe RegularExpression::RubyCode do
 
       it 'generates ruby code with named captures' do
         code = generator.generate
-        expect(code).to include('puts "greeting: #{match[:greeting]}"')
-        expect(code).to include('puts "farewell: #{match[:farewell]}"')
+        expect(code).to include('puts "    greeting: #{match[:greeting]}"')
+        expect(code).to include('puts "    farewell: #{match[:farewell]}"')
       end
 
       it 'matches the expected generated Ruby code with named captures' do
@@ -147,19 +182,77 @@ RSpec.describe RegularExpression::RubyCode do
           pattern = /(?<greeting>hello) (?<farewell>goodbye)/
           test_string = "hello goodbye"
 
+          puts "Pattern: \#{pattern.inspect}"
+          puts "Test string: \#{test_string}"
+          puts
+
           # Match and captures
           if match = pattern.match(test_string)
-            # Full match
-            puts "Match: \#{match[0]}"
-            # Named captures:
-            puts "greeting: \#{match[:greeting]}"
-            puts "farewell: \#{match[:farewell]}"
+            puts "Match result:"
+            puts "  Full match: \#{match[0]}"
+            if match.names.any?
+              puts "  Named captures:"
+            puts "    greeting: \#{match[:greeting]}"
+            puts "    farewell: \#{match[:farewell]}"
+            end
           else
             puts "No match."
           end
         RUBY
         code = generator.generate
         expect(code).to eq(expected_code.chomp)
+      end
+    end
+
+    context 'when named captures and substitution are both present' do
+      let(:generator) {
+        described_class.new(
+          regular_expression: Regexp.new('(?<month>\\d{1,2})/(?<day>\\d{1,2})/(?<year>\\d{4})'),
+          test_string: "Today's date is: 11/23/2025.",
+          substitution_string: '\\k<year>/\\k<month>/\\k<day>'
+        )
+      }
+
+      it 'generates ruby code with both named captures and substitution' do
+        code = generator.generate
+        expect(code).to include('# Match and captures')
+        expect(code).to include('puts "    month: #{match[:month]}"')
+        expect(code).to include('puts "    day: #{match[:day]}"')
+        expect(code).to include('puts "    year: #{match[:year]}"')
+        expect(code).to include('# With substitution')
+        expect(code).to include('result = test_string.gsub(pattern, "\\\\k<year>/\\\\k<month>/\\\\k<day>")')
+      end
+
+      it 'matches the expected generated Ruby code with named captures and substitution' do
+        expected_code = <<~RUBY.chomp
+          # Ruby code for testing the regex
+          pattern = /(?<month>\\d{1,2})\\/(?<day>\\d{1,2})\\/(?<year>\\d{4})/
+          test_string = "Today's date is: 11/23/2025."
+
+          puts "Pattern: \#{pattern.inspect}"
+          puts "Test string: \#{test_string}"
+          puts
+
+          # Match and captures
+          if match = pattern.match(test_string)
+            puts "Match result:"
+            puts "  Full match: \#{match[0]}"
+            if match.names.any?
+              puts "  Named captures:"
+            puts "    month: \#{match[:month]}"
+            puts "    day: \#{match[:day]}"
+            puts "    year: \#{match[:year]}"
+            end
+          else
+            puts "No match."
+          end
+
+          # With substitution
+          result = test_string.gsub(pattern, "\\\\k<year>/\\\\k<month>/\\\\k<day>")
+          puts "Substitution result: \#{result}"
+        RUBY
+        code = generator.generate
+        expect(code).to eq(expected_code)
       end
     end
   end
