@@ -45,13 +45,10 @@ Inspired by: https://rubular.com
 - [Playwright](https://playwright.dev/) for E2E testing
 - [Octocov](https://github.com/k1LoW/octocov) octocov is a toolkit for collecting code metrics
 
-### 🚀 Deployment
+### 🚀 Build / Deployment
 
-- [Wasmify Rails](https://github.com/palkan/wasmify-rails/) tools and extensions to pack and run Rails apps on Wasm
-
-### 🖥️ Production
-
-- [GitHub Pages](https://docs.github.com/en/pages/) for Ruby on Rails on WebAssembly, the full-stack in-browser
+- [Wasmify Rails](https://github.com/palkan/wasmify-rails/) — Build Rails apps into WebAssembly so the application can run in the browser
+- [GitHub Pages](https://docs.github.com/en/pages/) — Host the generated static site (Wasm bundles and assets) as the deployment target
 
 ### 🤖 Shift-left security
 
@@ -200,6 +197,7 @@ DRIVER=rack_test bin/rspec
 - [x] **Regex Substitution Function**: Supports regex-based string substitution.
 - [x] **Ruby Code Snippet Generation**: Automatically generates Ruby code snippets for testing regex patterns.
 - [x] **Web Interface for Regex Testing**: Interactive web UI to test and visualize regular expressions in real-time.
+- [x] **Permalink / Shareable URL generation**: Create shareable URLs that encode the editor state (regex, sample text, and options) for easy reproduction.
 
 ---
 
@@ -277,3 +275,17 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/aim2bp
 ## Licence
 
 This project is licensed under the MIT License, see the LICENSE file for details
+
+## Articles & Announcements
+
+- **X (Twitter) — Launch announcement**
+  - https://x.com/aim2bpg/status/1992926501482983803
+
+- **はてなブログ — (2025-11-24)**
+  - https://aim2bpg.hatenablog.com/entry/2025/11/25/083000
+
+- **Qiita — Rubular を現代化した正規表現エディタ「Rubree」をリリースしました (2025-11-24)**
+  - https://qiita.com/aim2bpg/items/3190cf503456f231b78b
+
+- **DEV.to — Rubree: A Modern Ruby Regex Editor Running Fully in Your Browser (2025-11-24)**
+  - https://dev.to/aim2bpg/rubree-a-modern-ruby-regex-editor-running-fully-in-your-browser-5g2b
