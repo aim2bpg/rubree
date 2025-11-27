@@ -198,6 +198,7 @@ DRIVER=rack_test bin/rspec
 - [x] **Ruby Code Snippet Generation**: Automatically generates Ruby code snippets for testing regex patterns.
 - [x] **Web Interface for Regex Testing**: Interactive web UI to test and visualize regular expressions in real-time.
 - [x] **Permalink / Shareable URL generation**: Create shareable URLs that encode the editor state (regex, sample text, and options) for easy reproduction.
+- [x] **ReDoS Check Integration**: Check regular expressions for ReDoS vulnerabilities via embedded recheck Playground with one-click pattern copying. ([#306](https://github.com/aim2bpg/rubree/issues/306))
 
 ---
 
