@@ -31,3 +31,7 @@ application.register("regexp-examples", RegexpExamplesController);
 import RegexpFormController from "./regexp_form_controller";
 
 application.register("regexp-form", RegexpFormController);
+
+import RecheckController from "./recheck_controller";
+
+application.register("recheck", RecheckController);
