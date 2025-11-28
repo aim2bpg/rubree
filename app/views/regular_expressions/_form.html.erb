@@ -10,7 +10,7 @@
           <%= t("regular_expressions.form.your_regular_expression", default: "Your regular expression:") %>
         </label>
         <div class="flex items-center space-x-2 text-xs text-white">
-          <button type="button" data-controller="recheck" data-action="click->recheck#openPlayground" class="p-0 text-gray-400 hover:text-white transition w-5 h-5 flex items-center justify-center" title="Check in Playground">
+          <button type="button" data-controller="recheck" data-action="click->recheck#openPlayground" class="p-0 text-gray-400 hover:text-white transition w-5 h-5 flex items-center justify-center" title="<%= t("regular_expressions.form.redos_check_tooltip", default: "Check for ReDoS vulnerabilities in recheck Playground") %>">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-[18px] h-[18px]">
               <circle cx="11" cy="11" r="7" stroke-width="2" />
               <line x1="16.656" y1="16.657" x2="21" y2="21" stroke-width="2" stroke-linecap="round" />

@@ -24,6 +24,7 @@ ja:
       options: 'オプション:'
       your_test_string: 'テスト文字列:'
       substitution: '置換文字列:'
+      redos_check_tooltip: 'recheck PlaygroundでReDoS脆弱性をチェック'
     results:
       railroad_diagram: 'レールロード図:'
       railroad_diagram_placeholder: レールロード図がここに表示されます。
