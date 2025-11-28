@@ -24,6 +24,7 @@ en:
       options: 'Options:'
       your_test_string: 'Your test string:'
       substitution: 'Substitution:'
+      redos_check_tooltip: 'Check for ReDoS vulnerabilities in recheck Playground'
     results:
       railroad_diagram: 'Railroad diagram:'
       railroad_diagram_placeholder: Railroad diagram will appear here.

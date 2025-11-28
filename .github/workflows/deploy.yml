@@ -89,8 +89,8 @@ jobs:
 
       - name: Prepare static files (sitemap, robots, icons)
         run: |
-          chmod +x ./scripts/prepare_static_files.sh
-          ./scripts/prepare_static_files.sh
+          chmod +x ./script/prepare_static_files.sh
+          ./script/prepare_static_files.sh
 
       - name: Add .nojekyll to prevent GitHub Pages Jekyll build
         run: echo "" > ./pwa/dist/.nojekyll

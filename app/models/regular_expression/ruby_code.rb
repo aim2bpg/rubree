@@ -18,7 +18,7 @@ class RegularExpression
       # Always include match and captures section
       if regular_expression.names.any?
         named_captures = regular_expression.names.map do |name|
-          "  puts \"    #{name}: \#{match[:#{name}]}\""
+          "    puts \"    #{name}: \#{match[:#{name}]}\""
         end.join("\n")
 
         code_parts << <<~RUBY.chomp

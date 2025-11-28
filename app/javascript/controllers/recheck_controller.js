@@ -66,7 +66,7 @@ export default class extends Controller {
     modal.innerHTML = `
       <div class="bg-gray-800 rounded-lg shadow-xl w-[95vw] sm:w-[85vw] md:w-[75vw] lg:w-[70vw] h-[90vh] sm:h-[88vh] md:h-[86vh] lg:h-[85vh] flex flex-col p-3 sm:p-4">
         <div class="flex justify-between items-center mb-3 sm:mb-4">
-          <h2 class="text-lg sm:text-xl font-bold text-white">ReDoS Recheck Playground</h2>
+          <h2 class="text-lg sm:text-xl font-bold text-white">ReDoS Checker - recheck Playground</h2>
           <button onclick="document.getElementById('recheck-modal').remove()" class="text-gray-400 hover:text-white text-xl sm:text-2xl leading-none">&times;</button>
         </div>
         
