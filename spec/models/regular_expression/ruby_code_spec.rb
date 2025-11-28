@@ -192,8 +192,8 @@ RSpec.describe RegularExpression::RubyCode do
             puts "  Full match: \#{match[0]}"
             if match.names.any?
               puts "  Named captures:"
-            puts "    greeting: \#{match[:greeting]}"
-            puts "    farewell: \#{match[:farewell]}"
+              puts "    greeting: \#{match[:greeting]}"
+              puts "    farewell: \#{match[:farewell]}"
             end
           else
             puts "No match."
@@ -239,9 +239,9 @@ RSpec.describe RegularExpression::RubyCode do
             puts "  Full match: \#{match[0]}"
             if match.names.any?
               puts "  Named captures:"
-            puts "    month: \#{match[:month]}"
-            puts "    day: \#{match[:day]}"
-            puts "    year: \#{match[:year]}"
+              puts "    month: \#{match[:month]}"
+              puts "    day: \#{match[:day]}"
+              puts "    year: \#{match[:year]}"
             end
           else
             puts "No match."
