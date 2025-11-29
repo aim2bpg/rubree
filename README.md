@@ -184,6 +184,26 @@ DRIVER=rack_test bin/rspec
   - [Wasmify Rails](https://github.com/palkan/wasmify-rails?tab=readme-ov-file#step-2-binrails-wasmifybuildcore)
   - [Ruby on Rails on WebAssembly, the full-stack in-browser journey](https://web.dev/blog/ruby-on-rails-on-webassembly?hl=ja#next_level_a_blog_in_15_minutes_in_wasm)
 
+## Browser Compatibility
+
+Rubree currently supports **Chrome** and **Edge** only.
+
+### Why Safari and Firefox are not supported
+
+Safari and Firefox have compatibility limitations with Ruby WebAssembly (Wasmify Rails):
+
+- **Safari**: Ruby Wasm crashes during execution due to WebAssembly asyncify incompatibility
+  - Error: `RangeError: Maximum call stack size exceeded`
+  - The Ruby WebAssembly runtime crashes when trying to initialize Rails
+  
+- **Firefox**: Service Worker script evaluation fails
+  - Error: `TypeError: ServiceWorker script threw an exception during script evaluation`
+  - The Service Worker script cannot be evaluated in Firefox's stricter JavaScript engine
+
+These are fundamental limitations of how Safari and Firefox handle WebAssembly features required by Wasmify Rails. For more details, see [wasmify-rails Issue #7](https://github.com/palkan/wasmify-rails/issues/7).
+
+When accessing Rubree from Safari or Firefox, you will see a warning banner with detailed console error logs for troubleshooting.
+
 ## Roadmap
 
 - [x] **Basic Match Handling**: Provides functionality to match regular expressions against test strings.

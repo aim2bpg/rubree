@@ -82,19 +82,66 @@
           <div class="hero-preview">
             <div class="preview-frame">
               <picture>
-                <source media="(max-width: 767px)" srcset="/rubree/images/site_view_mobile.webp" type="image/webp">
-                <source media="(max-width: 767px)" srcset="/rubree/images/site_view_mobile.png" type="image/png">
-                <source srcset="/rubree/images/site_view.webp" type="image/webp">
-                <img id="site-image" src="/rubree/images/site_view.png" alt="Site View" width="720" height="516" fetchpriority="high" decoding="async">
+                <source media="(max-width: 767px)" srcset="/images/site_view_mobile.webp" type="image/webp">
+                <source media="(max-width: 767px)" srcset="/images/site_view_mobile.png" type="image/png">
+                <source srcset="/images/site_view.webp" type="image/webp">
+                <img id="site-image" src="/images/site_view.png" alt="Site View" width="720" height="516" fetchpriority="high" decoding="async">
               </picture>
             </div>
           </div>
-
-          <div class="boot-row">
-            <div id="boot-message"></div>
-          </div>
         </div>
       </section>
+
+      <!-- Browser Compatibility Warning -->
+      <aside id="browser-warning" class="browser-warning hidden" role="alert" aria-live="polite">
+        <div class="browser-warning-content">
+          <strong>⚠️ Browser Compatibility Notice / ブラウザ互換性のお知らせ</strong>
+          <p class="warning-main">
+            Rubree currently supports <strong>Chrome</strong> and <strong>Edge</strong> only. Please use <strong>Chrome</strong> or <strong>Edge</strong>.
+            <br>
+            <span class="translation">Rubree は現在 <strong>Chrome</strong> と <strong>Edge</strong> でのみ動作します。<strong>Chrome</strong> または <strong>Edge</strong> をご利用ください。</span>
+          </p>
+          <p class="warning-detected">
+            Your browser: <strong><span id="detected-browser"></span></strong>
+          </p>
+          <p class="warning-technical">
+            <em>Technical reason:</em> Incompatible with Ruby WebAssembly (Wasmify Rails).
+            <br>
+            <span class="translation-small">（技術的理由：Ruby WebAssembly (Wasmify Rails) と互換性がありません）</span>
+          </p>
+          <details class="warning-details">
+            <summary>Console error details (development environment) / コンソールエラー詳細（開発環境）</summary>
+            <div class="console-log">
+              <strong>Safari:</strong>
+              <pre><code>[Log] 🔍 Ruby Wasm Compatibility Evidence - Safari
+[Error] Browser: Safari
+[Error] Error Type: RangeError
+[Warning] ⚠️ RUBY WASM STACK OVERFLOW IN SAFARI
+[Info] The Ruby WebAssembly runtime crashed during execution.
+[Info] This is a known limitation with Safari's WebAssembly implementation
+[Info] and the asyncify feature used by Ruby Wasm.
+[Info]  
+[Info] Reported in wasmify-rails Issue #7:
+[Info] 'With 3.4 I also had issues in Safari (hard-to-debug crashes
+[Info] probably related to asyncify)'
+[Info] Reference: https://github.com/palkan/wasmify-rails/issues/7
+[Error] Failed to register service worker or start app: – "Error" – "-" – "RangeError: Maximum call stack size exceeded."</code></pre>
+              
+              <strong>Firefox:</strong>
+              <pre><code>🔍 Browser Compatibility Evidence - Firefox
+Browser: Firefox
+Registration error: TypeError - ServiceWorker script at http://localhost:5173/dev-sw.js?dev-sw for scope http://localhost:5173/ threw an exception during script evaluation.
+⚠️ SERVICE WORKER SCRIPT EVALUATION FAILURE
+This indicates the Service Worker script or its dependencies
+cannot be evaluated in Firefox's JavaScript engine.
+Known issue: wasmify-rails dependencies are not compatible with
+Firefox's stricter module evaluation.
+Reference: https://github.com/palkan/wasmify-rails/issues/7
+Failed to register service worker or start app: TypeError - SW registration failed: ServiceWorker script at http://localhost:5173/dev-sw.js?dev-sw for scope http://localhost:5173/ threw an exception during script evaluation.</code></pre>
+            </div>
+          </details>
+        </div>
+      </aside>
 
       <footer>
         © 2025 Rubree. Powered by Wasmify Rails.
