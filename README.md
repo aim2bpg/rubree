@@ -188,7 +188,7 @@ DRIVER=rack_test bin/rspec
 
 Rubree currently supports **Chrome** and **Edge** only.
 
-### Why Safari and Firefox are not supported
+### Why are Safari and Firefox not supported?
 
 Safari and Firefox have compatibility limitations with Ruby WebAssembly (Wasmify Rails):
 
@@ -197,8 +197,8 @@ Safari and Firefox have compatibility limitations with Ruby WebAssembly (Wasmify
   - The Ruby WebAssembly runtime crashes when trying to initialize Rails
   
 - **Firefox**: Service Worker script evaluation fails
-  - Error: `TypeError: ServiceWorker script threw an exception during script evaluation`
-  - The Service Worker script cannot be evaluated in Firefox's stricter JavaScript engine
+  - Error: `TypeError: ServiceWorker script evaluation failed`
+  - The Service Worker script cannot be evaluated in Firefox's stricter module evaluation
 
 These are fundamental limitations of how Safari and Firefox handle WebAssembly features required by Wasmify Rails. For more details, see [wasmify-rails Issue #7](https://github.com/palkan/wasmify-rails/issues/7).
 

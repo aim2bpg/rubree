@@ -16,6 +16,9 @@
 /build
 /dist
 
+# development artifacts
+/public
+
 # misc
 .DS_Store
 *.pem
