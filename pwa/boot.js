@@ -1,7 +1,11 @@
 async function registerServiceWorker() {
+  const ua = navigator.userAgent;
+  const isFirefox = ua.includes("Firefox");
+  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+  
   const oldRegistrations = await navigator.serviceWorker.getRegistrations();
   for (const registration of oldRegistrations) {
-    if (registration.installing.state === "installing") {
+    if (registration.installing?.state === "installing") {
       return;
     }
   }
@@ -11,13 +15,45 @@ async function registerServiceWorker() {
       ? "./rails.sw.js"
       : "./dev-sw.js?dev-sw";
 
-  await navigator.serviceWorker.register(workerUrl, {
-    scope: import.meta.env.BASE_URL,
-    type: "module",
-  });
+  // Try module registration first
+  try {
+    await navigator.serviceWorker.register(workerUrl, {
+      scope: import.meta.env.BASE_URL,
+      type: "module",
+    });
+    return;
+  } catch (error) {
+    // Show warning banner for Safari/Firefox
+    if (isSafari || isFirefox) {
+      try {
+        const warningEl = document.getElementById("browser-warning");
+        const detectedBrowserEl = document.getElementById("detected-browser");
+        if (warningEl) {
+          warningEl.classList.remove("hidden");
+        }
+        if (detectedBrowserEl) {
+          const browserName = isFirefox ? "Firefox" : "Safari";
+          detectedBrowserEl.textContent = browserName;
+        }
+      } catch (e) {}
+    }
+    
+    // Try classic as fallback
+    try {
+      await navigator.serviceWorker.register(workerUrl, {
+        scope: import.meta.env.BASE_URL,
+        type: "classic",
+      });
+      return;
+    } catch (classicError) {
+      // Re-throw a simple error to avoid Safari stack overflow on complex error objects
+      const errorMsg = classicError && classicError.message ? String(classicError.message) : "Service Worker registration failed";
+      throw new Error(errorMsg);
+    }
+  }
 }
 
-async function boot({ bootMessage, bootProgress, bootConsoleOutput }) {
+async function boot({ bootProgress, bootConsoleOutput }) {
   if (!("serviceWorker" in navigator)) {
     console.error("Service Worker is not supported in this browser.");
     return;
@@ -25,8 +61,6 @@ async function boot({ bootMessage, bootProgress, bootConsoleOutput }) {
 
   if (!navigator.serviceWorker.controller) {
     await registerServiceWorker();
-
-    bootMessage.textContent = "Waiting for Service Worker to activate...";
   } else {
     console.log("Service Worker already active.");
   }
@@ -34,7 +68,6 @@ async function boot({ bootMessage, bootProgress, bootConsoleOutput }) {
   navigator.serviceWorker.addEventListener("message", function (event) {
     switch (event.data.type) {
       case "progress": {
-        if (bootMessage) bootMessage.textContent = event.data.step;
         if (bootProgress) bootProgress.value = event.data.value;
         break;
       }
@@ -55,8 +88,37 @@ async function boot({ bootMessage, bootProgress, bootConsoleOutput }) {
 }
 
 async function init() {
+  // Detect browser first
+  const ua = navigator.userAgent;
+  const isFirefox = ua.includes("Firefox");
+  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+  const browserName = isFirefox ? "Firefox" : isSafari ? "Safari" : "Other";
+  
+  // Show warning banner immediately for Safari/Firefox
+  if (isSafari || isFirefox) {
+    console.warn("[boot] Unsupported browser detected: " + browserName);
+    try {
+      const warningEl = document.getElementById("browser-warning");
+      const detectedBrowserEl = document.getElementById("detected-browser");
+      if (warningEl) {
+        warningEl.classList.remove("hidden");
+      }
+      if (detectedBrowserEl) {
+        detectedBrowserEl.textContent = browserName;
+      }
+    } catch (e) {}
+    
+    // Disable the launch button
+    const launchButton = document.getElementById("launch-button");
+    if (launchButton) {
+      launchButton.disabled = true;
+      launchButton.style.opacity = "0.5";
+      launchButton.style.cursor = "not-allowed";
+    }
+    return; // Don't set up event listeners
+  }
+  
   // removed automatic boot flow; init will now wait for user action
-  const bootMessage = document.getElementById("boot-message");
   const launchButton = document.getElementById("launch-button");
 
   // SW numeric progress handler removed per user request; keep seconds-only UI.
@@ -66,9 +128,6 @@ async function init() {
   // register the SW and open the app. This prevents reloads from showing the already-
   // started app unexpectedly.
 
-  // Keep the static description in the DOM (paragraph). Reserve `#boot-message` for
-  // dynamic status updates only (start it empty to avoid duplication).
-  if (bootMessage) bootMessage.textContent = "";
   if (launchButton) launchButton.disabled = false;
 
   // When user clicks Start, show the TOS modal (tos.js will dispatch 'rubree:tos-agreed' on agree)
@@ -80,8 +139,6 @@ async function init() {
   window.addEventListener('rubree:tos-agreed', async function() {
     // Seamless same-tab start: show overlay + spinner, register SW, then navigate
     if (launchButton) launchButton.disabled = true;
-    if (bootMessage) bootMessage.textContent = 'Initializing...';
-    // inline spinner removed from DOM in latest UI; keep message only
 
     // Show the full-screen starting overlay for a smooth transition
     const overlay = document.getElementById('starting-overlay');
@@ -181,7 +238,6 @@ async function init() {
 
     try {
       await registerServiceWorker();
-      if (bootMessage) bootMessage.textContent = 'Starting Rubree...';
       const registration = await navigator.serviceWorker.ready;
 
       // Send a start-rails message to the service worker and wait for reply.
@@ -192,7 +248,9 @@ async function init() {
           msgChannel.port1.onmessage = (e) => {
             const data = e.data || {};
             if (data.type === 'rails-started') resolve({ ok: true });
-            else if (data.type === 'rails-start-failed') resolve({ ok: false, error: data.error });
+            else if (data.type === 'rails-start-failed') {
+              resolve({ ok: false, error: data.error });
+            }
           };
         });
 
@@ -236,9 +294,35 @@ async function init() {
       // Navigate the current window to the app root (same-tab navigation)
       window.location.href = './';
     } catch (e) {
-      console.error('Failed to register service worker or start app:', e);
-      if (bootMessage) bootMessage.textContent = 'Failed to start — please try again.';
-      if (overlay) overlay.classList.remove('show');
+      // Safari-safe error logging: completely avoid touching the error object if possible
+      let errorMsg = "Unknown error occurred";
+      let errorName = "Error";
+      
+      try {
+        if (e && typeof e.message === "string") {
+          errorMsg = e.message;
+        }
+        if (e && typeof e.name === "string") {
+          errorName = e.name;
+        }
+      } catch (accessError) {
+        // Even accessing error properties can fail in Safari - use fallback
+        errorMsg = "Error details unavailable (Safari limitation)";
+      }
+      
+      // Safari-safe logging: avoid any string concatenation with error objects
+      try {
+        console.error('Failed to register service worker or start app:', errorName, '-', errorMsg);
+      } catch (logError) {
+        // Even logging can fail in Safari with certain error objects
+        console.error('Failed to register service worker or start app (details unavailable)');
+      }
+      
+      if (overlay) {
+        try {
+          overlay.classList.remove('show');
+        } catch (ignore) {}
+      }
       // ensure welcome styling is cleaned up on failure
       if (startingTextEl) startingTextEl.classList.remove('welcome');
       // stop the elapsed timer or bar on failure
