@@ -290,3 +290,6 @@ This project is licensed under the MIT License, see the LICENSE file for details
 
 - **DEV.to — Rubree: A Modern Ruby Regex Editor Running Fully in Your Browser (2025-11-24)**
   - https://dev.to/aim2bpg/rubree-a-modern-ruby-regex-editor-running-fully-in-your-browser-5g2b
+
+- **Ruby Weekly #​777 (2025-11-27)**
+  - https://rubyweekly.com/issues/777#:~:text=Rubree
