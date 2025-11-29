@@ -45,7 +45,7 @@ Inspired by: https://rubular.com
 - [Playwright](https://playwright.dev/) for E2E testing
 - [Octocov](https://github.com/k1LoW/octocov) octocov is a toolkit for collecting code metrics
 
-### 🚀 Build / Deployment
+### 🚀 Build and Deployment
 
 - [Wasmify Rails](https://github.com/palkan/wasmify-rails/) — Build Rails apps into WebAssembly so the application can run in the browser
 - [GitHub Pages](https://docs.github.com/en/pages/) — Host the generated static site (Wasm bundles and assets) as the deployment target
@@ -293,7 +293,7 @@ For more detailed information about supported syntax, refer to the official docu
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/aim2bpg/rubree
 
-## Licence
+## License
 
 This project is licensed under the MIT License, see the LICENSE file for details
 
