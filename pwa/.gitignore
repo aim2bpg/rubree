@@ -20,9 +20,6 @@
 .DS_Store
 *.pem
 
-# copied images (synced from ../public/images via prepare_static_files.sh)
-/public/images
-
 # debug
 npm-debug.log*
 yarn-debug.log*
