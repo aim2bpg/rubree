@@ -2257,6 +2257,20 @@ en:
             5: Exactly 3 of a
             6: 3 or more of a
             7: Between 3 and 6 of a
+        group-groups-assertions:
+          title: Groups & Assertions
+          patterns:
+            0: (?:abc)
+            1: (?=abc)
+            2: (?!abc)
+            3: (?<=abc)
+            4: (?<!abc)
+          items:
+            0: Non-capturing group
+            1: positive lookahead - Position before 'abc'
+            2: negative lookahead - Position not followed by 'abc'
+            3: positive lookbehind - Position after 'abc'
+            4: negative lookbehind - Position not preceded by 'abc'
       options:
         options_label: "Options:"
         i: case insensitive
