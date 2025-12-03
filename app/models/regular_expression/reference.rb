@@ -6,7 +6,8 @@ class RegularExpression
       orig = [
         { key: "character-classes-anchors", col_class: "grid-cols-[80px_1fr]" },
         { key: "common-patterns", col_class: "grid-cols-[30px_1fr]" },
-        { key: "groups-quantifiers", col_class: "grid-cols-[60px_1fr]" }
+        { key: "groups-quantifiers", col_class: "grid-cols-[60px_1fr]" },
+        { key: "group-groups-assertions", col_class: "grid-cols-[80px_1fr]" }
       ]
 
       orig.map.with_index do |sec, s_idx|

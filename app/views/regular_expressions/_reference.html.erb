@@ -9,48 +9,103 @@
     <div class="text-left w-full px-4">
 
       <div class="flex justify-center">
-        <div class="grid grid-cols-1 md:grid-cols-[auto_auto_minmax(16rem,1fr)] gap-x-12 gap-y-4 mx-auto max-w-[1600px]">
-          <% RegularExpression::Reference.sections.each do |section| %>
-            <div class="space-y-1 min-w-0">
-            <label class="font-semibold mb-2 text-white"><%= section[:title] %></label>
-            <div class="space-y-0.5">
-              <% section[:items].each do |code, description| %>
-                <div class="grid <%= section[:col_class] %> items-start min-w-0">
+        <div class="mx-auto max-w-[1600px] w-full">
+
+          <!-- Horizontal drag-scroll container (simple drag left/right) -->
+          <div data-controller="drag-scroll" data-regexp-examples-target="headerScroll" class="overflow-x-auto md:overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
+            <div class="block md:flex">
+              <% sections = RegularExpression::Reference.sections %>
+              <!-- First 3 sections -->
+              <div class="shrink-0 px-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-2">
+                  <% sections[0..2].each do |section| %>
+                    <div class="space-y-0.5 min-w-0">
+                      <label class="font-semibold mb-1 text-white text-sm"><%= section[:title] %></label>
+                      <div class="space-y-0.5">
+                        <% section[:items].each do |code, description| %>
+                          <div class="grid <%= section[:col_class] %> items-start min-w-0 gap-x-0">
+                            <code
+                              data-controller="copy-code"
+                              data-copy-code-target="source"
+                              data-action="click->copy-code#copy"
+                              data-copied-text="<%= j t("regular_expressions.results.copied") %>"
+                              class="cursor-pointer hover:text-white transition duration-200 whitespace-nowrap text-sm pr-2"
+                              title="<%= t("regular_expressions.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                            <span class="break-words"><%= description %></span>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+                  <!-- 4th section below 3rd on mobile -->
+                  <% if sections[3] %>
+                    <div class="space-y-0.5 min-w-0 md:hidden mt-2">
+                      <label class="font-semibold mb-1 text-white text-sm"><%= sections[3][:title] %></label>
+                      <div class="space-y-0.5">
+                        <% sections[3][:items].each do |code, description| %>
+                          <div class="grid <%= sections[3][:col_class] %> items-start min-w-0 gap-x-0">
+                            <code
+                              data-controller="copy-code"
+                              data-copy-code-target="source"
+                              data-action="click->copy-code#copy"
+                              data-copied-text="<%= j t("regular_expressions.results.copied") %>"
+                              class="cursor-pointer hover:text-white transition duration-200 whitespace-nowrap text-sm pr-2"
+                              title="<%= t("regular_expressions.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                            <span class="break-words"><%= description %></span>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <!-- 4th section on the right (visible via scroll on PC) -->
+              <% if sections[3] %>
+                <div class="hidden md:block shrink-0">
+                  <div class="space-y-0.5 min-w-0">
+                    <label class="font-semibold mb-1 text-white text-sm"><%= sections[3][:title] %></label>
+                    <div class="space-y-0.5">
+                      <% sections[3][:items].each do |code, description| %>
+                        <div class="grid <%= sections[3][:col_class] %> items-start min-w-0 gap-x-0">
+                          <code
+                            data-controller="copy-code"
+                            data-copy-code-target="source"
+                            data-action="click->copy-code#copy"
+                            data-copied-text="<%= j t("regular_expressions.results.copied") %>"
+                            class="cursor-pointer hover:text-white transition duration-200 whitespace-nowrap text-sm pr-2"
+                            title="<%= t("regular_expressions.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                          <span class="break-words"><%= description %></span>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Options row inside the same grid so left edges align with reference columns -->
+      <div class="col-span-1 md:col-span-3 mt-0 pt-2 border-t border-gray-600 text-gray-400 text-sm">
+        <div class="flex items-start justify-center gap-x-6">
+          <strong class="text-white mr-2 mb-0 whitespace-nowrap self-start"><%= t("regular_expressions.reference.options.options_label", default: "Options:") %></strong>
+          <div class="w-full sm:w-auto">
+            <!-- portrait: stack vertically (1 column) so items appear in separate rows; md+: inline centered -->
+            <div class="space-y-0.5 sm:flex sm:items-center sm:space-x-8">
+              <% RegularExpression::Reference.options.each do |code, label| %>
+                <div class="flex items-center space-x-2">
                   <code
                     data-controller="copy-code"
                     data-copy-code-target="source"
                     data-action="click->copy-code#copy"
                     data-copied-text="<%= j t("regular_expressions.results.copied") %>"
-                    class="cursor-pointer hover:text-white transition duration-200 whitespace-nowrap"
-                    title="<%= t("regular_expressions.click_to_copy", default: "Click to copy") %>"><%= code %></code>
-                  <span class="break-words"><%= description %></span>
+                    class="cursor-pointer hover:text-white transition duration-200 px-1"
+                    title="<%= t("regular_expressions.reference.click_to_copy", default: "Click to copy") %>"><%= code %></code>
+                  <span><%= label %></span>
                 </div>
               <% end %>
-            </div>
-          </div>
-          <% end %>
-
-          <!-- Options row inside the same grid so left edges align with reference columns -->
-          <div class="col-span-1 md:col-span-3 mt-0 pt-2 border-t border-gray-600 text-gray-400 text-sm">
-            <div class="flex items-start justify-center gap-x-6">
-              <strong class="text-white mr-2 mb-0 whitespace-nowrap self-start"><%= t("regular_expressions.reference.options.options_label", default: "Options:") %></strong>
-              <div class="w-full sm:w-auto">
-                <!-- portrait: stack vertically (1 column) so items appear in separate rows; md+: inline centered -->
-                <div class="space-y-0.5 sm:flex sm:items-center sm:space-x-8">
-                  <% RegularExpression::Reference.options.each do |code, label| %>
-                    <div class="flex items-center space-x-2">
-                      <code
-                        data-controller="copy-code"
-                        data-copy-code-target="source"
-                        data-action="click->copy-code#copy"
-                        data-copied-text="<%= j t("regular_expressions.results.copied") %>"
-                        class="cursor-pointer hover:text-white transition duration-200 px-1"
-                        title="<%= t("regular_expressions.reference.click_to_copy", default: "Click to copy") %>"><%= code %></code>
-                      <span><%= label %></span>
-                    </div>
-                  <% end %>
-                </div>
-              </div>
             </div>
           </div>
         </div>
