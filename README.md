@@ -313,3 +313,6 @@ This project is licensed under the MIT License, see the LICENSE file for details
 
 - **Ruby Weekly #​777 (2025-11-27)**
   - https://rubyweekly.com/issues/777#:~:text=Rubree
+
+- **正規表現エディタ「Rubree」を紹介 - Railsチュートリアル note マガジン**
+  - https://note.com/yasslab/n/ncb57c9812545
