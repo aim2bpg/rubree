@@ -54,7 +54,8 @@
 
       <div
         data-controller="drag-scroll"
-        class="w-full overflow-auto whitespace-nowrap cursor-grab border border-gray-600 rounded p-2 bg-gray-800 max-h-[400px]"
+        data-drag-scroll-horizontal-only-value="true"
+        class="w-full overflow-auto whitespace-nowrap cursor-grab active:cursor-grabbing border border-gray-600 rounded p-2 bg-gray-800 max-h-[400px]"
         data-diagram-modal-target="source">
         <%= regular_expression.diagram_svg %>
       </div>

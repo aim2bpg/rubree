@@ -2218,7 +2218,7 @@ en:
             6: Start of string
             7: End of string
         common-patterns:
-          title: Common Patterns
+          title: Special Characters
           patterns:
             0: .
             1: \s
@@ -2238,39 +2238,45 @@ en:
             6: Any non-word character
             7: Any word boundary
         groups-quantifiers:
-          title: Groups & Quantifiers
+          title: Quantifiers & Alternation
           patterns:
-            0: (...)
-            1: (a|b)
-            2: a?
-            3: a*
-            4: a+
-            5: a{3}
-            6: a{3,}
-            7: a{3,6}
+            0: a?
+            1: a*
+            2: a+
+            3: a{3}
+            4: a{3,}
+            5: a{3,6}
+            6: a*?
+            7: (a|b)
           items:
-            0: Capture everything enclosed
-            1: a or b
-            2: Zero or one of a
-            3: Zero or more of a
-            4: One or more of a
-            5: Exactly 3 of a
-            6: 3 or more of a
-            7: Between 3 and 6 of a
+            0: Zero or one of a
+            1: Zero or more of a
+            2: One or more of a
+            3: Exactly 3 of a
+            4: 3 or more of a
+            5: Between 3 and 6 of a
+            6: Zero or more of a (lazy match)
+            7: a or b
         group-groups-assertions:
           title: Groups & Assertions
           patterns:
-            0: (?:abc)
-            1: (?=abc)
-            2: (?!abc)
-            3: (?<=abc)
-            4: (?<!abc)
+            0: (...)
+            1: (?<name>...)
+            2: (?:abc)
+            3: (?=abc)
+            4: (?!abc)
+            5: (?<=abc)
+            6: (?<!abc)
+            7: (?>abc)
           items:
-            0: Non-capturing group
-            1: positive lookahead - Position before 'abc'
-            2: negative lookahead - Position not followed by 'abc'
-            3: positive lookbehind - Position after 'abc'
-            4: negative lookbehind - Position not preceded by 'abc'
+            0: Capture everything enclosed
+            1: Named capture group
+            2: Non-capturing group
+            3: positive lookahead - Position before 'abc'
+            4: negative lookahead - Position not followed by 'abc'
+            5: positive lookbehind - Position after 'abc'
+            6: negative lookbehind - Position not preceded by 'abc'
+            7: Atomic group (prevents backtracking)
       options:
         options_label: "Options:"
         i: case insensitive
