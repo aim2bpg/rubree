@@ -299,10 +299,10 @@ This project is licensed under the MIT License, see the LICENSE file for details
 
 ## Articles & Announcements
 
-- **X (Twitter) — Launch announcement**
+- **X (Twitter) — Launch announcement (2025-11-24)**
   - https://x.com/aim2bpg/status/1992926501482983803
 
-- **はてなブログ — (2025-11-24)**
+- **はてなブログ — Ruby × Rails × Wasm で動く正規表現エディタ Rubree をリリースしました (2025-11-24)**
   - https://aim2bpg.hatenablog.com/entry/2025/11/25/083000
 
 - **Qiita — Rubular を現代化した正規表現エディタ「Rubree」をリリースしました (2025-11-24)**
@@ -314,5 +314,5 @@ This project is licensed under the MIT License, see the LICENSE file for details
 - **Ruby Weekly #​777 (2025-11-27)**
   - https://rubyweekly.com/issues/777#:~:text=Rubree
 
-- **正規表現エディタ「Rubree」を紹介 - Railsチュートリアル note マガジン**
+- **正規表現エディタ「Rubree」を紹介 - Railsチュートリアル note マガジン (2025-12-03)**
   - https://note.com/yasslab/n/ncb57c9812545
