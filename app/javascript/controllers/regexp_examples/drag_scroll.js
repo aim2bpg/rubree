@@ -1,4 +1,4 @@
-export function enableDragScroll(el, initialScroll = 0) {
+export function enableDragScroll(el, initialScroll = 0, options = {}) {
   if (!el)
     return {
       disable() {},
@@ -23,9 +23,12 @@ export function enableDragScroll(el, initialScroll = 0) {
     previousCursor: null,
   };
 
+  const horizontalOnly = options.horizontalOnly || false;
+
   try {
     state.previousTouchAction = el.style.touchAction || "";
-    el.style.touchAction = "none";
+    // For horizontal-only scroll, allow vertical touch scrolling
+    el.style.touchAction = horizontalOnly ? "pan-y" : "none";
     try {
       state.previousCursor = el.style.cursor || "";
       el.style.cursor = "grab";
@@ -57,6 +60,13 @@ export function enableDragScroll(el, initialScroll = 0) {
     if (!state.axis) {
       if (Math.abs(dx) < threshold && Math.abs(dy) < threshold) return;
       state.axis = Math.abs(dx) > Math.abs(dy) ? "horizontal" : "vertical";
+
+      // For horizontal-only mode, ignore vertical movements
+      if (horizontalOnly && state.axis === "vertical") {
+        state.pointerId = null;
+        return;
+      }
+
       state.active = true;
       try {
         el.setPointerCapture(e.pointerId);
@@ -69,10 +79,11 @@ export function enableDragScroll(el, initialScroll = 0) {
 
     if (state.axis === "horizontal") {
       el.scrollLeft = state.startScrollLeft - dx;
-    } else {
+      e.preventDefault();
+    } else if (!horizontalOnly) {
       el.scrollTop = state.startScrollTop - dy;
+      e.preventDefault();
     }
-    e.preventDefault();
   };
 
   const pointerUp = (_e) => {
