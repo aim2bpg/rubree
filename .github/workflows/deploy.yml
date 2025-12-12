@@ -60,7 +60,7 @@ jobs:
 
       - name: Cache Ruby Wasm Artefacts
         id: cache-ruby-wasm
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             build
@@ -69,7 +69,7 @@ jobs:
 
       - name: Cache Compiled ruby.wasm Module
         id: cache-ruby-wasm-module
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: tmp/wasmify/ruby.wasm
           key: ${{ runner.os }}-v1-${{ hashFiles('**/Gemfile.lock') }}-ruby-wasm-module
