@@ -76,11 +76,7 @@ jobs:
 
       - name: Build ruby.wasm (if needed)
         if: steps.cache-ruby-wasm-module.outputs.cache-hit != 'true'
-        run: bin/rails wasmify:build:core
-
-      - name: Verify ruby.wasm build
-        if: steps.cache-ruby-wasm-module.outputs.cache-hit != 'true'
-        run: bin/rails wasmify:build:core:verify
+        run: bin/rails wasmify:build
 
       - name: Pack app.wasm
         run: bin/rails wasmify:pack
