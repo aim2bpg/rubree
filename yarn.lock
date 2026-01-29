@@ -213,18 +213,18 @@
   resolved "https://registry.npmjs.org/@hotwired/stimulus/-/stimulus-3.2.2.tgz"
   integrity sha512-eGeIqNOQpXoPAIP7tC1+1Yc1yl1xnwYqg+3mzqxyrbE5pg5YFBZcA6YoTiByJB6DKAEsiWtl6tjTJS4IYtbB7A==
 
-"@hotwired/turbo-rails@^8.0.21":
-  version "8.0.21"
-  resolved "https://registry.yarnpkg.com/@hotwired/turbo-rails/-/turbo-rails-8.0.21.tgz#403bfb2b1b92a921d854471772a7aa906f75ab04"
-  integrity sha512-RUnqt7tOVlQT539eVqFaAp4/32y7sLxvt3G7OIMROVlIMWvM8CXJk08xvIro2ueQViYRB6jwRjruNx7drIJPXg==
+"@hotwired/turbo-rails@^8.0.22":
+  version "8.0.22"
+  resolved "https://registry.yarnpkg.com/@hotwired/turbo-rails/-/turbo-rails-8.0.22.tgz#1960327f4ca861b5cf37ebcb0c4ca39d20d23b64"
+  integrity sha512-8HqjVD7KrkEt2x7b1zuNqlD5IqEe8Yyme8djYqVwajkkQh5AfnRvLI7Q+J7wWgNPS9LaDz5Tif7Z9/qemdjQ4g==
   dependencies:
-    "@hotwired/turbo" "^8.0.21"
+    "@hotwired/turbo" "^8.0.22"
     "@rails/actioncable" ">=7.0"
 
-"@hotwired/turbo@^8.0.21":
-  version "8.0.21"
-  resolved "https://registry.yarnpkg.com/@hotwired/turbo/-/turbo-8.0.21.tgz#a3e80c01d70048200f64bbe3582b84f9bfac034e"
-  integrity sha512-fJTv3JnzFHeDxBb23esZSOhT4r142xf5o3lKMFMvzPC6AllkqbBKk5Yb31UZhtIsKQCwmO/pUQrtTUlYl5CHAQ==
+"@hotwired/turbo@^8.0.22":
+  version "8.0.22"
+  resolved "https://registry.yarnpkg.com/@hotwired/turbo/-/turbo-8.0.22.tgz#f6f8c0756f48ce83c31675998d55c37fdf1a6828"
+  integrity sha512-A7M8vBgsmZ8W55IOEhTN7o0++zaJTavyGa1DW1rt+/b4VTr8QUWC/zu8wxMmwqvczaOe1nI/MkMq4lm2NmiHPg==
 
 "@jridgewell/gen-mapping@^0.3.5":
   version "0.3.13"
