@@ -12,9 +12,5 @@
   "devDependencies": {
     "vite": "^7.3.1",
     "vite-plugin-pwa": "^1.2.0"
-  },
-  "dependencies": {
-    "@sqlite.org/sqlite-wasm": "3.46.1-build5",
-    "wasmify-rails": "^0.2.3"
   }
 }
