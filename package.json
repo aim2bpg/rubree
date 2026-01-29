@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
-    "@hotwired/turbo-rails": "^8.0.22",
+    "@hotwired/turbo-rails": "^8.0.23",
     "@tailwindcss/cli": "^4.1.18",
     "alpinejs": "^3.15.5",
     "tailwindcss": "^4.1.10"
