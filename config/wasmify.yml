@@ -16,4 +16,4 @@ exclude_gems:
   - nio4r
   - io-console
   - psych
-  - date
+  - json
