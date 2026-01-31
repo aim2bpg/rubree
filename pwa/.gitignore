@@ -16,8 +16,10 @@
 /build
 /dist
 
-# development artifacts
-/public
+# development artifacts (Vite output)
+# Note: /public/images is a symlink to ../../public/images for development
+/public/*
+!/public/images
 
 # misc
 .DS_Store
