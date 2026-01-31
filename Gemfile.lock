@@ -87,7 +87,7 @@ GEM
     bigdecimal (4.0.1)
     bootsnap (1.21.1)
       msgpack (~> 1.2)
-    brakeman (7.1.2)
+    brakeman (8.0.1)
       racc
     builder (3.3.0)
     capybara (3.40.0)
@@ -314,13 +314,20 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
-    ruby_wasm (2.7.1)
-    ruby_wasm (2.7.1-aarch64-linux)
-    ruby_wasm (2.7.1-aarch64-linux-musl)
-    ruby_wasm (2.7.1-arm64-darwin)
-    ruby_wasm (2.7.1-x86_64-darwin)
-    ruby_wasm (2.7.1-x86_64-linux)
-    ruby_wasm (2.7.1-x86_64-linux-musl)
+    ruby_wasm (2.8.1)
+      logger
+    ruby_wasm (2.8.1-aarch64-linux)
+      logger
+    ruby_wasm (2.8.1-aarch64-linux-musl)
+      logger
+    ruby_wasm (2.8.1-arm64-darwin)
+      logger
+    ruby_wasm (2.8.1-x86_64-darwin)
+      logger
+    ruby_wasm (2.8.1-x86_64-linux)
+      logger
+    ruby_wasm (2.8.1-x86_64-linux-musl)
+      logger
     rubyzip (3.2.2)
     securerandom (0.4.1)
     selenium-webdriver (4.40.0)
@@ -350,7 +357,7 @@ GEM
     thor (1.5.0)
     timeout (0.6.0)
     tsort (0.2.0)
-    turbo-rails (2.0.22)
+    turbo-rails (2.0.23)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
     tzinfo (2.0.6)
@@ -362,7 +369,7 @@ GEM
     unicode-emoji (4.2.0)
     uri (1.1.1)
     useragent (0.16.11)
-    wasmify-rails (0.2.3)
+    wasmify-rails (0.4.0)
       js (>= 2.6, < 3.0)
       railties (>= 7.0, < 9.0)
       ruby_wasm (>= 2.6, < 3.0)
@@ -406,17 +413,17 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   rubocop-rspec_rails
-  ruby_wasm (< 2.7.2)
+  ruby_wasm
   selenium-webdriver
   simplecov
   sqlite3 (>= 2.1)
   stimulus-rails
   turbo-rails
   tzinfo-data
-  wasmify-rails (~> 0.2.3)
+  wasmify-rails
 
 RUBY VERSION
-   ruby 3.3.10p0
+   ruby 3.3.10p183
 
 BUNDLED WITH
-   2.7.2
+   2.6.9

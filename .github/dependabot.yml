@@ -12,11 +12,6 @@ updates:
     allow:
       - dependency-type: direct
       - dependency-type: indirect
-    ignore:
-      - dependency-name: 'ruby_wasm'
-        versions: ['< 2.7.2']
-      - dependency-name: 'wasmify-rails'
-        versions: ['~>0.2.3']
     labels:
       - dependencies
       - ruby
