@@ -49,11 +49,7 @@ export default class extends Controller {
   disconnect() {
     if (this._observer) this._observer.disconnect();
     document.removeEventListener("keydown", this._boundEsc);
-    if (
-      this._selectHandler &&
-      this._selectElements &&
-      this._selectElements.length
-    ) {
+    if (this._selectHandler && this._selectElements?.length) {
       this._selectElements.forEach((sel) => {
         sel.removeEventListener("change", this._selectHandler);
       });
