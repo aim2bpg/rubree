@@ -10,10 +10,7 @@ async function registerServiceWorker() {
     }
   }
 
-  const workerUrl =
-    import.meta.env.MODE === "production"
-      ? "./rails.sw.js"
-      : "./dev-sw.js?dev-sw";
+  const workerUrl = "./rails.sw.js";
 
   // Try module registration first
   try {

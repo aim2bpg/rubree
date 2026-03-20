@@ -1,7 +1,6 @@
 import path from "path";
 
 import { defineConfig } from "vite";
-import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   base: process.env.GITHUB_ACTIONS ? "/rubree/" : "/",
@@ -24,18 +23,33 @@ export default defineConfig({
     },
   },
   plugins: [
-    VitePWA({
-      srcDir: ".",
-      filename: "rails.sw.js",
-      strategies: "injectManifest",
-      injectRegister: false,
-      manifest: false,
-      injectManifest: {
-        injectionPoint: null,
+    {
+      name: "build-service-worker",
+      apply: "build",
+      async closeBundle() {
+        const { build } = await import("vite");
+        await build({
+          configFile: false,
+          logLevel: "warn",
+          optimizeDeps: { exclude: ["@sqlite.org/sqlite-wasm"] },
+          build: {
+            lib: {
+              entry: path.resolve(__dirname, "rails.sw.js"),
+              name: "RailsSW",
+              formats: ["es"],
+            },
+            outDir: path.resolve(__dirname, "dist"),
+            emptyOutDir: false,
+            rollupOptions: {
+              external: () => false,
+              output: {
+                entryFileNames: "rails.sw.js",
+              },
+            },
+            codeSplitting: false,
+          },
+        });
       },
-      devOptions: {
-        enabled: true,
-      },
-    }),
+    },
   ],
 });
