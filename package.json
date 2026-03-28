@@ -21,8 +21,5 @@
     "@tailwindcss/cli": "^4.2.2",
     "alpinejs": "^3.15.8",
     "tailwindcss": "^4.1.10"
-  },
-  "resolutions": {
-    "picomatch": ">=4.0.4"
   }
 }
