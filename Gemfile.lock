@@ -318,19 +318,19 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
-    ruby_wasm (2.8.1)
+    ruby_wasm (2.9.0)
       logger
-    ruby_wasm (2.8.1-aarch64-linux)
+    ruby_wasm (2.9.0-aarch64-linux)
       logger
-    ruby_wasm (2.8.1-aarch64-linux-musl)
+    ruby_wasm (2.9.0-aarch64-linux-musl)
       logger
-    ruby_wasm (2.8.1-arm64-darwin)
+    ruby_wasm (2.9.0-arm64-darwin)
       logger
-    ruby_wasm (2.8.1-x86_64-darwin)
+    ruby_wasm (2.9.0-x86_64-darwin)
       logger
-    ruby_wasm (2.8.1-x86_64-linux)
+    ruby_wasm (2.9.0-x86_64-linux)
       logger
-    ruby_wasm (2.8.1-x86_64-linux-musl)
+    ruby_wasm (2.9.0-x86_64-linux-musl)
       logger
     rubyzip (3.2.2)
     securerandom (0.4.1)
