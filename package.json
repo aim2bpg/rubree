@@ -3,7 +3,7 @@
   "private": true,
   "devDependencies": {
     "@biomejs/biome": "2.4.10",
-    "esbuild": "^0.27.5",
+    "esbuild": "^0.28.0",
     "playwright": "^1.59.1"
   },
   "scripts": {
@@ -19,7 +19,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.22",
     "@tailwindcss/cli": "^4.2.2",
-    "alpinejs": "^3.15.10",
+    "alpinejs": "^3.15.11",
     "tailwindcss": "^4.1.10"
   },
   "resolutions": {
