@@ -16,10 +16,9 @@ Inspired by: https://rubular.com
 
 ### ⚙️ Backend
 
-- [Ruby](https://www.ruby-lang.org/de/) 3.3
-  > Ruby 3.4 causes runtime issues in WebAssembly builds due to missing `bigdecimal` support when used as a gem,  
-  > as described in [`wasmify-rails` Issue #7](https://github.com/palkan/wasmify-rails/issues/7).  
-  > We use Ruby 3.3 as a stable fallback until full 3.4 support is confirmed.
+- [Ruby](https://www.ruby-lang.org/de/) 3.4
+  > Ruby 3.4 requires source patches for WASM builds: Prism parser crashes in WASM (`pm_parser_init` memory fault)
+  > and RubyGems `deprecate.rb` block passing fails. See `ruby_wasm_patches/` and `lib/tasks/wasmify_patches.rake`.
 - [Ruby on Rails](https://rubyonrails.org/) 8.1
 - [Regexp::Parser](https://github.com/ammar/regexp_parser/) a regular expression parser library for Ruby
 
