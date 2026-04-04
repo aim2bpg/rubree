@@ -26,7 +26,7 @@ gem "cssbundling-rails"
 gem "bootsnap", require: false
 
 # ruby.wasm is a collection of WebAssembly ports of the CRuby
-gem "ruby_wasm", group: [:default, :wasm]
+gem "ruby_wasm", group: [:default, :wasm], force_ruby_platform: true
 
 # Tools and extensions to pack and run Rails apps on Wasm [https://github.com/palkan/wasmify-rails/]
 gem "wasmify-rails", group: [:default, :wasm]
