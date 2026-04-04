@@ -1,6 +1,10 @@
 require_relative "boot"
 
-require "wasmify/rails/shim"
+begin
+  require "wasmify/rails/shim"
+rescue LoadError
+  # wasmify-rails not available (e.g., CI with BUNDLE_WITHOUT=wasm)
+end
 
 require "rails"
 # Pick the frameworks you want:

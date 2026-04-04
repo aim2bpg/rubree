@@ -320,18 +320,6 @@ GEM
     ruby-progressbar (1.13.0)
     ruby_wasm (2.9.0)
       logger
-    ruby_wasm (2.9.0-aarch64-linux)
-      logger
-    ruby_wasm (2.9.0-aarch64-linux-musl)
-      logger
-    ruby_wasm (2.9.0-arm64-darwin)
-      logger
-    ruby_wasm (2.9.0-x86_64-darwin)
-      logger
-    ruby_wasm (2.9.0-x86_64-linux)
-      logger
-    ruby_wasm (2.9.0-x86_64-linux-musl)
-      logger
     rubyzip (3.2.2)
     securerandom (0.4.1)
     selenium-webdriver (4.41.0)
