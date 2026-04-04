@@ -1,0 +1,44 @@
+# frozen_string_literal: true
+
+# Monkey-patches for ruby_wasm / wasmify-rails to support Ruby 3.4+ WASM builds.
+#
+# Fixes applied:
+#   1. Source URL override — use latest Ruby patch versions (3.3.11, 3.4.8, 4.0.2)
+#   2. Parser override   — force parse.y instead of Prism (Prism crashes in WASM)
+#
+# NOTE: wasmify-rails 0.4.1's builder.rb patches `build_source_aliases` but
+#       ruby_wasm 2.9.0 renamed it to `build_config_aliases`, so the gem's
+#       override is silently broken. This file uses the correct method name.
+
+require "wasmify/rails/builder"
+
+# --- 1. Override Ruby source tarball URLs ---
+RubyWasm::CLI.singleton_class.prepend(Module.new do
+  def build_config_aliases(root)
+    super.tap do |sources|
+      sources["3.3"][:src][:url] = "https://cache.ruby-lang.org/pub/ruby/3.3/ruby-3.3.11.tar.gz"
+      sources["3.4"][:src][:url] = "https://cache.ruby-lang.org/pub/ruby/3.4/ruby-3.4.8.tar.gz"
+      sources["4.0"][:src][:url] = "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-4.0.2.tar.gz"
+    end
+  end
+end)
+
+# --- 2. Force parse.y parser (Prism crashes in WASM: pm_parser_init memory fault) ---
+require "ruby_wasm/build"
+
+RubyWasm::CrossRubyProduct.prepend(Module.new do
+  private
+
+  def configure_args(build_triple, toolchain)
+    super.tap do |args|
+      unless args.any? { |a| a.include?("--with-parser=parse.y") }
+        idx = args.index("--disable-install-doc")
+        if idx
+          args.insert(idx, "--with-parser=parse.y")
+        else
+          args << "--with-parser=parse.y"
+        end
+      end
+    end
+  end
+end)
