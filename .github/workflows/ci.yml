@@ -103,6 +103,9 @@ jobs:
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
+
       - name: Extract Playwright version
         id: playwright-version
         run: echo "version=$(jq -r '.devDependencies.playwright' package.json)" >> "$GITHUB_OUTPUT"
@@ -121,9 +124,6 @@ jobs:
         run: |
           npx playwright install chromium
           npx playwright install-deps chromium
-
-      - name: Install JS dependencies
-        run: yarn install --frozen-lockfile
 
       - name: Build frontend assets
         run: yarn build
