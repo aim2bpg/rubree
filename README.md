@@ -16,9 +16,10 @@ Inspired by: https://rubular.com
 
 ### ⚙️ Backend
 
-- [Ruby](https://www.ruby-lang.org/de/) 3.4
-  > Ruby 3.4 requires source patches for WASM builds: Prism parser crashes in WASM (`pm_parser_init` memory fault)
+- [Ruby](https://www.ruby-lang.org/de/) 4.0
+  > Ruby 4.0 requires source patches for WASM builds: Prism parser crashes in WASM (`pm_parser_init` memory fault)
   > and RubyGems `deprecate.rb` block passing fails. See `ruby_wasm_patches/` and `lib/tasks/wasmify_patches.rake`.
+  > Additionally, `wasmify-rails` shim.rb needs `require "rubygems"` before loading Bundler (Ruby 4.0 pre-defines `Gem` at C level but doesn't fully load RubyGems).
 - [Ruby on Rails](https://rubyonrails.org/) 8.1
 - [Regexp::Parser](https://github.com/ammar/regexp_parser/) a regular expression parser library for Ruby
 
