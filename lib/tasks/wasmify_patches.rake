@@ -5,6 +5,7 @@
 # Fixes applied:
 #   1. Source URL override — use latest Ruby patch versions (3.3.11, 3.4.8, 4.0.2)
 #   2. Parser override   — force parse.y instead of Prism (Prism crashes in WASM)
+#   3. shim.rb patch     — add `require "rubygems"` for Ruby 4.0 (Gem pre-defined at C level)
 #
 # NOTE: wasmify-rails 0.4.1's builder.rb patches `build_source_aliases` but
 #       ruby_wasm 2.9.0 renamed it to `build_config_aliases`, so the gem's
@@ -42,3 +43,18 @@ RubyWasm::CrossRubyProduct.prepend(Module.new do
     end
   end
 end)
+
+# --- 3. Patch shim.rb: add `require "rubygems"` for Ruby 4.0 ---
+# Ruby 4.0 pre-defines Gem at C level but doesn't fully load rubygems.
+# Bundler requires Gem::Deprecate, so shim.rb must load rubygems first.
+shim_path = Gem.loaded_specs["wasmify-rails"]&.gem_dir&.then { |d| File.join(d, "lib/wasmify/rails/shim.rb") }
+if shim_path && File.exist?(shim_path)
+  content = File.read(shim_path)
+  unless content.include?('require "rubygems"')
+    patched = content.sub(
+      %r{^(require "/bundle/setup")},
+      "require \"rubygems\"\n\\1"
+    )
+    File.write(shim_path, patched)
+  end
+end
