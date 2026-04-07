@@ -65,17 +65,11 @@ These issues appeared when upgrading from Ruby 3.4 to 4.0 (PRs [#528](https://gi
 - **Fix**: Auto-patch wasmify-rails' `shim.rb` to add `require "rubygems"` before `require "/bundle/setup"`. Implemented in `lib/tasks/wasmify_patches.rake` (idempotent, temporary workaround until upstream PR is merged)
 - **Upstream**: [palkan/wasmify-rails#12](https://github.com/palkan/wasmify-rails/pull/12)
 
-### 6. ruby_wasm platform gem incompatible with Ruby 4.0
 
-- **Symptom**: `bundle install` fails with `ruby_wasm-2.9.0-x86_64-linux requires ruby version < 3.5.dev, >= 3.2`
-- **Root cause**: Platform-specific `ruby_wasm` gem variants (26.8 MB, precompiled Rust native extensions) are built against Ruby 3.2–3.4 C ABI. No Ruby 4.0 precompiled variant has been released yet. The pure Ruby variant (147 KB, `required_ruby_version: >= 2.6.0`) has no such constraint but requires Rust compilation from source
-- **Fix**:
-  - `force_ruby_platform: true` in Gemfile to force pure Ruby variant
-  - Moved `ruby_wasm` and `wasmify-rails` to `group: :wasm` only
-  - Added `BUNDLE_WITHOUT: wasm` in CI workflows (not needed for tests)
-  - Added `RAILS_GROUPS: wasm` in deploy workflow (needed for `wasmify:build` task)
-  - Added `LoadError` rescue for `require "wasmify/rails/shim"` in `config/application.rb`
-- **Upstream**: [ruby/ruby.wasm#636](https://github.com/ruby/ruby.wasm/issues/636) — waiting for platform gem with Ruby 4.0 precompiled binaries
+### 6. ruby_wasm platform gem incompatible with Ruby 4.0 (Closed)
+
+Temporary workarounds were required due to lack of Ruby 4.0 platform gem support, but this was resolved with official support in ruby_wasm 2.9.4.
+(See details in [ruby/ruby.wasm#636](https://github.com/ruby/ruby.wasm/issues/636))
 
 ---
 
@@ -98,4 +92,4 @@ These issues appeared when upgrading from Ruby 3.4 to 4.0 (PRs [#528](https://gi
 | [#11](https://github.com/palkan/wasmify-rails/pull/11) `build_source_aliases` rename | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Open |
 | [#12](https://github.com/palkan/wasmify-rails/pull/12) `shim.rb` missing `require "rubygems"` for Ruby 4.0 | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Open |
 | [#7](https://github.com/palkan/wasmify-rails/issues/7) bigdecimal compatibility with Ruby 3.4 | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Open |
-| [#636](https://github.com/ruby/ruby.wasm/issues/636) Platform gem Ruby 4.0 precompiled binaries | [ruby/ruby.wasm](https://github.com/ruby/ruby.wasm) | Open |
+| [#636](https://github.com/ruby/ruby.wasm/issues/636) Platform gem Ruby 4.0 precompiled binaries | [ruby/ruby.wasm](https://github.com/ruby/ruby.wasm) | Closed |
