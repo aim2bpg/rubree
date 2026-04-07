@@ -14,8 +14,6 @@ jobs:
   lint_ruby:
     name: Lint Ruby
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_WITHOUT: wasm
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -70,8 +68,6 @@ jobs:
   sast:
     name: SAST
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_WITHOUT: wasm
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -90,7 +86,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test
-      BUNDLE_WITHOUT: wasm
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

@@ -318,7 +318,7 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
-    ruby_wasm (2.9.0)
+    ruby_wasm (2.9.4)
       logger
     rubyzip (3.2.2)
     securerandom (0.4.1)
