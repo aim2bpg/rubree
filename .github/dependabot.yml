@@ -63,6 +63,9 @@ updates:
           - 'alpinejs'
           - 'esbuild'
           - 'playwright'
+    # Exclude playwright from auto-updates temporarily to maintain compatibility with the Ruby client
+    ignore:
+      - dependency-name: "playwright"
 
   - package-ecosystem: npm
     directory: '/pwa'
@@ -80,6 +83,9 @@ updates:
         patterns:
           - 'vite'
           - 'vite-plugin-pwa'
+    # Exclude playwright from auto-updates temporarily to maintain compatibility with the Ruby client
+    ignore:
+      - dependency-name: "playwright"
 
   - package-ecosystem: github-actions
     directory: '/'
