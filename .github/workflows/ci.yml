@@ -14,8 +14,6 @@ jobs:
   lint_ruby:
     name: Lint Ruby
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_WITHOUT: wasm
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -70,8 +68,6 @@ jobs:
   sast:
     name: SAST
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_WITHOUT: wasm
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -90,7 +86,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test
-      BUNDLE_WITHOUT: wasm
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -108,8 +103,11 @@ jobs:
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
-      - name: Install JS dependencies
-        run: yarn install --frozen-lockfile
+      # Temporarily pin Playwright to 1.58.1 for CI stability
+      # It is also recommended to specify the same version in package.json devDependencies
+      # Remove this step when no longer needed
+      - name: Ensure Playwright 1.58.1
+        run: yarn add -D playwright@1.58.1
 
       - name: Extract Playwright version
         id: playwright-version
@@ -129,6 +127,9 @@ jobs:
         run: |
           npx playwright install chromium
           npx playwright install-deps chromium
+
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Build frontend assets
         run: yarn build
