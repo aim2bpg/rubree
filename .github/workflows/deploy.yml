@@ -96,7 +96,7 @@ jobs:
         run: echo "" > ./pwa/dist/.nojekyll
 
       - name: Upload GitHub Pages Artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: './pwa/dist'
 
