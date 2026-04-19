@@ -42,17 +42,17 @@ end)
 #   end
 # end)
 
-# # --- 3. Patch shim.rb: add `require "rubygems"` for Ruby 4.0 ---
-# # Ruby 4.0 pre-defines Gem at C level but doesn't fully load rubygems.
-# # Bundler requires Gem::Deprecate, so shim.rb must load rubygems first.
-# shim_path = Gem.loaded_specs["wasmify-rails"]&.gem_dir&.then { |d| File.join(d, "lib/wasmify/rails/shim.rb") }
-# if shim_path && File.exist?(shim_path)
-#   content = File.read(shim_path)
-#   unless content.include?('require "rubygems"')
-#     patched = content.sub(
-#       %r{^(require "/bundle/setup")},
-#       "require \"rubygems\"\n\\1"
-#     )
-#     File.write(shim_path, patched)
-#   end
-# end
+# --- 3. Patch shim.rb: add `require "rubygems"` for Ruby 4.0 ---
+# Ruby 4.0 pre-defines Gem at C level but doesn't fully load rubygems.
+# Bundler requires Gem::Deprecate, so shim.rb must load rubygems first.
+shim_path = Gem.loaded_specs["wasmify-rails"]&.gem_dir&.then { |d| File.join(d, "lib/wasmify/rails/shim.rb") }
+if shim_path && File.exist?(shim_path)
+  content = File.read(shim_path)
+  unless content.include?('require "rubygems"')
+    patched = content.sub(
+      %r{^(require "/bundle/setup")},
+      "require \"rubygems\"\n\\1"
+    )
+    File.write(shim_path, patched)
+  end
+end
