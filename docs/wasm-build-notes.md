@@ -72,8 +72,8 @@ Temporary workarounds were required due to lack of Ruby 4.0 platform gem support
 
 | File | Purpose | Applies to |
 |---|---|---|
-| `ruby_wasm_patches/fix-default-parser-parse-y.patch` | Force parse.y parser in `version.c` | Ruby 3.4, 4.0 |
-| `ruby_wasm_patches/fix-deprecate-class-eval-block.patch` | Convert deprecate.rb to heredoc style | Ruby 3.4, 4.0 (different patch content) |
+| `ruby_wasm_patches/fix-default-parser-parse-y.patch` | Force parse.y parser in `version.c` | Ruby 3.4, 4.0 (Closed) |
+| `ruby_wasm_patches/fix-deprecate-class-eval-block.patch` | Convert deprecate.rb to heredoc style | Ruby 3.4, 4.0 (Closed) |
 | `lib/tasks/wasmify_patches.rake` | Source URL override (`build_config_aliases`), parser injection, shim.rb patch (`require "rubygems"`) | Ruby 3.3, 3.4, 4.0 (PRs have been merged upstream, but the patch is still required for the current gem version; will be removed after the next release) |
 
 ---
@@ -82,8 +82,8 @@ Temporary workarounds were required due to lack of Ruby 4.0 platform gem support
 
 | Issue / PR | Repository | Status |
 |---|---|---|
-| [#4065](https://github.com/ruby/prism/issues/4065) Prism parser WASM crash | [ruby/prism](https://github.com/ruby/prism) | Open |
-| [#9456](https://github.com/ruby/rubygems/issues/9456) `class_eval` block passing in WASM | [ruby/rubygems](https://github.com/ruby/rubygems) | Open |
+| [#4065](https://github.com/ruby/prism/issues/4065) Prism parser WASM crash | [ruby/prism](https://github.com/ruby/prism) | Closed |
+| [#9456](https://github.com/ruby/rubygems/issues/9456) `class_eval` block passing in WASM | [ruby/rubygems](https://github.com/ruby/rubygems) | Closed |
 | [#11](https://github.com/palkan/wasmify-rails/pull/11) `build_source_aliases` rename | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Merged (April 2026, gem not yet updated) |
 | [#12](https://github.com/palkan/wasmify-rails/pull/12) `shim.rb` missing `require "rubygems"` for Ruby 4.0 | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Merged (April 2026, gem not yet updated) |
 | [#7](https://github.com/palkan/wasmify-rails/issues/7) bigdecimal compatibility with Ruby 3.4 | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Open |
