@@ -42,8 +42,8 @@ These issues were first discovered during Ruby 3.4.8 WASM support (PR [#527](htt
 
 - **Symptom**: WASM build silently uses wrong Ruby source tarball
 - **Root cause**: `ruby_wasm` 2.9.0 renamed `build_source_aliases` to `build_config_aliases`, so wasmify-rails 0.4.1's monkey-patch is silently ignored
-- **Fix**: `lib/tasks/wasmify_patches.rake` overrides the correct `build_config_aliases` method to set source URLs for Ruby 3.3.11, 3.4.8, and 4.0.2 (temporary workaround until upstream PR is merged)
-- **Upstream**: [palkan/wasmify-rails#11](https://github.com/palkan/wasmify-rails/pull/11)
+**Fix**: `lib/tasks/wasmify_patches.rake` overrides the `build_config_aliases` method to set correct source URLs for Ruby 3.3.11, 3.4.8, and 4.0.2 (temporary workaround for wasmify-rails <= 0.4.1).
+  - *April 2026*: [palkan/wasmify-rails#11](https://github.com/palkan/wasmify-rails/pull/11) has been merged to main, but the gem version is not yet updated. The patch is still required for now, and will be removed after the next gem release.
 
 ### 4. bigdecimal in exclude_gems causes LoadError
 
@@ -62,8 +62,8 @@ These issues appeared when upgrading from Ruby 3.4 to 4.0 (PRs [#528](https://gi
 
 - **Symptom**: `uninitialized constant Gem::Deprecate (NameError)` at boot in WASM
 - **Root cause**: Ruby 4.0 pre-defines the `Gem` module at the C level, causing `require "rubygems"` to be skipped (it thinks RubyGems is already loaded). But `Gem::Deprecate` and other classes are not actually defined
-- **Fix**: Auto-patch wasmify-rails' `shim.rb` to add `require "rubygems"` before `require "/bundle/setup"`. Implemented in `lib/tasks/wasmify_patches.rake` (idempotent, temporary workaround until upstream PR is merged)
-- **Upstream**: [palkan/wasmify-rails#12](https://github.com/palkan/wasmify-rails/pull/12)
+**Fix**: Auto-patch wasmify-rails' `shim.rb` to add `require "rubygems"` before `require "/bundle/setup"` (idempotent, temporary workaround via `lib/tasks/wasmify_patches.rake`).
+  - *April 2026*: [palkan/wasmify-rails#12](https://github.com/palkan/wasmify-rails/pull/12) has been merged to main, but the gem version is not yet updated. The patch is still required for now, and will be removed after the next gem release.
 
 
 ### 6. ruby_wasm platform gem incompatible with Ruby 4.0 (Closed)
@@ -79,7 +79,7 @@ Temporary workarounds were required due to lack of Ruby 4.0 platform gem support
 |---|---|---|
 | `ruby_wasm_patches/fix-default-parser-parse-y.patch` | Force parse.y parser in `version.c` | Ruby 3.4, 4.0 |
 | `ruby_wasm_patches/fix-deprecate-class-eval-block.patch` | Convert deprecate.rb to heredoc style | Ruby 3.4, 4.0 (different patch content) |
-| `lib/tasks/wasmify_patches.rake` | Source URL override, parser injection, shim.rb patch | Ruby 3.3, 3.4, 4.0 |
+| `lib/tasks/wasmify_patches.rake` | Source URL override (`build_config_aliases`), parser injection, shim.rb patch (`require "rubygems"`) | Ruby 3.3, 3.4, 4.0 (PRs have been merged upstream, but the patch is still required for the current gem version; will be removed after the next release) |
 
 ---
 
@@ -89,7 +89,7 @@ Temporary workarounds were required due to lack of Ruby 4.0 platform gem support
 |---|---|---|
 | [#4065](https://github.com/ruby/prism/issues/4065) Prism parser WASM crash | [ruby/prism](https://github.com/ruby/prism) | Open |
 | [#9456](https://github.com/ruby/rubygems/issues/9456) `class_eval` block passing in WASM | [ruby/rubygems](https://github.com/ruby/rubygems) | Open |
-| [#11](https://github.com/palkan/wasmify-rails/pull/11) `build_source_aliases` rename | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Open |
-| [#12](https://github.com/palkan/wasmify-rails/pull/12) `shim.rb` missing `require "rubygems"` for Ruby 4.0 | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Open |
+| [#11](https://github.com/palkan/wasmify-rails/pull/11) `build_source_aliases` rename | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Merged (April 2026, gem not yet updated) |
+| [#12](https://github.com/palkan/wasmify-rails/pull/12) `shim.rb` missing `require "rubygems"` for Ruby 4.0 | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Merged (April 2026, gem not yet updated) |
 | [#7](https://github.com/palkan/wasmify-rails/issues/7) bigdecimal compatibility with Ruby 3.4 | [palkan/wasmify-rails](https://github.com/palkan/wasmify-rails) | Open |
 | [#636](https://github.com/ruby/ruby.wasm/issues/636) Platform gem Ruby 4.0 precompiled binaries | [ruby/ruby.wasm](https://github.com/ruby/ruby.wasm) | Closed |
