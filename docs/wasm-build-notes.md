@@ -21,22 +21,17 @@ This document records the issues encountered and workarounds applied when buildi
 
 These issues were first discovered during Ruby 3.4.8 WASM support (PR [#527](https://github.com/aim2bpg/rubree/pull/527)). Issues 1–2 also apply to Ruby 4.0.
 
-### 1. Prism parser crashes in WASM
 
-- **Symptom**: `pm_parser_init` causes `memory fault at wasm address 0xfffffffc` — out-of-bounds memory access during `eval` / `class_eval` with string arguments
-- **Root cause**: Prism parser's C implementation has memory access patterns incompatible with WASM's linear memory model
-- **Fix**: Two-part workaround:
-  1. Source patch: force `RB_DEFAULT_PARSER` to `RB_DEFAULT_PARSER_PARSE_Y` in `version.c` (`ruby_wasm_patches/fix-default-parser-parse-y.patch`)
-  2. Build config: inject `--with-parser=parse.y` via monkey-patch in `lib/tasks/wasmify_patches.rake`
+### 1. Prism parser crashes in WASM (Closed)
+
+- **Status**: No longer reproducible. The original memory fault was due to a misconfiguration in wasmify-rails (source URL override and missing patches). After correcting the setup, the crash does not occur, and the issue is considered resolved upstream.
 - **Upstream**: [ruby/prism#4065](https://github.com/ruby/prism/issues/4065)
 
-### 2. RubyGems deprecate.rb block passing failure
 
-- **Symptom**: `ArgumentError: wrong number of arguments (given 0, expected 1..3)` at boot
-- **Root cause**: WASM runtime does not pass blocks through `class_eval do ... end` correctly. RubyGems' `deprecate.rb` uses `class_eval do / define_method` pattern which fails
-- **Fix**: Source patch converting `class_eval do/define_method` to `class_eval <<~RUBY/def` heredoc style (`ruby_wasm_patches/fix-deprecate-class-eval-block.patch`)
+### 2. RubyGems deprecate.rb block passing failure (Closed)
+
+- **Status**: No longer reproducible. The error was due to an outdated patch and/or old RubyGems version in wasmify-rails. With the latest upstream fixes and correct configuration, the problem does not occur.
 - **Upstream**: [ruby/rubygems#9456](https://github.com/ruby/rubygems/issues/9456)
-- **Note**: The patch differs between Ruby 3.4 and 4.0 due to changed method signatures (`rubygems_deprecate` gained `version` parameter in 4.0)
 
 ### 3. wasmify-rails source URL override broken
 
