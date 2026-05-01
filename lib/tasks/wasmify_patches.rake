@@ -3,7 +3,7 @@
 # Monkey-patches for ruby_wasm / wasmify-rails to support Ruby 3.4+ WASM builds.
 #
 # Fixes applied:
-#   1. Source URL override — use latest Ruby patch versions (3.3.11, 3.4.8, 4.0.2)
+#   1. Source URL override — use latest Ruby patch versions (4.0.3)
 #   2. Parser override   — force parse.y instead of Prism (Prism crashes in WASM)
 #   3. shim.rb patch     — add `require "rubygems"` for Ruby 4.0 (Gem pre-defined at C level)
 #
@@ -17,7 +17,7 @@ require "wasmify/rails/builder"
 RubyWasm::CLI.singleton_class.prepend(Module.new do
   def build_config_aliases(root)
     super.tap do |sources|
-      sources["4.0"][:src][:url] = "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-4.0.2.tar.gz"
+      sources["4.0"][:src][:url] = "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-4.0.3.tar.gz"
     end
   end
 end)
