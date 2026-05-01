@@ -518,12 +518,12 @@ RSpec.describe "RegularExpressionFlow" do
       show_invisibles_checkbox.uncheck
       expect(show_invisibles_checkbox).not_to be_checked
 
-      expect(page).to have_no_content 'foo bar foo⏎'
+      expect(page).to have_no_text 'foo bar foo⏎'
 
       show_invisibles_checkbox.check
       expect(show_invisibles_checkbox).to be_checked
 
-      expect(page).to have_content 'foo bar foo⏎'
+      expect(page).to have_text 'foo bar foo⏎'
     end
   end
 
@@ -532,11 +532,11 @@ RSpec.describe "RegularExpressionFlow" do
 
     it 'displays section titles and code examples correctly' do
       RegularExpression::Reference.sections.each do |section|
-        expect(page).to have_content(section[:title])
+        expect(page).to have_text(section[:title])
 
         section[:items].each do |code, description|
-          expect(page).to have_content(code)
-          expect(page).to have_content(description)
+          expect(page).to have_text(code)
+          expect(page).to have_text(description)
           expect(page).to have_css "code", text: code
         end
       end
