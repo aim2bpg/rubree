@@ -32,6 +32,8 @@ Inspired by: https://rubular.com
 
 - [Foreman](https://github.com/ddollar/foreman/) for jsbundling-rails, cssbundling-rails
 - [Lefthook](https://github.com/evilmartians/lefthook/) Fast and powerful Git hooks manager for any type of projects
+- [Dev Containers](https://containers.dev/) reproducible development environment via `.devcontainer/`
+- [Claude Code](https://claude.ai/code) AI coding agent for development assistance
 
 ### 🧹 Linting and testing
 
@@ -59,14 +61,24 @@ Inspired by: https://rubular.com
 
 ## Getting started
 
-### Install for development
-
 1. Clone the repo locally:
 
 ```
 git clone https://github.com/aim2bpg/rubree.git
 cd rubree
 ```
+
+### Using Dev Container (recommended)
+
+2. Open the folder in [VS Code](https://code.visualstudio.com/) with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and select **Reopen in Container**. Ruby, Node.js, and Rust are set up automatically.
+
+3. (Optional) Install [Claude Code](https://claude.ai/code) for AI-assisted development:
+
+```
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+### Install for development (manual)
 
 2. Install gem and NPM packages and start the application locally:
 
