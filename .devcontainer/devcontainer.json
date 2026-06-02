@@ -1,0 +1,6 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu24.04",
+  "remoteUser": "vscode",
+  "containerUser": "vscode",
+  "postCreateCommand": "bash -lc 'curl -fsSL https://claude.ai/install.sh | bash'"
+}
