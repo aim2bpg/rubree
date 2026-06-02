@@ -37,7 +37,7 @@ These issues were first discovered during Ruby 3.4.8 WASM support (PR [#527](htt
 
 - **Symptom**: WASM build silently uses wrong Ruby source tarball
 - **Root cause**: `ruby_wasm` 2.9.0 renamed `build_source_aliases` to `build_config_aliases`, so wasmify-rails 0.4.1's monkey-patch is silently ignored
-**Fix**: `lib/tasks/wasmify_patches.rake` overrides the `build_config_aliases` method to set correct source URLs for Ruby 3.3.11, 3.4.8, and 4.0.2 (temporary workaround for wasmify-rails <= 0.4.1).
+**Fix**: `lib/tasks/wasmify_patches.rake` overrides the `build_config_aliases` method to set correct source URLs for Ruby 4.0.5 (temporary workaround for wasmify-rails <= 0.4.1).
   - *April 2026*: [palkan/wasmify-rails#11](https://github.com/palkan/wasmify-rails/pull/11) has been merged to main, but the gem version is not yet updated. The patch is still required for now, and will be removed after the next gem release.
 
 ### 4. bigdecimal in exclude_gems causes LoadError
