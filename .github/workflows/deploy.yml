@@ -29,15 +29,22 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
+      - name: Read tool versions
+        id: versions
+        # .rust-version: Ref https://github.com/kateinoigakukun/wasi-vfs/blob/main/rust-toolchain.toml
+        # .wasi-vfs-version: Ref https://github.com/kateinoigakukun/wasi-vfs/releases
+        run: |
+          echo "rust=$(cat .rust-version | tr -d '[:space:]')" >> $GITHUB_OUTPUT
+          echo "wasi-vfs=$(cat .wasi-vfs-version | tr -d '[:space:]')" >> $GITHUB_OUTPUT
+
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          toolchain: 1.92.0 # Ref: https://github.com/kateinoigakukun/wasi-vfs/blob/main/rust-toolchain.toml
+          toolchain: ${{ steps.versions.outputs.rust }}
 
       - name: Install wasi-vfs
-        env:
-          WASI_VFS_VERSION: 0.6.2 # Ref: https://github.com/kateinoigakukun/wasi-vfs/releases
         run: |
+          WASI_VFS_VERSION="${{ steps.versions.outputs.wasi-vfs }}"
           curl -LO "https://github.com/kateinoigakukun/wasi-vfs/releases/download/v${WASI_VFS_VERSION}/wasi-vfs-cli-x86_64-unknown-linux-gnu.zip"
           unzip wasi-vfs-cli-x86_64-unknown-linux-gnu.zip
           sudo mv wasi-vfs /usr/local/bin/wasi-vfs
@@ -65,14 +72,14 @@ jobs:
           path: |
             build
             rubies
-          key: ${{ runner.os }}-v1-ruby-wasm
+          key: ${{ runner.os }}-v1-${{ hashFiles('.ruby-version') }}-ruby-wasm
 
       - name: Cache Compiled ruby.wasm Module
         id: cache-ruby-wasm-module
         uses: actions/cache@v5
         with:
           path: tmp/wasmify/ruby.wasm
-          key: ${{ runner.os }}-v1-${{ hashFiles('**/Gemfile.lock') }}-ruby-wasm-module
+          key: ${{ runner.os }}-v1-${{ hashFiles('.ruby-version', '**/Gemfile.lock') }}-ruby-wasm-module
 
       - name: Build ruby.wasm (if needed)
         if: steps.cache-ruby-wasm-module.outputs.cache-hit != 'true'
