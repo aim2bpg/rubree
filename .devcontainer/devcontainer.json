@@ -2,5 +2,14 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu24.04",
   "remoteUser": "vscode",
   "containerUser": "vscode",
-  "postCreateCommand": "bash -lc 'curl -fsSL https://claude.ai/install.sh | bash'"
+  "initializeCommand": "mkdir -p ${localEnv:HOME}/.claude ${localEnv:HOME}/.rbenv ${localEnv:HOME}/.nvm ${localEnv:HOME}/.cargo ${localEnv:HOME}/.rustup ${localEnv:HOME}/.cache/ms-playwright",
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.rbenv,target=/home/vscode/.rbenv,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.nvm,target=/home/vscode/.nvm,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.cargo,target=/home/vscode/.cargo,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.rustup,target=/home/vscode/.rustup,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.cache/ms-playwright,target=/home/vscode/.cache/ms-playwright,type=bind,consistency=cached"
+  ],
+  "postCreateCommand": "bash .devcontainer/setup.sh"
 }
