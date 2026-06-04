@@ -12,9 +12,13 @@ sudo apt-get install -y \
 # --- rbenv + Ruby ---
 if [ ! -d "$HOME/.rbenv/.git" ]; then
   git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+else
+  git -C "$HOME/.rbenv" pull
 fi
 if [ ! -d "$HOME/.rbenv/plugins/ruby-build" ]; then
   git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+else
+  git -C "$HOME/.rbenv/plugins/ruby-build" pull
 fi
 
 export PATH="$HOME/.rbenv/bin:$PATH"
@@ -84,3 +88,10 @@ add_if_missing 'eval "$(rbenv init -)"'
 add_if_missing 'export NVM_DIR="$HOME/.nvm"'
 add_if_missing '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
 add_if_missing '. "$HOME/.cargo/env"'
+
+# --- Claude Code ---
+if ! command -v claude &>/dev/null; then
+  sudo mkdir -p "$HOME/.cache/claude"
+  sudo chown -R "$USER:$USER" "$HOME/.cache"
+  curl -fsSL https://claude.ai/install.sh | bash
+fi
