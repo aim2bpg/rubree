@@ -1,7 +1,8 @@
 async function registerServiceWorker() {
   const ua = navigator.userAgent;
   const isFirefox = ua.includes("Firefox");
-  const isSafari = /^((?!chrome|android|crios).)*safari/i.test(ua);
+  const isCriOS = ua.includes("CriOS"); // Chrome on iOS (uses WebKit, same WASM limitations as Safari)
+  const isSafari = !isCriOS && /^((?!chrome|android).)*safari/i.test(ua);
 
   const oldRegistrations = await navigator.serviceWorker.getRegistrations();
   for (const registration of oldRegistrations) {
@@ -20,8 +21,8 @@ async function registerServiceWorker() {
     });
     return;
   } catch (error) {
-    // Show warning banner for Safari/Firefox
-    if (isSafari || isFirefox) {
+    // Show warning banner for Safari/Firefox/Chrome on iOS
+    if (isSafari || isFirefox || isCriOS) {
       try {
         const warningEl = document.getElementById("browser-warning");
         const detectedBrowserEl = document.getElementById("detected-browser");
@@ -29,7 +30,7 @@ async function registerServiceWorker() {
           warningEl.classList.remove("hidden");
         }
         if (detectedBrowserEl) {
-          const browserName = isFirefox ? "Firefox" : "Safari";
+          const browserName = isFirefox ? "Firefox" : isCriOS ? "Chrome (iOS)" : "Safari";
           detectedBrowserEl.textContent = browserName;
         }
       } catch (e) {}
@@ -88,11 +89,12 @@ async function init() {
   // Detect browser first
   const ua = navigator.userAgent;
   const isFirefox = ua.includes("Firefox");
-  const isSafari = /^((?!chrome|android|crios).)*safari/i.test(ua);
-  const browserName = isFirefox ? "Firefox" : isSafari ? "Safari" : "Other";
-  
-  // Show warning banner immediately for Safari/Firefox
-  if (isSafari || isFirefox) {
+  const isCriOS = ua.includes("CriOS"); // Chrome on iOS (uses WebKit, same WASM limitations as Safari)
+  const isSafari = !isCriOS && /^((?!chrome|android).)*safari/i.test(ua);
+  const browserName = isFirefox ? "Firefox" : isCriOS ? "Chrome (iOS)" : isSafari ? "Safari" : "Other";
+
+  // Show warning banner immediately for Safari/Firefox/Chrome on iOS
+  if (isSafari || isFirefox || isCriOS) {
     console.warn("[boot] Unsupported browser detected: " + browserName);
     try {
       const warningEl = document.getElementById("browser-warning");
