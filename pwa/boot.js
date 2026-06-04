@@ -1,8 +1,8 @@
 async function registerServiceWorker() {
   const ua = navigator.userAgent;
   const isFirefox = ua.includes("Firefox");
-  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
-  
+  const isSafari = /^((?!chrome|android|crios).)*safari/i.test(ua);
+
   const oldRegistrations = await navigator.serviceWorker.getRegistrations();
   for (const registration of oldRegistrations) {
     if (registration.installing?.state === "installing") {
@@ -88,7 +88,7 @@ async function init() {
   // Detect browser first
   const ua = navigator.userAgent;
   const isFirefox = ua.includes("Firefox");
-  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+  const isSafari = /^((?!chrome|android|crios).)*safari/i.test(ua);
   const browserName = isFirefox ? "Firefox" : isSafari ? "Safari" : "Other";
   
   // Show warning banner immediately for Safari/Firefox
