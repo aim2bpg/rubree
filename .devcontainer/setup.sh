@@ -29,6 +29,7 @@ if ! rbenv versions --bare | grep -qx "$RUBY_VERSION"; then
   rbenv install "$RUBY_VERSION"
 fi
 rbenv global "$RUBY_VERSION"
+rbenv rehash
 
 # --- nvm + Node.js ---
 if [ ! -s "$HOME/.nvm/nvm.sh" ]; then
@@ -44,6 +45,15 @@ if [ ! -d "$NVM_DIR/versions/node/v$NODE_VERSION" ]; then
 fi
 nvm use "$NODE_VERSION"
 nvm alias default "$NODE_VERSION"
+
+# Create system-wide symlinks so non-interactive shells (lefthook hooks) can find node/yarn
+sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/node" /usr/local/bin/node
+sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/npm" /usr/local/bin/npm
+sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/npx" /usr/local/bin/npx
+if ! "$NVM_DIR/versions/node/v$NODE_VERSION/bin/npm" list -g yarn --depth=0 &>/dev/null; then
+  "$NVM_DIR/versions/node/v$NODE_VERSION/bin/npm" install -g yarn
+fi
+sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/yarn" /usr/local/bin/yarn
 
 # --- Playwright browsers (MCP + system tests) ---
 # chromium: used by Playwright MCP server

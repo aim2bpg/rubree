@@ -12,5 +12,6 @@
     "source=${localEnv:HOME}/.rustup,target=/home/vscode/.rustup,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.cache/ms-playwright,target=/home/vscode/.cache/ms-playwright,type=bind,consistency=cached"
   ],
-  "postCreateCommand": "bash .devcontainer/setup.sh"
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "~/.rbenv/bin/rbenv rehash"
 }
