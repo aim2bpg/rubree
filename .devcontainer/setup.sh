@@ -58,10 +58,11 @@ sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/yarn" /usr/local/bin/yarn
 # --- Playwright browsers (MCP + system tests) ---
 # chromium: used by Playwright MCP server
 # chromium-headless-shell: used by capybara-playwright-driver in RSpec system tests
+# firefox, webkit: used by pre-push system tests (lefthook)
 if ! npx -y playwright --version &>/dev/null; then
-  npx -y playwright install chromium chromium-headless-shell --with-deps
+  npx -y playwright install chromium chromium-headless-shell firefox webkit --with-deps
 else
-  npx playwright install chromium chromium-headless-shell --with-deps
+  npx playwright install chromium chromium-headless-shell firefox webkit --with-deps
 fi
 
 # --- Rust + wasi-vfs ---
