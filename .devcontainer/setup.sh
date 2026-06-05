@@ -81,6 +81,13 @@ if ! command -v wasi-vfs &>/dev/null; then
   rm -rf /tmp/wasi-vfs.zip /tmp/wasi-vfs
 fi
 
+# --- Google Chrome (for Selenium/Chrome system tests) ---
+if ! command -v google-chrome &>/dev/null; then
+  curl -fsSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /tmp/google-chrome.deb
+  sudo apt-get install -y /tmp/google-chrome.deb
+  rm /tmp/google-chrome.deb
+fi
+
 # --- gitleaks (secret scanner used in pre-commit hook) ---
 GITLEAKS_VERSION="8.26.0"
 if ! command -v gitleaks &>/dev/null; then
