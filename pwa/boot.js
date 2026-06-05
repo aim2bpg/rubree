@@ -21,8 +21,8 @@ async function registerServiceWorker() {
     });
     return;
   } catch (error) {
-    // Show warning banner for Safari/Firefox/Chrome on iOS
-    if (isSafari || isFirefox || isCriOS) {
+    // Show warning banner for Safari/Firefox
+    if (isSafari || isFirefox) {
       try {
         const warningEl = document.getElementById("browser-warning");
         const detectedBrowserEl = document.getElementById("detected-browser");
@@ -30,7 +30,7 @@ async function registerServiceWorker() {
           warningEl.classList.remove("hidden");
         }
         if (detectedBrowserEl) {
-          const browserName = isFirefox ? "Firefox" : isCriOS ? "Chrome (iOS)" : "Safari";
+          const browserName = isFirefox ? "Firefox" : "Safari";
           detectedBrowserEl.textContent = browserName;
         }
       } catch (e) {}
@@ -89,12 +89,12 @@ async function init() {
   // Detect browser first
   const ua = navigator.userAgent;
   const isFirefox = ua.includes("Firefox");
-  const isCriOS = ua.includes("CriOS"); // Chrome on iOS (uses WebKit, same WASM limitations as Safari)
+  const isCriOS = ua.includes("CriOS"); // Chrome on iOS
   const isSafari = !isCriOS && /^((?!chrome|android).)*safari/i.test(ua);
-  const browserName = isFirefox ? "Firefox" : isCriOS ? "Chrome (iOS)" : isSafari ? "Safari" : "Other";
+  const browserName = isFirefox ? "Firefox" : isSafari ? "Safari" : "Other";
 
-  // Show warning banner immediately for Safari/Firefox/Chrome on iOS
-  if (isSafari || isFirefox || isCriOS) {
+  // Show warning banner immediately for Safari/Firefox
+  if (isSafari || isFirefox) {
     console.warn("[boot] Unsupported browser detected: " + browserName);
     try {
       const warningEl = document.getElementById("browser-warning");
