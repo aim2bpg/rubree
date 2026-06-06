@@ -4,5 +4,39 @@
       "command": "npx",
       "args": ["@playwright/mcp@latest", "--headless"]
     }
+  },
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(curl * | sh*)",
+      "Bash(curl * | bash*)",
+      "Bash(wget * | sh*)",
+      "Bash(wget * | bash*)",
+      "Read(./config/master.key)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./**/.ssh/**)"
+    ],
+    "ask": [
+      "Bash(sudo *)",
+      "Bash(gem push *)",
+      "Bash(npm publish*)",
+      "Bash(yarn publish*)"
+    ],
+    "disableBypassPermissionsMode": "disable"
+  },
+  "enableAllProjectMcpServers": false,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command // empty' | { read -r cmd; if echo \"$cmd\" | grep -qE 'git[[:space:]]+push' && echo \"$cmd\" | grep -qE '(--force|--force-with-lease|-f\\b)' && echo \"$cmd\" | grep -qE '\\b(main|master)\\b'; then printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Force-pushing to main or master is blocked by project policy\"}}\\n'; fi; }"
+          }
+        ]
+      }
+    ]
   }
 }
