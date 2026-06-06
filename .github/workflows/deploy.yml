@@ -78,7 +78,7 @@ jobs:
           path: |
             build
             rubies
-          key: ${{ runner.os }}-v1-${{ hashFiles('.ruby-version') }}-ruby-wasm
+          key: ${{ runner.os }}-v1-${{ hashFiles('.ruby-version', '**/Gemfile.lock') }}-ruby-wasm
 
       - name: Cache Compiled ruby.wasm Module
         id: cache-ruby-wasm-module
@@ -90,12 +90,6 @@ jobs:
       - name: Build ruby.wasm (if needed)
         if: steps.cache-ruby-wasm-module.outputs.cache-hit != 'true'
         run: bin/rails wasmify:build
-
-      - name: Cache node_modules (root)
-        uses: actions/cache@v5
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-root-node_modules-${{ hashFiles('yarn.lock') }}
 
       - name: Pack app.wasm
         run: bin/rails wasmify:pack
