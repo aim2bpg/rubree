@@ -107,8 +107,9 @@ add_if_missing 'export NVM_DIR="$HOME/.nvm"'
 add_if_missing '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
 add_if_missing '. "$HOME/.cargo/env"'
 
-# --- Claude Code ---
-if ! command -v claude &>/dev/null; then
+# --- Claude Code (optional) ---
+# Set RUBREE_INSTALL_CLAUDE_CODE=1 in your shell profile to install Claude Code (https://claude.ai/code).
+if [ "${RUBREE_INSTALL_CLAUDE_CODE:-0}" = "1" ] && ! command -v claude &>/dev/null; then
   sudo mkdir -p "$HOME/.cache/claude"
   sudo chown -R "$USER:$USER" "$HOME/.cache"
   curl -fsSL https://claude.ai/install.sh | bash

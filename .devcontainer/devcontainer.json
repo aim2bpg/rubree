@@ -13,7 +13,8 @@
     "source=${localEnv:HOME}/.cache/ms-playwright,target=/home/vscode/.cache/ms-playwright,type=bind,consistency=cached"
   ],
   "remoteEnv": {
-    "REMOTE_CONTAINERS": "true"
+    "REMOTE_CONTAINERS": "true",
+    "RUBREE_INSTALL_CLAUDE_CODE": "${localEnv:RUBREE_INSTALL_CLAUDE_CODE}"
   },
   "postCreateCommand": "bash .devcontainer/setup.sh",
   "postStartCommand": "~/.rbenv/bin/rbenv rehash"
