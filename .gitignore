@@ -10,6 +10,9 @@
 # Ignore all environment files.
 /.env*
 
+# Marker file to opt in to installing Claude Code in the Dev Container.
+/.install-claude-code
+
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
