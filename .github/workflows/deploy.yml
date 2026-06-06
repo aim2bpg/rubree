@@ -78,6 +78,11 @@ jobs:
           path: |
             build
             rubies
+          # Must include Gemfile.lock: the cached rubies/*.tar.gz filename embeds an MD5
+          # hash of native-extension gem versions (e.g. websocket-driver). If that hash
+          # changes without the cache key changing, the restored tarball no longer matches
+          # what wasmify:build expects, forcing a slow rebuild AND a permanent "cache hit,
+          # not saving" loop that never refreshes the stale entry.
           key: ${{ runner.os }}-v1-${{ hashFiles('.ruby-version', '**/Gemfile.lock') }}-ruby-wasm
 
       - name: Cache Compiled ruby.wasm Module
