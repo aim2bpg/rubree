@@ -29,6 +29,7 @@ if ! rbenv versions --bare | grep -qx "$RUBY_VERSION"; then
   rbenv install "$RUBY_VERSION"
 fi
 rbenv global "$RUBY_VERSION"
+rbenv rehash
 
 # --- nvm + Node.js ---
 if [ ! -s "$HOME/.nvm/nvm.sh" ]; then
@@ -45,13 +46,23 @@ fi
 nvm use "$NODE_VERSION"
 nvm alias default "$NODE_VERSION"
 
+# Create system-wide symlinks so non-interactive shells (lefthook hooks) can find node/yarn
+sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/node" /usr/local/bin/node
+sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/npm" /usr/local/bin/npm
+sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/npx" /usr/local/bin/npx
+if ! "$NVM_DIR/versions/node/v$NODE_VERSION/bin/npm" list -g yarn --depth=0 &>/dev/null; then
+  "$NVM_DIR/versions/node/v$NODE_VERSION/bin/npm" install -g yarn
+fi
+sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/yarn" /usr/local/bin/yarn
+
 # --- Playwright browsers (MCP + system tests) ---
 # chromium: used by Playwright MCP server
 # chromium-headless-shell: used by capybara-playwright-driver in RSpec system tests
+# firefox, webkit: used by pre-push system tests (lefthook)
 if ! npx -y playwright --version &>/dev/null; then
-  npx -y playwright install chromium chromium-headless-shell --with-deps
+  npx -y playwright install chromium chromium-headless-shell firefox webkit --with-deps
 else
-  npx playwright install chromium chromium-headless-shell --with-deps
+  npx playwright install chromium chromium-headless-shell firefox webkit --with-deps
 fi
 
 # --- Rust + wasi-vfs ---
@@ -68,6 +79,13 @@ if ! command -v wasi-vfs &>/dev/null; then
   unzip -q /tmp/wasi-vfs.zip -d /tmp/wasi-vfs
   sudo mv /tmp/wasi-vfs/wasi-vfs /usr/local/bin/wasi-vfs
   rm -rf /tmp/wasi-vfs.zip /tmp/wasi-vfs
+fi
+
+# --- Google Chrome (for Selenium/Chrome system tests) ---
+if ! command -v google-chrome &>/dev/null; then
+  curl -fsSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /tmp/google-chrome.deb
+  sudo apt-get install -y /tmp/google-chrome.deb
+  rm /tmp/google-chrome.deb
 fi
 
 # --- gitleaks (secret scanner used in pre-commit hook) ---
@@ -89,8 +107,9 @@ add_if_missing 'export NVM_DIR="$HOME/.nvm"'
 add_if_missing '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
 add_if_missing '. "$HOME/.cargo/env"'
 
-# --- Claude Code ---
-if ! command -v claude &>/dev/null; then
+# --- Claude Code (optional) ---
+# Set RUBREE_INSTALL_CLAUDE_CODE=1 in your shell profile to install Claude Code (https://claude.ai/code).
+if [ "${RUBREE_INSTALL_CLAUDE_CODE:-0}" = "1" ] && ! command -v claude &>/dev/null; then
   sudo mkdir -p "$HOME/.cache/claude"
   sudo chown -R "$USER:$USER" "$HOME/.cache"
   curl -fsSL https://claude.ai/install.sh | bash

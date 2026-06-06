@@ -62,8 +62,14 @@ jobs:
           cache: yarn
           cache-dependency-path: ./pwa/yarn.lock
 
-      - name: Install Yarn
-        run: npm install -g yarn
+      - name: Extract Yarn version
+        id: yarn-version
+        run: echo "version=$(jq -r '.packageManager' pwa/package.json | cut -d'@' -f2)" >> "$GITHUB_OUTPUT"
+
+      - name: Enable Yarn via Corepack
+        run: |
+          corepack enable
+          corepack prepare "yarn@${{ steps.yarn-version.outputs.version }}" --activate
 
       - name: Cache Ruby Wasm Artefacts
         id: cache-ruby-wasm
@@ -88,10 +94,19 @@ jobs:
       - name: Pack app.wasm
         run: bin/rails wasmify:pack
 
+      - name: Cache node_modules (PWA)
+        id: pwa-node-modules-cache
+        uses: actions/cache@v5
+        with:
+          path: pwa/node_modules
+          key: ${{ runner.os }}-pwa-node_modules-${{ hashFiles('pwa/yarn.lock') }}
+
       - name: Build PWA
         working-directory: pwa
         run: |
-          yarn install
+          if [ "${{ steps.pwa-node-modules-cache.outputs.cache-hit }}" != "true" ]; then
+            yarn install
+          fi
           yarn build
 
       - name: Prepare static files (sitemap, robots, icons)

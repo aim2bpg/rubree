@@ -37,18 +37,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: ./.node-version
-          cache: yarn
-          cache-dependency-path: ./yarn.lock
+      - name: Extract Biome version
+        id: biome-version
+        run: echo "version=$(jq -r '.devDependencies["@biomejs/biome"]' package.json)" >> "$GITHUB_OUTPUT"
 
       - name: Setup Biome
         uses: biomejs/setup-biome@v2
         with:
-          version: latest
-        
+          version: ${{ steps.biome-version.outputs.version }}
+
       - name: Run Biome
         run: biome ci app/assets/stylesheets app/javascript app/views
 
@@ -59,12 +56,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Extract Gitleaks version
+        id: gitleaks-version
+        run: echo "version=$(grep -oP 'GITLEAKS_VERSION=\"\K[^\"]+' .devcontainer/setup.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Gitleaks binary
+        id: gitleaks-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.local/bin/gitleaks
+          key: gitleaks-${{ runner.os }}-${{ steps.gitleaks-version.outputs.version }}
+
+      - name: Install Gitleaks
+        if: steps.gitleaks-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.local/bin
+          VERSION="${{ steps.gitleaks-version.outputs.version }}"
+          curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C ~/.local/bin gitleaks
+
       - name: Run Gitleaks
         run: |
-          docker run --rm -v "$(pwd):$(pwd)" -w "$(pwd)" \
-          zricethezav/gitleaks detect --source="$(pwd)" --verbose --redact \
-          --log-opts="--all --full-history"
-          
+          export PATH="$HOME/.local/bin:$PATH"
+          gitleaks detect --source="$(pwd)" --verbose --redact --log-opts="--all --full-history"
+
   sast:
     name: SAST
     runs-on: ubuntu-latest
@@ -120,7 +135,15 @@ jobs:
           npx playwright install chromium
           npx playwright install-deps chromium
 
+      - name: Cache node_modules
+        id: node-modules-cache
+        uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
+
       - name: Install JS dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
       - name: Build frontend assets

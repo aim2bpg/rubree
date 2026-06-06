@@ -72,7 +72,14 @@ cd rubree
 
 2. Open the folder in [VS Code](https://code.visualstudio.com/) with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and select **Reopen in Container**. Ruby, Node.js, and Rust are set up automatically.
 
-3. (Optional) Install [Claude Code](https://claude.ai/code) for AI-assisted development:
+3. (Optional) [Claude Code](https://claude.ai/code) is not installed by default. To have it installed automatically when the container is created, add to your host shell profile before reopening in the container:
+
+```sh
+echo 'export RUBREE_INSTALL_CLAUDE_CODE=1' >> ~/.bashrc   # bash
+echo 'export RUBREE_INSTALL_CLAUDE_CODE=1' >> ~/.zshrc    # zsh
+```
+
+Otherwise, install it manually inside the container:
 
 ```
 curl -fsSL https://claude.ai/install.sh | bash
