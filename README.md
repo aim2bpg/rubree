@@ -12,6 +12,22 @@ Inspired by: https://rubular.com
 
 ![Site View](https://raw.githubusercontent.com/aim2bpg/rubree/main/app/assets/images/site_view.png)
 
+## Usage
+
+![Rubree usage demo](docs/screenshots/demo/usage_demo.gif)
+
+| Step | Action | What happens |
+|---|---|---|
+| 1 | Click **Get started** | Opens the Terms of Service modal |
+| 2 | Click **Agree and Start** | Boots the Ruby WASM runtime (~10 s on first visit) |
+| 3 | Enter a regex in **Your regular expression** | Railroad diagram renders instantly |
+| 4 | Enter text in **Your test string** | Matches are highlighted in real time |
+| 5 | Click 🔍 on the diagram | Enlarge the railroad diagram in a modal |
+| 6 | Enter `\1!` in **Substitution** | Preview substitution result (`hello! world! foo`) |
+| 7 | Click the share icon (↗) | Copies a permalink to clipboard |
+
+---
+
 ## Technology stack
 
 ### ⚙️ Backend
@@ -61,145 +77,18 @@ Inspired by: https://rubular.com
 
 ## Getting started
 
-1. Clone the repo locally:
-
 ```
 git clone https://github.com/aim2bpg/rubree.git
 cd rubree
-```
-
-### Using Dev Container (recommended)
-
-2. Open the folder in [VS Code](https://code.visualstudio.com/) with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and select **Reopen in Container**. Ruby, Node.js, and Rust are set up automatically.
-
-3. (Optional) [Claude Code](https://claude.ai/code) is not installed by default. To have it installed automatically when the container is created, create a marker file at the workspace root before (re)building the container:
-
-```sh
-touch .install-claude-code
-```
-
-The file is gitignored and scoped to this clone, so it won't affect other projects or checkouts.
-
-Otherwise, install it manually inside the container:
-
-```
-curl -fsSL https://claude.ai/install.sh | bash
-```
-
-### Install for development (manual)
-
-2. Install gem and NPM packages and start the application locally:
-
-```
 bin/setup
 ```
 
-3. Then open http://localhost:3000 in your browser.
+Then open http://localhost:3000 in your browser.
 
-4. (Optional) Install lefthook:
+For Dev Container setup, linting, running tests against different browser drivers, and testing
+the WASM deployment locally, see [Development Guide](docs/development.md).
 
-```
-brew install lefthook
-lefthook install
-```
-
-5. (Optional) Install gitleaks for lefthook:
-
-```
-brew install gitleaks
-```
-
-### Running linters
-
-Rubocop:
-
-```
-bin/rubocop
-```
-
-ERB Lint:
-
-```
-bin/erb_lint --lint-all
-```
-
-Biome Lint:
-
-```
-bin/yarn biome check
-```
-
-Brakeman (security scan):
-
-```
-bin/brakeman --no-pager --skip-files app/assets/builds/,build/,node_modules/,pwa/,rubies/
-```
-
-### Fixing lint errors
-
-Rubocop:
-
-```
-bin/rubocop -a
-```
-
-ERB Lint:
-
-```
-bin/erb_lint --lint-all -a
-```
-
-Biome Lint:
-
-```
-bin/yarn biome check --write
-bin/yarn biome migrate --write
-```
-
-### Running tests locally
-
-Run tests with the default Playwright (Chromium, headless) driver:
-
-```
-bin/rspec
-```
-
-Run tests with a specific driver by setting the DRIVER environment variable:
-
-```
-# Playwright - Chromium (with browser UI)
-DRIVER=playwright_chromium bin/rspec
-
-# Playwright - Chromium (headless)
-DRIVER=playwright_chromium_headless bin/rspec
-
-# Playwright - Firefox (with browser UI)
-DRIVER=playwright_firefox bin/rspec
-
-# Playwright - Firefox (headless)
-DRIVER=playwright_firefox_headless bin/rspec
-
-# Playwright - WebKit (with browser UI)
-DRIVER=playwright_webkit bin/rspec
-
-# Playwright - WebKit (headless)
-DRIVER=playwright_webkit_headless bin/rspec
-
-# Selenium - Chrome (with browser UI)
-DRIVER=selenium_chrome bin/rspec
-
-# Selenium - Chrome (headless)
-DRIVER=selenium_chrome_headless bin/rspec
-
-# Rack Test (no JS support)
-DRIVER=rack_test bin/rspec
-```
-
-### Test deployment locally
-
-- References
-  - [Wasmify Rails](https://github.com/palkan/wasmify-rails?tab=readme-ov-file#step-2-binrails-wasmifybuildcore)
-  - [Ruby on Rails on WebAssembly, the full-stack in-browser journey](https://web.dev/blog/ruby-on-rails-on-webassembly?hl=ja#next_level_a_blog_in_15_minutes_in_wasm)
+For an annotated walkthrough of every feature, see [Usage Guide](docs/usage-guide.md).
 
 ## Browser Compatibility
 
@@ -223,88 +112,10 @@ When accessing Rubree from Safari or Firefox, you will see a warning banner with
 
 ## Roadmap
 
-- [x] **Basic Match Handling**: Provides functionality to match regular expressions against test strings.
-- [x] **Match Positions**: Supports the extraction and display of match start and end positions.
-- [x] **Capture Groups**: Extracts and displays capture groups from regex matches.
-- [x] **Named Captures**: Supports capturing named groups from regex matches.
-- [x] **Regex Quick Reference**: Provides a concise list of commonly used regex syntax for quick reference.
-- [x] **Regex Examples**: Interactive examples to test and visualize regex patterns in real-time.
-- [x] **Execution Time Measurement**: Measures and reports the execution time of regex operations.
-- [x] **Regex Diagram Generation**: Generates and visualizes regex patterns using SVG diagrams.
-- [x] **Regex Substitution Function**: Supports regex-based string substitution.
-- [x] **Ruby Code Snippet Generation**: Automatically generates Ruby code snippets for testing regex patterns.
-- [x] **Web Interface for Regex Testing**: Interactive web UI to test and visualize regular expressions in real-time.
-- [x] **Permalink / Shareable URL generation**: Create shareable URLs that encode the editor state (regex, sample text, and options) for easy reproduction.
-- [x] **ReDoS Check Integration**: Check regular expressions for ReDoS vulnerabilities via embedded recheck Playground with one-click pattern copying. ([#306](https://github.com/aim2bpg/rubree/issues/306))
-
----
-
-### Supported Scope of `Regexp::Parser` Used for SVG Output in `Railroad Diagrams`
-
-- [x] **Alternation**: `a\|b\|c`
-- [x] **Anchors**: `\A`, `^`, `\b`
-- [x] **Character Classes**: `[abc]`, `[^\\]`, `[a-d&&aeiou]`
-- [x] **Character Types**: `\d`, `\H`, `\s`
-- [x] **Cluster Types**: `\R`, `\X`
-- [x] **Conditional Expressions**: `(?(cond)yes-subexp)`, `(?(cond)yes-subexp\|no-subexp)`
-- [x] **Escape Sequences**: `\t`, `\\+`, `\?`
-- [x] **Free Space**: whitespace and `# Comments` _(x modifier)_
-- [x] **Grouped Expressions**:
-  - [x] **Assertions**:
-    - [x] **Lookahead**: `(?=abc)`
-    - [x] **Negative Lookahead**: `(?!abc)`
-    - [x] **Lookbehind**: `(?<=abc)`
-    - [x] **Negative Lookbehind**: `(?<!abc)`
-  - [x] **Atomic**: `(?>abc)`
-  - [x] **Absence**: `(?~abc)`
-
-- [x] **Back-references**:
-  - [x] **Named**: `\k<name>`
-  - [x] **Nest Level**: `\k<n-1>`
-  - [x] **Numbered**: `\k<1>`
-  - [x] **Relative**: `\k<-2>`
-  - [x] **Traditional**: `\1` through `\9`
-
-- [x] **Capturing**: `(abc)`
-- [x] **Comments**: `(?# comment text)`
-- [x] **Named Captures**: `(?<name>abc)`, `(?'name'abc)`
-- [x] **Options**: `(?mi-x:abc)`, `(?a:\s\w+)`, `(?i)`
-- [x] **Passive Captures**: `(?:abc)`
-- [x] **Subexpression Calls**: `\g<name>`, `\g<1>`
-
-- [x] **Keep**: `\K`, `(ab\Kc\|d\Ke)f`
-
-- [x] **Literals** _(utf-8)_:
-  - [x] `Ruby`, `ルビー`, `روبي`
-
-- [x] **POSIX Classes**:
-  - [x] `[:alpha:]`, `[:^digit:]`
-
-- [ ] **Quantifiers**:
-  - [x] **Greedy**: `?`, `*`, `+`, `{m,M}`
-  - [ ] **Reluctant (Lazy)**: `??`, `*?`, `+?`
-  - [ ] **Possessive**: `?+`, `*+`, `++`
-
-- [ ] **String Escapes**:
-  - [x] **Control**: `\C-C`, `\cD`
-  - [x] **Hex**: `\x20`, `\xE2\x82\xAC`
-  - [ ] **Meta**: `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`
-  - [x] **Octal**: `\0`, `\01`, `\012`
-  - [x] **Unicode**: `\uHHHH`, `\u{H+ H+}`
-
-- [x] **Unicode Properties** _(Unicode 15.0.0)_:
-  - [x] **Age**: `\p{Age=5.2}`, `\P{age=7.0}`, `\p{^age=8.0}`
-  - [x] **Blocks**: `\p{InArmenian}`, `\P{InKhmer}`, `\p{^InThai}`
-  - [x] **Classes**: `\p{Alpha}`, `\P{Space}`, `\p{^Alnum}`
-  - [x] **Derived**: `\p{Math}`, `\P{Lowercase}`, `\p{^Cased}`
-  - [x] **General Categories**: `\p{Lu}`, `\P{Cs}`, `\p{^sc}`
-  - [x] **Scripts**: `\p{Arabic}`, `\P{Hiragana}`, `\p{^Greek}`
-  - [x] **Simple**: `\p{Dash}`, `\p{Extender}`, `\p{^Hyphen}`
-
----
-
-For more detailed information about supported syntax, refer to the official documentation:
-[Supported Syntax - Regexp::Parser GitHub README](https://github.com/ammar/regexp_parser/blob/master/README.md#supported-syntax)
+Rubree already covers the core editing/visualization/sharing experience — pattern matching,
+capture groups, railroad diagrams, substitution preview, Ruby code snippets, permalinks, and
+ReDoS checks. For the full feature checklist and the supported `Regexp::Parser` syntax scope used
+for railroad diagram generation, see [Roadmap](docs/roadmap.md).
 
 ## Contributing
 

@@ -12,20 +12,34 @@
       "Bash(curl * | bash*)",
       "Bash(wget * | sh*)",
       "Bash(wget * | bash*)",
+      "Bash(nc *)",
+      "Bash(ncat *)",
+      "Bash(socat *)",
       "Read(./config/master.key)",
       "Read(./.env)",
       "Read(./.env.*)",
-      "Read(./**/.ssh/**)"
+      "Read(./**/.ssh/**)",
+      "Bash(cat ~/.ssh/id_*)"
     ],
     "ask": [
       "Bash(sudo *)",
+      "Bash(ssh *)",
       "Bash(gem push *)",
+      "Bash(npm install *)",
       "Bash(npm publish*)",
-      "Bash(yarn publish*)"
+      "Bash(yarn publish*)",
+      "Bash(gh pr create*)",
+      "Bash(gh pr merge*)",
+      "Bash(gh pr close*)",
+      "Bash(gh issue create*)",
+      "Bash(gh release*)",
+      "Bash(gh workflow run*)",
+      "Write(./.claude/settings.json)",
+      "Edit(./.claude/settings.json)"
     ],
     "disableBypassPermissionsMode": "disable"
   },
-  "enableAllProjectMcpServers": false,
+  "enableAllProjectMcpServers": true,
   "hooks": {
     "PreToolUse": [
       {
