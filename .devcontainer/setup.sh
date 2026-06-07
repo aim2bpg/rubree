@@ -95,6 +95,19 @@ if ! command -v gitleaks &>/dev/null; then
     | sudo tar -xz -C /usr/local/bin gitleaks
 fi
 
+# --- GitHub CLI (gh) ---
+# Installed for use with Claude Code (PR creation, CI status, API calls).
+# Auth is NOT automatic — run `gh auth login` once after container creation, or set GH_TOKEN.
+if ! command -v gh &>/dev/null; then
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null
+  sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+    | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+  sudo apt-get update -qq
+  sudo apt-get install -y gh
+fi
+
 # --- Shell profile ---
 PROFILE="$HOME/.bashrc"
 add_if_missing() {

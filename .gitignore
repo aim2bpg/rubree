@@ -52,3 +52,6 @@ dist/
 
 # Ignore coverage reports
 coverage/
+
+# Steering task plans (working documents; knowledge worth keeping flows to skills/ or docs/)
+.steering/

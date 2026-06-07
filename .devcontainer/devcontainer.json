@@ -2,10 +2,11 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu24.04",
   "remoteUser": "vscode",
   "containerUser": "vscode",
-  "initializeCommand": "mkdir -p ${localEnv:HOME}/.claude ${localEnv:HOME}/.ssh ${localEnv:HOME}/.nvm ${localEnv:HOME}/.cargo ${localEnv:HOME}/.rustup ${localEnv:HOME}/.cache/ms-playwright",
+  "initializeCommand": "mkdir -p ${localEnv:HOME}/.claude ${localEnv:HOME}/.ssh ${localEnv:HOME}/.nvm ${localEnv:HOME}/.cargo ${localEnv:HOME}/.rustup ${localEnv:HOME}/.cache/ms-playwright ${localEnv:HOME}/.config/gh",
   "mounts": [
     "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached,readonly",
+    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,consistency=cached",
     "source=rubree-rbenv,target=/home/vscode/.rbenv,type=volume",
     "source=${localEnv:HOME}/.nvm,target=/home/vscode/.nvm,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.cargo,target=/home/vscode/.cargo,type=bind,consistency=cached",
