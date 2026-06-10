@@ -71,6 +71,27 @@ jobs:
           corepack enable
           corepack prepare "yarn@${{ steps.yarn-version.outputs.version }}" --activate
 
+      # Two-tier cache keys, scoped to what actually feeds the WASM build. Hashing the
+      # whole Gemfile.lock here would invalidate both caches on every Dependabot bump,
+      # even for gems outside the :wasm group that never reach the build (12+ min of
+      # wasted cross-compilation). The fingerprints come from the same Bundler
+      # definition wasmify:build uses (BUNDLE_ONLY=wasm), so they rotate exactly when
+      # the build inputs change:
+      #
+      #   exts — native-extension gems compiled into rubies/*.tar.gz. The tarball
+      #          filename embeds an MD5 of these full_names, so a stale "exts" key
+      #          would cause the name-mismatch rebuild + "cache hit, not saving" loop
+      #          documented in PR #635/#636.
+      #   all  — every :wasm-group gem (embedded into ruby.wasm as /bundle). A pure-Ruby
+      #          gem bump rotates only this key: the module is rebuilt, but the compiled
+      #          tarball is reused, skipping the slow cross-compile.
+      #
+      # The module key's inputs are a superset of the artefact key's, so "module hit
+      # but artefacts stale" cannot happen.
+      - name: Compute WASM build fingerprints
+        id: wasm-fingerprint
+        run: BUNDLE_ONLY=wasm bundle exec ruby script/wasm_build_fingerprint.rb >> "$GITHUB_OUTPUT"
+
       - name: Cache Ruby Wasm Artefacts
         id: cache-ruby-wasm
         uses: actions/cache@v5
@@ -78,19 +99,14 @@ jobs:
           path: |
             build
             rubies
-          # Must include Gemfile.lock: the cached rubies/*.tar.gz filename embeds an MD5
-          # hash of native-extension gem versions (e.g. websocket-driver). If that hash
-          # changes without the cache key changing, the restored tarball no longer matches
-          # what wasmify:build expects, forcing a slow rebuild AND a permanent "cache hit,
-          # not saving" loop that never refreshes the stale entry.
-          key: ${{ runner.os }}-v1-${{ hashFiles('.ruby-version', '**/Gemfile.lock') }}-ruby-wasm
+          key: ${{ runner.os }}-v2-${{ hashFiles('.ruby-version', 'config/wasmify.yml', 'ruby_wasm_patches/**', 'lib/tasks/wasmify_patches.rake') }}-${{ steps.wasm-fingerprint.outputs.exts }}-ruby-wasm
 
       - name: Cache Compiled ruby.wasm Module
         id: cache-ruby-wasm-module
         uses: actions/cache@v5
         with:
           path: tmp/wasmify/ruby.wasm
-          key: ${{ runner.os }}-v1-${{ hashFiles('.ruby-version', '**/Gemfile.lock') }}-ruby-wasm-module
+          key: ${{ runner.os }}-v2-${{ hashFiles('.ruby-version', 'config/wasmify.yml', 'ruby_wasm_patches/**', 'lib/tasks/wasmify_patches.rake') }}-${{ steps.wasm-fingerprint.outputs.all }}-ruby-wasm-module
 
       - name: Build ruby.wasm (if needed)
         if: steps.cache-ruby-wasm-module.outputs.cache-hit != 'true'

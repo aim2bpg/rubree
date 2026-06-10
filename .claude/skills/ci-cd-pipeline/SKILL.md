@@ -32,11 +32,23 @@ environments stay in sync.
 Triggered after CI succeeds on `main`. Builds `ruby.wasm` (`wasmify:build` / `wasmify:pack`),
 builds the PWA frontend, and publishes the static site to GitHub Pages.
 
-The WASM build is cached, keyed on a hash of **both** `.ruby-version` **and** `Gemfile.lock` —
-see the inline comment in `deploy.yml` for why both are required (also explained in
-`docs/wasm-build-notes.md`): the cached `rubies/*.tar.gz` filename embeds an MD5 hash of
-native-extension gem versions, so a `Gemfile.lock` change can invalidate the cache even when
-`.ruby-version` doesn't change.
+The WASM build uses **two-tier cache keys** scoped to the `:wasm` bundle group, computed by
+`script/wasm_build_fingerprint.rb` (run with `BUNDLE_ONLY=wasm`, same Bundler definition as
+`wasmify:build`) — see the inline comment in `deploy.yml` for the full rationale:
+
+- **`exts` fingerprint** (rubies/build artefact cache): native-extension gems only. The cached
+  `rubies/*.tar.gz` filename embeds an MD5 of exactly these gem versions, so this key rotates
+  if and only if a cross-compile is needed.
+- **`all` fingerprint** (compiled ruby.wasm module cache): every `:wasm`-group gem, because the
+  whole bundle is embedded into ruby.wasm (`require "/bundle/setup"`). A pure-Ruby gem bump
+  rotates only this key — the module is rebuilt but the compiled tarball is reused.
+- Both keys also hash `.ruby-version`, `config/wasmify.yml`, `ruby_wasm_patches/**`, and
+  `lib/tasks/wasmify_patches.rake`, since those change build output too.
+
+Hashing the whole `Gemfile.lock` instead would invalidate both caches on every Dependabot bump —
+including dev/test gems that never reach the WASM build — costing 12+ min per deploy. Hashing
+too little is worse: a stale `exts` key causes a tarball-name mismatch, forcing a slow rebuild
+**and** a permanent "cache hit, not saving" loop (the PR #635/#636 bug).
 
 **Takeaway**: when bumping a tool version (Ruby, Node, Rust, wasi-vfs), update the relevant
 dotfile — setup.sh, ci.yml, and deploy.yml all key off it, so one edit propagates everywhere.
@@ -56,12 +68,17 @@ $ echo "4.0.6" > .ruby-version   # one edit propagates everywhere
 ```
 
 ```yaml
-# ✅ WASM cache key hashes both .ruby-version AND Gemfile.lock (deploy.yml)
-key: ruby-wasm-${{ hashFiles('.ruby-version', 'Gemfile.lock') }}
+# ✅ WASM cache keys use the wasm-group fingerprints + build-input files (deploy.yml)
+key: ...-${{ hashFiles('.ruby-version', 'config/wasmify.yml', 'ruby_wasm_patches/**', 'lib/tasks/wasmify_patches.rake') }}-${{ steps.wasm-fingerprint.outputs.exts }}-ruby-wasm
 
-# ❌ hash only .ruby-version — a Gemfile.lock change (new native-extension gem) won't
-#    bust the cache, and the stale rubies/*.tar.gz will be used silently
-key: ruby-wasm-${{ hashFiles('.ruby-version') }}
+# ❌ hash the whole Gemfile.lock — every Dependabot bump (rubocop, rspec, sqlite3…)
+#    busts both caches and triggers a 12+ min cross-compile that changes nothing
+key: ...-${{ hashFiles('.ruby-version', '**/Gemfile.lock') }}-ruby-wasm
+
+# ❌ hash only .ruby-version — a native-extension gem bump won't bust the cache;
+#    the rubies/*.tar.gz filename mismatch then forces a slow rebuild on every
+#    deploy AND a permanent "cache hit, not saving" loop (PR #635/#636)
+key: ...-${{ hashFiles('.ruby-version') }}-ruby-wasm
 ```
 
 ```yaml
