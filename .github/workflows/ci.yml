@@ -151,7 +151,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build frontend assets
-        run: yarn build
+        run: yarn build && yarn build:css
 
       - name: Run tests
         run: bin/rspec
