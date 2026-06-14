@@ -55,3 +55,9 @@ coverage/
 
 # Steering task plans (working documents; knowledge worth keeping flows to skills/ or docs/)
 .steering/
+
+# Playwright MCP auto-generated output (screenshots, console logs)
+.playwright-mcp/
+
+# Local investigation screenshots (not part of the shipped product)
+docs/onigmo-bugs/
