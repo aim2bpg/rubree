@@ -323,13 +323,15 @@ class RegularExpression
     def sanitize_group_name(name)
       return nil if name.nil?
 
-      # Ensure a UTF-8 string and replace invalid/undef sequences.
-      safe = name.to_s.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")
+      # Strip invalid/undefined byte sequences (replace with empty string so we
+      # can detect that something was removed rather than masking with "?").
+      safe = name.to_s.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
+      return nil if safe.empty?
 
-      # Only allow ASCII word-style names (letters, digits, underscore),
-      # starting with a letter or underscore. This matches typical Ruby
-      # named-capture expectations and avoids MatchData lookup issues.
-      return safe if safe.match?(/\A[A-Za-z_][A-Za-z0-9_]*\z/)
+      # Mirror Ruby's named-capture identifier rules: must start with a Unicode
+      # letter or underscore, followed by Unicode letters, digits, or underscores.
+      # This covers ASCII names as well as non-ASCII names (e.g. Japanese).
+      return safe if safe.match?(/\A[\p{L}_][\p{L}\p{N}_]*\z/u)
 
       nil
     end

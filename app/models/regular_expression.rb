@@ -22,21 +22,10 @@ class RegularExpression
     results = []
     test_string.to_enum(:scan, regexp).each do
       match = Regexp.last_match
-      captures_hash = {}
-
-      regexp.named_captures.each_key do |name|
-        begin
-          # Accessing MatchData with some multi-byte capture names can raise IndexError
-          val = match[name]
-        rescue IndexError, ArgumentError => e
-          # record a user-facing error specific to diagram/rendering, but don't raise
-          errors.add(:diagram, "Invalid named capture access: #{name}") unless errors.added?(:diagram, "Invalid named capture access: #{name}")
-          val = nil
-        end
-
-        captures_hash[name] = val if val
-      end
-
+      # MatchData#named_captures returns a Hash with correctly-encoded UTF-8 keys,
+      # unlike Regexp#named_captures whose keys are raw bytes and cause IndexError
+      # when used with MatchData#[].
+      captures_hash = match.named_captures.reject { |_, v| v.nil? }
       results << captures_hash unless captures_hash.empty?
     end
 

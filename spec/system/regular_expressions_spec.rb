@@ -285,7 +285,7 @@ RSpec.describe "RegularExpressionFlow" do
       expect(page).to have_css 'mark', text: 'def', class: /bg-blue-200/
     end
 
-    it 'shows a friendly error in the results area when named capture access with multibyte name fails' do
+    it 'correctly matches and highlights captures for non-ASCII (multibyte) named capture groups' do
       visit root_path
 
       # use precise selectors for the textareas
@@ -296,8 +296,8 @@ RSpec.describe "RegularExpressionFlow" do
       page.execute_script("document.querySelector('form[data-controller=\\\"regexp-form\\\"]') && document.querySelector('form[data-controller=\\\"regexp-form\\\"]').requestSubmit()")
 
       within('turbo-frame#regexp') do
-        expect(page).to have_css('div.bg-red-100', wait: 5)
-        expect(page).to have_text(/Invalid named capture access|Invalid regular expression/)
+        expect(page).to have_no_css('div.bg-red-100', wait: 5)
+        expect(page).to have_css('mark', text: 'foo')
       end
     end
   end
