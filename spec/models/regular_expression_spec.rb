@@ -79,6 +79,15 @@ RSpec.describe RegularExpression do
         expect(regex.named_capture_groups).to eq([])
       end
     end
+
+    context 'when named capture group has a non-ASCII (Japanese) name' do
+      let(:regex) { described_class.new(regular_expression: '(?<あ>hello)', test_string: 'hello') }
+
+      it 'returns the captures without errors' do
+        expect(regex.named_capture_groups).to eq([{ 'あ' => 'hello' }])
+        expect(regex.errors[:diagram]).to be_empty
+      end
+    end
   end
 
   describe '#capture_groups' do

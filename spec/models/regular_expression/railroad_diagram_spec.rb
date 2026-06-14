@@ -682,5 +682,65 @@ RSpec.describe RegularExpression::RailroadDiagram do
         expect(result).to be_nil
       end
     end
+
+    context 'when regex contains non-ASCII named capture groups' do
+      it 'renders SVG without error for Japanese group name' do
+        svg = described_class.new(regular_expression: '(?<あ>x)').generate
+        expect(svg).to include('<svg')
+        expect(svg).not_to be_nil
+      end
+
+      it 'renders SVG without error for Japanese group name with backreference' do
+        svg = described_class.new(regular_expression: '(?<あ>x)\k<あ>').generate
+        expect(svg).to include('<svg')
+        expect(svg).not_to be_nil
+      end
+    end
+  end
+
+  describe 'RegularExpression::RailroadDiagramBuilder.sanitize_group_name' do
+    subject(:sanitize) { RegularExpression::RailroadDiagramBuilder.send(:sanitize_group_name, name) }
+
+    context 'with ASCII word-style names' do
+      let(:name) { 'foo_Bar1' }
+
+      it { is_expected.to eq('foo_Bar1') }
+    end
+
+    context 'with non-ASCII (Japanese) names' do
+      let(:name) { 'あ' }
+
+      it { is_expected.to eq('あ') }
+    end
+
+    context 'with mixed ASCII and Japanese names' do
+      let(:name) { '名前abc' }
+
+      it { is_expected.to eq('名前abc') }
+    end
+
+    context 'with nil' do
+      let(:name) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with a name starting with a digit' do
+      let(:name) { '1foo' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with a name containing spaces' do
+      let(:name) { 'foo bar' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with an empty string' do
+      let(:name) { '' }
+
+      it { is_expected.to be_nil }
+    end
   end
 end

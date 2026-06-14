@@ -145,6 +145,23 @@ repo. Mirror critical denies in `~/.claude/settings.json` on the host machine:
 Use `/verify-wasm` — it automates the full sequence (WASM build → Vite start → Playwright MCP
 headless golden-path check). See `.claude/commands/verify-wasm.md` for details.
 
+**If Playwright MCP is not listed in the tools panel**, it means the MCP server failed to start.
+`@playwright/mcp` is declared as a devDependency in `package.json` and must be installed first:
+
+```bash
+yarn install   # installs @playwright/mcp into node_modules
+```
+
+After installing, restart Claude Code. The project-level config in `.claude/settings.json`
+(`enableAllProjectMcpServers: true`) will pick it up automatically on the next session start.
+If it still does not appear, add it at the user scope as a fallback:
+
+```bash
+claude mcp add -s user playwright -- npx @playwright/mcp@latest --headless
+```
+
+Then restart Claude Code once more.
+
 If Playwright MCP is not connected in the current session, fall back to the manual steps in
 [Test deployment locally (WASM build)](#test-deployment-locally-wasm-build) and verify in
 Chrome yourself, or run the headless script directly:
