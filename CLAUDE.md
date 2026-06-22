@@ -234,6 +234,7 @@ Don't change them without understanding the rationale:
 | `testing-guidelines` | Writing/reviewing specs, choosing spec layer, coverage failures | Spec layout, description style, mocking, Capybara driver selection, octocov thresholds |
 | `ci-cd-pipeline` | Changing CI/CD, devcontainer, WASM build, deploy pipeline | Dotfile-driven versioning, WASM cache keys, Dependabot, Lefthook, CSP status, sitemap |
 | `steering` | Starting a multi-session task, needing a design decision up front | Creates `.steering/[date]-[feature]/tasklist.md` to preserve progress across sessions |
+| `wasm-boot-profiling` | Investigating slow WASM load, mobile freeze/jank, or considering a DB adapter swap for speed | How to instrument and measure the SW→ruby.wasm boot sequence; confirms gem require + Rails init + WASM compile dominate (~99%), DB adapter is ~1.5% (disproven hypothesis) |
 
 ### Project commands
 
