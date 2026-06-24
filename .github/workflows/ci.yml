@@ -66,7 +66,7 @@ jobs:
 
       - name: Cache Gitleaks binary
         id: gitleaks-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.local/bin/gitleaks
           key: gitleaks-${{ runner.os }}-${{ steps.gitleaks-version.outputs.version }}
@@ -127,7 +127,7 @@ jobs:
         run: echo "version=$(jq -r '.devDependencies.playwright' package.json)" >> "$GITHUB_OUTPUT"
       
       - name: Cache Playwright Browsers
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -141,7 +141,7 @@ jobs:
 
       - name: Cache node_modules
         id: node-modules-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: node_modules
           key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
