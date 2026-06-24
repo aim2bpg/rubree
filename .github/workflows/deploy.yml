@@ -94,7 +94,7 @@ jobs:
 
       - name: Cache Ruby Wasm Artefacts
         id: cache-ruby-wasm
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             build
@@ -103,7 +103,7 @@ jobs:
 
       - name: Cache Compiled ruby.wasm Module
         id: cache-ruby-wasm-module
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: tmp/wasmify/ruby.wasm
           key: ${{ runner.os }}-v2-${{ hashFiles('.ruby-version', 'config/wasmify.yml', 'ruby_wasm_patches/**', 'lib/tasks/wasmify_patches.rake') }}-${{ steps.wasm-fingerprint.outputs.all }}-ruby-wasm-module
@@ -117,7 +117,7 @@ jobs:
 
       - name: Cache node_modules (PWA)
         id: pwa-node-modules-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: pwa/node_modules
           key: ${{ runner.os }}-pwa-node_modules-${{ hashFiles('pwa/yarn.lock') }}
