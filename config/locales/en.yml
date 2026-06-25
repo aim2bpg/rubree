@@ -63,7 +63,7 @@ en:
               user@site.co.jp
               wrong@site,com
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: Email — Matches valid email addresses.
           1:
@@ -75,7 +75,7 @@ en:
               http://localhost
               invalid_url
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: URL — Captures scheme, host, and path.
           2:
@@ -87,7 +87,7 @@ en:
               10.0.0.1
               0.0.0.0
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: IPv4 — Captures 0-255 octets.
           3:
@@ -99,7 +99,7 @@ en:
               invalid::ip
               fe80::1ff:fe23:4567:890a
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: IPv6 — Captures blocks and compressed forms.
           4:
@@ -111,7 +111,7 @@ en:
               [2025-08-17 12:03:00] [ERROR] Crash
               [2025-08-17 12:04:00] [INFO] Done
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: ERROR log — Extracts message via named capture.
       basic-patterns:

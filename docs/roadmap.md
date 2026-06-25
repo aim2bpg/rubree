@@ -59,18 +59,13 @@
 
 - [ ] **Quantifiers**:
   - [x] **Greedy**: `?`, `*`, `+`, `{m,M}`
-  - [ ] **Reluctant (Lazy)**: `??`, `*?`, `+?`
-    > Simple lazy forms (`*?`, `+?`, `??`) are accepted and rendered with a "(lazy)" comment label
-    > in the diagram. Range forms (`{m,M}?`) raise an error and show an error message instead of a
-    > diagram — `railroad_diagrams` gem does not support the range+lazy/possessive combination.
-  - [ ] **Possessive**: `?+`, `*+`, `++`
-    > Same as lazy: simple possessive forms show a "(possessive)" comment label; range forms
-    > (`{m,M}+`) show an error message.
+  - [ ] **Reluctant (Lazy)** \[1\]: `??`, `*?`, `+?`
+  - [ ] **Possessive** \[1\]: `?+`, `*+`, `++`
 
 - [ ] **String Escapes**:
   - [x] **Control**: `\C-C`, `\cD`
   - [x] **Hex**: `\x20`, `\xE2\x82\xAC`
-  - [ ] **Meta**: `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`
+  - [ ] **Meta** \[2\]: `\M-c`, `\M-\C-C`, `\M-\cC`, `\C-\M-C`, `\c\M-C`
   - [x] **Octal**: `\0`, `\01`, `\012`
   - [x] **Unicode**: `\uHHHH`, `\u{H+ H+}`
 
@@ -82,6 +77,17 @@
   - [x] **General Categories**: `\p{Lu}`, `\P{Cs}`, `\p{^sc}`
   - [x] **Scripts**: `\p{Arabic}`, `\P{Hiragana}`, `\p{^Greek}`
   - [x] **Simple**: `\p{Dash}`, `\p{Extender}`, `\p{^Hyphen}`
+
+---
+
+**\[1\]**: Simple forms (`*?`, `+?`, `??`, `*+`, `++`, `?+`) are accepted and rendered with a
+"(lazy)" or "(possessive)" comment label in the diagram. Range forms (`{m,M}?`, `{m,M}+`) raise
+an error — the `railroad_diagrams` gem does not support the range + lazy/possessive combination.
+
+**\[2\]**: As of Ruby 3.1, meta and control sequences are pre-processed to hex escapes when used
+in Regexp literals, so they only appear as `Meta`/`Control` nodes when a `String` or a `Regexp`
+built with `::new` is parsed. In Rubree, entering `\M-c` in UTF-8 mode raises a `RegexpError`
+before diagram generation — support requires `Regexp::NOENCODING` handling.
 
 ---
 

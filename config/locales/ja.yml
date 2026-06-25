@@ -63,7 +63,7 @@ ja:
               user@site.co.jp
               wrong@site,com
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: メールアドレス — 有効なメールアドレスにマッチする。
           1:
@@ -75,7 +75,7 @@ ja:
               http://localhost
               invalid_url
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: URL — 名前付きキャプチャでスキーム、ホスト等を取得する。
           2:
@@ -87,7 +87,7 @@ ja:
               10.0.0.1
               0.0.0.0
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: IPv4 — 名前付きキャプチャで 0-255 の各オクテットを取得する。
           3:
@@ -99,7 +99,7 @@ ja:
               invalid::ip
               fe80::1ff:fe23:4567:890a
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: IPv6 — 名前付きキャプチャで各ブロックや圧縮形式を取得する。
           4:
@@ -111,7 +111,7 @@ ja:
               [2025-08-17 12:03:00] [ERROR] Crash
               [2025-08-17 12:04:00] [INFO] Done
             result: match
-            options: m
+            options: ''
             substitution: ''
             description: ERRORログ — 名前付きキャプチャでメッセージ等を抽出する。
       basic-patterns:
