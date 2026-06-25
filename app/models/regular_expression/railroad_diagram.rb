@@ -28,6 +28,12 @@ class RegularExpression
 
       ast = Regexp::Parser.parse(regular_expression, options: regex_options)
       diagram_body = RegularExpression::RailroadDiagramBuilder.ast_to_railroad(ast)
+
+      if options.present?
+        option_label = "options #{RegularExpression::RailroadDiagramBuilder.parse_option_flags(options)}"
+        diagram_body = RailroadDiagrams::Group.new(diagram_body, option_label)
+      end
+
       diagram = RailroadDiagrams::Diagram.new(diagram_body)
 
       svg_io = StringIO.new

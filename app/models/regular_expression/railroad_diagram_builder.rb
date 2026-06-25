@@ -60,7 +60,8 @@ class RegularExpression
       Regexp::Expression::EscapeSequence::Octal                 => "octal",
       Regexp::Expression::EscapeSequence::Hex                   => "hex",
       Regexp::Expression::EscapeSequence::Codepoint             => "codepoint",
-      Regexp::Expression::EscapeSequence::CodepointList         => "codepoint list"
+      Regexp::Expression::EscapeSequence::CodepointList         => "codepoint list",
+      Regexp::Expression::EscapeSequence::Control               => "control character"
     }.freeze
 
     def ast_to_railroad(ast)
@@ -119,7 +120,7 @@ class RegularExpression
             a, b = e.expressions
             start_char = a.respond_to?(:text) ? a.text : a.to_s
             end_char = b.respond_to?(:text) ? b.text : b.to_s
-            RailroadDiagrams::Terminal.new("\"#{start_char}\" - \"#{end_char}\"")
+            e.case_insensitive? ? ci_range_to_railroad(start_char, end_char) : RailroadDiagrams::Terminal.new("\"#{start_char}\" - \"#{end_char}\"")
 
           when Regexp::Expression::CharacterSet::Intersection
             choices = e.expressions.map do |ie|
@@ -157,7 +158,12 @@ class RegularExpression
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label.strip), ast.quantifier)
 
       when *CHARACTER_TYPE_LABELS.keys
-        wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(CHARACTER_TYPE_LABELS[ast.class]), ast.quantifier)
+        label = if ast.is_a?(Regexp::Expression::CharacterType::Any) && ast.multiline?
+          "any character (including newline)"
+        else
+          CHARACTER_TYPE_LABELS[ast.class]
+        end
+        wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
 
       when Regexp::Expression::WhiteSpace
         RailroadDiagrams::Skip.new
@@ -187,7 +193,11 @@ class RegularExpression
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ast.text), ast.quantifier)
 
       when Regexp::Expression::Literal
-        wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{ast.text}\""), ast.quantifier)
+        if ast.case_insensitive?
+          wrap_with_quantifier(ci_literal_to_railroad(ast.text), ast.quantifier)
+        else
+          wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{ast.text}\""), ast.quantifier)
+        end
 
       when *ESCAPE_SEQUENCE_LABELS.keys
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ESCAPE_SEQUENCE_LABELS[ast.class]), ast.quantifier)
@@ -235,7 +245,101 @@ class RegularExpression
     def literal_without_quantifier?(e)
       (e.is_a?(Regexp::Expression::Literal) || e.is_a?(Regexp::Expression::EscapeSequence::Literal)) &&
         e.respond_to?(:quantifier) &&
-        e.quantifier.nil?
+        e.quantifier.nil? &&
+        !e.case_insensitive?
+    end
+
+    # Builds a railroad node for a case-insensitive literal string.
+    # Handles three cases:
+    #   - 1:1 fold chars (e.g. "a"): Choice of single-char equivalents
+    #   - multi-char fold chars (e.g. "ß" → "ss"): recursive expansion + compact single-char alt
+    #   - adjacent char pairs/triples whose combined fold has a single-char alternative
+    #     (e.g. "St" → ﬆ/ﬅ): grouped as Choice(normal-sequence, single-char-alt)
+    def ci_literal_to_railroad(text)
+      chars = text.chars
+      return ci_char_to_node(chars.first) if chars.size == 1
+
+      nodes = build_ci_sequence_nodes(chars)
+      nodes.size == 1 ? nodes.first : RailroadDiagrams::Sequence.new(*nodes)
+    end
+
+    # Processes a char array into railroad nodes, grouping adjacent chars into
+    # Choice nodes when a single input character can match the whole span.
+    # e.g. ["S","t"] → Choice(Sequence(Choice(S,s,ſ),Choice(T,t)), Choice(ﬆ,ﬅ))
+    def build_ci_sequence_nodes(chars)
+      result = []
+      i = 0
+
+      while i < chars.size
+        char = chars[i]
+        char_fold = char.downcase(:fold)
+
+        if char_fold.length > 1
+          result << ci_char_to_node(char)
+          i += 1
+          next
+        end
+
+        span_found = false
+        max_span = [3, chars.size - i].min
+
+        (2..max_span).each do |span_len|
+          break if span_found
+          span = chars[i, span_len]
+          next if span[1..].any? { |c| c.downcase(:fold).length > 1 }
+
+          span_fold = span.map { |c| c.downcase(:fold) }.join
+          alts = RegularExpression::CaseFoldTable.single_char_variants_for_fold(span_fold)
+          next if alts.empty?
+
+          sub_nodes = span.map { |c| ci_char_to_node(c) }
+          normal_path = RailroadDiagrams::Sequence.new(*sub_nodes)
+          result << RailroadDiagrams::Choice.new(0, normal_path, build_choice_terminal(alts))
+          i += span_len
+          span_found = true
+        end
+
+        unless span_found
+          result << ci_char_to_node(char)
+          i += 1
+        end
+      end
+
+      result
+    end
+
+    # Returns the railroad node for a single CI literal character.
+    # If the character folds to multiple chars (e.g. ß → "ss"), delegates to
+    # ci_literal_to_railroad on the fold key, which handles multi-char expansion
+    # and single-char alternatives (ß, ẞ) via build_ci_sequence_nodes.
+    def ci_char_to_node(char)
+      fold_key = char.downcase(:fold)
+      if fold_key.length > 1
+        ci_literal_to_railroad(fold_key)
+      else
+        variants = RegularExpression::CaseFoldTable.single_char_variants(char)
+        variants.size <= 1 ? RailroadDiagrams::Terminal.new("\"#{char}\"") : build_choice_terminal(variants)
+      end
+    end
+
+    def build_choice_terminal(chars)
+      terminals = chars.map { |c| RailroadDiagrams::Terminal.new("\"#{c}\"") }
+      terminals.size == 1 ? terminals.first : RailroadDiagrams::Choice.new(0, *terminals)
+    end
+
+    # Returns a railroad node for a character range under case-insensitive matching.
+    # When both endpoints have single-char CI alternatives, wraps the original range
+    # in a Choice with the complementary-case range (e.g. "a"-"z" and "A"-"Z").
+    def ci_range_to_railroad(start_char, end_char)
+      original = RailroadDiagrams::Terminal.new("\"#{start_char}\" - \"#{end_char}\"")
+
+      start_others = RegularExpression::CaseFoldTable.single_char_variants(start_char).reject { |c| c == start_char }
+      end_others   = RegularExpression::CaseFoldTable.single_char_variants(end_char).reject { |c| c == end_char }
+
+      return original if start_others.empty? || end_others.empty?
+
+      alt = RailroadDiagrams::Terminal.new("\"#{start_others.first}\" - \"#{end_others.first}\"")
+      RailroadDiagrams::Choice.new(0, original, alt)
     end
 
     def merge_literal_buffer(buffer)

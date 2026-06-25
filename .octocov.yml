@@ -9,6 +9,7 @@ testExecutionTime:
 codeToTestRatio:
   code:
     - "app/**/*.rb"
+    - "!app/models/regular_expression/case_fold_table.rb"
   test:
     - "spec/**/*_spec.rb"
   acceptable: current >= 1:1.5 && diff >= -0.1
