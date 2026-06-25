@@ -12,8 +12,10 @@ export default class extends Controller {
   open(event) {
     event.stopPropagation();
     let pattern = "";
+    let options = "";
     if (event?.currentTarget) {
       pattern = event.currentTarget.getAttribute("data-pattern") || "";
+      options = event.currentTarget.getAttribute("data-options") || "";
     }
     const svgHtml = this.sourceTarget.innerHTML;
     let labelHtml = "";
@@ -31,7 +33,8 @@ export default class extends Controller {
             })[c],
         );
 
-      labelHtml = `<div class="sticky top-0 z-10 text-base font-mono font-bold text-gray-800 bg-gray-200 rounded px-4 py-1 mb-2 w-full text-center" style="padding-right:48px;">Regex: <span class="break-all">${escapeHtml(pattern)}</span></div>`;
+      const title = `/<span class="break-all">${escapeHtml(pattern)}</span>/${escapeHtml(options)}`;
+      labelHtml = `<div class="sticky top-0 z-10 text-base font-mono font-bold text-gray-800 bg-gray-200 rounded px-4 py-1 mb-2 w-full text-center" style="padding-right:48px;">${title}</div>`;
     }
     const svgContainer = `<div class='overflow-auto w-full grow cursor-grab active:cursor-grabbing' style='max-height:calc(80vh-48px);' data-controller="drag-scroll" data-drag-scroll-horizontal-only-value="true">${svgHtml}</div>`;
     this.contentTarget.innerHTML = labelHtml + svgContainer;

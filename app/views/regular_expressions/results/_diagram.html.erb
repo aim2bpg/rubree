@@ -16,7 +16,8 @@
             class="p-0 text-gray-400 hover:text-white transition w-5 h-5 flex items-center justify-center"
             aria-label="<%= t("regular_expressions.results.view_full_diagram") %>"
             data-action="click->diagram-modal#open"
-            data-pattern="<%= regular_expression.regular_expression %>">
+            data-pattern="<%= regular_expression.regular_expression %>"
+            data-options="<%= regular_expression.options %>">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

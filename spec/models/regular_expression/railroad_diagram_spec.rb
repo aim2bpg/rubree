@@ -200,6 +200,13 @@ RSpec.describe RegularExpression::RailroadDiagram do
         svg = described_class.new(regular_expression: '.').generate
         expect(svg).to include('<svg')
         expect(svg).to include('any character')
+        expect(svg).not_to include('including newline')
+      end
+
+      it 'shows "including newline" label for dot with m flag (./m)' do
+        svg = described_class.new(regular_expression: '.', options: 'm').generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('any character (including newline)')
       end
 
       it 'returns valid SVG for a digit (\d)' do
@@ -333,6 +340,50 @@ RSpec.describe RegularExpression::RailroadDiagram do
         svg = described_class.new(regular_expression: '[a-d]').generate
         expect(svg).to include('<svg')
         expect(svg).to include('"a" - "d"')
+      end
+
+      it 'shows CI alternative range for a lowercase range with i flag ([a-z]/i)' do
+        svg = described_class.new(regular_expression: '[a-z]', options: 'i').generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('"a" - "z"')
+        expect(svg).to include('"A" - "Z"')
+      end
+
+      it 'shows CI alternative range for an uppercase range with i flag ([A-F]/i)' do
+        svg = described_class.new(regular_expression: '[A-F]', options: 'i').generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('"A" - "F"')
+        expect(svg).to include('"a" - "f"')
+      end
+
+      it 'does not show CI alternative for digit range ([0-9]/i)' do
+        svg = described_class.new(regular_expression: '[0-9]', options: 'i').generate
+        expect(svg).to include('<svg')
+        # digits have no case variants: only one range should appear
+        expect(svg.scan('"0" - "9"').size).to eq(1)
+      end
+
+      it 'expands a simple CI literal (a/i) into case variants' do
+        svg = described_class.new(regular_expression: 'a', options: 'i').generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('"a"')
+        expect(svg).to include('"A"')
+      end
+
+      it 'expands ß/i (multi-char fold) into ss-sequence and ß/ẞ alternatives' do
+        svg = described_class.new(regular_expression: 'ß', options: 'i').generate
+        expect(svg).to include('<svg')
+        # ß and ẞ as compact single-char alternatives
+        expect(svg).to include('"ß"')
+        expect(svg).to include('"ẞ"')
+      end
+
+      it 'expands a multi-char CI literal containing ß (e.g. aß/i)' do
+        svg = described_class.new(regular_expression: 'aß', options: 'i').generate
+        expect(svg).to include('<svg')
+        # 'a' expands to A/a; ß (multi-char fold) expands via build_ci_sequence_nodes
+        expect(svg).to include('"ß"')
+        expect(svg).to include('"ẞ"')
       end
 
       it 'returns valid SVG for a character set intersection ([a-d&&aeiou])' do
@@ -478,17 +529,34 @@ RSpec.describe RegularExpression::RailroadDiagram do
         expect(svg).to include('hex')
       end
 
-      it 'returns valid SVG for abstract meta control escape sequence (\C-C)' do
+      it 'returns valid SVG for control character escape sequence (\C-C)' do
         svg = described_class.new(regular_expression: '\C-C').generate
         expect(svg).to include('<svg')
-        expect(svg).to include('abstract meta control')
+        expect(svg).to include('control character')
       end
 
-      ## RegexpError: too short escaped multibyte character: /\M-c/
-      # it 'returns valid SVG for control character escape sequence' do
+      it 'returns valid SVG for lowercase \c form (\cD)' do
+        svg = described_class.new(regular_expression: '\cD').generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('control character')
+      end
+
+      it 'returns valid SVG for \C-@ (NUL character)' do
+        svg = described_class.new(regular_expression: '\C-@').generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('control character')
+      end
+
+      it 'returns nil for \C-あ (non-ASCII target, Ruby limitation)' do
+        svg = described_class.new(regular_expression: '\C-あ').generate
+        expect(svg).to be_nil
+      end
+
+      ## RegexpError: too short escaped multibyte character: /\M-c/ (UTF-8 not supported)
+      # it 'returns valid SVG for meta character escape sequence' do
       #   svg = described_class.new(regular_expression: '\M-c').generate
       #   expect(svg).to include('<svg')
-      #   expect(svg).to include('control character')
+      #   expect(svg).to include('meta character')
       # end
 
       ## RegexpError: invalid multibyte escape: /\M-\C-C/
