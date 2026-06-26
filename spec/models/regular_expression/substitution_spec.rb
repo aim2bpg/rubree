@@ -120,6 +120,92 @@ RSpec.describe RegularExpression::Substitution do
     end
   end
 
+  describe 'backslash semantics (Ruby gsub compatibility)' do
+    def result_for(pattern:, test_string:, substitution:)
+      described_class.new(
+        regular_expression: pattern,
+        test_string: test_string,
+        substitution_string: substitution
+      ).result
+    end
+
+    it 'converts \\\\ (two backslashes) to a single literal backslash' do
+      # Ruby gsub: gsub(pattern, "\\\\") → "\" (1 backslash)
+      result = result_for(pattern: 'X', test_string: 'X', substitution: "\\\\")
+      expect(result).to include("\\")
+      expect(result).not_to include("\\\\")
+    end
+
+    it 'treats \\\\1 as literal backslash + digit 1, not as capture group 1' do
+      # \\ consumes the first two chars as a literal \; the remaining 1 is literal
+      result = result_for(pattern: '(foo)', test_string: 'foo', substitution: "\\\\1")
+      expect(result).to include("\\1")
+      expect(result).not_to include("foo")
+    end
+
+    it 'still expands \\1 as capture group 1' do
+      result = result_for(pattern: '(hello)', test_string: 'hello world', substitution: "\\1!")
+      expect(result).to include("hello!")
+    end
+
+    it 'preserves unknown escape sequences unchanged' do
+      # \n (backslash + n, not a digit) is an unknown escape → kept as \n
+      result = result_for(pattern: 'X', test_string: 'X', substitution: "\\n")
+      expect(result).to include("\\n")
+    end
+  end
+
+  describe 'HTML escaping / XSS prevention' do
+    def result_for(pattern:, test_string:, substitution:)
+      described_class.new(
+        regular_expression: pattern,
+        test_string: test_string,
+        substitution_string: substitution
+      ).result
+    end
+
+    it 'escapes HTML tags in non-matched prefix before a match' do
+      result = result_for(pattern: 'MARKER', test_string: '<script>evil()</script>MARKER', substitution: 'safe')
+      expect(result).to include('&lt;script&gt;evil()&lt;/script&gt;')
+      expect(result).not_to include('<script>')
+    end
+
+    it 'escapes HTML tags in non-matched suffix after a match' do
+      result = result_for(pattern: 'MARKER', test_string: 'MARKERsuffix<b>bold</b>', substitution: 'safe')
+      expect(result).to include('&lt;b&gt;bold&lt;/b&gt;')
+      expect(result).not_to include('<b>bold</b>')
+    end
+
+    it 'escapes HTML tags in non-matched text between matches' do
+      result = result_for(pattern: ',', test_string: 'a,<b>b</b>,c', substitution: 'X')
+      expect(result).to include('&lt;b&gt;b&lt;/b&gt;')
+      expect(result).not_to include('<b>')
+    end
+
+    it 'escapes & and > in non-matched portions' do
+      result = result_for(pattern: ',', test_string: 'a & b,c > d', substitution: 'X')
+      expect(result).to include('a &amp; b')
+      expect(result).to include('c &gt; d')
+    end
+
+    it 'escapes HTML in test string when no match is found' do
+      result = result_for(pattern: 'xyz', test_string: '<b>no match</b>', substitution: 'X')
+      expect(result).to include('&lt;b&gt;no match&lt;/b&gt;')
+      expect(result).not_to include('<b>')
+    end
+
+    it 'escapes HTML in test string on early return due to invalid backreference' do
+      result = result_for(pattern: '(foo)', test_string: '<b>foo</b>', substitution: '\\2!')
+      expect(result).to include('&lt;b&gt;foo&lt;/b&gt;')
+      expect(result).not_to include('<b>')
+    end
+
+    it 'marks result as html_safe' do
+      result = result_for(pattern: 'foo', test_string: 'foo bar', substitution: 'baz')
+      expect(result).to be_html_safe
+    end
+  end
+
   describe 'validation of capture references' do
     subject(:substitutor) do
       described_class.new(

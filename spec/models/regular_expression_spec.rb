@@ -37,6 +37,36 @@ RSpec.describe RegularExpression do
       end
     end
 
+    context 'when test_string is whitespace-only' do
+      let(:regex) { described_class.new(regular_expression: '\s+', test_string: '   ') }
+
+      before { regex.valid? }
+
+      it 'is valid (whitespace is a legitimate test string)' do
+        expect(regex).to be_valid
+      end
+
+      it 'is not unready' do
+        expect(regex).not_to be_unready
+      end
+
+      it 'reports a match when the pattern matches whitespace' do
+        expect(regex.match_success).to be true
+      end
+    end
+
+    context 'when regular_expression is whitespace-only' do
+      let(:regex) { described_class.new(regular_expression: ' ', test_string: 'a b') }
+
+      it 'is valid (a space is a legitimate regex pattern)' do
+        expect(regex).to be_valid
+      end
+
+      it 'is not unready' do
+        expect(regex).not_to be_unready
+      end
+    end
+
     context 'when regex syntax is invalid' do
       let(:regex) { described_class.new(regular_expression: '[a-z', test_string: 'abc') }
 
