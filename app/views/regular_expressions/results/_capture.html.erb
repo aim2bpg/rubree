@@ -38,7 +38,7 @@
 
     <% else %>
       <% regular_expression.capture_groups.each_with_index do |capture_set, idx| %>
-        <% next if capture_set.blank? || capture_set.all?(&:blank?) %>
+        <% next if capture_set.blank? || capture_set.all?(&:nil?) %>
         <div>
           <% if regular_expression.capture_groups.size > 1 %>
             <label class="text-xs font-semibold mb-2 text-blue-300"><%= t("regular_expressions.results.match_number", number: idx + 1, default: "Match #{idx + 1}") %></label>
@@ -46,7 +46,7 @@
           <table class="text-sm text-white table-auto border-separate">
             <tbody>
               <% capture_set.each_with_index do |cap, i| %>
-                <% next if cap.blank? %>
+                <% next if cap.nil? %>
                 <tr>
                   <td class="align-top pr-0 whitespace-nowrap">
                     <span class="text-white"><%= "#{i + 1}." %></span>

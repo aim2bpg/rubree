@@ -285,6 +285,26 @@ RSpec.describe "RegularExpressionFlow" do
       expect(page).to have_css 'mark', text: 'def', class: /bg-blue-200/
     end
 
+    it "shows empty-string captures alongside non-empty ones" do
+      # (a*) matches "" (empty) and (b) matches "b" — group 1 must be shown even though it is ""
+      fill_in "regular_expression[regular_expression]", with: '(a*)(b)'
+      fill_in "regular_expression[test_string]", with: 'b'
+
+      # Both capture entries must appear; group 1 has an empty code element
+      expect(page).to have_css 'span.text-white', text: '1.'
+      expect(page).to have_css 'span.text-white', text: '2.'
+      expect(page).to have_css 'code.text-white', text: 'b'
+    end
+
+    it "hides nil captures (optional group that did not participate)" do
+      # (a)? does not participate → nil capture → must be hidden
+      fill_in "regular_expression[regular_expression]", with: '(a)?(b)'
+      fill_in "regular_expression[test_string]", with: 'b'
+
+      expect(page).to have_css 'span.text-white', text: '2.'
+      expect(page).to have_no_css 'span.text-white', text: '1.'
+    end
+
     it 'correctly matches and highlights captures for non-ASCII (multibyte) named capture groups' do
       visit root_path
 

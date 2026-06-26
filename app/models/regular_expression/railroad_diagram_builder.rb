@@ -125,10 +125,10 @@ class RegularExpression
           when Regexp::Expression::CharacterSet::Intersection
             choices = e.expressions.map do |ie|
               inner_items = ie.expressions.map { |sub| build_expr.call(sub) }
-              if inner_items.size > 1 && inner_items.all? { |item| item.is_a?(RailroadDiagrams::Terminal) }
-                RailroadDiagrams::MultipleChoice.new(0, "any", *inner_items, RailroadDiagrams::Comment.new(label))
-              else
-                RailroadDiagrams::Sequence.new(*inner_items)
+              case inner_items.size
+              when 0 then RailroadDiagrams::Skip.new
+              when 1 then inner_items.first
+              else RailroadDiagrams::Group.new(RailroadDiagrams::Choice.new(0, *inner_items), label)
               end
             end
             RailroadDiagrams::MultipleChoice.new(0, "all", *choices, RailroadDiagrams::Comment.new("intersection of character sets"))
@@ -140,22 +140,20 @@ class RegularExpression
 
         expressions = ast.expressions.map { |e| build_expr.call(e) }
 
-        mc = RailroadDiagrams::MultipleChoice.new(0, "any", *expressions, RailroadDiagrams::Comment.new(label))
-        wrap_with_quantifier(mc, ast.quantifier)
+        choice = case expressions.size
+        when 0 then RailroadDiagrams::Skip.new
+        when 1 then expressions.first
+        else RailroadDiagrams::Choice.new(0, *expressions)
+        end
+        wrap_with_quantifier(RailroadDiagrams::Group.new(choice, label), ast.quantifier)
 
       when *ANCHOR_LABELS.keys
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ANCHOR_LABELS[ast.class]), ast.quantifier)
 
       when *BACKREFERENCE_CLASSES.keys
         klass = BACKREFERENCE_CLASSES.keys.find { |k| ast.is_a?(k) }
-        label = BACKREFERENCE_CLASSES[klass]
-        label += ast.respond_to?(:number) ? " \\g<#{ast.number}>" : ""
-        label += ast.respond_to?(:token)  ? " \\g<#{ast.token}>"  : ""
-        if ast.respond_to?(:name)
-          safe_name = sanitize_group_name(ast.name)
-          label += " \\k<#{safe_name}>" if safe_name
-        end
-        wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label.strip), ast.quantifier)
+        label = "#{BACKREFERENCE_CLASSES[klass]} #{ast.text}".strip
+        wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(label), ast.quantifier)
 
       when *CHARACTER_TYPE_LABELS.keys
         label = if ast.is_a?(Regexp::Expression::CharacterType::Any) && ast.multiline?

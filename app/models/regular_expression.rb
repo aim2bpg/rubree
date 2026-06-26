@@ -3,8 +3,8 @@ class RegularExpression
 
   attr_accessor :regular_expression, :test_string, :options, :substitution_string
 
-  validates :regular_expression, presence: true
-  validates :test_string, presence: true
+  validates :regular_expression, exclusion: { in: [nil, ""], message: :blank }
+  validates :test_string, exclusion: { in: [nil, ""], message: :blank }
 
   validate :validate_regular_expression
 
@@ -13,7 +13,8 @@ class RegularExpression
               :substitution_result
 
   def unready?
-    regular_expression.blank? || test_string.blank?
+    regular_expression.nil? || regular_expression.empty? ||
+      test_string.nil? || test_string.empty?
   end
 
   def named_capture_groups
