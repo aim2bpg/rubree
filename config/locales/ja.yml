@@ -114,6 +114,13 @@ ja:
             options: ''
             substitution: ''
             description: ERRORログ — 名前付きキャプチャでメッセージ等を抽出する。
+          5:
+            pattern: <([^>]+)>
+            test: "<b>Price: 100 & tax</b>"
+            result: match
+            options: ''
+            substitution: '[\1]'
+            description: HTMLタグ → ブラケット変換 — <tag> を [tag] に置換（\1 使用）。
       basic-patterns:
         short: 基本的なパターン Basic Patterns
         description: 連接、選択、繰り返し。
@@ -1050,6 +1057,15 @@ ja:
             options: ''
             substitution: ''
             description: (\w+)\s+\1 — 取得した単語を再利用する繰り返しの例。
+          8:
+            pattern: (\w+)\s+(\w+)
+            test: |-
+              John Smith
+              Jane Doe
+            result: match
+            options: ''
+            substitution: \2, \1
+            description: (\w+)\s+(\w+) — 置換で姓名を入れ替える（\2, \1 を使用）。
       group-comments:
         short: グループ内コメント Group Comments
         description: インラインコメント（マッチに影響しない）。
@@ -1170,6 +1186,15 @@ ja:
             options: ''
             substitution: ''
             description: (?<name>\w+)(\d{3}) — 番号付きキャプチャとの共存例。
+          9:
+            pattern: (?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})
+            test: |-
+              2025-11-25
+              2025-12-01
+            result: match
+            options: ''
+            substitution: \k<day>/\k<month>/\k<year>
+            description: 日付形式変換 — YYYY-MM-DD → DD/MM/YYYY（置換で \k<name> を使用）。
       group-options:
         short: グループ内オプション Group Options
         description: インラインオプションによる挙動変更の例。

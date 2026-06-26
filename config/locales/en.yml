@@ -114,6 +114,13 @@ en:
             options: ''
             substitution: ''
             description: ERROR log — Extracts message via named capture.
+          5:
+            pattern: <([^>]+)>
+            test: "<b>Price: 100 & tax</b>"
+            result: match
+            options: ''
+            substitution: '[\1]'
+            description: HTML tag → bracket — Replace <tag> with [tag] using \1.
       basic-patterns:
         short: Basic Patterns
         description: Concatenation, alternation, and repetition.
@@ -1050,6 +1057,15 @@ en:
             options: ''
             substitution: ''
             description: (\w+)\s+\1 — Example of repeating a captured word.
+          8:
+            pattern: (\w+)\s+(\w+)
+            test: |-
+              John Smith
+              Jane Doe
+            result: match
+            options: ''
+            substitution: \2, \1
+            description: (\w+)\s+(\w+) — Swap first/last name using \2, \1 in substitution.
       group-comments:
         short: Group Comments
         description: Inline comments that do not affect matching.
@@ -1170,6 +1186,15 @@ en:
             options: ''
             substitution: ''
             description: (?<name>\w+)(\d{3}) — Capture with numbered group example.
+          9:
+            pattern: (?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})
+            test: |-
+              2025-11-25
+              2025-12-01
+            result: match
+            options: ''
+            substitution: \k<day>/\k<month>/\k<year>
+            description: Date reformat — YYYY-MM-DD → DD/MM/YYYY using \k<name> in substitution.
       group-options:
         short: Group Options
         description: Examples of inline modifiers in regex groups.
