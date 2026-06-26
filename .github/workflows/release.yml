@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: ["Deploy"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      !startsWith(github.event.workflow_run.head_commit.message, 'Chore(deps)') &&
+      !contains(github.event.workflow_run.head_commit.message, '/dependabot/')
+
+    steps:
+      - name: Generate tag name
+        id: tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BASE="v$(date -u +%Y.%m.%d)"
+          TAG="$BASE"
+          COUNTER=1
+          while gh release view "$TAG" --repo "${{ github.repository }}" &>/dev/null; do
+            COUNTER=$((COUNTER + 1))
+            TAG="${BASE}.${COUNTER}"
+          done
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.tag.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            --title "${{ steps.tag.outputs.tag }}" \
+            --generate-notes \
+            --target "${{ github.event.workflow_run.head_sha }}"
