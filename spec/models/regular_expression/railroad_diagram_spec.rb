@@ -448,7 +448,7 @@ RSpec.describe RegularExpression::RailroadDiagram do
       it 'returns valid SVG for ASCII escape sequence (a\ec)' do
         svg = described_class.new(regular_expression: 'a\ec').generate
         expect(svg).to include('<svg')
-        expect(svg).to include('ASCII escape')
+        expect(svg).to include('escape (0x1B)')
       end
 
       it 'returns valid SVG for backspace escape sequence ([\b])' do
@@ -472,7 +472,7 @@ RSpec.describe RegularExpression::RailroadDiagram do
       it 'returns valid SVG for newline escape sequence (\n)' do
         svg = described_class.new(regular_expression: '\n').generate
         expect(svg).to include('<svg')
-        expect(svg).to include('newline')
+        expect(svg).to include('line feed (0x0A)')
       end
 
       it 'returns valid SVG for carriage return escape sequence (\r)' do

@@ -48,6 +48,19 @@ class RegularExpression
       Regexp::Expression::CharacterType::ExtendedGrapheme       => "extended grapheme"
     }.freeze
 
+    # Human-readable labels for control characters rendered as standalone NonTerminal nodes.
+    # Matches the "name (0xNN)" convention used by regexper.com.
+    CONTROL_CHAR_NAMES = {
+      "\0"  => "null (0x00)",
+      "\t"  => "tab (0x09)",
+      "\n"  => "line feed (0x0A)",
+      "\v"  => "vertical tab (0x0B)",
+      "\f"  => "form feed (0x0C)",
+      "\r"  => "carriage return (0x0D)"
+    }.freeze
+
+    # Short escape notation used when a control character appears embedded inside a
+    # longer printable literal string (e.g. the merged "a\nb" terminal label).
     CONTROL_CHAR_ESCAPES = {
       "\n" => '\n',
       "\t" => '\t',
@@ -58,14 +71,14 @@ class RegularExpression
     }.freeze
 
     ESCAPE_SEQUENCE_LABELS = {
-      Regexp::Expression::EscapeSequence::AsciiEscape           => "ASCII escape",
-      Regexp::Expression::EscapeSequence::Backspace             => "backspace",
-      Regexp::Expression::EscapeSequence::Bell                  => "bell",
-      Regexp::Expression::EscapeSequence::FormFeed              => "form feed",
-      Regexp::Expression::EscapeSequence::Newline               => "newline",
-      Regexp::Expression::EscapeSequence::Return                => "carriage return",
-      Regexp::Expression::EscapeSequence::Tab                   => "tab",
-      Regexp::Expression::EscapeSequence::VerticalTab           => "vertical tab",
+      Regexp::Expression::EscapeSequence::AsciiEscape           => "escape (0x1B)",
+      Regexp::Expression::EscapeSequence::Backspace             => "backspace (0x08)",
+      Regexp::Expression::EscapeSequence::Bell                  => "bell (0x07)",
+      Regexp::Expression::EscapeSequence::FormFeed              => "form feed (0x0C)",
+      Regexp::Expression::EscapeSequence::Newline               => "line feed (0x0A)",
+      Regexp::Expression::EscapeSequence::Return                => "carriage return (0x0D)",
+      Regexp::Expression::EscapeSequence::Tab                   => "tab (0x09)",
+      Regexp::Expression::EscapeSequence::VerticalTab           => "vertical tab (0x0B)",
       Regexp::Expression::EscapeSequence::Octal                 => "octal",
       Regexp::Expression::EscapeSequence::Hex                   => "hex",
       Regexp::Expression::EscapeSequence::Codepoint             => "codepoint",
@@ -208,6 +221,8 @@ class RegularExpression
       when Regexp::Expression::Literal
         if ast.case_insensitive?
           wrap_with_quantifier(ci_literal_to_railroad(ast.text), ast.quantifier)
+        elsif (ctrl_label = CONTROL_CHAR_NAMES[ast.text])
+          wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ctrl_label), ast.quantifier)
         else
           wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{escape_literal_text(ast.text)}\""), ast.quantifier)
         end
@@ -259,7 +274,8 @@ class RegularExpression
       (e.is_a?(Regexp::Expression::Literal) || e.is_a?(Regexp::Expression::EscapeSequence::Literal)) &&
         e.respond_to?(:quantifier) &&
         e.quantifier.nil? &&
-        !e.case_insensitive?
+        !e.case_insensitive? &&
+        !e.text.match?(/[\x00-\x1f\x7f]/)
     end
 
     # Builds a railroad node for a case-insensitive literal string.
