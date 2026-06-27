@@ -581,6 +581,42 @@ RSpec.describe RegularExpression::RailroadDiagram do
       # end
     end
 
+    context 'when regex contains consecutive or mixed control characters' do
+      it 'shows each consecutive literal newline as a separate NonTerminal' do
+        svg = described_class.new(regular_expression: "\n\n\n").generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('line feed (0x0A)')
+        expect(svg.scan('line feed (0x0A)').size).to eq(3)
+      end
+
+      it 'splits mixed printable + control char literal into Terminal and NonTerminal' do
+        svg = described_class.new(regular_expression: "a\tb").generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('"a"')
+        expect(svg).to include('tab (0x09)')
+        expect(svg).to include('"b"')
+      end
+
+      it 'does not render invisible chars in Terminal labels for literal control chars' do
+        svg = described_class.new(regular_expression: "\n").generate
+        expect(svg).not_to include(">\"\n\"<")
+      end
+    end
+
+    context 'when regex contains a literal backslash (\\\\ pattern)' do
+      it 'preserves the backslash in the Terminal label' do
+        svg = described_class.new(regular_expression: '\\\\').generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('"\\"')
+      end
+
+      it 'preserves backslash when merged with adjacent literals' do
+        svg = described_class.new(regular_expression: 'a\\\\b').generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('"a\\b"')
+      end
+    end
+
     context 'when regex contains special characters and options' do
       it 'returns valid SVG for dot (.)' do
         svg = described_class.new(regular_expression: 'a.b').generate

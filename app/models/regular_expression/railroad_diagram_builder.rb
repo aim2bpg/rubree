@@ -160,7 +160,7 @@ class RegularExpression
             a, b = e.expressions
             start_char = a.respond_to?(:text) ? a.text : a.to_s
             end_char = b.respond_to?(:text) ? b.text : b.to_s
-            e.case_insensitive? ? ci_range_to_railroad(start_char, end_char) : RailroadDiagrams::Terminal.new("\"#{start_char}\" - \"#{end_char}\"")
+            e.case_insensitive? ? ci_range_to_railroad(start_char, end_char) : RailroadDiagrams::Terminal.new("\"#{escape_literal_text(start_char)}\" - \"#{escape_literal_text(end_char)}\"")
 
           when Regexp::Expression::CharacterSet::Intersection
             choices = e.expressions.map do |ie|
@@ -374,20 +374,23 @@ class RegularExpression
     # When both endpoints have single-char CI alternatives, wraps the original range
     # in a Choice with the complementary-case range (e.g. "a"-"z" and "A"-"Z").
     def ci_range_to_railroad(start_char, end_char)
-      original = RailroadDiagrams::Terminal.new("\"#{start_char}\" - \"#{end_char}\"")
+      original = RailroadDiagrams::Terminal.new("\"#{escape_literal_text(start_char)}\" - \"#{escape_literal_text(end_char)}\"")
 
       start_others = RegularExpression::CaseFoldTable.single_char_variants(start_char).reject { |c| c == start_char }
       end_others   = RegularExpression::CaseFoldTable.single_char_variants(end_char).reject { |c| c == end_char }
 
       return original if start_others.empty? || end_others.empty?
 
-      alt = RailroadDiagrams::Terminal.new("\"#{start_others.first}\" - \"#{end_others.first}\"")
+      alt = RailroadDiagrams::Terminal.new("\"#{escape_literal_text(start_others.first)}\" - \"#{escape_literal_text(end_others.first)}\"")
       RailroadDiagrams::Choice.new(0, original, alt)
     end
 
     def merge_literal_buffer(buffer)
-      merged_text = buffer.map { |e| e.text.gsub("\\", "") }.join
-      merged_text
+      buffer.map do |e|
+        # EscapeSequence::Literal text is the raw source (e.g. "\!" or "\\");
+        # strip only the leading backslash. Plain Literal text has no backslash.
+        e.is_a?(Regexp::Expression::EscapeSequence::Literal) ? e.text[1..].to_s : e.text
+      end.join
     end
 
     def ast_to_railroad_sequence(expressions)
