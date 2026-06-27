@@ -76,7 +76,7 @@ class RegularExpression
   end
 
   def diagram_svg
-    return nil if regular_expression.blank?
+    return nil if regular_expression.nil? || regular_expression.empty?
 
     railroad_diagram = RegularExpression::RailroadDiagram.new(regular_expression:, options:)
     svg = railroad_diagram.generate
