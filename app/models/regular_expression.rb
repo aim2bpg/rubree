@@ -17,15 +17,34 @@ class RegularExpression
       test_string.nil? || test_string.empty?
   end
 
+  ESCAPE_DECODE_MAP = {
+    "\\" => "\\", "n" => "\n", "t" => "\t", "r" => "\r",
+    "f"  => "\f", "v" => "\v", "a" => "\a", "e" => "\e", "0" => "\0"
+  }.freeze
+
+  def decoded_test_string
+    return test_string if test_string.nil?
+
+    test_string.gsub(/\\(\\|n|t|r|f|v|a|e|0|x[0-9a-fA-F]{2}|u\{[0-9a-fA-F]+\}|u[0-9a-fA-F]{4})/) do
+      seq = Regexp.last_match(1)
+      if (mapped = ESCAPE_DECODE_MAP[seq])
+        mapped
+      elsif seq.start_with?("x")
+        seq[1..].to_i(16).chr(Encoding::UTF_8) rescue "\\#{seq}"
+      elsif seq.start_with?("u{")
+        seq[2..-2].to_i(16).chr(Encoding::UTF_8) rescue "\\#{seq}"
+      else
+        seq[1..].to_i(16).chr(Encoding::UTF_8) rescue "\\#{seq}"
+      end
+    end
+  end
+
   def named_capture_groups
     return [] if unready? || regexp.nil? || regexp.named_captures.empty?
 
     results = []
-    test_string.to_enum(:scan, regexp).each do
+    decoded_test_string.to_enum(:scan, regexp).each do
       match = Regexp.last_match
-      # MatchData#named_captures returns a Hash with correctly-encoded UTF-8 keys,
-      # unlike Regexp#named_captures whose keys are raw bytes and cause IndexError
-      # when used with MatchData#[].
       captures_hash = match.named_captures.reject { |_, v| v.nil? }
       results << captures_hash unless captures_hash.empty?
     end
@@ -37,7 +56,7 @@ class RegularExpression
     return [] if unready? || regexp.nil?
 
     results = []
-    test_string.to_enum(:scan, regexp).each do
+    decoded_test_string.to_enum(:scan, regexp).each do
       match = Regexp.last_match
       next if match.captures.empty?
       results << match.captures
@@ -62,7 +81,7 @@ class RegularExpression
   def match_spans
     return [] if unready? || regexp.nil?
 
-    test_string.to_enum(:scan, regexp).map.with_index do |_, i|
+    decoded_test_string.to_enum(:scan, regexp).map.with_index do |_, i|
       match = Regexp.last_match
       {
         start: match.begin(0),
@@ -87,14 +106,14 @@ class RegularExpression
   def substitute
     return nil if unready? || regexp.nil? || substitution_string.nil?
 
-    substitution = RegularExpression::Substitution.new(regular_expression: regexp, test_string:, substitution_string:)
+    substitution = RegularExpression::Substitution.new(regular_expression: regexp, test_string: decoded_test_string, substitution_string:)
     @substitution_result = substitution.result
   end
 
   def ruby_code
     return nil if unready? || regexp.nil?
 
-    generator = RegularExpression::RubyCode.new(regular_expression: regexp, test_string:, substitution_string:)
+    generator = RegularExpression::RubyCode.new(regular_expression: regexp, test_string: decoded_test_string, substitution_string:)
     generator.generate
   end
 
@@ -137,7 +156,7 @@ class RegularExpression
 
     5.times do
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      last_match = regexp.match(test_string)
+      last_match = regexp.match(decoded_test_string)
       matched = !last_match.nil?
       end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       times << (end_time - start_time)

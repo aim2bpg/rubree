@@ -321,4 +321,63 @@ RSpec.describe RegularExpression do
       expect(regex.average_elapsed_time_ms).to be_a(Float)
     end
   end
+
+  describe '#decoded_test_string' do
+    it 'decodes \\n to newline' do
+      re = described_class.new(regular_expression: '\n', test_string: '\n')
+      expect(re.decoded_test_string).to eq("\n")
+    end
+
+    it 'decodes \\t to tab' do
+      re = described_class.new(regular_expression: '\t', test_string: '\t')
+      expect(re.decoded_test_string).to eq("\t")
+    end
+
+    it 'decodes \\r to carriage return' do
+      re = described_class.new(regular_expression: '\r', test_string: '\r')
+      expect(re.decoded_test_string).to eq("\r")
+    end
+
+    it 'decodes \\0 to null' do
+      re = described_class.new(regular_expression: '.', test_string: '\0')
+      expect(re.decoded_test_string).to eq("\0")
+    end
+
+    it 'decodes \\xNN to the corresponding byte' do
+      re = described_class.new(regular_expression: '.', test_string: '\x41')
+      expect(re.decoded_test_string).to eq("A")
+    end
+
+    it 'decodes \\uNNNN to the corresponding Unicode character' do
+      re = described_class.new(regular_expression: '.', test_string: 'あ')
+      expect(re.decoded_test_string).to eq("あ")
+    end
+
+    it 'keeps \\\\ as a single backslash' do
+      re = described_class.new(regular_expression: '.', test_string: '\\\\')
+      expect(re.decoded_test_string).to eq("\\")
+    end
+
+    it 'leaves unrecognized escapes unchanged' do
+      re = described_class.new(regular_expression: '.', test_string: '\q')
+      expect(re.decoded_test_string).to eq('\q')
+    end
+
+    it 'returns nil when test_string is nil' do
+      re = described_class.new(regular_expression: 'a', test_string: nil)
+      expect(re.decoded_test_string).to be_nil
+    end
+
+    it 'enables \\t pattern to match \\t in test string' do
+      re = described_class.new(regular_expression: '\t', test_string: 'hello\tworld')
+      re.valid?
+      expect(re.match_success).to be true
+    end
+
+    it 'enables \\n pattern to match \\n in test string' do
+      re = described_class.new(regular_expression: '\n', test_string: 'hello\nworld')
+      re.valid?
+      expect(re.match_success).to be true
+    end
+  end
 end
