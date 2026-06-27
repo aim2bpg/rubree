@@ -603,6 +603,15 @@ RSpec.describe RegularExpression::RailroadDiagram do
       end
     end
 
+    context 'when EscapeSequence::Literal wraps a control character (e.g. \\<newline>)' do
+      it 'shows the control char as a NonTerminal, not a Terminal with escape notation' do
+        svg = described_class.new(regular_expression: "[a\\\nb]").generate
+        expect(svg).to include('<svg')
+        expect(svg).to include('line feed (0x0A)')
+        expect(svg).not_to include('>"\\n"<')
+      end
+    end
+
     context 'when regex contains a literal backslash (\\\\ pattern)' do
       it 'preserves the backslash in the Terminal label' do
         svg = described_class.new(regular_expression: '\\\\').generate

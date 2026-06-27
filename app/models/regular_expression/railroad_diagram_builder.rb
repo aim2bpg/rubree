@@ -258,7 +258,14 @@ class RegularExpression
       #   wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("meta control"), ast.quantifier)
 
       else
-        wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{escape_literal_text(ast.text)}\""), ast.quantifier)
+        # EscapeSequence::Literal whose escaped char is a control char (e.g. \<newline>)
+        # should render as a NonTerminal, not as a Terminal with escape notation.
+        actual_char = ast.is_a?(Regexp::Expression::EscapeSequence::Literal) ? ast.text[1..].to_s : nil
+        if actual_char&.match?(/\A[\x00-\x1f\x7f]+\z/)
+          wrap_with_quantifier(literal_with_controls_to_railroad(actual_char), ast.quantifier)
+        else
+          wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{escape_literal_text(ast.text)}\""), ast.quantifier)
+        end
       end
     end
 
