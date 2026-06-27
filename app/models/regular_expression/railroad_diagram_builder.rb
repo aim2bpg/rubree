@@ -92,6 +92,18 @@ class RegularExpression
       end
     end
 
+    def literal_with_controls_to_railroad(text)
+      nodes = text.scan(/[\x00-\x1f\x7f]|[^\x00-\x1f\x7f]+/).flat_map do |seg|
+        if seg.length == 1 && seg.match?(/[\x00-\x1f\x7f]/)
+          label = CONTROL_CHAR_NAMES[seg] || "\\x#{seg.ord.to_s(16).upcase.rjust(2, '0')}"
+          [RailroadDiagrams::NonTerminal.new(label)]
+        else
+          [RailroadDiagrams::Terminal.new("\"#{escape_literal_text(seg)}\"")]
+        end
+      end
+      nodes.size == 1 ? nodes.first : RailroadDiagrams::Sequence.new(*nodes)
+    end
+
     def ast_to_railroad(ast)
       return RailroadDiagrams::Terminal.new("\"#{escape_literal_text(ast)}\"") if ast.is_a?(String)
 
@@ -219,10 +231,10 @@ class RegularExpression
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ast.text), ast.quantifier)
 
       when Regexp::Expression::Literal
-        if ast.case_insensitive?
+        if ast.text.match?(/[\x00-\x1f\x7f]/)
+          wrap_with_quantifier(literal_with_controls_to_railroad(ast.text), ast.quantifier)
+        elsif ast.case_insensitive?
           wrap_with_quantifier(ci_literal_to_railroad(ast.text), ast.quantifier)
-        elsif (ctrl_label = CONTROL_CHAR_NAMES[ast.text])
-          wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ctrl_label), ast.quantifier)
         else
           wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{escape_literal_text(ast.text)}\""), ast.quantifier)
         end
@@ -342,6 +354,8 @@ class RegularExpression
     # ci_literal_to_railroad on the fold key, which handles multi-char expansion
     # and single-char alternatives (ß, ẞ) via build_ci_sequence_nodes.
     def ci_char_to_node(char)
+      return literal_with_controls_to_railroad(char) if char.match?(/[\x00-\x1f\x7f]/)
+
       fold_key = char.downcase(:fold)
       if fold_key.length > 1
         ci_literal_to_railroad(fold_key)
