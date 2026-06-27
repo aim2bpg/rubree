@@ -48,6 +48,15 @@ class RegularExpression
       Regexp::Expression::CharacterType::ExtendedGrapheme       => "extended grapheme"
     }.freeze
 
+    CONTROL_CHAR_ESCAPES = {
+      "\n" => '\n',
+      "\t" => '\t',
+      "\r" => '\r',
+      "\f" => '\f',
+      "\v" => '\v',
+      "\0" => '\0'
+    }.freeze
+
     ESCAPE_SEQUENCE_LABELS = {
       Regexp::Expression::EscapeSequence::AsciiEscape           => "ASCII escape",
       Regexp::Expression::EscapeSequence::Backspace             => "backspace",
@@ -64,8 +73,14 @@ class RegularExpression
       Regexp::Expression::EscapeSequence::Control               => "control character"
     }.freeze
 
+    def escape_literal_text(text)
+      text.gsub(/[\x00-\x1f\x7f]/) do |char|
+        CONTROL_CHAR_ESCAPES[char] || "\\x#{char.ord.to_s(16).upcase.rjust(2, '0')}"
+      end
+    end
+
     def ast_to_railroad(ast)
-      return RailroadDiagrams::Terminal.new("\"#{ast}\"") if ast.is_a?(String)
+      return RailroadDiagrams::Terminal.new("\"#{escape_literal_text(ast)}\"") if ast.is_a?(String)
 
       case ast
       when Regexp::Expression::Quantifier
@@ -194,7 +209,7 @@ class RegularExpression
         if ast.case_insensitive?
           wrap_with_quantifier(ci_literal_to_railroad(ast.text), ast.quantifier)
         else
-          wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{ast.text}\""), ast.quantifier)
+          wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{escape_literal_text(ast.text)}\""), ast.quantifier)
         end
 
       when *ESCAPE_SEQUENCE_LABELS.keys
@@ -216,7 +231,7 @@ class RegularExpression
       #   wrap_with_quantifier(RailroadDiagrams::NonTerminal.new("meta control"), ast.quantifier)
 
       else
-        wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{ast.text}\""), ast.quantifier)
+        wrap_with_quantifier(RailroadDiagrams::Terminal.new("\"#{escape_literal_text(ast.text)}\""), ast.quantifier)
       end
     end
 
