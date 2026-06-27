@@ -16,22 +16,30 @@ jobs:
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main' &&
-      !startsWith(github.event.workflow_run.head_commit.message, 'Chore(deps)') &&
-      !contains(github.event.workflow_run.head_commit.message, '/dependabot/')
+      (
+        startsWith(github.event.workflow_run.head_commit.message, 'feat!:') ||
+        startsWith(github.event.workflow_run.head_commit.message, 'feat:') ||
+        startsWith(github.event.workflow_run.head_commit.message, 'fix:')
+      )
 
     steps:
       - name: Generate tag name
         id: tag
         env:
           GH_TOKEN: ${{ github.token }}
+          COMMIT_MSG: ${{ github.event.workflow_run.head_commit.message }}
         run: |
-          BASE="v$(date -u +%Y.%m.%d)"
-          TAG="$BASE"
-          COUNTER=1
-          while gh release view "$TAG" --repo "${{ github.repository }}" &>/dev/null; do
-            COUNTER=$((COUNTER + 1))
-            TAG="${BASE}.${COUNTER}"
-          done
+          LATEST=$(gh release list --repo "${{ github.repository }}" \
+            --limit 1 --json tagName -q '.[0].tagName // "v0.0.0"')
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${LATEST#v}"
+
+          if echo "$COMMIT_MSG" | grep -qE '^feat!:|BREAKING CHANGE:'; then
+            TAG="v$((MAJOR + 1)).0.0"
+          elif echo "$COMMIT_MSG" | grep -qE '^feat:'; then
+            TAG="v${MAJOR}.$((MINOR + 1)).0"
+          else
+            TAG="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+          fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
