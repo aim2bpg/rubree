@@ -356,13 +356,13 @@
     "@parcel/watcher-win32-ia32" "2.5.1"
     "@parcel/watcher-win32-x64" "2.5.1"
 
-"@playwright/mcp@^0.0.77":
-  version "0.0.77"
-  resolved "https://registry.yarnpkg.com/@playwright/mcp/-/mcp-0.0.77.tgz#6d9ce7be71059359df2c9078f56fefdc9d04efb7"
-  integrity sha512-vf3PmCdOWVvEc3Vmh8DVWvsbz6/rIGi+OG0cyC/2YTn10U8tZMHEiRG62LHdPTTf0qCjoS7/1mbyS5F0RHoTzQ==
+"@playwright/mcp@^0.0.78":
+  version "0.0.78"
+  resolved "https://registry.yarnpkg.com/@playwright/mcp/-/mcp-0.0.78.tgz#305c96c4ac0179bd37622fe4ed4162493513b33e"
+  integrity sha512-XLTUeA6mEN9sQ+hJ4dfG8EIkDbxS0K3Trc2RBkUJuf02TgE2FQRNTMtq/aJfhyRMINsRl/Ybc4sxcWLtFn4/TQ==
   dependencies:
-    playwright "1.62.0-alpha-2026-06-29"
-    playwright-core "1.62.0-alpha-2026-06-29"
+    playwright "1.62.0-alpha-1783623505000"
+    playwright-core "1.62.0-alpha-1783623505000"
 
 "@rails/actioncable@>=7.0":
   version "8.1.300"
@@ -723,10 +723,10 @@ playwright-core@1.59.1:
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.59.1.tgz#d8a2b28bcb8f2bd08ef3df93b02ae83c813244b2"
   integrity sha512-HBV/RJg81z5BiiZ9yPzIiClYV/QMsDCKUyogwH9p3MCP6IYjUFu/MActgYAvK0oWyV9NlwM3GLBjADyWgydVyg==
 
-playwright-core@1.62.0-alpha-2026-06-29:
-  version "1.62.0-alpha-2026-06-29"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.62.0-alpha-2026-06-29.tgz#02e470226c880767182bf16c177af9af0a668c58"
-  integrity sha512-/13EvW8l9Bmvt9nKHey+OcvZ8nob2FM8BCKBsUNwbXgmT4Hc0XX2b6mOErU0RBYNedOCa9q15USI7SY9K17v4w==
+playwright-core@1.62.0-alpha-1783623505000:
+  version "1.62.0-alpha-1783623505000"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.62.0-alpha-1783623505000.tgz#3984745e615ad065b24a89edeeec1a653addc807"
+  integrity sha512-CPJZdsA/KGT2QQlekiV6Wt+QlQrZHVSZ6oiNtOI/bYYOIVLM8jfKGWTM4zQiyd4UN+40Cq4cA6lxmZHZbtPvJQ==
 
 playwright@1.59.1:
   version "1.59.1"
@@ -737,12 +737,12 @@ playwright@1.59.1:
   optionalDependencies:
     fsevents "2.3.2"
 
-playwright@1.62.0-alpha-2026-06-29:
-  version "1.62.0-alpha-2026-06-29"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.62.0-alpha-2026-06-29.tgz#165ef915b76ec976446241db5235f42fca7a259f"
-  integrity sha512-ugaMuh6rAOqmbaxrM7+XQSs7M6yPXykq5gVugJPClHcJ4Cqxmky5rDHhrCt4wmaILUeMdI7kPBCx3zMx2Qu+bg==
+playwright@1.62.0-alpha-1783623505000:
+  version "1.62.0-alpha-1783623505000"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.62.0-alpha-1783623505000.tgz#d04815de36073de29cc0b02c69bfd657231ec0c1"
+  integrity sha512-6KV9h4PP3hqu4NaGdxxcijWfYh9LJcFI/R2sP4TTC4I5cFo3oRawN0ETlW5MkE3cQEgKhhoj0KUNz4sfpCT0Tg==
   dependencies:
-    playwright-core "1.62.0-alpha-2026-06-29"
+    playwright-core "1.62.0-alpha-1783623505000"
   optionalDependencies:
     fsevents "2.3.2"
 
