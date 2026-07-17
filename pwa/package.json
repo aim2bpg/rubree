@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^8.1.4"
+    "vite": "^8.1.5"
   },
   "dependencies": {
     "@sqlite.org/sqlite-wasm": "3.46.1-build5",
