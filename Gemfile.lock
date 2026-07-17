@@ -116,7 +116,7 @@ GEM
       reline (>= 0.3.8)
     diff-lcs (1.6.2)
     drb (2.2.3)
-    erb (6.0.4)
+    erb (6.0.5)
     erb_lint (0.9.0)
       activesupport
       better_html (>= 2.0.1)
@@ -236,8 +236,8 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.7.0)
-      loofah (~> 2.25)
+    rails-html-sanitizer (1.7.1)
+      loofah (~> 2.25, >= 2.25.2)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
     railties (8.1.3)
       actionpack (= 8.1.3)
@@ -369,7 +369,7 @@ GEM
     unicode-emoji (4.2.0)
     uri (1.1.1)
     useragent (0.16.11)
-    wasmify-rails (0.4.1)
+    wasmify-rails (0.4.2)
       js (>= 2.6, < 3.0)
       railties (>= 7.0, < 9.0)
       ruby_wasm (>= 2.6, < 3.0)
