@@ -144,3 +144,6 @@ This project is licensed under the MIT License, see the LICENSE file for details
 
 - **正規表現エディタ「Rubree」を紹介 - Railsチュートリアル note マガジン (2025-12-03)**
   - https://note.com/yasslab/n/ncb57c9812545
+
+- **関西Ruby会議09 — Project Naraku 外伝 —— レールロード図で照らすOnigmoのバグ (2026-07-18)**
+  - https://speakerdeck.com/aim2bpg/project-naraku-wai-chuan-rerurodotu-dezhao-rasuonigmonobagu
