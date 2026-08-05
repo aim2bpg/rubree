@@ -9,6 +9,11 @@ updates:
       timezone: Asia/Tokyo
     open-pull-requests-limit: 10
     versioning-strategy: lockfile-only
+    cooldown:
+      default-days: 14
+      semver-major-days: 30
+      semver-minor-days: 14
+      semver-patch-days: 7
     allow:
       - dependency-type: direct
       - dependency-type: indirect
@@ -45,6 +50,11 @@ updates:
       timezone: Asia/Tokyo
     open-pull-requests-limit: 10
     versioning-strategy: auto
+    cooldown:
+      default-days: 14
+      semver-major-days: 30
+      semver-minor-days: 14
+      semver-patch-days: 7
     labels:
       - dependencies
       - javascript
@@ -75,6 +85,11 @@ updates:
       timezone: Asia/Tokyo
     open-pull-requests-limit: 10
     versioning-strategy: auto
+    cooldown:
+      default-days: 14
+      semver-major-days: 30
+      semver-minor-days: 14
+      semver-patch-days: 7
     labels:
       - dependencies
       - javascript
@@ -93,6 +108,11 @@ updates:
       interval: daily
       time: '12:00'
       timezone: Asia/Tokyo
+    cooldown:
+      default-days: 14
+      semver-major-days: 30
+      semver-minor-days: 14
+      semver-patch-days: 7
     labels:
       - dependencies
       - gh-action
