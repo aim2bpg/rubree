@@ -4,7 +4,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.7",
     "@playwright/mcp": "^0.0.79",
-    "esbuild": "^0.28.1",
+    "esbuild": "^0.28.2",
     "playwright": "1.62.1"
   },
   "scripts": {
