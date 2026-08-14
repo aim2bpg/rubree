@@ -506,10 +506,10 @@
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.1.5.tgz#74ee3aad995d0a3996a6bb9533d4d280514ede03"
   integrity sha512-oJ4F3TnvpXaQwZJNF3ZK+kLPHKarDmJjJ6jyzVNDKH9md1dptjC7lWR//jrGuLdek/U6iltWxqAnYOu8gCiOvA==
 
-alpinejs@^3.15.12:
-  version "3.15.12"
-  resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-3.15.12.tgz#2ccd224961ba6236ca379c2abbcfa0bfeade07ee"
-  integrity sha512-nJvPAQVNPdZZ0NrExJ/kzQco3ijR8LwvCOadQecllESiqT4NyZ/57sN9V2XyvhlBGAbmlKYgeWZvYdKq99ij/Q==
+alpinejs@^3.16.0:
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-3.16.0.tgz#777d78ec06f9a7c33749489ffc9c60da33c0ed6d"
+  integrity sha512-fRAp17Igmh2NHvgRGOY8n/x9o/g8rlseVn27awaq3wy7IsNYfu0lKnQGHn4WQx+NdjnpQFajhRiULah+R1Nsog==
   dependencies:
     "@vue/reactivity" "~3.1.1"
 
