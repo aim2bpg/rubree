@@ -154,3 +154,12 @@ end
 Outside the Dev Container (local macOS install), this block is skipped and the default driver
 configuration applies. If Chrome behaves unexpectedly in CI but not locally, check whether the
 Selenium driver is picking up the right options for its environment.
+
+**arm64 hosts (e.g. Apple Silicon Macs) can't run this check at all.** Google publishes no
+arm64 build of Chrome, and Ubuntu's `chromium` apt package is just a stub that requires snap
+(unreliable inside containers) — there's no working substitute, so `.devcontainer/setup.sh`
+skips the install entirely on arm64. The pre-push "Selenium/Chrome" check (and any manual
+`DRIVER=selenium_chrome_headless` run) simply isn't available on those hosts. Rely on the
+Playwright Firefox/WebKit checks (also part of `pre-push`) and CI's Playwright/Chromium
+coverage instead — between those, Rubree's supported browsers (Chrome and Edge are both
+Chromium-based) are still reasonably covered.

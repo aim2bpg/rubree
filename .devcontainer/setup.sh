@@ -3,6 +3,10 @@ set -euo pipefail
 
 WORKSPACE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
+# Avoid apt-get blocking on the interactive "restart services?" prompt that
+# needrestart triggers on Ubuntu 24.04+ in a non-interactive shell.
+export NEEDRESTART_MODE=a
+
 # --- System dependencies ---
 sudo apt-get update -qq
 sudo apt-get install -y \
@@ -59,10 +63,19 @@ sudo ln -sf "$NVM_DIR/versions/node/v$NODE_VERSION/bin/yarn" /usr/local/bin/yarn
 # chromium: used by Playwright MCP server
 # chromium-headless-shell: used by capybara-playwright-driver in RSpec system tests
 # firefox, webkit: used by pre-push system tests (lefthook)
-if ! npx -y playwright --version &>/dev/null; then
-  npx -y playwright install chromium chromium-headless-shell firefox webkit --with-deps
-else
-  npx playwright install chromium chromium-headless-shell firefox webkit --with-deps
+#
+# Installed one browser at a time (binary + deps as separate commands, mirroring
+# ci.yml) instead of one combined `--with-deps` call, so a slow/stuck browser is
+# identifiable in the log instead of one opaque hang. Each step is capped with
+# `timeout` so a genuine hang fails loudly instead of blocking container creation
+# forever (seen on some arm64 hosts).
+#
+# Skip this step entirely with: touch .skip-playwright-install
+if [ ! -f "$WORKSPACE_ROOT/.skip-playwright-install" ]; then
+  for browser in chromium chromium-headless-shell firefox webkit; do
+    timeout 900 npx -y playwright install "$browser"
+    timeout 900 npx -y playwright install-deps "$browser"
+  done
 fi
 
 # --- Rust + wasi-vfs ---
@@ -82,7 +95,16 @@ if ! command -v wasi-vfs &>/dev/null; then
 fi
 
 # --- Google Chrome (for Selenium/Chrome system tests) ---
-if ! command -v google-chrome &>/dev/null; then
+# Google publishes no arm64 build of Chrome, and Ubuntu's own `chromium` apt package is
+# just a stub that requires snap (unreliable in containers), so there's no good arm64
+# substitute here. Skip on arm64 hosts (e.g. Apple Silicon Macs) — the "Selenium/Chrome"
+# pre-push check simply isn't available there; Playwright's Firefox/WebKit checks and
+# CI's Chromium coverage still apply. See testing-guidelines skill § Selenium/Chrome
+# inside the Dev Container.
+if [ "$(uname -m)" = "aarch64" ]; then
+  echo "arm64 host detected: skipping Google Chrome install (no arm64 build available)."
+  echo "The pre-push 'Selenium/Chrome' check will not work on this host."
+elif ! command -v google-chrome &>/dev/null; then
   curl -fsSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /tmp/google-chrome.deb
   sudo apt-get install -y /tmp/google-chrome.deb
   rm /tmp/google-chrome.deb
