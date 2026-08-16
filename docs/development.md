@@ -23,6 +23,16 @@ Setup, linting, and test commands for working on Rubree locally.
    curl -fsSL https://claude.ai/install.sh | bash
    ```
 
+3. (Optional) Skip Playwright browser installation if it hangs or times out on your machine
+   (seen on some arm64 hosts):
+
+   ```sh
+   touch .skip-playwright-install   # gitignored, scoped to this clone
+   ```
+
+   You'll need to install the browsers manually later for system tests / Playwright MCP:
+   `npx playwright install <browser> && npx playwright install-deps <browser>`.
+
 ### Manual setup (without Dev Container)
 
 ```sh
