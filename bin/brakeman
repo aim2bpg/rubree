@@ -2,6 +2,10 @@
 require "rubygems"
 require "bundler/setup"
 
-ARGV.unshift("--ensure-latest")
+# Rails' default bin/brakeman stub adds --ensure-latest here, which fails CI whenever a
+# newer Brakeman release exists on RubyGems — even during the window before Dependabot's
+# cooldown (.github/dependabot.yml) has had a chance to open the bump PR. Disabled so CI
+# red only reflects real Brakeman findings, not version staleness.
+# ARGV.unshift("--ensure-latest")
 
 load Gem.bin_path("brakeman", "brakeman")
