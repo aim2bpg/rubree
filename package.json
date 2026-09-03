@@ -20,7 +20,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.22",
     "@tailwindcss/cli": "^4.3.3",
-    "alpinejs": "^3.16.3",
+    "alpinejs": "^3.17.0",
     "tailwindcss": "^4.1.10"
   },
   "resolutions": {
