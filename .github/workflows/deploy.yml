@@ -38,7 +38,7 @@ jobs:
           echo "wasi-vfs=$(cat .wasi-vfs-version | tr -d '[:space:]')" >> $GITHUB_OUTPUT
 
       - name: Set up Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           toolchain: ${{ steps.versions.outputs.rust }}
 
