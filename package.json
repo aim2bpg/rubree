@@ -3,7 +3,7 @@
   "private": true,
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
-    "@playwright/mcp": "^0.0.81",
+    "@playwright/mcp": "^0.0.82",
     "esbuild": "^0.28.2",
     "playwright": "1.62.1"
   },
