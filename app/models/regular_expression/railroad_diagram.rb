@@ -31,7 +31,7 @@ class RegularExpression
 
       if options.present?
         option_label = "options #{RegularExpression::RailroadDiagramBuilder.parse_option_flags(options)}"
-        diagram_body = RailroadDiagrams::Group.new(diagram_body, option_label)
+        diagram_body = RailroadDiagrams::Group.new(diagram_body, label: option_label)
       end
 
       diagram = RailroadDiagrams::Diagram.new(diagram_body)
