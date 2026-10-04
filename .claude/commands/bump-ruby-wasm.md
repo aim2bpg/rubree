@@ -18,7 +18,12 @@ Example: `/bump-ruby-wasm 4.0.6`
    ```
 
 2. **Update `.ruby-version`**
-   Replace the current version with `<new-version>`.
+   Replace the current version with `<new-version>`. Then install it locally and reinstall gems:
+   ```
+   git -C "$(rbenv root)/plugins/ruby-build" pull   # new versions are unknown until updated
+   rbenv install <new-version>                       # ~5 min; run in the background
+   bundle install
+   ```
 
 3. **Update `.wasi-vfs-version` (only if needed)**
    Check https://github.com/kateinoigakukun/wasi-vfs/releases for a newer release; update if so.
