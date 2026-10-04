@@ -19,6 +19,10 @@ bin/rails wasmify:build   # ~1 min with cache, ~15 min cold
 bin/rails wasmify:pack
 ```
 
+Run `uname -m` first: on `aarch64` the build aborts with `unsupported platform for fetching WASI
+SDK` (see `docs/wasm-build-notes.md` #7). Don't retry — tell the user WASM verification needs an
+x86_64 host and report the change as WASM-unverified.
+
 **Clean build** (use when explicitly asked, or when cache may be stale):
 
 ```bash

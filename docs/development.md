@@ -308,6 +308,10 @@ bin/rails wasmify:build   # ~15 min cold, ~1 min with cache
 bin/rails wasmify:pack
 ```
 
+> **arm64 hosts can't build WASM** (e.g. the Dev Container on Apple Silicon): the WASI SDK has no
+> `aarch64-linux` build. Use an x86_64 host — see
+> [wasm-build-notes.md #7](wasm-build-notes.md#7-wasm-build-fails-on-arm64-linux-hosts).
+
 **Clean build** — delete intermediate artefacts first if you need a fully fresh build (e.g.
 after changing gems or suspecting a stale cache):
 

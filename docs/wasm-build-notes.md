@@ -12,6 +12,8 @@ This document records the issues encountered and workarounds applied when buildi
 - [Ruby 4.0 Additional Issues](#ruby-40-additional-issues)
   - [5. Gem::Deprecate not loaded in WASM runtime](#5-gemdeprecate-not-loaded-in-wasm-runtime)
   - [6. ruby_wasm platform gem incompatible with Ruby 4.0](#6-ruby_wasm-platform-gem-incompatible-with-ruby-40)
+- [Host Environment Issues](#host-environment-issues)
+  - [7. WASM build fails on arm64 Linux hosts](#7-wasm-build-fails-on-arm64-linux-hosts)
 - [Patches and Workarounds Summary](#patches-and-workarounds-summary)
 - [Upstream References](#upstream-references)
 
@@ -37,7 +39,7 @@ These issues were first discovered during Ruby 3.4.8 WASM support (PR [#527](htt
 
 - **Symptom**: WASM build silently uses wrong Ruby source tarball
 - **Root cause**: `ruby_wasm` 2.9.0 renamed `build_source_aliases` to `build_config_aliases`, so wasmify-rails 0.4.1's monkey-patch is silently ignored
-**Fix**: `lib/tasks/wasmify_patches.rake` overrides the `build_config_aliases` method to set correct source URLs for Ruby 4.0.6 (temporary workaround for wasmify-rails <= 0.4.1).
+**Fix**: `lib/tasks/wasmify_patches.rake` overrides the `build_config_aliases` method to set correct source URLs for Ruby 4.0.7 (temporary workaround for wasmify-rails <= 0.4.1).
   - *April 2026*: [palkan/wasmify-rails#11](https://github.com/palkan/wasmify-rails/pull/11) has been merged to main, but the gem version is not yet updated. The patch is still required for now, and will be removed after the next gem release.
 
 ### 4. bigdecimal in exclude_gems causes LoadError
@@ -65,6 +67,16 @@ These issues appeared when upgrading from Ruby 3.4 to 4.0 (PRs [#528](https://gi
 
 Temporary workarounds were required due to lack of Ruby 4.0 platform gem support, but this was resolved with official support in ruby_wasm 2.9.4.
 (See details in [ruby/ruby.wasm#636](https://github.com/ruby/ruby.wasm/issues/636))
+
+---
+
+## Host Environment Issues
+
+### 7. WASM build fails on arm64 Linux hosts
+
+- **Symptom**: `bin/rails wasmify:build` aborts with `unsupported platform for fetching WASI SDK: aarch64-linux`
+- **Root cause**: ruby_wasm downloads a prebuilt WASI SDK, which has no `aarch64-linux` build. The Dev Container runs as arm64 Linux on Apple Silicon Macs, so the build can't run there.
+- **Workaround**: Build on an x86_64 host (Intel Mac/Linux, or a GitHub Codespace). Note that CI does **not** build WASM on PRs — the Deploy workflow only builds after a merge to `main` — so for PRs touching the WASM build (Ruby/Rails/`:wasm`-group gem bumps), verify on x86_64 before merging or watch the Deploy run closely afterwards.
 
 ---
 
