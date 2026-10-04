@@ -120,18 +120,18 @@ class RegularExpression
 
       when *LABEL_MAP.keys
         group_content = ast_to_railroad_sequence(ast.expressions)
-        wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, LABEL_MAP[ast.class]), ast.quantifier)
+        wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label: LABEL_MAP[ast.class]), ast.quantifier)
 
       when Regexp::Expression::Group::Named
         group_content = ast_to_railroad_sequence(ast.expressions)
         safe_name = sanitize_group_name(ast.name)
         label = safe_name ? "group: #{safe_name}" : "unknown group"
-        wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label), ast.quantifier)
+        wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label: label), ast.quantifier)
 
       when Regexp::Expression::Group::Capture
         group_content = ast_to_railroad_sequence(ast.expressions)
         label = ast.number ? "group ##{ast.number}" : "capture group"
-        wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label), ast.quantifier)
+        wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label: label), ast.quantifier)
 
       when Regexp::Expression::Group::Comment
         comment_text = ast.text.gsub(/\A\(\?#|\)\z/, "").strip
@@ -143,12 +143,12 @@ class RegularExpression
           option_flags = ast.text.gsub(/[()?:]/, "")
           label = "options"
           comment = parse_option_flags(option_flags)
-          RailroadDiagrams::Group.new(RailroadDiagrams::Comment.new(comment), label)
+          RailroadDiagrams::Group.new(RailroadDiagrams::Comment.new(comment), label: label)
         else
           group_content = ast_to_railroad_sequence(ast.expressions)
           option_flags = ast.text.gsub(/[()?:]/, "")
           label = "options #{parse_option_flags(option_flags)}"
-          wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label), ast.quantifier)
+          wrap_with_quantifier(RailroadDiagrams::Group.new(group_content, label: label), ast.quantifier)
         end
 
       when Regexp::Expression::CharacterSet
@@ -168,7 +168,7 @@ class RegularExpression
               case inner_items.size
               when 0 then RailroadDiagrams::Skip.new
               when 1 then inner_items.first
-              else RailroadDiagrams::Group.new(RailroadDiagrams::Choice.new(0, *inner_items), label)
+              else RailroadDiagrams::Group.new(RailroadDiagrams::Choice.new(0, *inner_items), label: label)
               end
             end
             RailroadDiagrams::MultipleChoice.new(0, "all", *choices, RailroadDiagrams::Comment.new("intersection of character sets"))
@@ -185,7 +185,7 @@ class RegularExpression
         when 1 then expressions.first
         else RailroadDiagrams::Choice.new(0, *expressions)
         end
-        wrap_with_quantifier(RailroadDiagrams::Group.new(choice, label), ast.quantifier)
+        wrap_with_quantifier(RailroadDiagrams::Group.new(choice, label: label), ast.quantifier)
 
       when *ANCHOR_LABELS.keys
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ANCHOR_LABELS[ast.class]), ast.quantifier)
@@ -214,8 +214,8 @@ class RegularExpression
         true_branch = ast.branches[0]
         false_branch = ast.branches[1]
 
-        label_true = true_branch ? RailroadDiagrams::Group.new(ast_to_railroad(true_branch), "True") : RailroadDiagrams::Skip.new
-        label_false = false_branch ? RailroadDiagrams::Group.new(ast_to_railroad(false_branch), "False") : nil
+        label_true = true_branch ? RailroadDiagrams::Group.new(ast_to_railroad(true_branch), label: "True") : RailroadDiagrams::Skip.new
+        label_false = false_branch ? RailroadDiagrams::Group.new(ast_to_railroad(false_branch), label: "False") : nil
 
         choice_expr = label_false ? RailroadDiagrams::Choice.new(0, label_true, label_false) : label_true
 
@@ -225,7 +225,7 @@ class RegularExpression
         else ast.condition.to_s
         end
 
-        RailroadDiagrams::Group.new(choice_expr, "Condition: #{condition_label}")
+        RailroadDiagrams::Group.new(choice_expr, label: "Condition: #{condition_label}")
 
       when Regexp::Expression::Keep::Mark, Regexp::Expression::PosixClass, Regexp::Expression::UnicodeProperty::Base
         wrap_with_quantifier(RailroadDiagrams::NonTerminal.new(ast.text), ast.quantifier)
@@ -414,7 +414,7 @@ class RegularExpression
       return RailroadDiagrams::Skip.new if ["{0}", "{0,0}", "{,0}"].include?(quant_text)
 
       matched = quant_text.match(/\A(\*|\+|\?|\{\d*(?:,\d*)?\})([?+]?)\z/)
-      return RailroadDiagrams::Group.new(base, "quantifier: #{quant_text}") unless matched
+      return RailroadDiagrams::Group.new(base, label: "quantifier: #{quant_text}") unless matched
 
       quant_core = matched[1]
       suffix = matched[2]
@@ -459,7 +459,7 @@ class RegularExpression
         max = $&.match(/\d+/)[0].to_i rescue 0
         RailroadDiagrams::ZeroOrMore.new(base, RailroadDiagrams::Comment.new("0 - #{max} time(s)"))
       else
-        RailroadDiagrams::Group.new(base, "quantifier: #{quant_text}")
+        RailroadDiagrams::Group.new(base, label: "quantifier: #{quant_text}")
       end
     end
 
