@@ -94,12 +94,16 @@ key: ...-${{ hashFiles('.ruby-version') }}-ruby-wasm
 - **Dependency updates**: Dependabot runs daily (`.github/dependabot.yml`) and groups related
   packages (e.g. `rails`, `rubocop`, `tailwindcss`) into single PRs to cut down on noise.
   Non-major-version bumps auto-merge with squash via `.github/workflows/auto-merge.yml`.
+  A `cooldown` delays new releases (major 30 days, minor 14, patch 7), so a fresh release with
+  no Dependabot PR yet is expected, not a misconfiguration — bump it by hand if it can't wait.
+  Ruby/Node versions live in dotfiles that Dependabot doesn't track; bump those manually.
 - **CI path filters**: `ci.yml` skips runs when only `**/*.md` files change — a docs-only commit
   shouldn't also touch code, or it will trigger a full CI run unnecessarily.
 - **Git hooks (Lefthook)**: `pre-commit` runs the linters (Rubocop, ERB Lint, Biome), Gitleaks,
   Brakeman, and the RSpec suite; `pre-push` runs system specs against Firefox, WebKit, and
   Selenium/Chrome. A failing hook usually means CI would fail too — fix the underlying issue
-  rather than skipping hooks.
+  rather than skipping hooks. If every Ruby hook fails with `Bundler::GemNotFound` right after
+  pulling merged Dependabot PRs, run `bundle install` — the local gems are just behind the lockfile.
 - **Browser support**: Rubree only supports Chrome and Edge. Ruby Wasm is incompatible with
   Safari's WebAssembly asyncify and with Firefox's stricter Service Worker module evaluation (see
   README → Browser Compatibility for the exact errors). Don't expect WASM-related changes to
