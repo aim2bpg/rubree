@@ -24,6 +24,7 @@
     "tailwindcss": "^4.1.10"
   },
   "resolutions": {
-    "picomatch": ">=4.0.4"
+    "picomatch": ">=4.0.4",
+    "@parcel/watcher": "2.6.0"
   }
 }
