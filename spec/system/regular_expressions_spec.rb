@@ -440,7 +440,7 @@ RSpec.describe "RegularExpressionFlow" do
 
       # initially collapsed
       expect(toggle_button['aria-expanded']).to eq 'false'
-      expect(page).to have_no_selector('div[x-show="show"]', visible: :visible)
+      expect(page).to have_no_css('div[x-show="show"]', visible: :visible)
 
       # open
       toggle_button.click
@@ -450,7 +450,7 @@ RSpec.describe "RegularExpressionFlow" do
       # close
       toggle_button.click
       expect(toggle_button['aria-expanded']).to eq 'false'
-      expect(page).to have_no_selector('div[x-show="show"]', visible: :visible)
+      expect(page).to have_no_css('div[x-show="show"]', visible: :visible)
     end
   end
 
