@@ -25,6 +25,7 @@
   },
   "resolutions": {
     "picomatch": ">=4.0.4",
-    "@parcel/watcher": "2.6.0"
+    "@parcel/watcher": "2.6.0",
+    "source-map-js": ">=1.2.2"
   }
 }
