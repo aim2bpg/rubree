@@ -2,7 +2,7 @@
   "name": "app",
   "private": true,
   "devDependencies": {
-    "@biomejs/biome": "2.6.2",
+    "@biomejs/biome": "2.6.3",
     "@playwright/mcp": "^0.0.83",
     "esbuild": "^0.28.2",
     "playwright": "1.64.0"
