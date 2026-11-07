@@ -1,4 +1,5 @@
 ---
+
 name: frontend-patterns
 description: Rubree's frontend conventions — when to use Alpine.js vs Stimulus, how Turbo Frame and form submission work, ERB whitespace rules for preformatted output, inline helper methods, and SVG safety. Use when writing or reviewing Stimulus controllers, Alpine.js components, ERB templates, Turbo Frames, or anything that touches the client-side rendering pipeline.
 ---

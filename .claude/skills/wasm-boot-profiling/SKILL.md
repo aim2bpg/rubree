@@ -1,12 +1,13 @@
 ---
+
 name: wasm-boot-profiling
 description: How to measure where time goes during Rubree's WASM Rails boot sequence
-  (Service Worker → ruby.wasm), and what we already learned from one full measurement
-  pass — gem require + Rails.application.initialize! + WASM compile dominate (~99%),
-  while the ActiveRecord DB adapter (sqlite3_wasm vs nulldb) is negligible (~1.5%).
-  Use when investigating "WASM load is slow", "the page freezes on iOS/mobile while
-  loading", or when considering swapping the DB adapter to speed up boot — measure
-  first, this skill shows how and what was already found.
+(Service Worker → ruby.wasm), and what we already learned from one full measurement
+pass — gem require + Rails.application.initialize! + WASM compile dominate (~99%),
+while the ActiveRecord DB adapter (sqlite3_wasm vs nulldb) is negligible (~1.5%).
+Use when investigating "WASM load is slow", "the page freezes on iOS/mobile while
+loading", or when considering swapping the DB adapter to speed up boot — measure
+first, this skill shows how and what was already found.
 ---
 
 # WASM Boot Profiling
@@ -150,17 +151,23 @@ listener instead:
 ```js
 async (page) => {
   const logs = [];
-  page.context().on('serviceworker', (sw) => {
-    sw.on('console', (msg) => logs.push(msg.text()));
+  page.context().on("serviceworker", (sw) => {
+    sw.on("console", (msg) => logs.push(msg.text()));
   });
 
-  await page.goto('http://localhost:5173/');
-  await page.locator('#launch-button').click();
-  await page.getByRole('button', { name: 'Agree and Start / 同意して開始' }).click();
-  await page.waitForTimeout(25000);   // boot has a 30s timeout in boot.js
+  await page.goto("http://localhost:5173/");
+  await page.locator("#launch-button").click();
+  await page
+    .getByRole("button", { name: "Agree and Start / 同意して開始" })
+    .click();
+  await page.waitForTimeout(25000); // boot has a 30s timeout in boot.js
 
-  return JSON.stringify(logs.filter((l) => l.includes('[perf]')), null, 2);
-}
+  return JSON.stringify(
+    logs.filter((l) => l.includes("[perf]")),
+    null,
+    2,
+  );
+};
 ```
 
 ### 5. Reset to "first load" state before each measurement run
@@ -212,7 +219,8 @@ further purpose.
 
 ```js
 // ✅ measure the full boot sequence end-to-end before optimizing a specific subsystem
-console.time("[perf] initRailsVM"); /* ... */ console.timeEnd("[perf] initRailsVM");
+console.time("[perf] initRailsVM"); /* ... */
+console.timeEnd("[perf] initRailsVM");
 
 // ❌ optimize the DB adapter based on intuition alone — already measured and
 //    disproven once; the ~1.5% it accounts for isn't worth the risk of a

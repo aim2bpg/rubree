@@ -2,13 +2,13 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
-      - '**/*.md'
+      - "**/*.md"
   push:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
-      - '**/*.md'
+      - "**/*.md"
 
 concurrency:
   group: ci-${{ github.ref_name }}
@@ -125,7 +125,7 @@ jobs:
       - name: Extract Playwright version
         id: playwright-version
         run: echo "version=$(jq -r '.devDependencies.playwright' package.json)" >> "$GITHUB_OUTPUT"
-      
+
       - name: Cache Playwright Browsers
         uses: actions/cache@v6
         id: playwright-cache

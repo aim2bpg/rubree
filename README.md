@@ -16,15 +16,15 @@ Inspired by: https://rubular.com
 
 ![Rubree usage demo](docs/screenshots/demo/usage_demo.gif)
 
-| Step | Action | What happens |
-|---|---|---|
-| 1 | Click **Get started** | Opens the Terms of Service modal |
-| 2 | Click **Agree and Start** | Boots the Ruby WASM runtime (~10 s on first visit) |
-| 3 | Enter a regex in **Your regular expression** | Railroad diagram renders instantly |
-| 4 | Enter text in **Your test string** | Matches are highlighted in real time |
-| 5 | Click 🔍 on the diagram | Enlarge the railroad diagram in a modal |
-| 6 | Enter `\1!` in **Substitution** | Preview substitution result (`hello! world! foo`) |
-| 7 | Click the share icon (↗) | Copies a permalink to clipboard |
+| Step | Action                                       | What happens                                       |
+| ---- | -------------------------------------------- | -------------------------------------------------- |
+| 1    | Click **Get started**                        | Opens the Terms of Service modal                   |
+| 2    | Click **Agree and Start**                    | Boots the Ruby WASM runtime (~10 s on first visit) |
+| 3    | Enter a regex in **Your regular expression** | Railroad diagram renders instantly                 |
+| 4    | Enter text in **Your test string**           | Matches are highlighted in real time               |
+| 5    | Click 🔍 on the diagram                      | Enlarge the railroad diagram in a modal            |
+| 6    | Enter `\1!` in **Substitution**              | Preview substitution result (`hello! world! foo`)  |
+| 7    | Click the share icon (↗)                     | Copies a permalink to clipboard                    |
 
 ---
 
@@ -101,7 +101,7 @@ Safari and Firefox have compatibility limitations with Ruby WebAssembly (Wasmify
 - **Safari**: Ruby Wasm crashes during execution due to WebAssembly asyncify incompatibility
   - Error: `RangeError: Maximum call stack size exceeded`
   - The Ruby WebAssembly runtime crashes when trying to initialize Rails
-  
+
 - **Firefox**: Service Worker script evaluation fails
   - Error: `TypeError: ServiceWorker script evaluation failed`
   - The Service Worker script cannot be evaluated in Firefox's stricter module evaluation

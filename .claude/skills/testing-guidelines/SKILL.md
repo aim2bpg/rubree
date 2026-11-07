@@ -1,4 +1,5 @@
 ---
+
 name: testing-guidelines
 description: Conventions for writing, organizing, and running RSpec tests in Rubree — spec layout, description style, mocking, system-spec driver selection, and the octocov coverage/ratio/time thresholds enforced on every PR. Use when writing or reviewing specs, deciding which spec layer (model/request/system) to use, or wondering why a PR's coverage check failed.
 ---
@@ -78,7 +79,7 @@ expect(fake.instance_variable_get(:@did)).to be true
 `allow(...).to receive(...)` plus `have_received(...)` keeps the spec focused on the interaction
 ("was `substitute` called?") rather than the collaborator's private implementation.
 
-## Comment the *why*, not the *what*
+## Comment the _why_, not the _what_
 
 ```ruby
 # ✅ from spec/system/regular_expressions_spec.rb
@@ -115,11 +116,11 @@ browser-specific behavior, it will also run against Firefox and WebKit automatic
 
 These thresholds are enforced via octocov on every PR — keep them in mind when adding code:
 
-| Metric | Target |
-|---|---|
-| Line coverage | ≥ 95% (and no more than 1pt drop vs. the base branch) |
-| Code-to-test ratio (`app/` vs `spec/`) | ≥ 1 : 1.5 |
-| Test suite execution time | ≤ 3 minutes |
+| Metric                                 | Target                                                |
+| -------------------------------------- | ----------------------------------------------------- |
+| Line coverage                          | ≥ 95% (and no more than 1pt drop vs. the base branch) |
+| Code-to-test ratio (`app/` vs `spec/`) | ≥ 1 : 1.5                                             |
+| Test suite execution time              | ≤ 3 minutes                                           |
 
 In practice this means: write a spec alongside any new code (don't leave it for later), and
 prefer fast model/request specs over slow system specs where either would do — system specs are

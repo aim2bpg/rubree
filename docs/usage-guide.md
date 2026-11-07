@@ -29,11 +29,11 @@ visual state** for manual verification during WASM builds (see `/verify-wasm`).
 
 ![Boot flow](screenshots/features/gif_boot.gif)
 
-| Step | What to do | What you see |
-|---|---|---|
-| ① | Click **Get started** | Terms of Service modal opens |
-| ② | Click **Agree and Start / 同意して開始** | Progress bar appears ("Starting Rubree — About 10 seconds") |
-| ③ | Wait ~10 s | Boot completes; editor is ready |
+| Step | What to do                               | What you see                                                |
+| ---- | ---------------------------------------- | ----------------------------------------------------------- |
+| ①    | Click **Get started**                    | Terms of Service modal opens                                |
+| ②    | Click **Agree and Start / 同意して開始** | Progress bar appears ("Starting Rubree — About 10 seconds") |
+| ③    | Wait ~10 s                               | Boot completes; editor is ready                             |
 
 The boot screen only appears on **first visit** — subsequent visits use the Service Worker
 cache and launch instantly.
@@ -89,11 +89,11 @@ cache and launch instantly.
 
 The **Options** field (top-right of the pattern panel) accepts Ruby regex flags:
 
-| Flag | Meaning |
-|---|---|
-| `i` | Case insensitive |
-| `m` | Multiline (`.` matches `\n`) |
-| `x` | Extended — ignore whitespace, allow `# comments` |
+| Flag | Meaning                                          |
+| ---- | ------------------------------------------------ |
+| `i`  | Case insensitive                                 |
+| `m`  | Multiline (`.` matches `\n`)                     |
+| `x`  | Extended — ignore whitespace, allow `# comments` |
 
 **Try it:**
 - Pattern: `hello`
@@ -218,20 +218,20 @@ options explained inline.
 
 Use the assets above as expected-state reference when verifying a WASM build manually.
 
-| # | Check | Reference asset |
-|---|---|---|
-| 1 | Boot complete, editor ready | `features/gif_boot.gif` |
-| 2 | Basic match highlights | `features/gif_match.gif` |
-| 3 | Numbered capture groups | `features/gif_captures.gif` |
-| 4 | Named captures (year/month/day) | `features/named_captures.png` |
-| 5 | Case-insensitive option (`i`) | `features/options_case_insensitive.png` |
-| 6 | Railroad diagram renders inline | `features/gif_diagram.gif` |
-| 7 | Railroad diagram modal (🔍) | `features/diagram_modal.png` |
-| 8 | Substitution with named backreference | `features/gif_substitution.gif` |
-| 9 | Ruby code snippet (Show / copy) | `features/gif_snippet.gif` |
-| 10 | ReDoS check opens recheck Playground | `features/gif_redos.gif` |
-| 11 | Permalink copied to clipboard | `features/gif_permalink.gif` |
-| 12 | Quick reference section visible | `features/gif_quickref.gif` |
+| #   | Check                                 | Reference asset                         |
+| --- | ------------------------------------- | --------------------------------------- |
+| 1   | Boot complete, editor ready           | `features/gif_boot.gif`                 |
+| 2   | Basic match highlights                | `features/gif_match.gif`                |
+| 3   | Numbered capture groups               | `features/gif_captures.gif`             |
+| 4   | Named captures (year/month/day)       | `features/named_captures.png`           |
+| 5   | Case-insensitive option (`i`)         | `features/options_case_insensitive.png` |
+| 6   | Railroad diagram renders inline       | `features/gif_diagram.gif`              |
+| 7   | Railroad diagram modal (🔍)           | `features/diagram_modal.png`            |
+| 8   | Substitution with named backreference | `features/gif_substitution.gif`         |
+| 9   | Ruby code snippet (Show / copy)       | `features/gif_snippet.gif`              |
+| 10  | ReDoS check opens recheck Playground  | `features/gif_redos.gif`                |
+| 11  | Permalink copied to clipboard         | `features/gif_permalink.gif`            |
+| 12  | Quick reference section visible       | `features/gif_quickref.gif`             |
 
 All paths are relative to `docs/screenshots/`.
 To regenerate all screenshots and GIFs after a UI change, run `/screenshot-guide`.

@@ -13,12 +13,14 @@ Example: `/bump-ruby-wasm 4.0.6`
 ## Steps
 
 1. **Create a branch**
+
    ```
    git checkout -b chore/bump-ruby-<new-version>
    ```
 
 2. **Update `.ruby-version`**
    Replace the current version with `<new-version>`. Then install it locally and reinstall gems:
+
    ```
    git -C "$(rbenv root)/plugins/ruby-build" pull   # new versions are unknown until updated
    rbenv install <new-version>                       # ~5 min; run in the background
@@ -40,6 +42,7 @@ Example: `/bump-ruby-wasm 4.0.6`
    In Issue 3's Fix description, update the Ruby version reference to `<new-version>`.
 
 7. **Run and verify the local WASM build**
+
    ```
    bin/rails wasmify:build   # must succeed without errors
    bin/rails wasmify:pack    # must succeed without errors
@@ -47,16 +50,20 @@ Example: `/bump-ruby-wasm 4.0.6`
    ```
 
 8. **Commit**
+
    ```
    git add .ruby-version .wasi-vfs-version .rust-version lib/tasks/wasmify_patches.rake docs/wasm-build-notes.md
    git commit -m "⬆️ Ruby <new-version>"
    ```
+
    (Only `git add` the dotfiles you actually changed.)
 
 9. **Push and open PR**
+
    ```
    git push -u origin chore/bump-ruby-<new-version>
    ```
+
    Then open a PR against `main`.
 
 ## Notes
