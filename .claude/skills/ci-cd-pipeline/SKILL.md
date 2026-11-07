@@ -1,4 +1,5 @@
 ---
+
 name: ci-cd-pipeline
 description: How Rubree's local setup (.devcontainer/setup.sh), CI (ci.yml), and Deploy (deploy.yml) connect — dotfile-driven tool versions, WASM build caching, Dependabot grouping/auto-merge, Lefthook hook scope, and the Chrome/Edge-only browser support constraint. Use when changing CI/CD workflows, the devcontainer, dependency automation, or anything that touches the WASM build or deploy pipeline.
 ---

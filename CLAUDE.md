@@ -88,7 +88,7 @@ question resolves.
 When a task turns out harder, slower, or more tedious than expected, finish it — don't quietly
 trim scope or push part of it to "later." Reasons like "this is taking too long," "this part is
 tricky," or "I'll add the test afterward" are not good reasons to stop partway — they're exactly
-the kind of shortcut an AI agent is statistically inclined to take, because the shortcut *looks*
+the kind of shortcut an AI agent is statistically inclined to take, because the shortcut _looks_
 like progress.
 
 The only acceptable reason to skip part of a task is a **technical** one — the plan changed, the
@@ -138,15 +138,15 @@ is high.
 
 ## Technical Foundation
 
-| Item | Detail |
-|---|---|
-| Runtime | Ruby 4.x (see `.ruby-version`) |
-| Framework | Ruby on Rails 8.x |
-| WASM | ruby_wasm + wasmify-rails (PWA target) |
-| Frontend | Vite + Stimulus + Turbo |
-| CI/CD | GitHub Actions |
-| Dev Environment | DevContainer (`.devcontainer/devcontainer.json`) |
-| GitHub CLI | `gh` installed; prefer over `WebFetch` for GitHub ops — see `docs/development.md#github-cli` |
+| Item            | Detail                                                                                       |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| Runtime         | Ruby 4.x (see `.ruby-version`)                                                               |
+| Framework       | Ruby on Rails 8.x                                                                            |
+| WASM            | ruby_wasm + wasmify-rails (PWA target)                                                       |
+| Frontend        | Vite + Stimulus + Turbo                                                                      |
+| CI/CD           | GitHub Actions                                                                               |
+| Dev Environment | DevContainer (`.devcontainer/devcontainer.json`)                                             |
+| GitHub CLI      | `gh` installed; prefer over `WebFetch` for GitHub ops — see `docs/development.md#github-cli` |
 
 ---
 
@@ -154,25 +154,25 @@ is high.
 
 ### Language
 
-| Target | Language |
-|---|---|
-| Source code, comments | English |
-| Commit messages | English |
-| PR titles & descriptions | English |
-| CLAUDE.md, `.claude/` files | English |
+| Target                      | Language |
+| --------------------------- | -------- |
+| Source code, comments       | English  |
+| Commit messages             | English  |
+| PR titles & descriptions    | English  |
+| CLAUDE.md, `.claude/` files | English  |
 
 ### Commit messages
 
-| Format | Use case |
-|---|---|
-| `⬆️ Ruby X.Y.Z` | Ruby patch version bump |
-| `⬆️ Node.js X.Y.Z` | Node.js version bump |
-| `⬆️ bundle update` | Bulk gem updates |
-| `⬆️ yarn upgrade` | Bulk JS package updates |
-| `chore: <description>` | Config, CI, tooling (non-functional) |
-| `fix: <description>` | Bug fixes |
-| `feat: <description>` | New features |
-| `docs: <description>` | Documentation only |
+| Format                            | Use case                                       |
+| --------------------------------- | ---------------------------------------------- |
+| `⬆️ Ruby X.Y.Z`                   | Ruby patch version bump                        |
+| `⬆️ Node.js X.Y.Z`                | Node.js version bump                           |
+| `⬆️ bundle update`                | Bulk gem updates                               |
+| `⬆️ yarn upgrade`                 | Bulk JS package updates                        |
+| `chore: <description>`            | Config, CI, tooling (non-functional)           |
+| `fix: <description>`              | Bug fixes                                      |
+| `feat: <description>`             | New features                                   |
+| `docs: <description>`             | Documentation only                             |
 | `Chore(deps): Bump X from A to B` | Dependabot single-dependency bumps (capital C) |
 
 ### Branch strategy
@@ -197,12 +197,12 @@ Branch naming: `chore/bump-ruby-4.0.5` · `fix/some-bug` · `feat/some-feature`
 When leaving review comments (including `/code-review --comment`), mark severity and call out
 good things alongside issues:
 
-| Label | Meaning |
-|---|---|
-| `[must]` | Has to be addressed before merging |
-| `[should]` | Worth fixing, but not a blocker |
+| Label        | Meaning                                         |
+| ------------ | ----------------------------------------------- |
+| `[must]`     | Has to be addressed before merging              |
+| `[should]`   | Worth fixing, but not a blocker                 |
 | `[consider]` | An idea worth thinking about — up to the author |
-| `[question]` | Asking to understand, not asking for a change |
+| `[question]` | Asking to understand, not asking for a change   |
 
 ---
 
@@ -227,33 +227,33 @@ Don't change them without understanding the rationale:
 
 ### Project skills (auto-loaded when relevant)
 
-| Skill | When it loads | Covers |
-|---|---|---|
-| `architecture-philosophy` | Adding domain logic, naming classes, reviewing a diff | ActiveModel PORO pattern, class naming, module vs class; for frontend, see `frontend-patterns` |
-| `frontend-patterns` | Writing/reviewing Stimulus controllers, Alpine.js, ERB, Turbo Frames | Alpine.js vs Stimulus, Turbo Frame flow, ERB whitespace, SVG safety, browser-only constraint |
-| `testing-guidelines` | Writing/reviewing specs, choosing spec layer, coverage failures | Spec layout, description style, mocking, Capybara driver selection, octocov thresholds |
-| `ci-cd-pipeline` | Changing CI/CD, devcontainer, WASM build, deploy pipeline | Dotfile-driven versioning, WASM cache keys, Dependabot, Lefthook, CSP status, sitemap |
-| `steering` | Starting a multi-session task, needing a design decision up front | Creates `.steering/[date]-[feature]/tasklist.md` to preserve progress across sessions |
-| `wasm-boot-profiling` | Investigating slow WASM load, mobile freeze/jank, or considering a DB adapter swap for speed | How to instrument and measure the SW→ruby.wasm boot sequence; confirms gem require + Rails init + WASM compile dominate (~99%), DB adapter is ~1.5% (disproven hypothesis) |
+| Skill                     | When it loads                                                                                | Covers                                                                                                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `architecture-philosophy` | Adding domain logic, naming classes, reviewing a diff                                        | ActiveModel PORO pattern, class naming, module vs class; for frontend, see `frontend-patterns`                                                                             |
+| `frontend-patterns`       | Writing/reviewing Stimulus controllers, Alpine.js, ERB, Turbo Frames                         | Alpine.js vs Stimulus, Turbo Frame flow, ERB whitespace, SVG safety, browser-only constraint                                                                               |
+| `testing-guidelines`      | Writing/reviewing specs, choosing spec layer, coverage failures                              | Spec layout, description style, mocking, Capybara driver selection, octocov thresholds                                                                                     |
+| `ci-cd-pipeline`          | Changing CI/CD, devcontainer, WASM build, deploy pipeline                                    | Dotfile-driven versioning, WASM cache keys, Dependabot, Lefthook, CSP status, sitemap                                                                                      |
+| `steering`                | Starting a multi-session task, needing a design decision up front                            | Creates `.steering/[date]-[feature]/tasklist.md` to preserve progress across sessions                                                                                      |
+| `wasm-boot-profiling`     | Investigating slow WASM load, mobile freeze/jank, or considering a DB adapter swap for speed | How to instrument and measure the SW→ruby.wasm boot sequence; confirms gem require + Rails init + WASM compile dominate (~99%), DB adapter is ~1.5% (disproven hypothesis) |
 
 ### Project commands
 
-| Command | Description |
-|---|---|
+| Command                     | Description                                                                         |
+| --------------------------- | ----------------------------------------------------------------------------------- |
 | `/bump-ruby-wasm <version>` | Ruby patch version upgrade — dotfiles, rake patch, WASM rebuild, cache key behavior |
-| `/bump-rails <version>` | Rails version upgrade — bundle update, railsdiff review, WASM verification |
-| `/create-pr` | Draft and open a PR via `gh pr create` using the project PR template |
-| `/verify-wasm` | Build WASM artefacts and verify the golden path headlessly via Playwright MCP |
+| `/bump-rails <version>`     | Rails version upgrade — bundle update, railsdiff review, WASM verification          |
+| `/create-pr`                | Draft and open a PR via `gh pr create` using the project PR template                |
+| `/verify-wasm`              | Build WASM artefacts and verify the golden path headlessly via Playwright MCP       |
 
 ### Built-in skills (always available)
 
-| Command | Description |
-|---|---|
+| Command                            | Description                                                                                               |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `/code-review [--comment] [--fix]` | Review current diff for bugs and cleanups. `--comment` posts inline PR comments; `--fix` applies findings |
-| `/security-review` | Security-focused review of pending changes on the current branch |
-| `/simplify` | Refactoring pass — reuse, simplification, efficiency (no bug hunting; use `/code-review` for that) |
-| `/loop [interval]` | Run a command repeatedly on an interval — e.g. `/loop 5m /code-review` |
-| `/schedule` | Create/manage scheduled remote agents on a cron schedule |
+| `/security-review`                 | Security-focused review of pending changes on the current branch                                          |
+| `/simplify`                        | Refactoring pass — reuse, simplification, efficiency (no bug hunting; use `/code-review` for that)        |
+| `/loop [interval]`                 | Run a command repeatedly on an interval — e.g. `/loop 5m /code-review`                                    |
+| `/schedule`                        | Create/manage scheduled remote agents on a cron schedule                                                  |
 
 ### Sub-agents (spawned via the Agent tool)
 
@@ -261,11 +261,11 @@ Claude Code can delegate work to specialised sub-agents. These are not slash com
 invoked internally by the assistant when the task fits. You cannot call them directly, but you can
 ask the assistant to use one explicitly (e.g. "use an Explore agent for this search").
 
-| Agent type | When it's used | What it does |
-|---|---|---|
-| `Explore` | Codebase search — finding files, symbols, cross-references | Fast read-only search; use for "where is X defined?" or "which files reference Y?" — does NOT do analysis or full-file review |
-| `Plan` | Designing implementation strategies, architectural decisions | Returns a step-by-step plan, identifies critical files, surfaces trade-offs — use before touching code that spans multiple files |
-| `general-purpose` | Multi-step research, complex investigations | Broad research, web fetches, multi-file analysis — keeps large result sets out of the main context window |
+| Agent type        | When it's used                                               | What it does                                                                                                                     |
+| ----------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `Explore`         | Codebase search — finding files, symbols, cross-references   | Fast read-only search; use for "where is X defined?" or "which files reference Y?" — does NOT do analysis or full-file review    |
+| `Plan`            | Designing implementation strategies, architectural decisions | Returns a step-by-step plan, identifies critical files, surfaces trade-offs — use before touching code that spans multiple files |
+| `general-purpose` | Multi-step research, complex investigations                  | Broad research, web fetches, multi-file analysis — keeps large result sets out of the main context window                        |
 
 **When sub-agents are NOT used:** simple file reads, targeted greps, single-file edits — these are
 done inline. Sub-agents add cold-start cost; they are worth it only when the task is genuinely
@@ -273,6 +273,6 @@ open-ended or parallelisable.
 
 ### MCP servers
 
-| Server | Purpose | Config |
-|---|---|---|
+| Server     | Purpose                                                               | Config                                    |
+| ---------- | --------------------------------------------------------------------- | ----------------------------------------- |
 | Playwright | Headless browser — `localhost` verification, WASM golden-path testing | `settings.json` → `mcpServers.playwright` |

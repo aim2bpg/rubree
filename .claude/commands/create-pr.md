@@ -11,17 +11,21 @@ Create a pull request for the current branch using `gh pr create`, following Rub
 ## Steps
 
 1. **Verify branch and gh auth**
+
    ```bash
    git branch --show-current   # must not be main
    gh auth status              # must be authenticated
    ```
+
    If `gh` is not authenticated, see `docs/development.md#github-cli`.
 
 2. **Gather change context**
+
    ```bash
    git log main..HEAD --oneline
    git diff main..HEAD --stat
    ```
+
    Read the diff of any non-obvious changed files to understand the full scope.
 
 3. **Check for open `.steering/` plan**
@@ -42,6 +46,7 @@ Create a pull request for the current branch using `gh pr create`, following Rub
    - **Additional Notes**: related issues, follow-ups
 
 5. **Create the PR**
+
    ```bash
    gh pr create \
      --base main \

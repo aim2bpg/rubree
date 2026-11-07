@@ -1,4 +1,5 @@
 ---
+
 name: Bug report
 about: Create a report to help us improve
 title: ''
@@ -7,26 +8,33 @@ assignees: ''
 
 ---
 
-### **Summary**  
+### **Summary**
+
 A brief description of the bug.
 
-### **Steps to Reproduce**  
+### **Steps to Reproduce**
+
 How can we reproduce the issue? Please provide step-by-step instructions.
 
-### **Expected Behavior**  
+### **Expected Behavior**
+
 What did you expect to happen?
 
-### **Actual Behavior**  
+### **Actual Behavior**
+
 What actually happened instead?
 
-### **Environment**  
+### **Environment**
+
 Please specify:
 - Device/OS:
 - Browser (if applicable):
 - App version or build number:
 
-### **Screenshots or Logs**  
+### **Screenshots or Logs**
+
 (Attach any relevant screenshots, console logs, or error messages.)
 
-### **Additional Notes**  
+### **Additional Notes**
+
 Any other context that might help us understand the issue.

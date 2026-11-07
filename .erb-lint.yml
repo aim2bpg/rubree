@@ -1,6 +1,6 @@
 exclude:
-  - '**/vendor/**/*'
-  - '**/node_modules/**/*'
+  - "**/vendor/**/*"
+  - "**/node_modules/**/*"
 
 EnableDefaultLinters: true
 linters:

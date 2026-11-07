@@ -21,13 +21,16 @@ Example: `/bump-rails 8.1.4`
    that could affect this app — Hotwire, asset pipeline, or WASM-relevant changes.
 
 2. **Confirm the baseline is green** before changing anything:
+
    ```bash
    RUBYOPT=-W:deprecated bin/rspec
    ```
+
    Fix failing tests or deprecation warnings first — otherwise it's hard to tell
    which issues are pre-existing and which were introduced by the upgrade.
 
 3. **Create a branch**
+
    ```bash
    git checkout -b chore/bump-rails-<new-version>
    ```
@@ -45,6 +48,7 @@ Example: `/bump-rails 8.1.4`
    doesn't know about — prefer the manual diff review.)
 
 6. **Re-run linters and the full test suite**
+
    ```bash
    bin/rubocop
    bin/erb_lint --lint-all
@@ -53,15 +57,18 @@ Example: `/bump-rails 8.1.4`
 
 7. **Rebuild and verify the WASM bundle.** A Rails upgrade can break the WASM
    build even when the test suite is green:
+
    ```bash
    bin/rails wasmify:build   # must succeed without errors
    bin/rails wasmify:pack    # must succeed without errors
    cd pwa && npm run dev     # open in Chrome and confirm the app works
    ```
+
    If the build breaks, check `docs/wasm-build-notes.md` for a known issue first;
    if it's new, add an entry there describing the symptom, cause, and fix.
 
 8. **Commit**
+
    ```bash
    git add Gemfile Gemfile.lock <any other changed files>
    git commit -m "⬆️ Rails <new-version>"

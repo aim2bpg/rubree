@@ -2,10 +2,10 @@ version: 2
 
 updates:
   - package-ecosystem: bundler
-    directory: '/'
+    directory: "/"
     schedule:
       interval: daily
-      time: '12:00'
+      time: "12:00"
       timezone: Asia/Tokyo
     open-pull-requests-limit: 10
     versioning-strategy: lockfile-only
@@ -23,30 +23,30 @@ updates:
     groups:
       rails:
         patterns:
-          - 'rails'
-          - 'railties'
-          - 'action*'
-          - 'active*'
-          - 'globalid'
-          - 'mail'
-          - 'rack*'
-          - 'i18n'
+          - "rails"
+          - "railties"
+          - "action*"
+          - "active*"
+          - "globalid"
+          - "mail"
+          - "rack*"
+          - "i18n"
       rubocop:
         patterns:
-          - 'rubocop*'
+          - "rubocop*"
       rspec:
         patterns:
-          - 'rspec*'
+          - "rspec*"
       wasm:
         patterns:
-          - 'wasmify-rails'
-          - 'ruby-wasm'
+          - "wasmify-rails"
+          - "ruby-wasm"
 
   - package-ecosystem: npm
-    directory: '/'
+    directory: "/"
     schedule:
       interval: daily
-      time: '12:00'
+      time: "12:00"
       timezone: Asia/Tokyo
     open-pull-requests-limit: 10
     versioning-strategy: auto
@@ -61,27 +61,27 @@ updates:
     groups:
       tailwindcss:
         patterns:
-          - 'tailwindcss'
-          - '@tailwindcss/*'
+          - "tailwindcss"
+          - "@tailwindcss/*"
       turbo:
         patterns:
-          - 'turbo-rails'
-          - 'stimulus-rails'
+          - "turbo-rails"
+          - "stimulus-rails"
       others:
         patterns:
-          - '@biomejs/biome'
-          - 'alpinejs'
-          - 'esbuild'
-          - 'playwright'
+          - "@biomejs/biome"
+          - "alpinejs"
+          - "esbuild"
+          - "playwright"
     # Exclude playwright from auto-updates temporarily to maintain compatibility with the Ruby client
     ignore:
       - dependency-name: "playwright"
 
   - package-ecosystem: npm
-    directory: '/pwa'
+    directory: "/pwa"
     schedule:
       interval: daily
-      time: '12:00'
+      time: "12:00"
       timezone: Asia/Tokyo
     open-pull-requests-limit: 10
     versioning-strategy: auto
@@ -96,17 +96,17 @@ updates:
     groups:
       others:
         patterns:
-          - 'vite'
-          - 'vite-plugin-pwa'
+          - "vite"
+          - "vite-plugin-pwa"
     # Exclude playwright from auto-updates temporarily to maintain compatibility with the Ruby client
     ignore:
       - dependency-name: "playwright"
 
   - package-ecosystem: github-actions
-    directory: '/'
+    directory: "/"
     schedule:
       interval: daily
-      time: '12:00'
+      time: "12:00"
       timezone: Asia/Tokyo
     cooldown:
       default-days: 14

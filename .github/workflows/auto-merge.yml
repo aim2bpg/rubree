@@ -22,7 +22,7 @@ jobs:
         id: metadata
         uses: dependabot/fetch-metadata@v3
         with:
-          github-token: '${{ secrets.PAT }}'
+          github-token: "${{ secrets.PAT }}"
 
       - name: Enable auto-merge for Dependabot PRs
         if: ${{ steps.metadata.outputs.update-type != 'version-update:semver-major' }}

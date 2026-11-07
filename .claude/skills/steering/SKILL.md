@@ -1,4 +1,5 @@
 ---
+
 name: steering
 description: Create and follow a .steering/ task plan for work expected to span multiple sessions or requiring a design decision before implementation. Use when starting a feature, a non-trivial refactor, or any task where you'd otherwise lose context between sessions.
 allowed-tools: Read, Write, Edit

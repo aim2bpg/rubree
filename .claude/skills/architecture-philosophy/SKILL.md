@@ -1,4 +1,5 @@
 ---
+
 name: architecture-philosophy
 description: Why Rubree models domain logic as ActiveModel-based POROs in app/models instead of service objects or form objects, how classes get named and split up, and why coverage is visualized. Use when adding new domain logic, deciding where new code should live, naming a new class, weighing whether to introduce a service or form object, or reviewing a PR or diff. For frontend conventions (Alpine.js, Stimulus, Turbo, ERB, SVG), see the frontend-patterns skill.
 ---
@@ -60,7 +61,7 @@ already covered by the same technique:
 
 - A "service object" is, in most cases, logic that fits directly on (or next to) an
   ActiveModel-based model — Rails already gives you validations, callbacks, and attributes there
-- A "form object" *is* an ActiveModel-based PORO by definition — see
+- A "form object" _is_ an ActiveModel-based PORO by definition — see
   [speakerdeck.com/expajp/an-introduction-to-formobject](https://speakerdeck.com/expajp/an-introduction-to-formobject):
   it is defined as "a Ruby object not backed by a database table, built by including
   `ActiveModel::Model`". There is no separate pattern to reach for; `app/models` is already where
@@ -71,7 +72,7 @@ already covered by the same technique:
 pointed out that ActiveModel-based models conventionally live in `app/models` — citing
 [Rails Guides → Active Model Basics](https://railsguides.jp/active_model_basics.html) — and that
 most of the `app/services` logic could be modeled the same way. The maintainer then consolidated
-everything into `app/models`; that consolidation *is* the current architecture
+everything into `app/models`; that consolidation _is_ the current architecture
 (`RegularExpression`, `RegularExpression::RailroadDiagram`, `RegularExpression::Substitution`,
 and so on).
 
@@ -125,7 +126,7 @@ Coverage is visualized through octocov (see the `testing-guidelines` skill) beca
 maintainer's words — "without seeing coverage, it was hard to tell whether the tests were
 actually good" (整備にあたっては、カバレッジを意識しなければ良し悪しがよく分かりませんでした).
 The percentage is not the point; the point is giving a future reader — human or AI — a way to
-*see* whether the suite actually exercises the paths that matter.
+_see_ whether the suite actually exercises the paths that matter.
 
 ## Use modules for static lookups, classes for stateful domain objects
 
@@ -170,7 +171,7 @@ request. Don't flip the choice just because a module grows large — size alone 
 
 An AI agent will, on average, suggest the generic Rails pattern — service objects, form objects
 as separate concerns — because that is what most training data favors. That is a pull toward the
-*statistically common* answer, not necessarily the *right* one for this project. This document
+_statistically common_ answer, not necessarily the _right_ one for this project. This document
 exists so that pull does not quietly bring `app/services`/`app/forms` back over time. If you find
 yourself about to propose one, re-read the first section before you do.
 
@@ -188,7 +189,7 @@ near-solo project where there is no second human reviewer to catch them.
   or `app/forms/` introduced
 - [ ] New class names are nouns (`RegularExpression::Foo`), not verb-shaped
   (`PerformFoo`, `FooService`)
-- [ ] If a class was split further, the split makes the flow *easier* to trace — not just smaller
+- [ ] If a class was split further, the split makes the flow _easier_ to trace — not just smaller
   files
 
 ### Client-side philosophy

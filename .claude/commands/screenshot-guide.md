@@ -15,10 +15,10 @@ Run after any UI change that affects the visual flow, or when adding a new featu
 
 A file in `docs/screenshots/` is kept **only if at least one of the following is true**:
 
-| Criterion | Check |
-|---|---|
+| Criterion                           | Check                                              |
+| ----------------------------------- | -------------------------------------------------- |
 | Referenced in `docs/usage-guide.md` | `grep -r "screenshots/<file>" docs/usage-guide.md` |
-| Referenced in `README.md` | `grep -r "screenshots/<file>" README.md` |
+| Referenced in `README.md`           | `grep -r "screenshots/<file>" README.md`           |
 
 Everything else is deleted. Run this to audit at any time:
 
@@ -50,12 +50,12 @@ docs/screenshots/
 └── qa/         ← reserved for Layer 2 WASM E2E test snapshots (currently empty)
 ```
 
-| Path | Purpose | 使い分け |
-|---|---|---|
-| `docs/screenshots/features/gif_<feature>.gif` | Per-feature animated GIFs | **操作の流れを見せる**ときに使う。機能の主要アセット |
-| `docs/screenshots/features/<feature_name>.png` | Per-feature static PNGs | **特定の静止フレームを文章中で指す**ときだけ追加する。GIF でカバーできる機能は PNG 不要 |
-| `docs/screenshots/demo/usage_demo.gif` | Full golden-path GIF | README 冒頭の概観デモ専用 |
-| `docs/screenshots/qa/` | E2E test snapshots | Layer 2 CI 統合後に自動生成。手動で置かない |
+| Path                                           | Purpose                   | 使い分け                                                                                |
+| ---------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------- |
+| `docs/screenshots/features/gif_<feature>.gif`  | Per-feature animated GIFs | **操作の流れを見せる**ときに使う。機能の主要アセット                                    |
+| `docs/screenshots/features/<feature_name>.png` | Per-feature static PNGs   | **特定の静止フレームを文章中で指す**ときだけ追加する。GIF でカバーできる機能は PNG 不要 |
+| `docs/screenshots/demo/usage_demo.gif`         | Full golden-path GIF      | README 冒頭の概観デモ専用                                                               |
+| `docs/screenshots/qa/`                         | E2E test snapshots        | Layer 2 CI 統合後に自動生成。手動で置かない                                             |
 
 **`features/` に PNG と GIF が共存するケース：**
 GIF は「操作の流れ」、PNG は「文章中で特定の状態を参照させたいとき」という役割が異なります。
@@ -67,22 +67,22 @@ GIF は「操作の流れ」、PNG は「文章中で特定の状態を参照さ
 
 **Current inventory** (4 PNGs + 10 GIFs — all referenced):
 
-| File | Referenced in |
-|---|---|
-| `diagram_modal.png` | `docs/usage-guide.md` |
-| `examples_button.png` | `docs/usage-guide.md` |
-| `named_captures.png` | `docs/usage-guide.md` |
+| File                           | Referenced in         |
+| ------------------------------ | --------------------- |
+| `diagram_modal.png`            | `docs/usage-guide.md` |
+| `examples_button.png`          | `docs/usage-guide.md` |
+| `named_captures.png`           | `docs/usage-guide.md` |
 | `options_case_insensitive.png` | `docs/usage-guide.md` |
-| `gif_boot.gif` | `docs/usage-guide.md` |
-| `gif_captures.gif` | `docs/usage-guide.md` |
-| `gif_diagram.gif` | `docs/usage-guide.md` |
-| `gif_match.gif` | `docs/usage-guide.md` |
-| `gif_permalink.gif` | `docs/usage-guide.md` |
-| `gif_quickref.gif` | `docs/usage-guide.md` |
-| `gif_redos.gif` | `docs/usage-guide.md` |
-| `gif_snippet.gif` | `docs/usage-guide.md` |
-| `gif_substitution.gif` | `docs/usage-guide.md` |
-| `usage_demo.gif` | `README.md` |
+| `gif_boot.gif`                 | `docs/usage-guide.md` |
+| `gif_captures.gif`             | `docs/usage-guide.md` |
+| `gif_diagram.gif`              | `docs/usage-guide.md` |
+| `gif_match.gif`                | `docs/usage-guide.md` |
+| `gif_permalink.gif`            | `docs/usage-guide.md` |
+| `gif_quickref.gif`             | `docs/usage-guide.md` |
+| `gif_redos.gif`                | `docs/usage-guide.md` |
+| `gif_snippet.gif`              | `docs/usage-guide.md` |
+| `gif_substitution.gif`         | `docs/usage-guide.md` |
+| `usage_demo.gif`               | `README.md`           |
 
 ## When to run
 
@@ -128,17 +128,17 @@ The script should:
 
 Key Playwright selectors:
 
-| Element | Selector |
-|---|---|
-| Regex input | `#regular_expression_expression` |
-| Test string | `#regular_expression_test_string` |
-| Substitution | `#regular_expression_substitution` |
-| Options checkboxes | `#regular_expression_options` |
+| Element             | Selector                                    |
+| ------------------- | ------------------------------------------- |
+| Regex input         | `#regular_expression_expression`            |
+| Test string         | `#regular_expression_test_string`           |
+| Substitution        | `#regular_expression_substitution`          |
+| Options checkboxes  | `#regular_expression_options`               |
 | Diagram zoom button | `[data-action="click->diagram-modal#open"]` |
-| Share button | `[data-action="click->permalink#share"]` |
-| Result area | `#regexp` |
-| Match highlights | `.regexp-match-highlight` |
-| Quick reference | `[data-controller="quick-reference"]` |
+| Share button        | `[data-action="click->permalink#share"]`    |
+| Result area         | `#regexp`                                   |
+| Match highlights    | `.regexp-match-highlight`                   |
+| Quick reference     | `[data-controller="quick-reference"]`       |
 
 ### 4. Annotate with ImageMagick
 

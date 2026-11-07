@@ -88,10 +88,10 @@ After authentication, verify with `gh auth status`.
 
 **Tool priority for Claude Code:**
 
-| Tool | When to use |
-|---|---|
-| `gh` | All GitHub operations when authenticated — `gh pr create`, `gh run list`, `gh api repos/...` |
-| `WebFetch` | Public GitHub content only (raw files, public pages) when `gh` is not authenticated |
+| Tool       | When to use                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| `gh`       | All GitHub operations when authenticated — `gh pr create`, `gh run list`, `gh api repos/...` |
+| `WebFetch` | Public GitHub content only (raw files, public pages) when `gh` is not authenticated          |
 
 ---
 
@@ -101,34 +101,34 @@ Claude Code can run autonomously (write code, run tests, commit) using a `.steer
 
 ### What is protected
 
-| Protection | Mechanism |
-|---|---|
-| Force-push to `main`/`master` | PreToolUse hook → deny |
-| Secrets: `.env`, `master.key`, `.ssh/**` via Read tool | `deny` in `settings.json` |
-| SSH private key read via Bash (`cat ~/.ssh/id_*`) | `deny` in `settings.json` |
-| Pipe-to-shell downloads (`curl \| sh`, `wget \| bash`) | `deny` in `settings.json` |
-| Netcat/socat exfiltration (`nc`, `ncat`, `socat`) | `deny` in `settings.json` |
-| `--dangerouslySkipPermissions` bypass | `disableBypassPermissionsMode: "disable"` |
-| Publishing packages, state-changing `gh` commands | `ask` in `settings.json` |
+| Protection                                             | Mechanism                                 |
+| ------------------------------------------------------ | ----------------------------------------- |
+| Force-push to `main`/`master`                          | PreToolUse hook → deny                    |
+| Secrets: `.env`, `master.key`, `.ssh/**` via Read tool | `deny` in `settings.json`                 |
+| SSH private key read via Bash (`cat ~/.ssh/id_*`)      | `deny` in `settings.json`                 |
+| Pipe-to-shell downloads (`curl \| sh`, `wget \| bash`) | `deny` in `settings.json`                 |
+| Netcat/socat exfiltration (`nc`, `ncat`, `socat`)      | `deny` in `settings.json`                 |
+| `--dangerouslySkipPermissions` bypass                  | `disableBypassPermissionsMode: "disable"` |
+| Publishing packages, state-changing `gh` commands      | `ask` in `settings.json`                  |
 
 ### What is NOT sandboxed
 
-| Capability | Notes |
-|---|---|
+| Capability                        | Notes                                                       |
+| --------------------------------- | ----------------------------------------------------------- |
 | `git push` to any non-main branch | Scope via `.steering/` plan; add to `ask` for extra caution |
-| Outbound HTTP/HTTPS | npm install, curl downloads, API calls all work |
-| `ssh` direct connections | In `ask` — requires approval |
-| `npm install <new-package>` | In `ask` — approve each new package consciously |
+| Outbound HTTP/HTTPS               | npm install, curl downloads, API calls all work             |
+| `ssh` direct connections          | In `ask` — requires approval                                |
+| `npm install <new-package>`       | In `ask` — approve each new package consciously             |
 
 ### Known attack vectors
 
-| Attack | Mitigation |
-|---|---|
-| Malicious project hooks (CVE-2025-59536) | Audit `settings.json` before running Claude Code in a cloned repo |
-| InversePrompt — prompt injection via files Claude reads | Scope tasks with `.steering/` plan |
-| Supply chain via `npm install` | `npm install <package>` is in `ask` |
-| API key exfiltration | Set a spending cap on `ANTHROPIC_API_KEY` |
-| Subcommand limit bypass | Mirror critical deny rules in `~/.claude/settings.json` on the host |
+| Attack                                                  | Mitigation                                                          |
+| ------------------------------------------------------- | ------------------------------------------------------------------- |
+| Malicious project hooks (CVE-2025-59536)                | Audit `settings.json` before running Claude Code in a cloned repo   |
+| InversePrompt — prompt injection via files Claude reads | Scope tasks with `.steering/` plan                                  |
+| Supply chain via `npm install`                          | `npm install <package>` is in `ask`                                 |
+| API key exfiltration                                    | Set a spending cap on `ANTHROPIC_API_KEY`                           |
+| Subcommand limit bypass                                 | Mirror critical deny rules in `~/.claude/settings.json` on the host |
 
 > CVE numbers from researcher reports (2025–2026). Verify against NVD before treating as authoritative.
 
@@ -208,16 +208,16 @@ bin/yarn biome check --write && bin/yarn biome migrate --write
 
 Rubree has two distinct test layers that cover different environments.
 
-| | Layer 1 — RSpec system specs | Layer 2 — WASM E2E (planned) |
-|---|---|---|
-| **Command** | `bin/rspec` | `node bin/qa-wasm` |
-| **Server** | Rails dev server (port 3000) | PWA dev server (port 5173) |
-| **Ruby runtime** | Native process | WASM inside the browser |
-| **What it covers** | Models, controllers, views, Stimulus JS | Regexp::Parser feature coverage, railroad diagrams, UI states |
-| **WASM involved?** | No | Yes — production-equivalent environment |
-| **Speed** | Fast (seconds) | Slow (~30 s WASM boot per session) |
-| **In CI?** | ✅ `ci.yml` (every PR) | 🔲 Planned: `deploy.yml` post-pack, pre-Pages |
-| **Local execution** | `bin/rspec` | Manual / Claude-suggested / Claude-delegated |
+|                     | Layer 1 — RSpec system specs            | Layer 2 — WASM E2E (planned)                                  |
+| ------------------- | --------------------------------------- | ------------------------------------------------------------- |
+| **Command**         | `bin/rspec`                             | `node bin/qa-wasm`                                            |
+| **Server**          | Rails dev server (port 3000)            | PWA dev server (port 5173)                                    |
+| **Ruby runtime**    | Native process                          | WASM inside the browser                                       |
+| **What it covers**  | Models, controllers, views, Stimulus JS | Regexp::Parser feature coverage, railroad diagrams, UI states |
+| **WASM involved?**  | No                                      | Yes — production-equivalent environment                       |
+| **Speed**           | Fast (seconds)                          | Slow (~30 s WASM boot per session)                            |
+| **In CI?**          | ✅ `ci.yml` (every PR)                  | 🔲 Planned: `deploy.yml` post-pack, pre-Pages                 |
+| **Local execution** | `bin/rspec`                             | Manual / Claude-suggested / Claude-delegated                  |
 
 Both layers should pass before shipping any change that could affect the WASM runtime.
 
@@ -227,11 +227,11 @@ Both layers should pass before shipping any change that could affect the WASM ru
 bin/rspec   # default: headless Playwright/Chromium
 ```
 
-| What it tests | How it runs |
-|---|---|
+| What it tests                               | How it runs                                           |
+| ------------------------------------------- | ----------------------------------------------------- |
 | Ruby logic, controllers, views, Stimulus JS | Playwright drives a **Rails dev server** on port 3000 |
-| WASM is **not** involved | Ruby executes natively as a normal Rails process |
-| Fast (seconds) | No WASM build required |
+| WASM is **not** involved                    | Ruby executes natively as a normal Rails process      |
+| Fast (seconds)                              | No WASM build required                                |
 
 Override the driver with `DRIVER=<name>`:
 
@@ -266,11 +266,11 @@ node bin/qa-wasm
 > `.steering/20260607-ux-improvements/comprehensive_test.mjs` (gitignored) and will be moved
 > here once stabilised. See `.steering/20260607-ux-improvements/tasklist.md` Phase 3.
 
-| What it tests | How it runs |
-|---|---|
+| What it tests                                                      | How it runs                                           |
+| ------------------------------------------------------------------ | ----------------------------------------------------- |
 | Full Regexp::Parser feature coverage, railroad diagrams, UI states | Playwright drives the **PWA dev server** on port 5173 |
-| Ruby executes **inside the browser via WASM** | Production-equivalent environment |
-| Slow (~30 s boot per session) | Requires a built `app.wasm` |
+| Ruby executes **inside the browser via WASM**                      | Production-equivalent environment                     |
+| Slow (~30 s boot per session)                                      | Requires a built `app.wasm`                           |
 
 **When to run:** after `wasmify:build`, after gem updates, or when adding a new regex feature.
 For a focused golden-path check, use `/verify-wasm` instead.
@@ -282,10 +282,10 @@ For a focused golden-path check, use `/verify-wasm` instead.
 
 **Expected impact on `deploy.yml` duration once integrated:**
 
-| | Cache warm | Cache cold |
-|---|---|---|
-| Current deploy | ~3–4 min | ~18 min |
-| After Layer 2 | ~5–6 min (+2 min) | ~23 min (+5 min) |
+|                | Cache warm        | Cache cold       |
+| -------------- | ----------------- | ---------------- |
+| Current deploy | ~3–4 min          | ~18 min          |
+| After Layer 2  | ~5–6 min (+2 min) | ~23 min (+5 min) |
 
 Cold builds are dominated by `wasmify:build` (~15 min), so Layer 2 is not the bottleneck.
 The +2 min warm cost covers: root `npm install`, Playwright Chromium, Vite dev server start,
