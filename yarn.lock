@@ -367,13 +367,13 @@
     "@parcel/watcher-win32-arm64" "2.6.0"
     "@parcel/watcher-win32-x64" "2.6.0"
 
-"@playwright/mcp@^0.0.84":
-  version "0.0.84"
-  resolved "https://registry.yarnpkg.com/@playwright/mcp/-/mcp-0.0.84.tgz#7ea2d7f1be08fcbf8d8473dffa8b6a0814116f51"
-  integrity sha512-weqLrA7/D8MJzNV9/t3Hnjp100tS2sxFXKeb2gH6Nhktqmdfvx5qRA9AZ5Mhjnre1jY0wltsrRK5VZS5NBgcvw==
+"@playwright/mcp@^0.0.85":
+  version "0.0.85"
+  resolved "https://registry.yarnpkg.com/@playwright/mcp/-/mcp-0.0.85.tgz#9319f03746cd67a9cb9de1fbfd3652f66596717f"
+  integrity sha512-bSfECMbLXhJdWkGhLzNMxTZuazG+9IDJ679gflji3yyD94e7ARnGdqmJmG6lTPB+gYX+OiFLmX5myBl62+wZEw==
   dependencies:
-    playwright "1.65.0-alpha-2026-10-30"
-    playwright-core "1.65.0-alpha-2026-10-30"
+    playwright "1.66.0-alpha-2026-11-09"
+    playwright-core "1.66.0-alpha-2026-11-09"
 
 "@rails/actioncable@>=7.0":
   version "8.1.300"
@@ -690,10 +690,10 @@ playwright-core@1.64.0:
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.64.0.tgz#a765f91dabd2b2cadd67e87439842c1d6c72c652"
   integrity sha512-T9r+MZkTECl2+oUcZ26YgZzTrYidTsIhYYkJix+6iDOymOb1FB2RLLSOxRGnZGv5DStt+aduIVbt+E8WygXYpg==
 
-playwright-core@1.65.0-alpha-2026-10-30:
-  version "1.65.0-alpha-2026-10-30"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.65.0-alpha-2026-10-30.tgz#3385edf853480fabf99cafd8aa3a65012bf4d29f"
-  integrity sha512-LPMw8B/HRQKMcJeXTqWSrkB/AfCKKmbDQMbu0p7zg8MgibOWaKMjZWR/StAtrQkOxvOmZEju1o1TnPgdoOCwrg==
+playwright-core@1.66.0-alpha-2026-11-09:
+  version "1.66.0-alpha-2026-11-09"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.66.0-alpha-2026-11-09.tgz#d70f956e879c8d84347fcdda7b52b1a1c37dfac0"
+  integrity sha512-HZVc/E3nqrasH7PPvJNwc7aCNsKXKjvtViZBpeFfopGOeB0zr3r5q4TKfqzkrdIcCKWCulyLVVGtla/LYbmxUQ==
 
 playwright@1.64.0:
   version "1.64.0"
@@ -702,12 +702,12 @@ playwright@1.64.0:
   dependencies:
     playwright-core "1.64.0"
 
-playwright@1.65.0-alpha-2026-10-30:
-  version "1.65.0-alpha-2026-10-30"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.65.0-alpha-2026-10-30.tgz#ca0f47b1a8b8db5b1c52a5608c55a9536ed6697b"
-  integrity sha512-dmAJMVHKzHvMQjn+XDcaq/pxaZ0W6n8i78rwTM+VGRtQ3WBF5ZiSdB1yL/cyoYUGUMwg3jxN65KqC9cERaCbIg==
+playwright@1.66.0-alpha-2026-11-09:
+  version "1.66.0-alpha-2026-11-09"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.66.0-alpha-2026-11-09.tgz#27db0e57138857e9c910f80529e9c94ff362381e"
+  integrity sha512-raaHhtTYsm9ydMdGa11MEIwI8KM9RP4CuyvAb/lbd6e3bYhsBHXPMVGvyYJWldQxwUgMYnngY2VY5vCpimB2Dg==
   dependencies:
-    playwright-core "1.65.0-alpha-2026-10-30"
+    playwright-core "1.66.0-alpha-2026-11-09"
 
 source-map-js@>=1.2.2, source-map-js@^1.2.1:
   version "1.2.2"
