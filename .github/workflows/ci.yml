@@ -150,11 +150,19 @@ jobs:
       # installs browser binaries at a different revision than what the
       # bundled playwright-ruby-client gem expects ("Executable doesn't exist
       # at ...").
-      - name: Install Playwright (Chromium only if cache missed)
+      - name: Install Playwright browser (Chromium, only if cache missed)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: |
-          npx playwright install chromium
-          npx playwright install-deps chromium
+        run: npx playwright install chromium
+
+      # Always run, even on a browser-binary cache hit: install-deps installs
+      # OS packages (apt), which the actions/cache step above never covers —
+      # every job runs on a fresh runner VM with no apt packages preinstalled,
+      # regardless of whether ~/.cache/ms-playwright was restored. Skipping
+      # this on a cache hit previously caused "error while loading shared
+      # libraries: libevent-2.1.so.7" (WebKit) once the browser-binary cache
+      # started hitting.
+      - name: Install Playwright OS dependencies (Chromium)
+        run: npx playwright install-deps chromium
 
       - name: Build frontend assets
         run: yarn build && yarn build:css
@@ -236,9 +244,18 @@ jobs:
       # playwright-ruby-client gem expects ("Executable doesn't exist at ...").
       - name: Install Playwright browser (if cache missed)
         if: matrix.playwright_browser != '' && steps.playwright-cache.outputs.cache-hit != 'true'
-        run: |
-          npx playwright install ${{ matrix.playwright_browser }}
-          npx playwright install-deps ${{ matrix.playwright_browser }}
+        run: npx playwright install ${{ matrix.playwright_browser }}
+
+      # Always run, even on a browser-binary cache hit: install-deps installs
+      # OS packages (apt), which the actions/cache step above never covers —
+      # every job runs on a fresh runner VM with no apt packages preinstalled,
+      # regardless of whether ~/.cache/ms-playwright was restored. Skipping
+      # this on a cache hit previously caused "error while loading shared
+      # libraries: libevent-2.1.so.7" (WebKit) once the browser-binary cache
+      # started hitting.
+      - name: Install Playwright OS dependencies
+        if: matrix.playwright_browser != ''
+        run: npx playwright install-deps ${{ matrix.playwright_browser }}
 
       - name: Build frontend assets
         run: yarn build && yarn build:css
