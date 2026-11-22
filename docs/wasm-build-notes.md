@@ -23,12 +23,10 @@ This document records the issues encountered and workarounds applied when buildi
 
 These issues were first discovered during Ruby 3.4.8 WASM support (PR [#527](https://github.com/aim2bpg/rubree/pull/527)). Issues 1–2 also apply to Ruby 4.0.
 
-
 ### 1. Prism parser crashes in WASM (Closed)
 
 - **Status**: No longer reproducible. The original memory fault was due to a misconfiguration in wasmify-rails (source URL override and missing patches). After correcting the setup, the crash does not occur, and the issue is considered resolved upstream.
 - **Upstream**: [ruby/prism#4065](https://github.com/ruby/prism/issues/4065)
-
 
 ### 2. RubyGems deprecate.rb block passing failure (Closed)
 
@@ -61,7 +59,6 @@ These issues appeared when upgrading from Ruby 3.4 to 4.0 (PRs [#528](https://gi
 - **Root cause**: Ruby 4.0 pre-defines the `Gem` module at the C level, causing `require "rubygems"` to be skipped (it thinks RubyGems is already loaded). But `Gem::Deprecate` and other classes are not actually defined
   **Fix**: Auto-patch wasmify-rails' `shim.rb` to add `require "rubygems"` before `require "/bundle/setup"` (idempotent, temporary workaround via `lib/tasks/wasmify_patches.rake`).
   - _April 2026_: [palkan/wasmify-rails#12](https://github.com/palkan/wasmify-rails/pull/12) has been merged to main, but the gem version is not yet updated. The patch is still required for now, and will be removed after the next gem release.
-
 
 ### 6. ruby_wasm platform gem incompatible with Ruby 4.0 (Closed)
 

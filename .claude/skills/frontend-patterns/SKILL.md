@@ -120,14 +120,14 @@ When reviewing a PR or diff that touches the client-side layer:
 ### Client-side philosophy
 
 - [ ] No server-side dependency introduced — the app remains deployable as a static site to
-  GitHub Pages (no runtime external API calls that require a backend, no new server-rendered
-  endpoints that break in the WASM context)
+      GitHub Pages (no runtime external API calls that require a backend, no new server-rendered
+      endpoints that break in the WASM context)
 - [ ] If gem dependencies or Rails internals changed, verify the WASM build still works
-  (`bin/rails wasmify:build` or check the CI Deploy job) — gems that don't compile to WASM will
-  silently break the browser app
+      (`bin/rails wasmify:build` or check the CI Deploy job) — gems that don't compile to WASM will
+      silently break the browser app
 
 ### Browser compatibility
 
 - [ ] Behavior is Chrome/Edge-only — no assumption that Safari or Firefox will work; new Web APIs
-  must be in Chrome stable. (Safari/Firefox fail due to WebAssembly asyncify / Service Worker
-  incompatibilities — see README → Browser Compatibility for the full explanation)
+      must be in Chrome stable. (Safari/Firefox fail due to WebAssembly asyncify / Service Worker
+      incompatibilities — see README → Browser Compatibility for the full explanation)

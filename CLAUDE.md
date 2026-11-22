@@ -11,6 +11,7 @@ successor to [Rubular](https://rubular.com). The name is short for "Ruby-based r
 editor" (first syllables of each word), deliberately echoing Rubular.
 
 **Why it exists.** Rubular was a long-loved tool, but it had grown hard to keep using:
+
 - It ran on an old Ruby version (2.5.9), which made it slow
 - It was closed source, so nobody could fix or extend it
 - Every match required a round-trip to a server, adding latency
@@ -20,6 +21,7 @@ editor" (first syllables of each word), deliberately echoing Rubular.
 WebAssembly (`ruby_wasm` + `wasmify-rails`). This removes the server dependency, gives instant
 feedback, and lets the whole app be hosted as a static site (GitHub Pages). Features that grew out
 of this philosophy:
+
 - Railroad diagrams that visualize regex structure (`regexp_parser` + `railroad_diagrams`) —
   the Ruby gem, not a JavaScript library; JS-based alternatives like regexper were evaluated and
   rejected because all diagram logic must compile to WASM and run client-side
@@ -28,6 +30,7 @@ of this philosophy:
 - ReDoS checks via an embedded recheck Playground
 
 **For more background**, see the launch article:
+
 - はてなブログ: https://aim2bpg.hatenablog.com/entry/2025/11/25/083000
 
 When proposing changes, keep this philosophy in mind: favor solutions that work fully client-side,
@@ -59,6 +62,7 @@ approaches — ask before starting. One clarifying question up front costs far l
 in the wrong direction and walking it back.
 
 Before starting, confirm:
+
 - What is the scope? (What's in, what's out)
 - Is there a hard constraint — WASM compatibility, static-site deployability, the no-services/forms
   rule — that will shape the approach?
@@ -111,6 +115,7 @@ Before reporting a task as complete:
 ### 6. Review your own diff
 
 Read the full diff before declaring done. Look for:
+
 - Unintended changes (files touched that shouldn't be)
 - Missing test coverage for new code paths
 - Anything that would surprise a future reader without a comment

@@ -14,6 +14,7 @@ file persists after the session ends.
 ## When to use
 
 Create a `.steering/` directory when the task:
+
 - Is expected to span multiple sessions
 - Requires a design decision before touching code
 - Has enough phases/steps that losing context mid-task would be costly
@@ -42,6 +43,7 @@ Use today's date and a short kebab-case feature name. Example:
 ### Step 3 — Fill in the template
 
 Copy `.claude/skills/steering/templates/tasklist.md` and fill in:
+
 - The background / why section
 - Concrete phases with actionable tasks
 - Sub-tasks where a task is large enough to be ambiguous

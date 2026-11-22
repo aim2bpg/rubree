@@ -35,6 +35,7 @@ first — we already tried that line of reasoning and measured it away.
 ## When to use this skill
 
 Reach for this skill when:
+
 - A user reports the app freezing or showing unstyled content on iOS/mobile while
   the WASM runtime boots (see `docs/development.md`'s boot sequence diagram for the
   overall flow this skill profiles)
