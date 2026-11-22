@@ -160,3 +160,77 @@ jobs:
       # Ref-2: https://zenn.dev/shu_illy/articles/b4e635730c5ec0
       - name: Coverage Report by octocov (in this pull request)
         uses: k1LoW/octocov-action@v1
+
+  system_test:
+    name: System Tests (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      DRIVER: ${{ matrix.driver }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Firefox
+            driver: playwright_firefox_headless
+            playwright_browser: firefox
+          - name: WebKit
+            driver: playwright_webkit_headless
+            playwright_browser: webkit
+          - name: Selenium/Chrome
+            driver: selenium_chrome_headless
+            playwright_browser: ""
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: ./.node-version
+          cache: yarn
+          cache-dependency-path: ./yarn.lock
+
+      - name: Extract Playwright version
+        if: matrix.playwright_browser != ''
+        id: playwright-version
+        run: echo "version=$(jq -r '.devDependencies.playwright' package.json)" >> "$GITHUB_OUTPUT"
+
+      # Selenium/Chrome uses the Google Chrome preinstalled on GitHub-hosted ubuntu-latest
+      # runners (via Selenium Manager), so there is no browser to cache or install for it.
+      - name: Cache Playwright Browser (${{ matrix.playwright_browser }})
+        if: matrix.playwright_browser != ''
+        uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ matrix.playwright_browser }}-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install Playwright browser (if cache missed)
+        if: matrix.playwright_browser != '' && steps.playwright-cache.outputs.cache-hit != 'true'
+        run: |
+          npx playwright install ${{ matrix.playwright_browser }}
+          npx playwright install-deps ${{ matrix.playwright_browser }}
+
+      - name: Cache node_modules
+        id: node-modules-cache
+        uses: actions/cache@v6
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Install JS dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Build frontend assets
+        run: yarn build && yarn build:css
+
+      - name: Run system tests
+        run: bin/rspec spec/system

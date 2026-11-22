@@ -109,8 +109,8 @@ find('.dropdown-toggle-button').click
 The Capybara driver is selected via the `DRIVER` env var (see `spec/support/capybara.rb` and
 [Development Guide → Running tests locally](../../../docs/development.md#running-tests-locally)
 for the full list); it defaults to headless Playwright/Chromium. When a system spec depends on
-browser-specific behavior, it will also run against Firefox and WebKit automatically, via the
-`pre-push` hook and CI.
+browser-specific behavior, it will also run against Firefox, WebKit, and Selenium/Chrome
+automatically, via the matrixed `system_test` job in CI (not locally — see below).
 
 ## Coverage and quality bars (`.octocov.yml`)
 
@@ -131,36 +131,45 @@ necessary for browser-dependent behavior, but they're the main driver of suite e
 Run the suite locally with `bin/rspec` (see
 [Development Guide → Running tests locally](../../../docs/development.md#running-tests-locally)
 for `DRIVER=...` options to target a specific browser/engine). Lefthook (`lefthook.yml`) runs the
-full suite plus linters on `pre-commit`, and cross-browser system specs (Firefox, WebKit,
-Selenium/Chrome) on `pre-push`.
+full suite plus linters on `pre-commit` only, using the default Playwright/Chromium driver —
+there is no `pre-push` hook. Cross-browser system specs (Firefox, WebKit, Selenium/Chrome) run as
+a matrixed `system_test` job in `ci.yml` instead (one parallel GitHub Actions job per browser),
+not on every local push.
 
-### Selenium/Chrome inside the Dev Container
+This split exists because running all three browsers serially on every `git push` was slow
+(several minutes), and — on arm64 hosts (Apple Silicon Macs) — the Selenium/Chrome leg couldn't
+run there at all (see below), so the hook's coverage depended on the host's CPU architecture.
+Moving it to CI makes cross-browser coverage consistent across every contributor's machine
+(Intel/Apple Silicon Mac, Windows, Linux) and keeps local `git push` fast; you can still run any
+single driver locally with `DRIVER=...` when debugging a browser-specific failure.
 
-When running with `DRIVER=selenium_chrome` or `selenium_chrome_headless` inside the Dev Container,
-Chrome requires `--no-sandbox` and `--disable-dev-shm-usage`. These flags are applied
-automatically when `REMOTE_CONTAINERS=true` (set by VS Code's Dev Containers extension):
+### Selenium/Chrome inside the Dev Container and in CI
+
+When running with `DRIVER=selenium_chrome` or `selenium_chrome_headless` inside the Dev Container
+or in CI, Chrome requires `--no-sandbox` and `--disable-dev-shm-usage`. These flags are applied
+automatically when `REMOTE_CONTAINERS=true` (set by VS Code's Dev Containers extension) or
+`CI=true` (set by GitHub Actions):
 
 ```ruby
-# spec/support/capybara.rb — active only inside the Dev Container
-if ENV["REMOTE_CONTAINERS"] == "true"
+# spec/support/capybara.rb — active inside the Dev Container and in CI
+if ENV["REMOTE_CONTAINERS"] == "true" || ENV["CI"] == "true"
   Capybara.register_driver(:selenium_chrome_headless) do |app|
     options = Selenium::WebDriver::Chrome::Options.new
-    options.add_argument("--no-sandbox")          # Docker can't create Chrome sandbox processes
+    options.add_argument("--no-sandbox")          # Docker/CI can't create Chrome sandbox processes
     options.add_argument("--disable-dev-shm-usage") # /dev/shm too small in most containers
     ...
   end
 end
 ```
 
-Outside the Dev Container (local macOS install), this block is skipped and the default driver
-configuration applies. If Chrome behaves unexpectedly in CI but not locally, check whether the
-Selenium driver is picking up the right options for its environment.
+Outside those environments (a local macOS/Windows install without Docker), this block is skipped
+and the default driver configuration applies. If Chrome behaves unexpectedly in CI but not
+locally, check whether the Selenium driver is picking up the right options for its environment.
 
-**arm64 hosts (e.g. Apple Silicon Macs) can't run this check at all.** Google publishes no
-arm64 build of Chrome, and Ubuntu's `chromium` apt package is just a stub that requires snap
-(unreliable inside containers) — there's no working substitute, so `.devcontainer/setup.sh`
-skips the install entirely on arm64. The pre-push "Selenium/Chrome" check (and any manual
-`DRIVER=selenium_chrome_headless` run) simply isn't available on those hosts. Rely on the
-Playwright Firefox/WebKit checks (also part of `pre-push`) and CI's Playwright/Chromium
-coverage instead — between those, Rubree's supported browsers (Chrome and Edge are both
-Chromium-based) are still reasonably covered.
+**arm64 Dev Container hosts (e.g. Apple Silicon Macs) still can't run this check locally.**
+Google publishes no arm64 build of Chrome, and Ubuntu's `chromium` apt package is just a stub
+that requires snap (unreliable inside containers) — there's no working substitute, so
+`.devcontainer/setup.sh` skips the install entirely on arm64. A manual
+`DRIVER=selenium_chrome_headless` run simply isn't available on those hosts — but since this
+check now only runs in CI's `system_test` job (an x86_64 GitHub-hosted runner), that's no longer
+a gap in coverage, just a local-debugging limitation.

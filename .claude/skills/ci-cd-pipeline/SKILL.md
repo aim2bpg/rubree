@@ -101,10 +101,14 @@ key: ...-${{ hashFiles('.ruby-version') }}-ruby-wasm
 - **CI path filters**: `ci.yml` skips runs when only `**/*.md` files change — a docs-only commit
   shouldn't also touch code, or it will trigger a full CI run unnecessarily.
 - **Git hooks (Lefthook)**: `pre-commit` runs the linters (Rubocop, ERB Lint, Biome), Gitleaks,
-  Brakeman, and the RSpec suite; `pre-push` runs system specs against Firefox, WebKit, and
-  Selenium/Chrome. A failing hook usually means CI would fail too — fix the underlying issue
-  rather than skipping hooks. If every Ruby hook fails with `Bundler::GemNotFound` right after
-  pulling merged Dependabot PRs, run `bundle install` — the local gems are just behind the lockfile.
+  Brakeman, and the RSpec suite (default Playwright/Chromium driver) — there is no `pre-push`
+  hook. Cross-browser system specs (Firefox, WebKit, Selenium/Chrome) run only in CI, as the
+  matrixed `system_test` job in `ci.yml` — moved there (2026-11) because running all three
+  locally on every push was slow and, on arm64 hosts (Apple Silicon), the Selenium/Chrome leg
+  couldn't run at all (see the Browser support note below). A failing hook usually means CI
+  would fail too — fix the underlying issue rather than skipping hooks. If every Ruby hook fails
+  with `Bundler::GemNotFound` right after pulling merged Dependabot PRs, run `bundle install` —
+  the local gems are just behind the lockfile.
 - **Biome CLI version vs. `biome.json`'s `$schema` can drift apart**: `package.json` pins
   `@biomejs/biome`, but `biome.json`'s `$schema` URL is a separate, unpinned reference — if the
   installed CLI moves ahead of it (e.g. after a Dependabot bump merges without anyone touching

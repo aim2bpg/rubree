@@ -25,9 +25,10 @@ RSpec.configure do |config|
   end
 end
 
-# In devcontainer (Docker), Chrome needs --no-sandbox and --disable-dev-shm-usage.
-# Outside devcontainer, use Rails' default driver without extra flags.
-if ENV["REMOTE_CONTAINERS"] == "true"
+# In devcontainer (Docker) and CI, Chrome needs --no-sandbox and --disable-dev-shm-usage.
+# Outside those environments (e.g. a local macOS install), use Rails' default driver
+# without extra flags.
+if ENV["REMOTE_CONTAINERS"] == "true" || ENV["CI"] == "true"
   Capybara.register_driver(:selenium_chrome_headless) do |app|
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument("--headless=new")
