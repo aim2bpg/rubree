@@ -105,6 +105,17 @@ key: ...-${{ hashFiles('.ruby-version') }}-ruby-wasm
   Selenium/Chrome. A failing hook usually means CI would fail too — fix the underlying issue
   rather than skipping hooks. If every Ruby hook fails with `Bundler::GemNotFound` right after
   pulling merged Dependabot PRs, run `bundle install` — the local gems are just behind the lockfile.
+- **Biome CLI version vs. `biome.json`'s `$schema` can drift apart**: `package.json` pins
+  `@biomejs/biome`, but `biome.json`'s `$schema` URL is a separate, unpinned reference — if the
+  installed CLI moves ahead of it (e.g. after a Dependabot bump merges without anyone touching
+  `biome.json`), `bin/yarn biome check` can start failing on files nobody just edited, because
+  the newer CLI applies formatting rules the schema comment doesn't reflect. This blocks the
+  `pre-commit` hook for _any_ commit, not just ones that touch those files. To tell whether a
+  `biome check` failure is pre-existing (schema drift) vs. caused by your change, `git stash` your
+  changes and re-run it against the unmodified branch — if it still fails, it's drift, not your
+  diff. Fix with `yarn biome migrate --write` (updates the schema reference) followed by
+  `yarn biome check --write ./` (reformats to match), as a separate commit from any unrelated
+  work — diff the result to confirm the changes are whitespace/formatting only.
 - **Browser support**: Rubree only supports Chrome and Edge. Ruby Wasm is incompatible with
   Safari's WebAssembly asyncify and with Firefox's stricter Service Worker module evaluation (see
   README → Browser Compatibility for the exact errors). Don't expect WASM-related changes to
