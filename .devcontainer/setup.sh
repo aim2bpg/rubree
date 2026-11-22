@@ -140,6 +140,13 @@ add_if_missing 'export PATH="$HOME/.rbenv/bin:$PATH"'
 add_if_missing 'eval "$(rbenv init -)"'
 add_if_missing 'export NVM_DIR="$HOME/.nvm"'
 add_if_missing '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+# nvm.sh only switches to the `default` alias when $PATH has no existing nvm
+# version entry — if one is already on $PATH (e.g. restored from a saved shell
+# environment/snapshot that predates a Node bump) it leaves that version in
+# place instead. Forcing `nvm use default` after sourcing guarantees every new
+# shell lands on the version pinned by `.node-version`, regardless of what was
+# on $PATH before this profile ran.
+add_if_missing 'nvm use default --silent >/dev/null 2>&1'
 add_if_missing '. "$HOME/.cargo/env"'
 
 # --- Claude Code (optional) ---
