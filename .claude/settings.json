@@ -2,7 +2,7 @@
   "mcpServers": {
     "playwright": {
       "command": "node_modules/.bin/playwright-mcp",
-      "args": ["--headless"]
+      "args": ["--headless", "--no-sandbox"]
     }
   },
   "permissions": {

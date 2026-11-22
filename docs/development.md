@@ -172,6 +172,14 @@ claude mcp add -s user playwright -- npx @playwright/mcp@latest --headless
 
 Then restart Claude Code once more.
 
+**If Playwright MCP's browser fails to launch** with a sandbox/zygote error (e.g. `Failed to move
+to new namespace: ... Operation not permitted`), the devcontainer's seccomp/namespace restrictions
+are blocking Chrome's own sandbox — the same reason the Selenium Chrome driver in
+`spec/support/capybara.rb` passes `--no-sandbox` when `REMOTE_CONTAINERS=true`. `.claude/settings.json`
+passes `--no-sandbox` to `playwright-mcp` for the same reason; this is safe because Claude Code's
+own Bash/file sandboxing is unaffected — only Chrome's internal process sandbox is disabled, inside
+an already-sandboxed devcontainer.
+
 If Playwright MCP is not connected in the current session, fall back to the manual steps in
 [Test deployment locally (WASM build)](#test-deployment-locally-wasm-build) and verify in
 Chrome yourself, or run the headless script directly:
