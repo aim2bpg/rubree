@@ -19,6 +19,7 @@ Acceptable skip reason: technical only (approach changed, task became unnecessar
 Not acceptable: "takes too long", "tricky", "will do later".
 
 Skipping format:
+
 ```
 - [x] ~~Task name~~ (skipped: <specific technical reason>)
 ```

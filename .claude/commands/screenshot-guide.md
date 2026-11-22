@@ -62,6 +62,7 @@ GIF は「操作の流れ」、PNG は「文章中で特定の状態を参照さ
 例: `gif_diagram.gif`（ダイアグラムが描画されるアニメーション）と `diagram_modal.png`（モーダルを開いた静止状態、prose で「この画面を確認」と指示するため）は両方必要。
 
 **PNG を追加してよいのは次の条件を満たすときだけ：**
+
 1. `usage-guide.md` の文章中に `![...](screenshots/features/xxx.png)` として埋め込む
 2. その機能のインタラクションを見せる GIF ではカバーできない静止状態を示す必要がある
 
@@ -121,6 +122,7 @@ node /tmp/capture_guide.mjs
 ```
 
 The script should:
+
 1. Boot the app (click Start → Agree → wait for WASM)
 2. For each feature, enter the test pattern + test string, wait for the result, then take a screenshot
 3. Save raw PNGs to `/tmp/raw_<feature>_<step>.png`

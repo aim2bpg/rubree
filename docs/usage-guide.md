@@ -45,10 +45,12 @@ cache and launch instantly.
 ![Basic match](screenshots/features/gif_match.gif)
 
 **Try it:**
+
 - Pattern: `(hello|world)`
 - Test string: `hello world foo bar`
 
 **Expected:**
+
 - `hello` and `world` are highlighted in the Match result area
 - Execution time shown (e.g. `0.006 ms (avg of 5 runs)`)
 - Match groups panel lists each match with its capture group values
@@ -60,10 +62,12 @@ cache and launch instantly.
 ![Capture groups](screenshots/features/gif_captures.gif)
 
 **Try it (numbered):**
+
 - Pattern: `(\d{4})-(\d{2})-(\d{2})`
 - Test string: `Today is 2026-06-07, tomorrow is 2026-06-08`
 
 **Expected:**
+
 - Both dates highlighted
 - Match groups show `1. 2026`, `2. 06`, `3. 07` for each match
 
@@ -72,12 +76,14 @@ cache and launch instantly.
 ## 4. Named Captures
 
 **Try it:**
+
 - Pattern: `(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})`
 - Test string: `Today is 2026-06-07`
 
 ![Named captures](screenshots/features/named_captures.png)
 
 **Expected:**
+
 - Match groups show named keys: `year 2026`, `month 06`, `day 07`
 - Railroad diagram labels each group: `group: year`, `group: month`, `group: day`
 
@@ -96,6 +102,7 @@ The **Options** field (top-right of the pattern panel) accepts Ruby regex flags:
 | `x`  | Extended — ignore whitespace, allow `# comments` |
 
 **Try it:**
+
 - Pattern: `hello`
 - Options: `i`
 - Test string: `Hello World HELLO hello`
@@ -115,6 +122,7 @@ Every pattern renders a **railroad (syntax) diagram** in real time using
 - Click 📋 to copy the diagram as a PNG to clipboard
 
 **Try it:**
+
 - Pattern: `(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})`
 
 **Expected modal:**
@@ -128,11 +136,13 @@ Every pattern renders a **railroad (syntax) diagram** in real time using
 ![Substitution](screenshots/features/gif_substitution.gif)
 
 The **Substitution** field (top-right of the test string panel) supports:
+
 - Numbered backreferences: `\1`, `\2`, …
 - Named backreferences: `\k<name>`
 - Literal strings mixed with backreferences
 
 **Try it (date reformat):**
+
 - Pattern: `(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})`
 - Test string: `2026-06-07 and 2025-12-31`
 - Substitution: `\k<day>/\k<month>/\k<year>`
@@ -149,6 +159,7 @@ Click **Show** next to "Ruby code:" to expand an auto-generated Ruby snippet
 for the current pattern, test string, and substitution. Click 📋 to copy.
 
 **Example output:**
+
 ```ruby
 pattern = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/
 test_string = "2026-06-07"
@@ -183,6 +194,7 @@ current pattern pre-filled. recheck detects ReDoS (Regular Expression Denial of 
 vulnerabilities.
 
 **Try a vulnerable pattern:**
+
 - Pattern: `(a+)+b`
 - Test: `aaaaaaaaaaaaaaaaaaaac`
 

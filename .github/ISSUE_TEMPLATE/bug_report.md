@@ -27,6 +27,7 @@ What actually happened instead?
 ### **Environment**
 
 Please specify:
+
 - Device/OS:
 - Browser (if applicable):
 - App version or build number:

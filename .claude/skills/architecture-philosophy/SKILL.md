@@ -186,11 +186,11 @@ near-solo project where there is no second human reviewer to catch them.
 ### Architecture
 
 - [ ] New domain logic lives in `app/models/` as an ActiveModel-based PORO — no `app/services/`
-  or `app/forms/` introduced
+      or `app/forms/` introduced
 - [ ] New class names are nouns (`RegularExpression::Foo`), not verb-shaped
-  (`PerformFoo`, `FooService`)
+      (`PerformFoo`, `FooService`)
 - [ ] If a class was split further, the split makes the flow _easier_ to trace — not just smaller
-  files
+      files
 
 ### Client-side philosophy
 

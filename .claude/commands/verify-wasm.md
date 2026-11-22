@@ -48,6 +48,7 @@ sets the required COOP/COEP headers automatically.
 Use the Playwright MCP tool to perform the following in order:
 
 **Boot:**
+
 1. Navigate to `http://localhost:5173`
 2. Wait for the "Start" button to appear
 3. Click "Start"
@@ -70,6 +71,7 @@ Use the Playwright MCP tool to perform the following in order:
 ### 4. Report results
 
 Summarize which steps passed and which (if any) failed. If any step failed:
+
 - Note the exact step, what was expected, and what was observed
 - Check the browser console (via Playwright MCP) for errors
 - If it's a WASM runtime error, check `docs/wasm-build-notes.md`
