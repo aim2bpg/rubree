@@ -193,7 +193,7 @@ GEM
     parser (3.3.14.0)
       ast (~> 2.4.1)
       racc
-    playwright-ruby-client (1.65.0)
+    playwright-ruby-client (1.65.1)
       base64
       concurrent-ruby (>= 1.1.6)
       mime-types (>= 3.0)
